@@ -7,7 +7,7 @@ import os
 #change file name to local_settings.py, file will be excluded from repo
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l&%%2l13&5+*p%$59rc69%6zautij&b0(12*jj=fsv5o(c*#j2'
+#SECRET_KEY = 'put a secret key here and remove comment'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
