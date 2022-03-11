@@ -1,0 +1,73 @@
+<div class="card" v-show="first_load_done" id="instructions_card">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Instructions</span>       
+            
+        <span class="float-end">
+            Page [[session_player.current_instruction]] of [[instruction_pages.length]]
+        </span>
+        
+    </div>
+    <div class="card-body"> 
+        <div class="row instructions">
+            <div id="instructions_frame" class="col-md border" v-html = "getInstructionPage(session_player.current_instruction)">
+
+            </div>
+        </div>    
+
+        <div class="row mt-2">
+            <div class="col-md">
+                <button class="btn btn-outline-secondary ms-2"
+                        type="button" 
+                        title="Simulate Production"                 
+                        id="simulate_production_id"       
+                        v-bind:disabled="reconnecting || working"
+                        v-show="session_player.current_instruction==2 && session_player.current_instruction_complete<=2"
+                        v-on:click="simulateProductionInstructions()">Simulate Production <i class="fas fa-sync-alt"></i></button>
+                
+                <button class="btn btn-outline-secondary ms-2"
+                        type="button" 
+                        title="Simulate Production"                        
+                        v-bind:disabled="reconnecting || working"
+                        v-show="session_player.current_instruction==3 && session_player.current_instruction_complete<=3"
+                        v-on:click="setup_page_3_instructions()">Reset <i class="fas fa-sync-alt"></i></button>
+
+                <span class="float-end">
+                    <span class="me-4 text-danger"
+                          v-show="session_player.current_instruction_complete<session_player.current_instruction">
+                        Please take the requested action.
+                    </span>
+
+                    <!-- previous button -->
+                    <button class="btn btn-outline-primary me-2"
+                            type="button" 
+                            title="Previous Instruction Page"
+                            id="instructions_previous_id"
+                            v-bind:disabled="reconnecting || working || session_player.current_instruction == 1"
+                            v-on:click="sendNextInstruction(-1)"><i class="far fa-arrow-alt-circle-left"></i> Back</button>
+            
+                    <!-- next button -->
+                    <button class="btn btn-outline-primary"
+                            type="button" 
+                            title="Next Instruction Page"
+                            id="instructions_next_id"
+                            v-bind:disabled="reconnecting || working || session_player.current_instruction == instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction"
+                            v-on:click="sendNextInstruction(1)">Next <i class="far fa-arrow-alt-circle-right"></i></button>
+                    
+                    <!-- start button -->
+                    <button class="btn btn-outline-success ms-2"
+                            type="button" 
+                            title="Finished with Instructions"
+                            id="instructions_start_id"
+                            v-show="!session_player.instructions_finished && session_player.current_instruction_complete == instruction_pages.length"
+                            v-bind:disabled="reconnecting || working"
+                            v-on:click="sendFinishInstructions()">Start <i class="far fa-check-circle"></i></button>
+
+                    <!-- waiting -->
+                    <span class="ms-2" v-show="session_player.instructions_finished" tabindex="-1">
+                        Waiting for others.
+                    </span>
+                </span>
+            </div>
+        </div>        
+    </div>                    
+</div> 

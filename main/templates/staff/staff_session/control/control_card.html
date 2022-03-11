@@ -1,0 +1,112 @@
+<div class="card" v-show="first_load_done">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Control</span>       
+            
+        <span class="float-end">
+            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Control')">
+                <i class="far fa-question-circle"></i> 
+            </button>
+        </span>
+        
+    </div>
+    <div class="card-body"> 
+
+        <!-- start button -->
+        <div class="row" v-show="session.started == false">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "start_experiment()"
+                        title="Start experiment"
+                        v-bind:disabled="reconnecting || working || session.started">
+                    Start session <i class="far fa-play-circle"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- reset connection status -->
+        <div class="row mt-2" v-show="session.started == false">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        v-on:click = "resetConnections()"
+                        title="Reset experiment"
+                        v-bind:disabled="reconnecting || working || session.locked">
+                    Reset connection status <i class="fas fa-network-wired"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- start timer -->
+        <div class="row" v-show="session.started  && session.current_experiment_phase=='Run' && !session.finished">
+            <div class="col-md text-center">
+                <button type="button"                        
+                        v-on:click = "startTimer()"
+                        title="Start/Stop period timer"
+                        v-bind:class="[(session.timer_running) ? 'btn-outline-warning' : 'btn-outline-success' , 'btn']"
+                        v-bind:disabled="reconnecting || working || session.started===false || session.finished || session.current_experiment_phase!='Run'">
+                    <span v-if="session.timer_running">Stop Timmer <i class="far fa-clock"></i></span>
+                    <span v-else>Start Timmer <i class="far fa-clock"></i></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- next experiment phase -->
+        <div class="row mt-2" v-show="(session.started && session.current_experiment_phase!='Run') || (session.finished)">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "next_experiment_phase()"
+                        title="Move to next phase"
+                        v-bind:disabled="reconnecting || working || session.current_experiment_phase=='Done'">
+                    <span v-html="move_to_next_phase_text"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- end early -->
+        <div class="row mt-2" v-show="session.started && !session.locked">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        v-on:click = "endEarly()"
+                        title="End the experiment after this period."
+                        v-bind:disabled="reconnecting || 
+                                         working || 
+                                         session.started===false || 
+                                         session.locked || 
+                                         session.current_period===session.parameter_set.period_count"
+                    >
+                        <span v-if="session.current_period!=session.parameter_set.period_count">End Early <i class="far fa-hand-paper"></i></span>
+                        <span v-else>***Final Period***</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- reset experiment -->
+        <div class="row mt-2" v-show="session.started && !session.locked">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        v-on:click = "reset_experiment()"
+                        title="Reset experiment"
+                        v-bind:disabled="reconnecting || working || session.started===false || session.locked">
+                    Reset Experiment <i class="far fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- send invitations -->
+        <div class="row mt-2" v-show="session.started && !session.locked">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "showSendInvitations()"
+                        title="Send Invitations by Email"
+                        v-bind:disabled="reconnecting || working">
+                    Send Invitations <i class="far fa-envelope"></i>
+                </button>
+            </div>
+        </div>
+    </div>                    
+</div> 

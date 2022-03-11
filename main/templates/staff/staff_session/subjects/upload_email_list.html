@@ -1,0 +1,26 @@
+{% load crispy_forms_tags %}
+
+<!-- Edit Session Modal -->
+<div class="modal fade" id="uploadEmailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploadEmailModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Upload Email List</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <label for="id_email_list" class="form-label">Email List, CSV format.</label>
+        <textarea class="form-control" id="id_email_list" v-model="csv_email_list" rows="10"></textarea>
+    </div>
+    <div class="modal-footer">
+        
+        <button type="button"
+                class="btn btn-outline-primary"
+                v-bind:disabled="reconnecting || working"
+                v-on:click = "sendEmailList()">
+            Send <i class="fas fa-sign-in-alt"></i>
+        </button>
+    </div>
+    </div>
+</div>
+</div>

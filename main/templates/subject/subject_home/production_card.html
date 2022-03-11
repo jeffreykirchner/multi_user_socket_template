@@ -1,0 +1,67 @@
+<div class="card" v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Your field's production</span>            
+
+    </div>
+    <div class="card-body">        
+        <div class="row">
+            <div class="col text-center">
+                <label for="productionRange" class="form-label">Your [[session.parameter_set.period_length_production]] seconds of growth time split between producing two goods:</label>
+                <input type="range"
+                       class="form-range" 
+                       id="productionRange" 
+                       max="50" 
+                       min="-50" 
+                       v-bind:disabled="reconnecting || working || session.started===false || session.finished"
+                       v-on:input="update_production_slider"
+                       v-model="production_slider">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-start">
+               <span v-if="production_slider_one != session_player.good_one_production_rate">New:</span> [[production_slider_one]]%
+            </div>
+            <div class="col text-end">
+                <span v-if="production_slider_one != session_player.good_one_production_rate">New:</span> [[production_slider_two]]%
+            </div>
+        </div>
+
+        <div class="row" v-if="production_slider_one != session_player.good_one_production_rate">
+            <div class="col text-start">
+               Current: [[session_player.good_one_production_rate]]%
+            </div>
+            <div class="col text-end">
+                Current: [[session_player.good_two_production_rate]]%
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-start" 
+                 v-bind:style = "{color : session_player.parameter_set_player.good_one.rgb_color}">
+                [[session_player.parameter_set_player.good_one.label]]
+            </div>
+            <div class="col text-end"
+                 v-bind:style = "{color : session_player.parameter_set_player.good_two.rgb_color}">
+                [[session_player.parameter_set_player.good_two.label]]
+            </div>
+        </div>
+
+        <div class="row" v-if="production_slider_one != session_player.good_one_production_rate">
+            <div class="col text-center">
+                <!--  -->
+                <button type="button"
+                    class="btn btn-outline-primary"
+                    title="Send new production values."
+                    v-bind:disabled="reconnecting || 
+                                     working || 
+                                     session.started===false || 
+                                     session.finished || 
+                                     session.current_period > 1" 
+                    v-on:click = "sendProdution()">
+                    Update Production <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>                    
+</div> 

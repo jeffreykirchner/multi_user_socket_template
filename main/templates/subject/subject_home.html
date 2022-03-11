@@ -1,0 +1,129 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+
+{%block head%}
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        {%include "subject/subject_home/subject_home.js"%}
+    });
+
+</script>
+
+<style>
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: [row1-start] 30% [row1-end row2-start] 70% [row2-end];
+        align-content: end;
+    }
+
+    .one {
+        grid-column: 1 / 4;
+        grid-row: 1 / 3;
+        height: 600px;
+        background-color: white; 
+        width: 100%;
+        z-index: 1;
+        /* border-style: solid; */
+    }
+
+    .two {
+        grid-column: 2;
+        grid-row: 2 / 3;
+        height: 375px;
+        z-index: 2;
+        width: 100%;
+        word-breaK:break-word;
+        overflow-y:scroll;
+        margin-top: 20px;
+        background-color: ghostwhite;
+    }
+
+    .three{
+        grid-column: 2;
+        grid-row: 1 / 2;
+        height: 175px;
+        z-index: 2;
+        width: 100%;
+        word-breaK:break-word;
+        overflow-y:scroll;
+        margin-top: 10px;
+        background-color: ghostwhite;
+    }
+
+    img {
+        max-width:100%;
+        max-height:100%; 
+        height: auto;        
+    }
+
+    .image_choice_grid{
+        cursor: pointer;
+    }
+
+    .instructions{
+        height: 300px;
+        overflow-y:scroll;
+    }
+       
+</style>
+
+{%endblock head%}
+
+{% block content %}
+
+<!-- modals -->
+{%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid_modal.html"%}
+
+<!-- instructions -->
+<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
+    <div class="col-md">
+        {%include "subject/subject_home/instructions_card.html"%}
+    </div>
+</div>
+
+<!-- experiment -->
+<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
+    <div class="col-md-9">
+        {%include "subject/subject_home/graph_card.html"%}                
+    </div>
+    <div class="col-md-3">
+        <div class="row">
+            <div class="col-md">
+                {%include "subject/subject_home/production_card.html"%}
+            </div>            
+        </div>
+        <div class="row mt-4">
+            <div class="col-md">
+                {%include "subject/subject_home/earnings_card.html"%}
+            </div>            
+        </div>
+        <div class="row mt-4">
+            <div class="col-md">
+                {%include "subject/subject_home/summary_card.html"%}
+            </div>            
+        </div>     
+    </div>
+</div>
+
+<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
+    <div class="col-12 fs-4 fw-bold text-center">
+        <br>
+        <br>
+        <br>
+        <br>
+        The session is complete, thank you for your participation!              
+    </div>    
+</div>
+
+<div class="row justify-content-lg-center mt-4">
+    <div class="col-12 text-end text-muted">
+        <span class="align-middle">Client [[session_player.player_number]]</span>
+    </div>  
+</div>
+
+
+
+{% endblock %}

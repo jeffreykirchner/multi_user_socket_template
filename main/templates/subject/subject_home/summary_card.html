@@ -1,0 +1,34 @@
+{%include "subject/subject_home/summary/end_game_modal.html"%}
+
+<div class="card" v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Summary</span>            
+
+    </div>
+    <div class="card-body">      
+        <div class="row">
+            <div class="col text-end pe-1">
+                Current Period:
+            </div>
+            <div class="col text-start ps-1">
+                [[session.current_period]]
+            </div>
+        </div>  
+        <div class="row">
+            <div class="col text-end pe-1">
+                Time Remaining:
+            </div>
+            <div class="col text-start ps-1">
+                [[session.time_remaining]]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-end pe-1">
+                Total Profit (¢):
+            </div>
+            <div class="col text-start ps-1">
+                [[session_player.earnings]]
+            </div>
+        </div>
+    </div>                    
+</div> 

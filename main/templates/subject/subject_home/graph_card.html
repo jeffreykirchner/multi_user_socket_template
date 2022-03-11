@@ -1,0 +1,143 @@
+{%include "subject/subject_home/graph/move_two_goods_modal.html"%}
+{%include "subject/subject_home/graph/move_three_goods_modal.html"%}
+
+<div class="card" id="graph_card">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Town: Person [[session_player.parameter_set_player.id_label]]</span>
+
+        <span class="float-end">
+            <span v-show="reconnecting" class="me-1">
+                Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
+            </span>
+
+            {%if session.parameter_set.test_mode%}
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox" 
+                           value="" 
+                           id="testModeCheckBox" 
+                           v-model="session.parameter_set.test_mode"
+                           >
+                    <label class="form-check-label" for="testModeCheckBox">
+                    Test Mode On
+                    </label>
+                </div>
+            {%endif%}
+        </span>
+
+    </div>
+    <div class="card-body">
+        
+        <!-- graph -->
+        <div class="row">
+            <div class="col">
+             
+                <div class="container">
+                    
+                    <!-- homes and fields -->
+                    <div class="one">
+                        <canvas class="one" key="sd_graph" id="sd_graph_id" style="border-style: solid;border-width: 1px;"></canvas>
+                    </div>  
+
+                    <!-- chat box -->
+                    <div class="two border"
+                         v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]"
+                         v-show="session.started">
+
+                        <div class="d-flex flex-column">
+                            <div class="p-1" v-for="(c, index) in chat_list_to_display" v-bind:key="c.id">
+
+                                <div v-if="c.sender_id==session_player.id" 
+                                     class="text-end ps-5 pe-2" 
+                                     v-bind:style= "[(c.text=='|') ? {'opacity': '0'}:{}]"
+                                     v-bind:id="'chat_id_' + c.id">
+                                    [[c.text]]
+                                </div>
+
+                                <div v-else class="pe-5 ps-2" v-bind:id="'chat_id_' + c.id">
+                                    <span class="fw-bold">[[c.sender_label]]:</span> [[c.text]]
+                                </div>
+                            </div>
+                        </div>                          
+                        
+                    </div>
+
+                    <div class="two border" v-show="!session.started">
+                        <div class="d-flex flex-column">
+                            <span class="text-center fs-1" >Please Wait</span>                              
+                        </div>                        
+                    </div>
+
+                    <!-- notices -->
+                    <div class="three border"
+                         v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]">
+                        <div class="d-flex flex-column">
+                            <span class="text-center fs-5" ><u>Notices</u></span>  
+
+                            <div class="p-1" v-for="(n, index) in session_player.notices" v-bind:key="n.id">
+                                <span v-html="n.text" v-bind:id="'notice_id_' + n.id"></span>
+                            </div>
+                        </div>                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-2" v-show="session.started && session.parameter_set.private_chat == 'True'">
+            <div class="col-md-4 text-center">       
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group" id="chat_button_group">
+                    <input type="radio"
+                        class="btn-check" 
+                        name="btnradio" 
+                        id="chat_all_id" 
+                        autocomplete="off" 
+                        v-on:click="updateChatRecipients('all', 'Everyone', -1)" 
+                        checked>
+                    <label class="btn btn-outline-secondary" for="chat_all_id">
+                        Everyone
+                        <span v-if=session_player.new_chat_message>*</span>
+                    </label>
+                    
+                    <div v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                        
+                        <input type="radio"
+                            class="btn-check" 
+                            name="btnradio" 
+                            v-bind:id="'chat_invididual_' + p.id + '_id'" 
+                            autocomplete="off" 
+                            v-if="p.id != session_player.id"
+                            v-on:click="updateChatRecipients(p.id, 'Person ' + p.parameter_set_player.id_label, index)">
+                        <label class="btn btn-outline-secondary"
+                               v-if="p.id != session_player.id"
+                               v-bind:for="'chat_invididual_' + p.id + '_id'">
+                            [[p.parameter_set_player.id_label]]
+                            <span v-if=p.new_chat_message>*</span>
+                        </label>
+                    </div>
+
+                </div> 
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-2" v-show="session.started">
+            <div class="col-md-4">                 
+                <div class="input-group">
+                    <input type="text" 
+                           class="form-control" 
+                           placeholder="Chat Text" 
+                           v-model="chat_text"
+                           aria-label="Chat Text"                           
+                           v-on:keyup.enter="(session.current_experiment_phase == 'Instructions') ? simulateChatInstructions() : sendChat()"
+                           aria-describedby="send_chat_id">
+                    <button class="btn btn-outline-primary"
+                            type="button" 
+                            id="send_chat_id" 
+                            v-bind:disabled="reconnecting || working || session.started===false || session.finished"
+                            v-on:click="(session.current_experiment_phase == 'Instructions') ? simulateChatInstructions() : sendChat()"> @ [[chat_button_label]]</button>
+                  </div>
+            </div>
+        </div>
+       
+    </div>                    
+</div> 

@@ -1,0 +1,40 @@
+<div class="card">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Chat</span>           
+        
+        <span class="float-end">
+            <span v-show="reconnecting" class="me-1">
+                Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
+            </span>
+            
+            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Graph')">
+                <i class="far fa-question-circle"></i> 
+            </button>
+        </span>
+
+    </div>
+    <div class="card-body">
+        
+        <!-- chat -->
+        <div class="row">
+            <div class="col">
+                
+                <div class="d-flex flex-column">
+                    <div class="p-1" v-for="(c, index) in chat_list_to_display" v-bind:key="c.id">
+
+                        <div class="text-start ps-2 pe-2" 
+                             v-bind:style= "[(c.text=='|') ? {'opacity': '0'}:{}]"
+                             v-bind:id="'chat_id_' + c.id">
+                            
+                             <span v-if="c.chat_type=='All'"><span class="fw-bold">[[c.sender_label]]:</span> [[c.text]]</span>
+                             <span v-else><span class="fw-bold">[[c.sender_label]]<i class="fas fa-xs fa-arrow-right"></i><span v-html='c.session_player_recipients[0]'></span>:</span> [[c.text]]</span>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>       
+    </div>                    
+</div> 

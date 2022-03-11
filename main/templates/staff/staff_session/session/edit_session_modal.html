@@ -1,0 +1,33 @@
+{% load crispy_forms_tags %}
+
+<!-- Edit Session Modal -->
+<div class="modal fade" id="editSessionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editSessionModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="editSessionModalLabel">Edit Settings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <form id="sessionForm" v-on:submit.prevent="onSubmit">
+            {% for i in session_form %}
+            <div class="row">
+                <div class = "col col-md-10 offset-md-1">  
+                    {{ i|as_crispy_field }}         
+                </div>            
+            </div> 
+            {% endfor %}
+        </form>
+    </div>
+    <div class="modal-footer">
+        
+        <button type="button"
+                class="btn btn-outline-primary"
+                v-bind:disabled="reconnecting || working"
+                v-on:click = "sendUpdateSession()">
+            Update <i class="fas fa-sign-in-alt"></i>
+        </button>
+    </div>
+    </div>
+</div>
+</div>

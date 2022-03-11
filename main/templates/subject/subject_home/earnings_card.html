@@ -1,0 +1,63 @@
+<div class="card" v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Period Earnings</span>            
+
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col text-center ">
+                For each set of
+            </div>            
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                [[session_player.parameter_set_player.parameter_set_type.good_one_amount]]
+
+                <span v-bind:style = "{color : session_player.parameter_set_player.good_one.rgb_color}">
+                    [[session_player.parameter_set_player.good_one.label]] 
+                </span>
+
+                goods and 
+
+                [[session_player.parameter_set_player.parameter_set_type.good_two_amount]]
+
+                <span v-bind:style = "{color : session_player.parameter_set_player.good_two.rgb_color}">
+                    [[session_player.parameter_set_player.good_two.label]] 
+                </span>
+
+                goods
+            </div>            
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                in your house you earn [[Math.max(session_player.parameter_set_player.parameter_set_type.good_one_amount, session_player.parameter_set_player.parameter_set_type.good_two_amount)]]¢ each period.
+            </div>            
+        </div>
+
+        <div class="row border-top mt-3">
+            <div class="col text-center mt-2">
+                <span v-bind:style = "{color : session_player.parameter_set_player.good_one.rgb_color}">
+                    [[session_player.parameter_set_player.good_one.label]] 
+                </span>
+                goods wasted in your house: [[good_one_waste]]
+            </div>            
+        </div>
+        <div class="row mt-2">
+            <div class="col text-center">
+                <span v-bind:style = "{color : session_player.parameter_set_player.good_two.rgb_color}">
+                    [[session_player.parameter_set_player.good_two.label]]
+                </span>
+                goods wasted in your house: [[good_two_waste]]
+            </div>            
+        </div>
+
+        <div class="row border-top mt-3">
+            <div class="col text-center mt-2">
+                Current value of goods in your house: [[potential_earnings]]¢
+            </div>            
+        </div>
+    </div>                    
+</div> 

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{%block head%}
+<script type="text/javascript">
+  $(document).ready(function(){  
+    {%include "registration/login.js"%}
+  });
+
+</script>
+{%endblock head%}
+
+{% block content %}
+
+{%for i in fpn_list%}
+<!-- notification cards -->
+<div class="row justify-content-center mb-4"> 
+  <div class="col col-sm-6">
+
+    <div class="card mx-auto">
+      <div class="card-header">
+        <h5>{{i.subject_text}}</h5>
+      </div>
+
+      <div class="card-body">
+        {{i.body_text | safe}}
+      </div>
+      
+    </div>
+  </div>
+
+</div>
+{%endfor%}
+
+<!-- login card -->
+<div class="row justify-content-center"> 
+  <div class="col col-md-6">
+
+    <div class="card">
+      
+      <div class="card-header">
+        <h5>Log In</h5>
+      </div>
+
+      <div class="card-body">
+
+        <form id="login_form" v-on:submit.prevent="onSubmit">
+          {% csrf_token %}        
+          <div class="row">
+            <div class = "col-md-8 offset-md-2">  
+              {{form.username|as_crispy_field}}          
+            </div>            
+          </div>  
+
+          <div class="row">
+            <div class = "col-md-8 offset-md-2">
+              {{form.password|as_crispy_field}}
+            </div>
+          </div>            
+        </form>
+
+        <div class="row mt-3">
+            <div class="col-md-8 offset-sm-2">
+                <button type="button" v-on:click='login()' class="btn btn-outline-primary">
+                  <span v-html ="loginButtonText"></span>
+                </button> 
+
+                <span class="ps-4" style="color: red;" v-html="loginErrorText">
+                </span>
+            </div>
+        </div>
+            
+      </div>
+
+      <div class="card-footer" style="text-align: center;">
+        Need Help? <a href = 'mailto:{{labManager}}'>{{labManager}}</a>
+      </div>
+
+    </div>
+      
+  </div>
+
+</div>
+
+{% endblock %}

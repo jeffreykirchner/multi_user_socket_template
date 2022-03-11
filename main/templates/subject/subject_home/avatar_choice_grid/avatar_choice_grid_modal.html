@@ -1,0 +1,60 @@
+{% load crispy_forms_tags %}
+<!--Edit Period Modal -->
+<div class="modal fade " 
+     id="avatarChoiceGridModal" 
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false" 
+     tabindex="-1" 
+     aria-labelledby="endGameModal" 
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <span class="fw-bold">Choose an avatar</span>
+            </div>
+
+            <div class="modal-body">  
+                
+                <div class="row justify-content-center">
+                    <div class="col text-center" v-html="session.parameter_set.avatar_grid_text">
+    
+                    </div>
+                </div>
+        
+                <div class="row justify-content-center mt-4"                    
+                     v-for="r in session.parameter_set.avatar_grid_row_count">
+                    <div class="col-auto text-center"
+                         v-bind:id="'choice_grid_' + r + '_' + c + '_id'"
+                         v-on:click="take_choice_grid_click(r,c)"
+                         v-bind:style="[{'height' : '13vh'},
+                                        (r==avatar_choice_grid_selected_row && c==avatar_choice_grid_selected_col) ? {'border-style':'double'}:{}]"
+                         v-for="c in session.parameter_set.avatar_grid_col_count"
+                         v-html="get_grid_image_html(r, c)">
+                         
+                    </div>
+                </div>                
+
+            </div>
+
+            <div class="modal-footer">
+                <span v-if="session_player.avatar == null">
+                    Click on your selection then press submit. &nbsp; &nbsp;
+                    <button type="button"
+                            id="submit_avatar_choice_id"
+                            class="btn btn-outline-primary"
+                            v-on:click = "sendAvatar()"
+                            title="Submit Choice"                        
+                            v-bind:disabled="reconnecting || working || session.started===false || session.finished">
+                        Submit <i class="fas fa-sign-in-alt"></i>
+                    </button>
+                </span>
+                <span v-else>
+                    Waiting for others.
+                </span>
+            </div>
+
+        </div>
+    </div>
+</div>

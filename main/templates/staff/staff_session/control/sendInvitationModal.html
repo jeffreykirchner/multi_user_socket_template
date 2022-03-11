@@ -1,0 +1,56 @@
+{% load crispy_forms_tags %}
+<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Send Email</h5>                
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% for i in session_invitation_form %}
+                <div class="row">
+                    <div class = "col col-md-10 offset-md-1">  
+                        {{ i| as_crispy_field }}         
+                    </div>            
+                </div> 
+                {% endfor %}
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        Tags: [contact email] [log in link]
+                    </div>
+                </div>
+                <hr>                
+                <div class="row">
+                    <div class="col">
+                        Email list: 
+                        <span v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                            <span v-if="p.email != ''">[[p.email]][[(session.session_players.length-1>index) ? ', ':'']]</span>
+                        </span>
+                    </div>
+                </div>               
+                <div class="row">
+                    <div class="col" style="text-align: center;color:red">
+                        <span v-html="emailResult"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">   
+                <button type="button" 
+                        title="Fill with default subject and body."
+                        class="btn btn-outline-secondary" 
+                        v-on:click = "fillDefaultInvitation()" 
+                        v-bind:disabled = "reconnecting || working">                        
+                    Fill with default invitation <i class="fas fa-fill"></i>
+                </button>                         
+                <button type="button" 
+                        title="Send email invitations."
+                        class="btn btn-outline-success" 
+                        v-on:click = "sendSendInvitations()" 
+                        v-bind:disabled = "reconnecting || working">                        
+                    Send <i class="far fa-envelope"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

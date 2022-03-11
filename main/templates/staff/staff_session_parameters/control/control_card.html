@@ -1,0 +1,50 @@
+<div class="card" v-show="first_load_done">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">
+            Control
+        </span>       
+
+        <span class="float-end">                        
+            <a href='{%url "staff_session" session.id %}' class='link-primary'>Return to session</a>
+        </span>
+    </div>
+    <div class="card-body">               
+        <!-- control settings -->
+        <div class="row justify-content-center">
+            <div class="col-md text-center">
+                <button class="btn btn-outline-primary me-1"
+                        type="button"
+                        v-bind:disabled="reconnecting || working" 
+                        v-on:click="sendDownloadParameters()" 
+                        title="Download to a file.">
+                    Download Parameter Set <i class="fas fa-download"></i>
+                </button>
+            </div>            
+        </div>
+
+        <div class="row justify-content-center mt-2">
+            <div class="col-md text-center">
+                <button class="btn btn-outline-primary me-1" 
+                        type="button" 
+                        v-bind:disabled="session.started || reconnecting || working" 
+                        v-on:click="showUploadParameters('parameters')"
+                        title = "Upload from a file.">
+                    Upload Parameter Set  <i class="fas fa-upload"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-2">
+            <div class="col-md text-center">
+                <button class="btn btn-outline-primary me-1"
+                        type="button" 
+                        v-bind:disabled="session.started || reconnecting || working" 
+                        v-on:click="showImportParameters('parameters')"
+                        title="Import parameters from another session.">
+                    Import Parameter Set <i class="fas fa-file-import"></i>
+                </button>
+            </div>
+        </div>
+        
+    </div>                    
+</div> 

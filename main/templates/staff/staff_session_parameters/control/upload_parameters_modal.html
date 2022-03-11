@@ -1,0 +1,37 @@
+{% load crispy_forms_tags %}
+<div class="modal fade" id="parameterSetModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editSessionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="parameterSetModalLabel">Upload Parameter Set</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class = "col" style="text-align: center;">
+                        
+                        <input class="form-control" type="file" ref="file" id="parameterFileUpload" v-on:change="handleFileUpload()">
+
+                    </div>   
+                </div>
+                <div class="row mt-2">
+                    <div class = "col" style="text-align: center;">
+                        <button class="btn btn-outline-primary"
+                                v-on:click="uploadAction()"
+                                v-bind:disabled="session.started || reconnecting || working">
+                            <span v-html="uploadParametersetButtonText"></span>
+                        </button>
+                    </div>   
+                </div>
+                <div class="row mt-4">
+                    <div class = "col">
+                        <span v-html="uploadParametersetMessaage"></span>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+ 

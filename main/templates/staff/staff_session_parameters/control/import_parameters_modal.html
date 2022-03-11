@@ -1,0 +1,42 @@
+{% load crispy_forms_tags %}
+<!--import parameters from another session modal -->
+<div class="modal fade" id="importParametersModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editSessionModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="importParametersModalLabel">Import parameters from another session</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col">
+                <form id="importParametersForm" v-on:submit.prevent="onSubmit">
+                    {% for i in import_parameters_form %}
+                    <div class="row">
+                        <div class = "col col-md-10 offset-md-1">  
+                            {{ i|as_crispy_field }}         
+                        </div>            
+                    </div> 
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                [[import_parameters_message]]
+            </div>
+        </div>
+        
+    </div>
+    <div class="modal-footer">
+        
+        <button type="button"
+                class="btn btn-outline-primary"
+                v-on:click = "sendImportParameters()"
+                v-bind:disabled="reconnecting || working">
+            Import <i class="fas fa-file-import"></i>
+        </button>
+    </div>
+    </div>
+</div>
+</div>

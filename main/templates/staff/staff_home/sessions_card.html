@@ -1,0 +1,66 @@
+<div class="card">                  
+    <div class="card-header">
+        <span v-show="reconnecting">
+            Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
+        </span>
+
+        <span class="float-end">
+            <button class="btn btn-outline-success" type="button" v-on:click = "sendCreateSession()" v-bind:disabled = "reconnecting || working">
+                <span v-html="createSessionButtonText"></span>
+            </button>
+        </span>
+                                                        
+    </div>
+    <div class="card-body">                      
+                        
+        <!-- session list -->
+        <table class="table table-hover table-condensed table-responsive-md">                            
+
+            <caption style="caption-side:top;text-align: center;">Sessions</caption>
+
+            <thead>
+                <th scope="col">
+                    <button type="button" class="btn btn-outline-link btn-sm" v-on:click = "sortByTitle()">
+                        <span v-html="titleSortButtonText" class="table_header"></span>
+                    </button>
+                </th> 
+                <th scope="col" class="text-center">
+                    <button type="button" class="btn btn-outline-link btn-sm" v-on:click = "sortByDate()">
+                        <span v-html="dateSortButtonText" class="table_header"></span>
+                    </button>                             
+                </th>                                                              
+                <th scope="col" class="text-center">
+                    Control
+                </th>
+            </thead>
+
+            <tbody id="sessionList">                                                  
+                <tr v-for="(s,index) in sessions" v-bind:key="s.id">                                                                          
+                    <td> 
+                        <a :href="'/staff-session/' + s.id + '/' "><span v-html="s.title"></span></a>                                        
+                    </td>
+                    <td class="text-center"> 
+                        [[formatDate(s.start_date)]]                             
+                    </td>
+                    <td class="text-center">
+                        <div v-if="s.locked">
+                            Locked
+                        </div>
+                        <div v-else>
+                            <button v-bind:id="'deleteSession' + s.id"
+                                    type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    v-on:click = "sendDeleteSession(s.id)"
+                                    title = "Delete session and its data."
+                                    v-bind:disabled = "reconnecting || working">
+                                Delete <i class="fas fa-user-minus fa-xs"></i>  
+                            </button>
+                        </div>                        
+                    </td>
+                </tr>                                                    
+            </tbody>
+            
+        </table>                 
+        
+    </div>                    
+</div>

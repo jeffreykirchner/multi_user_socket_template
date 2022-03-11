@@ -1,0 +1,46 @@
+{% load crispy_forms_tags %}
+<!--Edit Period Modal -->
+<div class="modal fade " 
+     id="endGameModal" 
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false" 
+     tabindex="-1" 
+     aria-labelledby="endGameModal" 
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header fw-bold">
+                The Experiment is complete.
+            </div>
+            <div class="modal-body">
+                <div v-show="session_player.name==''">
+                    <form id="endGameForm" v-on:submit.prevent="onSubmit">
+                        {% for i in end_game_form %}
+                        <div class="row">
+                            <div class = "col col-md-10 offset-md-1">  
+                                {{ i|as_crispy_field }}         
+                            </div>            
+                        </div> 
+                        {% endfor %}
+                    </form>
+                </div>
+                <div class="text-center" v-show="session_player.name!=''">
+                    <span class="fs-3 mt-4">Earnings: $[[(session_player.earnings/100).toFixed(2)]]<span></span>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "sendName()"
+                        title="Submit Name"
+                        v-show="session_player.name==''"
+                        v-bind:disabled="reconnecting || working">
+                    Submit <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

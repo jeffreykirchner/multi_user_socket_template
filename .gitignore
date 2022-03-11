@@ -1,0 +1,6 @@
+logs/*
+_multi_user_socket_template_env/*
+.vscode/*
+*.pyc
+setup.sh
+local_settings.py

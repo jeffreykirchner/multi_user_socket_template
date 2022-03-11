@@ -1,0 +1,76 @@
+<div class="card">                  
+    <div class="card-header">
+        <span class="float-end">
+            <button class="btn btn-outline-primary" type="button" v-on:click = "sendGetSessionsAdmin()" v-bind:disabled = "reconnecting || working">
+                Show <i class="far fa-eye"></i>
+            </button>
+        </span>
+    </div>
+    
+    <div class="card-body">                      
+                        
+        <!-- session list -->
+        <table class="table table-hover table-condensed table-responsive-md">                            
+
+            <caption style="caption-side:top;text-align: center;">All Sessions (Admin Only)</caption>
+
+            <thead>
+                <th scope="col">
+                    <button type="button"
+                            class="btn btn-outline-link btn-sm table_header"
+                            v-on:click = "sortByTitleAllSessions()">
+                        Title <i class="fas fa-sort"></i>
+                    </button>
+                </th> 
+                <th scope="col" class="text-center">
+                    <button type="button"
+                            class="btn btn-outline-link btn-sm table_header"
+                            v-on:click = "sortByOwnerAllSessions()">
+                            Owner <i class="fas fa-sort"></i>
+                    </button>
+                </th>
+                <th scope="col" class="text-center">
+                    <button type="button"
+                            class="btn btn-outline-link btn-sm table_header"
+                            v-on:click = "sortByDateAllSessions()">
+                            Date <i class="fas fa-sort"></i>
+                    </button>                             
+                </th>                                                              
+                <th scope="col" class="text-center">
+                    Control
+                </th>
+            </thead>
+
+            <tbody id="sessionListFullAdmin">                                                  
+                <tr v-for="(s,index) in sessions_full_admin" v-bind:key="s.id">                                                                          
+                    <td> 
+                        <a :href="'/staff-session/' + s.id + '/' "><span v-html="s.title"></span></a>                                        
+                    </td>
+                    <td class="text-center">
+                        [[s.creator__last_name]], [[s.creator__first_name]]
+                    </td>
+                    <td class="text-center"> 
+                        [[formatDate(s.start_date)]]                               
+                    </td>
+                    <td class="text-center">
+                        <div v-if="s.locked">
+                            Locked
+                        </div>
+                        <div v-else>
+                            <button v-bind:id="'deleteSession' + s.id"
+                                    type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    v-on:click = "sendDeleteSession(s.id)"
+                                    title = "Delete session and its data."
+                                    v-bind:disabled = "reconnecting || working">
+                                Delete <i class="fas fa-user-minus fa-xs"></i>  
+                            </button>
+                        </div>                        
+                    </td>
+                </tr>                                                    
+            </tbody>
+            
+        </table>                 
+        
+    </div>                    
+</div>

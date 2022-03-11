@@ -1,0 +1,52 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{%block head%}
+<script type="text/javascript">
+
+</script>
+<style>
+    
+</style>
+
+{%endblock head%}
+
+{% block content %}
+<div class="row d-print-none mb-4">
+    <div class="col">
+        Subject earnings for session: <a href="/staff-session/{{session.id}}/">{{session.title}}</a>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="text-start">Name</th>
+                <th scope="col" class="text-center">Student ID</th>
+                <th scope="col" class="text-center">Earnings</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for session_player in session.session_players.all %}                    
+                    <tr>
+                        <td class="text-start">
+                            {{session_player.name}} 
+                        </td>
+                        <td class="text-center">
+                            {{session_player.student_id}}
+                        </td>
+                        <td class="text-center">
+                            {{session_player.get_earnings_in_dollars}}
+                        </td>                            
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+
+{% endblock %}
