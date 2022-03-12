@@ -80,7 +80,6 @@ var app = Vue.createApp({
                     app.takeUpdateNextPhase(messageData);
                     break; 
                 case "update_move_goods":
-                    app.takeUpdateGoods(messageData);
                     app.takeUpdateNotice(messageData);
                     break;  
                 case "update_reset_experiment":
@@ -95,9 +94,6 @@ var app = Vue.createApp({
                 case "start_timer":
                     app.takeStartTimer(messageData);
                     break;   
-                case "update_groups":
-                    app.takeUpdateGroups(messageData);
-                    break;  
                 case "update_connection_status":
                     app.takeUpdateConnectionStatus(messageData);
                     break;   
@@ -122,9 +118,6 @@ var app = Vue.createApp({
                 case "download_payment_data":
                     app.takeDownloadPaymentData(messageData);
                     break;
-                case "update_avatar":
-                    app.takeUpdateAvatar(messageData);
-                    break;
                 case "update_next_instruction":
                     app.takeNextInstruction(messageData);
                     break;
@@ -136,9 +129,6 @@ var app = Vue.createApp({
                     break;
                 case "end_early":
                     app.takeEndEarly(messageData);
-                    break;
-                case "update_production_time":
-                    app.takeUpdateProductionTime(messageData);
                     break;
                 case "update_subject":
                     app.takeUpdateSubject(messageData);
@@ -231,17 +221,16 @@ var app = Vue.createApp({
             
             let result = messageData.status;
             let chat = result.chat;
-            let town = result.town;
 
-            if(this.session.chat_all[town].length>=100)
-                this.session.chat_all[town].shift();
+            if(this.session.chat_all.length>=100)
+                this.session.chat_all.shift();
             
-            this.session.chat_all[town].push(chat);
+            this.session.chat_all.push(chat);
             app.updateChatDisplay(false);
         },
 
         /**
-         * update chat displayed based on town chosen
+         * update chat
          */
         updateChatDisplay(force_scroll){
             
@@ -288,7 +277,6 @@ var app = Vue.createApp({
             app.$data.session.timer_running = result.timer_running;
             app.$data.session.finished = result.finished;
 
-            app.takeUpdateGoods({status : {result : result.session_players}});
             app.takeUpdateEarnings(messageData);
 
             app.updatePhaseButtonText();

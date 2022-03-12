@@ -12,23 +12,7 @@
     </div>
     <div class="card-body">        
        
-        <!-- parameterset settings -->
-        <div class="row"> 
-            <div class="col-7 text-end">
-                {{parameter_set_form.town_count.label}}:
-            </div>
-            <div class="col text-start">
-                [[session.parameter_set.town_count]]
-            </div>          
-        </div>
-        <div class="row"> 
-            <div class="col-7 text-end">
-                {{parameter_set_form.good_count.label}}:
-            </div>
-            <div class="col text-start">
-                [[session.parameter_set.good_count]]
-            </div>          
-        </div>
+        <!-- parameterset settings -->        
         <div class="row">
             <div class="col-7 text-end">
                 {{parameter_set_form.period_count.label}}:
@@ -39,58 +23,18 @@
         </div>
         <div class="row">
             <div class="col-7 text-end">
-                {{parameter_set_form.period_length_production.label}}:
+                {{parameter_set_form.period_length.label}}:
             </div>
             <div class="col text-start">
-                [[session.parameter_set.period_length_production]]
+                [[session.parameter_set.period_length]]
             </div>
         </div>
-        <div class="row">
-            <div class="col-7 text-end">
-                {{parameter_set_form.period_length_trade.label}}:
-            </div>
-            <div class="col text-start">
-                [[session.parameter_set.period_length_trade]]
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-7 text-end">
-                {{parameter_set_form.break_period_frequency.label}}:
-            </div>
-            <div class="col text-start">
-                [[session.parameter_set.break_period_frequency]]
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-7 text-end">
-                {{parameter_set_form.allow_stealing.label}}:                
-            </div>
-            <div class="col text-start">
-                <span v-if="session.parameter_set.allow_stealing=='True'">Yes</span><span v-else>No</span>                
-            </div>  
-        </div>  
         <div class="row">
             <div class="col-7 text-end">
                 {{parameter_set_form.private_chat.label}}:                
             </div>
             <div class="col text-start">
                 <span v-if="session.parameter_set.private_chat=='True'">Yes</span><span v-else>No</span>                
-            </div>  
-        </div>
-        <div class="row">
-            <div class="col-7 text-end">
-                {{parameter_set_form.show_avatars.label}}:                
-            </div>
-            <div class="col text-start">
-                <span v-if="session.parameter_set.show_avatars=='True'">Yes</span><span v-else>No</span>                
-            </div>  
-        </div>
-        <div class="row">
-            <div class="col-7 text-end">
-                {{parameter_set_form.avatar_assignment_mode.label}}:                
-            </div>
-            <div class="col text-start">
-                [[session.parameter_set.avatar_assignment_mode]]                
             </div>  
         </div>
         <div class="row">

@@ -35,8 +35,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     websocket session list
     '''    
 
-    group_number = 0        #group number player subject is in
-    town_number = 0         #town number subject is in 
     session_player_id = 0   #session player id number
     
     async def get_session(self, event):
@@ -84,7 +82,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         subject_result["value"] = result["value"]
 
         staff_result = {}
-        staff_result["town"] = self.town_number
         staff_result["chat"] = event_result["chat_for_staff"]
 
         message_data = {}
@@ -104,8 +101,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 {"type": "update_chat",
                  "subject_result": subject_result,
                  "staff_result": staff_result,
-                 "sender_group" : self.group_number,
-                 "sender_town" : self.town_number,
                  "sender_channel_name": self.channel_name},
             )
 
@@ -229,13 +224,9 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
-        if self.group_number != event['sender_group'] or \
-           self.town_number != event['sender_town'] or \
-           self.channel_name == event['sender_channel_name']:
-
+        if self.channel_name == event['sender_channel_name']:
             return
         
-
         if message_data['status']['chat_type'] == "Individual" and \
            message_data['status']['sesson_player_target'] != self.session_player_id and \
            message_data['status']['chat']['sender_id'] != self.session_player_id:
@@ -246,15 +237,13 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
     async def update_local_info(self, event):
         '''
-        update connection's town and group information
+        update connection's information
         '''
         result = await sync_to_async(take_update_local_info)(self.session_id, self.connection_uuid, event)
 
         logger = logging.getLogger(__name__) 
         logger.info(f"update_local_info {result}")
 
-        self.group_number = result["group_number"]
-        self.town_number = result["town_number"]
         self.session_player_id = result["session_player_id"]
 
     async def update_time(self, event):
@@ -277,8 +266,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         #remove none group memebers
         session_players = []
         for session_player in event_data["result"]["session_players"]:
-            if session_player["group_number"] == self.group_number:
-                session_players.append(session_player)
+            session_players.append(session_player)
         
         #remove other player notices
         notice_list = []
@@ -426,18 +414,17 @@ def take_chat(session_id, session_player_id, data):
 
     session_player_chat.text = chat_text
     session_player_chat.time_remaining = session.time_remaining
-    session_player_chat.current_period_phase = session.current_period_phase
 
     session_player_chat.save()
 
-    session_player_group_list = session_player.get_current_group_list()
     if recipients == "all":
-        session_player_chat.session_player_recipients.add(*session_player_group_list)
+        session_player_chat.session_player_recipients.add(*session.session_players.all())
 
-        result["recipients"] = [i.id for i in session_player_group_list]
+        result["recipients"] = [i.id for i in session.session_players.all()]
     else:
         sesson_player_target = SessionPlayer.objects.get(id=recipients)
-        if sesson_player_target in session_player_group_list:
+
+        if sesson_player_target in session.session_players.all():
             session_player_chat.session_player_recipients.add(sesson_player_target)
         else:
             session_player_chat.delete()
@@ -458,19 +445,16 @@ def take_chat(session_id, session_player_id, data):
 
 def take_update_local_info(session_id, player_key, data):
     '''
-    update connection's town and group information
+    update connection's information
     '''
 
     try:
         session_player = SessionPlayer.objects.get(player_key=player_key)
         session_player.save()
 
-        return {"group_number" : session_player.get_current_group_number(), 
-                "session_player_id" : session_player.id}
+        return {"session_player_id" : session_player.id}
     except ObjectDoesNotExist:      
-        return {"group_number" : None, 
-                "session_player_id" : None,
-                "town_number" : None}
+        return {"session_player_id" : None}
 
 def take_name(session_id, session_player_id, data):
     '''
@@ -532,12 +516,11 @@ def take_update_next_phase(session_id, session_player_id):
         session = Session.objects.get(id=session_id)
         session_player = SessionPlayer.objects.get(id=session_player_id)
 
-        group_list = session_player.get_current_group_list()
 
         return {"value" : "success",
                 "session" : session_player.session.json_for_subject(session_player),
                 "session_player" : session_player.json(),
-                "session_players" : [p.json_for_subject(session_player) for p in group_list]}
+                "session_players" : [p.json_for_subject(session_player) for p in session.session_players.all()]}
 
     except ObjectDoesNotExist:
         logger.warning(f"take_update_next_phase: session not found, session {session_id}, session_player_id {session_player_id}")

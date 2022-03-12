@@ -46,12 +46,10 @@ class SessionPlayerChat(models.Model):
         '''
         take csv writer and add row
         '''        
-        # writer.writerow(["Session ID", "Period", "Town", "Phase", "Time", "Group", "Location", "Client #", "Label", "Action", "Info (JSON)", "Timestamp"])
-
+       
         writer.writerow([self.session_player.session.id,
                         self.session_period.period_number,
                         self.time_remaining,
-                        self.session_player.parameter_set_player.location,
                         self.session_player.player_number,
                         self.session_player.parameter_set_player.id_label,
                         "Chat",

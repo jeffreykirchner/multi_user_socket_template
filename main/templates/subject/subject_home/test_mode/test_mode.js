@@ -109,30 +109,13 @@ doTestMode(){
             case 1:
                 break;
             case 2:
-                document.getElementById("simulate_production_id").click();
+               
                 break;
             case 3:
-                if(this.pixi_modal_open)
-                {
-                    if(this.session.parameter_set.good_count==2)
-                        document.getElementById("move_two_id").click();
-                    else           
-                        document.getElementById("move_three_id").click();        
-                }
-                else
-                {
-                    this.doTestModeMove();
-                }
+               
                 break;
             case 4:
-                if(this.chat_text != "")
-                {
-                    document.getElementById("send_chat_id").click();                   
-                }
-                else
-                {
-                    this.doTestModeChat();
-                }
+                
                 break;
             case 5:
                 break;
@@ -156,22 +139,6 @@ doTestModeRun()
             document.getElementById("send_chat_id").click();
             go=false;
         }
-
-    //move goods
-    if(go)
-        if(this.pixi_modal_open)
-        {
-            this.sendMoveGoods();
-            go=false;
-        }
-    
-    //update production
-    if(go)
-        if(this.production_slider_one != this.session_player.good_one_production_rate)
-        {
-            this.sendProdution();
-            go=false;
-        }
     
     if(app.$data.session.finished) return;
         
@@ -182,11 +149,10 @@ doTestModeRun()
                 break;
             
             case 2:
-                this.doTestModeMove();
                 break;
             
             case 3:
-                this.doTestModeProductionUpdate();
+                
                 break;
         }
 },
@@ -210,71 +176,5 @@ doTestModeChat(){
     this.chat_text = this.randomString(5, 20);
 },
 
-/**
- * test mode move
- */
-doTestModeMove(){
-    let session_player_source = null;
-    let source_container = null;
 
-    if(this.randomNumber(1, 2) == 1 || this.session.current_experiment_phase == "Instructions")
-    {
-        if(this.session.parameter_set.allow_stealing == "True" && this.session.current_experiment_phase != "Instructions")
-        {
-            session_player_source = this.session.session_players[this.randomNumber(0, this.session.session_players.length-1)];        }
-        else
-        {
-            session_player_source = this.findSessionPlayer(this.session_player.id);            
-        }
-
-        source_container = session_player_source.fieldContainer;        
-
-        this.transfer_good_one_amount = this.randomNumber(0, session_player_source.good_one_field);
-        this.transfer_good_two_amount = this.randomNumber(0, session_player_source.good_two_field);
-    }
-    else
-    {
-        if(this.session.parameter_set.allow_stealing == "True")
-        {
-            session_player_source = this.session.session_players[this.randomNumber(0, this.session.session_players.length-1)];
-        }
-        else
-        {
-            session_player_source = this.findSessionPlayer(this.session_player.id);  
-        }            
-
-        source_container = session_player_source.houseContainer;
-
-        this.transfer_good_one_amount = this.randomNumber(0, session_player_source.good_one_house);
-        this.transfer_good_two_amount = this.randomNumber(0, session_player_source.good_two_house);
-
-        if(this.session.parameter_set.good_count==3)
-        {
-            this.transfer_good_three_amount = this.randomNumber(0, session_player_source.good_three_house);
-        }
-    }
-
-    let session_player_target = null;
-    
-    if(this.session.current_experiment_phase == "Instructions")
-        session_player_target = this.findSessionPlayer(this.session_player.id);
-    else
-        session_player_target = this.session.session_players[this.randomNumber(0, this.session.session_players.length-1)];
-
-    let target_container = session_player_target.houseContainer;
-
-    this.handleContainerDown(source_container,
-                                {data: {global: {x:source_container.x, y:source_container.y}}})
-    
-    this.handleContainerUp(target_container,
-                            {data: {global: {x:target_container.x, y:target_container.y}}})
-},
-
-/**
- * test mode update production percentages
- */
-doTestModeProductionUpdate(){
-    this.production_slider = this.randomNumber(-50, 50)
-    this.update_production_slider();
-},
 {%endif%}

@@ -167,7 +167,7 @@ class Session(models.Model):
             if self.time_remaining == 0:
                
                 self.current_period += 1
-                self.time_remaining = self.parameter_set.period_length_production   
+                self.time_remaining = self.parameter_set.period_length
         
             else:                                     
 
@@ -253,12 +253,12 @@ class Session(models.Model):
         return json object of model
         '''
               
-        chat= [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
+        chat = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
                                                     .filter(session_player__in=self.session_players.all())\
                                                     .prefetch_related('session_player_recipients')
                                                     .select_related('session_player__parameter_set_player')
                                                     .order_by('-timestamp')[:100:-1]
-                             ]                                                           
+               ]                                                           
         return{
             "id":self.id,
             "title":self.title,
@@ -293,7 +293,7 @@ class Session(models.Model):
             "finished":self.finished,
             "parameter_set":self.parameter_set.json_for_subject(),
 
-            "session_players":[i.json_for_subject(session_player) for i in session_player.get_current_group_list()]
+            "session_players":[i.json_for_subject(session_player) for i in session_player.session.session_players.all()]
         }
     
     def json_for_timmer(self):

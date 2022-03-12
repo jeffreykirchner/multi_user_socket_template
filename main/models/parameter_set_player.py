@@ -15,6 +15,8 @@ class ParameterSetPlayer(models.Model):
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_players")
 
+    id_label = models.CharField(verbose_name='ID Label', max_length = 2, default="1")      #id label shown on screen to subjects
+
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
 
@@ -24,12 +26,17 @@ class ParameterSetPlayer(models.Model):
     class Meta:
         verbose_name = 'Parameter Set Player'
         verbose_name_plural = 'Parameter Set Players'
+        ordering=['id_label']
 
     def from_dict(self, source):
         '''
         copy source values into this period
         source : dict object of parameterset player
         '''
+
+        self.id_label = source.get("id_label")
+
+        self.save()
         
         message = "Parameters loaded successfully."
 
@@ -43,6 +50,7 @@ class ParameterSetPlayer(models.Model):
         return{
 
             "id" : self.id,
+            "id_label" : self.id_label,
         }
     
     def json_for_subject(self):
@@ -51,6 +59,9 @@ class ParameterSetPlayer(models.Model):
         '''
 
         return{
+
+            "id" : self.id,
+            "id_label" : self.id_label,
 
         }
 

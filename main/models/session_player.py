@@ -93,7 +93,7 @@ class SessionPlayer(models.Model):
  
         for i in instructions:
             i["text_html"] = i["text_html"].replace("#player_number#", self.parameter_set_player.id_label)
-            i["text_html"] = i["text_html"].replace("#player_count-1#", str(self.parameter_set_player.parameter_set.get_town_count(self.parameter_set_player.town)-1))
+            i["text_html"] = i["text_html"].replace("#player_count-1#", str(self.parameter_set_player.parameter_set.parameter_set_players.count()-1))
 
         return instructions
 
@@ -114,6 +114,8 @@ class SessionPlayer(models.Model):
 
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
+
+            "parameter_set_player" : self.parameter_set_player.json(),
 
             "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)
                                                                                    .order_by('-timestamp')[:100:-1]
@@ -137,8 +139,6 @@ class SessionPlayer(models.Model):
 
             "player_number" : self.player_number,
 
-            "group_number" : self.get_current_group_number(),
-
             "chat_individual" : [c.json_for_subject() for c in  main.models.SessionPlayerChat.objects \
                                                                             .filter(chat_type=main.globals.ChatTypes.INDIVIDUAL) \
                                                                             .filter(Q(Q(session_player_recipients=session_player) & Q(session_player=self)) |
@@ -158,8 +158,6 @@ class SessionPlayer(models.Model):
 
         return{
             "id" : self.id,    
-
-            "group_number" : self.get_current_group_number(),
         }
     
     def json_earning(self):

@@ -245,27 +245,11 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 "sender_channel_name": self.channel_name,},
             )
 
-            if timer_result["result"]["do_group_update"]:
-                await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {"type": "update_groups",
-                     "data": {},
-                     "sender_channel_name": self.channel_name,},
-                )
-
             #if session is not over continue
             if not timer_result["end_game"]:
 
-                # await self.channel_layer.send(
-                #     self.channel_name,
-                #     {
-                #         'type': "continue_timer",
-                #         'message_text': {},
-                #     }
-                # )
-
                 loop = asyncio.get_event_loop()
-                #loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
+
                 loop.call_later(1, asyncio.create_task, 
                                 self.channel_layer.send(
                                     self.channel_name,
@@ -274,7 +258,6 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                                         'message_text': {},
                                     }
                                 ))
-
         
         logger.info(f"continue_timer end")
 

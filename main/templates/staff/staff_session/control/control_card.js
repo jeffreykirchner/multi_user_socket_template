@@ -41,7 +41,6 @@ reset_experiment(){
  * @param messageData {json}
 */
 takeResetExperiment(messageData){
-    app.change_town_view()
     app.chat_list_to_display=[];
     app.takeGetSession(messageData);
 },

@@ -75,7 +75,7 @@
 {% block content %}
 
 <!-- modals -->
-{%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid_modal.html"%}
+
 
 <!-- instructions -->
 <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
@@ -91,16 +91,6 @@
     </div>
     <div class="col-md-3">
         <div class="row">
-            <div class="col-md">
-                {%include "subject/subject_home/production_card.html"%}
-            </div>            
-        </div>
-        <div class="row mt-4">
-            <div class="col-md">
-                {%include "subject/subject_home/earnings_card.html"%}
-            </div>            
-        </div>
-        <div class="row mt-4">
             <div class="col-md">
                 {%include "subject/subject_home/summary_card.html"%}
             </div>            

@@ -269,10 +269,7 @@ def take_update_parameterset(data):
 
     if form.is_valid():
         #print("valid form")                
-        form.save() 
-
-        session.parameter_set.update_group_counts()
-        session.parameter_set.update_choice_avatar_counts()        
+        form.save()    
 
         return {"value" : "success"}                      
                                 
@@ -372,10 +369,6 @@ def take_update_parameterset_player(data):
     logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetPlayerForm(form_data_dict, instance=parameter_set_player)
-    form.fields['good_one'].queryset = parameter_set_player.parameter_set.parameter_set_goods.all()
-    form.fields['good_two'].queryset = parameter_set_player.parameter_set.parameter_set_goods.all()
-    form.fields['good_three'].queryset = parameter_set_player.parameter_set.parameter_set_goods.all()
-    form.fields['parameter_set_type'].queryset = parameter_set_player.parameter_set.parameter_set_types.all()
 
     if form.is_valid():
         #print("valid form")             
@@ -456,24 +449,8 @@ def take_add_paramterset_player(data):
         logger.warning(f"take_update_take_update_parameterset session, not found ID: {session_id}")
         return
 
-    last_parameter_set_player = session.parameter_set.parameter_set_players.last()
+    session.parameter_set.add_new_player()
 
-    if last_parameter_set_player:
-        session.parameter_set.add_new_player(last_parameter_set_player.parameter_set_type,
-                                             0,
-                                             last_parameter_set_player.good_one,
-                                             last_parameter_set_player.good_two,
-                                             last_parameter_set_player.good_three)
-    else:
-        parameters = []
-        parameters.append(last_parameter_set_player.parameter_set_type)
-        parameters.append(0)
-        for i in session.parameter_set.parameter_set_goods.all():
-            parameters.append(i)
-
-        session.parameter_set.add_new_player(*parameters)
-
-    session.parameter_set.update_group_counts()
     session.update_player_count()
 
 def take_copy_groups_forward(data):

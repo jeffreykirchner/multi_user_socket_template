@@ -64,7 +64,7 @@ takeDownloadParameters(messageData){
         var blob = new Blob([jsonse], {type: "application/json"});
         var url = URL.createObjectURL(blob);
         downloadLink.href = url;
-        downloadLink.download = "Trade_Steal_Session_" + app.$data.session.id + "_Parameter_Set.json";
+        downloadLink.download = "Session_" + app.$data.session.id + "_Parameter_Set.json";
 
         document.body.appendChild(downloadLink);
         downloadLink.click();

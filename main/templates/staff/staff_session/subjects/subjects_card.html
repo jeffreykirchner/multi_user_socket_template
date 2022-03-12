@@ -35,6 +35,9 @@
                                 Client #
                             </th>
                             <th scope="col" class = "m-1 p-1">
+                                ID Label
+                            </th>
+                            <th scope="col" class = "m-1 p-1">
                                 Name
                             </th>
                             <th scope="col" class = "m-1 p-1">
@@ -61,6 +64,9 @@
                         <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
                             <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
                                 [[p.player_number]]
+                            </td>
+                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
+                                [[p.parameter_set_player.id_label]]
                             </td>
                             <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
                                 [[p.name=="" ? "---" : p.name]]

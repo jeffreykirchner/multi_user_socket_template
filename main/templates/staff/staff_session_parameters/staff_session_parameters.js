@@ -14,60 +14,19 @@ var app = Vue.createApp({
                     first_load_done : false,          //true after software is loaded for the first time
                     helpText : "Loading ...",
                     sessionID : {{session.id}},
-                    session : {{session_json|safe}},
-                   
+                    session : {{session_json|safe}},                   
                     valuecost_modal_label:'Edit Value or Cost',
-                    current_parameterset_type:{                       //json attached to parameterset type edit modal
-                        id:0,
-                        good_one_amount:0,
-                        good_two_amount:0,
-                        good_one_production_1:0,
-                        good_one_production_2:0,
-                        good_one_production_3:0,
-                        good_two_production_1:0,
-                        good_two_production_2:0,
-                        good_two_production_3:0,
-                    },
                     current_parameter_set_player : {
                         id:0,
-                        id_label:"",
-                        location:1,      
-                        subject_type:"",            
-                        good_one:{id:0},
-                        good_two:{id:0},
-                        good_three:{id:0},
-                        avatar:{id:0},
-                        parameter_set_type:{id:0},     
-                    },
-                    current_parameter_set_player_group : {
-                        id : 0,
-                        group_number : 0,
-                        period :0,
-                    },
-                    current_parameter_set_good:{
-                        id : 0,
-                        label : 0,
-                        rgb_color :0,
-                    },
-                    current_parameter_set_avatar:{
-                        id : 0,
-                        grid_location_row : 0,
-                        grid_location_col : 0,
-                        avatar : {id:0},
-                    },
+                    },                  
 
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
-                    parameterset_type_form_ids: {{parameterset_type_form_ids|safe}},
                     parameterset_player_form_ids: {{parameterset_player_form_ids|safe}},
-                    parameterset_player_group_form_ids: {{parameterset_player_group_form_ids|safe}},
-                    parameterset_good_form_ids: {{parameterset_good_form_ids|safe}},
-                    parameterset_avatar_form_ids: {{parameterset_avatar_form_ids|safe}},
 
                     upload_file: null,
                     upload_file_name:'Choose File',
                     uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
                     uploadParametersetMessaage:'',
-                    // show_parameters:false,
                     import_parameters_message : "",
 
                 }},
@@ -100,13 +59,7 @@ var app = Vue.createApp({
                     break;
                 case "update_parameterset":
                     app.takeUpdateParameterset(messageData);
-                    break;         
-                case "update_parameterset_type":
-                    app.takeUpdateParametersetType(messageData);
-                    break;    
-                case "update_parameterset_good":
-                    app.takeUpdateParametersetGood(messageData);
-                    break; 
+                    break;        
                 case "update_parameterset_player":
                     app.takeUpdateParametersetPlayer(messageData);
                     break;     
@@ -115,13 +68,7 @@ var app = Vue.createApp({
                     break;
                 case "add_parameterset_player":
                     app.takeAddParameterSetPlayer(messageData);
-                    break;
-                case "update_parameterset_player_group":
-                    app.takeUpdateParametersetPlayerGroup(messageData);
-                    break;
-                case "copy_group_forward":
-                    app.takeCopyGroupForward(messageData);
-                    break;
+                    break;                
                 case "import_parameters":
                     app.takeImportParameters(messageData);
                     break;
@@ -136,18 +83,9 @@ var app = Vue.createApp({
                     break;
             }
 
-            // if(!app.$data.first_load_done)
-            // {
-            //     if(!app.$data.session.started)
-            //     {
-            //         app.$data.show_parameters = true;
-            //     }
-            // }
-
             app.$data.first_load_done = true;
 
             app.working = false;
-            //Vue.nextTick(app.update_sdgraph_canvas());
         },
 
         /** send websocket message to server
@@ -219,11 +157,8 @@ var app = Vue.createApp({
         },
 
         {%include "staff/staff_session_parameters/general_settings/general_settings.js"%}
-        {%include "staff/staff_session_parameters/good_settings/good_settings.js"%}
         {%include "staff/staff_session_parameters/control/control.js"%}
-        {%include "staff/staff_session_parameters/player_types/player_type.js"%}
         {%include "staff/staff_session_parameters/players/players.js"%}
-        {%include "staff/staff_session_parameters/avatars/avatars.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages
@@ -243,35 +178,7 @@ var app = Vue.createApp({
                 $("#id_errors_" + s[i]).remove();
             }
 
-            s = app.$data.parameterset_type_form_ids;
-            for(var i in s)
-            {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
-            }
-
             s = app.$data.parameterset_player_form_ids;
-            for(var i in s)
-            {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
-            }
-
-            s = app.$data.parameterset_player_group_form_ids;
-            for(var i in s)
-            {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
-            }
-
-            s = app.$data.parameterset_good_form_ids;
-            for(var i in s)
-            {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
-            }
-
-            s = app.$data.parameterset_avatar_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
@@ -306,11 +213,7 @@ var app = Vue.createApp({
         $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession); 
         $('#importParametersModal').on("hidden.bs.modal", this.hideImportParameters); 
         $('#editParametersetModal').on("hidden.bs.modal", this.hideEditParameterset);
-        $('#editParametersetTypeModal').on("hidden.bs.modal", this.hideEditParametersetType);
         $('#editParametersetPlayerModal').on("hidden.bs.modal", this.hideEditParametersetPlayer);
-        $('#editParametersetPlayerGroupModal').on("hidden.bs.modal", this.hideEditParametersetPlayerGroup);
-        $('#editParametersetGoodModal').on("hidden.bs.modal", this.hideEditParametersetGood);
-        $('#editAvatarsModal').on("hidden.bs.modal", this.hideEditParametersetAvatar);
     },
 
 }).mount('#app');

@@ -18,29 +18,6 @@
     }
 },
 
-/**
- * take update player groups
- * @param messageData {json} session day in json format
- */
- takeUpdateGroups(messageData){
-    
-    if(messageData.status.status == "success")
-    {
-        let group_list = messageData.status.group_list;
-        let session_players = app.$data.session.session_players;
-
-        for(let i=0; i<group_list.length; i++)
-        {
-            session_player = app.findSessionPlayer(group_list[i].id);
-
-            if(session_player)
-            {
-                session_player.group_number = group_list[i].group_number;
-            }
-        }
-    }
-},
-
 /** take name and student id
 * @param messageData {json} session day in json format
 */
@@ -56,25 +33,6 @@ takeUpdateName(messageData){
         {
             session_player.name = result.name;
             session_player.student_id = result.student_id;
-        }       
-    }
- },
-
-/** take name and student id
-* @param messageData {json} session day in json format
-*/
-takeUpdateAvatar(messageData){
-           
-    if(messageData.status.value == "success")
-    {
-        let result = messageData.status.result;
-
-        session_player = app.findSessionPlayer(result.id);
-
-        if(session_player)
-        {
-            session_player.avatar = result.avatar;
-            this.setupSingleAvatar(this.findSessionPlayerIndex(result.id));
         }       
     }
  },
@@ -172,21 +130,6 @@ findSessionPlayerIndex(id){
     }
 
     return null;
-},
-
-/**
- * take update subjects production
- */
-takeUpdateProductionTime(messageData){
-
-    if(messageData.status.value == "success")
-    {
-       
-        session_player = app.findSessionPlayer(messageData.status.result.id);
-        
-        session_player.good_one_production_rate = messageData.status.result.good_one_production_rate; 
-        session_player.good_two_production_rate = messageData.status.result.good_two_production_rate;    
-    }
 },
 
 /** send session update form   
