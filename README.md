@@ -14,6 +14,7 @@ sudo apt-get install python3-distutils
 sudo apt-get install python3-apt
 
 Activate virtual environment and install requirments:
+virtualenv --python=python3.9 _multi_user_socket_template_env
 pip install -U -r requirements.txt
 
 Migrate:
@@ -21,6 +22,15 @@ python manage.py migrate
 
 Create Super User (user and email should be the same):
 python manage.py createsuperuser --username name@abc.edu --email name@abc.edu
+
+Login in to shell create parameter set:
+python manage.py shell
+from main.models import Parameters
+p=Parameters()
+p.save()
+exit()
+
+
 
 
 
