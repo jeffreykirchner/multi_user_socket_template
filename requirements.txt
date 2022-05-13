@@ -24,7 +24,7 @@ requests==2.27.*
 service-identity==21.1.0
 six==1.16.0
 sqlparse==0.4.2
-Twisted==22.2.0
+Twisted==22.4.*
 txaio==22.2.1
 typing_extensions==4.1.1
 whitenoise==6.0.*
