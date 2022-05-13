@@ -1,0 +1,1 @@
+[{"model": "main.parameters", "pk": 1, "fields": {"contact_email": "JohnSmith@abc.edu", "experiment_time_zone": "US/Pacific", "site_url": "http://localhost:8000", "invitation_text": "", "invitation_subject": "", "timestamp": "2022-05-13T21:45:05.421Z", "updated": "2022-05-13T21:45:05.421Z"}}]

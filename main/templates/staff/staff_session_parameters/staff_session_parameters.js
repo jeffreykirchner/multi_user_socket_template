@@ -83,7 +83,7 @@ var app = Vue.createApp({
                     break;
             }
 
-            app.$data.first_load_done = true;
+            app.first_load_done = true;
 
             app.working = false;
         },
@@ -95,7 +95,7 @@ var app = Vue.createApp({
         sendMessage(messageType, messageText) {
             
 
-            app.$data.chatSocket.send(JSON.stringify({
+            app.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
                 }));
@@ -106,9 +106,9 @@ var app = Vue.createApp({
         */
         takeGetSession(messageData){
             
-            app.$data.session = messageData.session;
+            app.session = messageData.session;
 
-            if(app.$data.session.started)
+            if(app.session.started)
             {
                 
             }
@@ -121,16 +121,16 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         sendGetSession(){
-            app.sendMessage("get_session",{"sessionID" : app.$data.sessionID});
+            app.sendMessage("get_session",{"sessionID" : app.sessionID});
         },
 
         /** send session update form   
         */
         sendUpdateSession(){
-            app.$data.cancelModal = false;
-            app.$data.working = true;
+            app.cancelModal = false;
+            app.working = true;
             app.sendMessage("update_session",{"formData" : $("#sessionForm").serializeArray(),
-                                              "sessionID" : app.$data.sessionID});
+                                              "sessionID" : app.sessionID});
         },
 
         /** take update session reponse
@@ -146,7 +146,7 @@ var app = Vue.createApp({
             } 
             else
             {
-                app.$data.cancelModal=true;                           
+                app.cancelModal=true;                           
                 app.displayErrors(messageData.errors);
             } 
         },
@@ -165,20 +165,20 @@ var app = Vue.createApp({
         */
         clearMainFormErrors(){
             
-            for(var item in app.$data.session)
+            for(var item in app.session)
             {
                 $("#id_" + item).attr("class","form-control");
                 $("#id_errors_" + item).remove();
             }
 
-            s = app.$data.parameterset_form_ids;
+            s = app.parameterset_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
                 $("#id_errors_" + s[i]).remove();
             }
 
-            s = app.$data.parameterset_player_form_ids;
+            s = app.parameterset_player_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");

@@ -20,15 +20,8 @@ pip install -U -r requirements.txt
 Migrate:
 python manage.py migrate
 
-Create Super User (user and email should be the same):
-python manage.py createsuperuser --username name@abc.edu --email name@abc.edu
-
-Login in to shell create parameter set:
-python manage.py shell
-from main.models import Parameters
-p=Parameters()
-p.save()
-exit()
+Setup Environment:
+sh setup.sh
 
 
 

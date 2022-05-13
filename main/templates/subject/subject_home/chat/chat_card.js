@@ -15,7 +15,7 @@ sendChat(){
 /** take result of moving goods
 */
 takeChat(messageData){
-    //app.$data.cancelModal=false;
+    //app.cancelModal=false;
     //app.clearMainFormErrors();
 
     if(messageData.status.value == "success")

@@ -2,26 +2,26 @@
 */
 sendImportParameters(){
     
-    app.$data.working = true;
-    app.sendMessage("import_parameters", {"sessionID" : app.$data.sessionID,
+    app.working = true;
+    app.sendMessage("import_parameters", {"sessionID" : app.sessionID,
                                           "formData" : $("#importParametersForm").serializeArray(),});
 },
 
 /** show parameters copied from another period 
 */
 takeImportParameters(){
-    //app.$data.cancelModal=false;
+    //app.cancelModal=false;
     //app.clearMainFormErrors();
 
     if(messageData.status.status == "success")
     {
         app.takeGetSession(messageData);       
-        app.$data.import_parameters_message = messageData.status.message;
+        app.import_parameters_message = messageData.status.message;
         location.reload();    
     } 
     else
     {
-        app.$data.import_parameters_message = messageData.status.message;
+        app.import_parameters_message = messageData.status.message;
     } 
 },
 
@@ -46,8 +46,8 @@ hideImportParameters:function(){
 */
 sendDownloadParameters(){
     
-    app.$data.working = true;
-    app.sendMessage("download_parameters", {"sessionID" : app.$data.sessionID,});
+    app.working = true;
+    app.sendMessage("download_parameters", {"sessionID" : app.sessionID,});
 },
 
 /** download parameter set into a file 
@@ -64,14 +64,14 @@ takeDownloadParameters(messageData){
         var blob = new Blob([jsonse], {type: "application/json"});
         var url = URL.createObjectURL(blob);
         downloadLink.href = url;
-        downloadLink.download = "Session_" + app.$data.session.id + "_Parameter_Set.json";
+        downloadLink.download = "Session_" + app.session.id + "_Parameter_Set.json";
 
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);                     
     } 
 
-    app.$data.working = false;
+    app.working = false;
 },
 
 /**upload a parameter set file
@@ -79,7 +79,7 @@ takeDownloadParameters(messageData){
 uploadParameterset:function(){  
 
     let formData = new FormData();
-    formData.append('file', app.$data.upload_file);
+    formData.append('file', app.upload_file);
 
     axios.post('/staff-session/{{id}}/parameters', formData,
             {
@@ -90,27 +90,27 @@ uploadParameterset:function(){
             )
             .then(function (response) {     
 
-                app.$data.uploadParametersetMessaage = response.data.message.message;
-                app.$data.session = response.data.session;
-                app.$data.uploadParametersetButtonText= 'Upload <i class="fas fa-upload"></i>';
+                app.uploadParametersetMessaage = response.data.message.message;
+                app.session = response.data.session;
+                app.uploadParametersetButtonText= 'Upload <i class="fas fa-upload"></i>';
                 location.reload();
 
             })
             .catch(function (error) {
                 console.log(error);
-                app.$data.searching=false;
+                app.searching=false;
             });                        
 },
 
 //direct upload button click
 uploadAction:function(){
-    if(app.$data.upload_file == null)
+    if(app.upload_file == null)
         return;
 
-    app.$data.uploadParametersetMessaage = "";
-    app.$data.uploadParametersetButtonText = '<i class="fas fa-spinner fa-spin"></i>';
+    app.uploadParametersetMessaage = "";
+    app.uploadParametersetButtonText = '<i class="fas fa-spinner fa-spin"></i>';
 
-    if(app.$data.upload_mode == "parameters")
+    if(app.upload_mode == "parameters")
     {
         this.uploadParameterset();
     }
@@ -123,15 +123,15 @@ uploadAction:function(){
 
 //file upload
 handleFileUpload:function(){
-    app.$data.upload_file = this.$refs.file.files[0];
-    app.$data.upload_file_name = app.$data.upload_file.name;
+    app.upload_file = this.$refs.file.files[0];
+    app.upload_file_name = app.upload_file.name;
 },
 
 /** show upload parameters modal
 */
 showUploadParameters:function(upload_mode){
-    app.$data.upload_mode = upload_mode;
-    app.$data.uploadParametersetMessaage = "";
+    app.upload_mode = upload_mode;
+    app.uploadParametersetMessaage = "";
 
     var myModal = new bootstrap.Modal(document.getElementById('parameterSetModal'), {
         keyboard: false

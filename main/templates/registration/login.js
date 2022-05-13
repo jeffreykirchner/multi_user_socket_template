@@ -18,8 +18,8 @@
               //get current, last or next month
 
               login:function(){
-                  app.$data.loginButtonText = '<i class="fas fa-spinner fa-spin"></i>';
-                  app.$data.loginErrorText = "";
+                  app.loginButtonText = '<i class="fas fa-spinner fa-spin"></i>';
+                  app.loginErrorText = "";
 
                   axios.post('/accounts/login/', {
                           action :"login",
@@ -39,14 +39,14 @@
                         }
                         else if(status == "error")
                         {
-                          app.$data.loginErrorText = "Username or Password is incorrect."
+                          app.loginErrorText = "Username or Password is incorrect."
                         }
                         else
                         {
                           window.location = response.data.redirect_path;
                         }
 
-                        app.$data.loginButtonText = 'Submit <i class="fas fa-sign-in-alt"></i>';
+                        app.loginButtonText = 'Submit <i class="fas fa-sign-in-alt"></i>';
 
                       })
                       .catch(function (error) {
@@ -56,7 +56,7 @@
 
                   clearMainFormErrors:function(){
 
-                        s = app.$data.form_ids;                    
+                        s = app.form_ids;                    
                         for(var i in s)
                         {
                             $("#id_" + s[i]).attr("class","form-control");

@@ -1,6 +1,6 @@
 sendName(){
 
-    app.$data.working = true;
+    app.working = true;
     app.sendMessage("name", {"formData" : $("#endGameForm").serializeArray()});
                      
 },
@@ -13,8 +13,8 @@ takeName(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.$data.session_player.name = messageData.status.result.name; 
-        app.$data.session_player.student_id = messageData.status.result.student_id;                   
+        app.session_player.name = messageData.status.result.name; 
+        app.session_player.student_id = messageData.status.result.student_id;                   
     } 
     else
     {

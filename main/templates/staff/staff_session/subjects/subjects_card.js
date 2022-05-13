@@ -7,7 +7,7 @@
     if(messageData.status.value == "success")
     {
         let result = messageData.status.result;
-        let session_players = app.$data.session.session_players;
+        let session_players = app.session.session_players;
 
         session_player = app.findSessionPlayer(result.id);
 
@@ -120,7 +120,7 @@ takeFinishedInstructions(messageData){
  */
 findSessionPlayerIndex(id){
 
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     for(let i=0; i<session_players.length; i++)
     {
         if(session_players[i].id == id)
@@ -162,7 +162,7 @@ takeUpdateEmailList(messageData){
     } 
     else
     {
-        app.$data.cancelModal=true;                           
+        app.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     } 
 },
@@ -219,7 +219,7 @@ takeUpdateSubject(messageData){
     } 
     else
     {
-        app.$data.cancelModal=true;                           
+        app.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     } 
 },

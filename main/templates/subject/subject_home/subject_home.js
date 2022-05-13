@@ -119,10 +119,10 @@ var app = Vue.createApp({
         takeGetSession(messageData){
             
 
-            app.$data.session = messageData.status.session;
-            app.$data.session_player = messageData.status.session_player;
+            app.session = messageData.status.session;
+            app.session_player = messageData.status.session_player;
 
-            if(app.$data.session.started)
+            if(app.session.started)
             {
                
             }
@@ -141,7 +141,7 @@ var app = Vue.createApp({
 
 
                 // if game is finished show modal
-                if(app.$data.session.finished)
+                if(app.session.finished)
                 {
                     this.showEndGameModal();
                 }
@@ -197,7 +197,7 @@ var app = Vue.createApp({
             this.session_player.earnings = result.session_player_earnings.earnings;
 
             //session complete
-            if(app.$data.session.finished)
+            if(app.session.finished)
             {
                 this.showEndGameModal();
             }            
@@ -325,7 +325,7 @@ var app = Vue.createApp({
          */
         findSessionPlayer(id){
 
-            let session_players = app.$data.session.session_players;
+            let session_players = app.session.session_players;
             for(let i=0; i<session_players.length; i++)
             {
                 if(session_players[i].id == id)
@@ -342,7 +342,7 @@ var app = Vue.createApp({
          */
         findSessionPlayerIndex(id){
 
-            let session_players = app.$data.session.session_players;
+            let session_players = app.session.session_players;
             for(let i=0; i<session_players.length; i++)
             {
                 if(session_players[i].id == id)

@@ -161,7 +161,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         sendGetSession(){
-            app.sendMessage("get_session",{"sessionKey" : app.$data.sessionKey});
+            app.sendMessage("get_session",{"sessionKey" : app.sessionKey});
         },
 
         /** take create new session
@@ -171,9 +171,9 @@ var app = Vue.createApp({
             
            
 
-            app.$data.session = messageData.session;
+            app.session = messageData.session;
 
-            if(app.$data.session.started)
+            if(app.session.started)
             {
                 
             }
@@ -256,7 +256,7 @@ var app = Vue.createApp({
 
             if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
             {
-                var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
+                var elmnt = document.getElementById("chat_id_" + app.chat_list_to_display[app.chat_list_to_display.length-1].id.toString());
                 elmnt.scrollIntoView(); 
             }
         },
@@ -271,11 +271,11 @@ var app = Vue.createApp({
 
             if(status == "fail") return;
 
-            app.$data.session.started = result.started;
-            app.$data.session.current_period = result.current_period;
-            app.$data.session.time_remaining = result.time_remaining;
-            app.$data.session.timer_running = result.timer_running;
-            app.$data.session.finished = result.finished;
+            app.session.started = result.started;
+            app.session.current_period = result.current_period;
+            app.session.time_remaining = result.time_remaining;
+            app.session.timer_running = result.timer_running;
+            app.session.finished = result.finished;
 
             app.takeUpdateEarnings(messageData);
 
@@ -306,13 +306,13 @@ var app = Vue.createApp({
         */
         clearMainFormErrors(){
             
-            for(var item in app.$data.session)
+            for(var item in app.session)
             {
                 $("#id_" + item).attr("class","form-control");
                 $("#id_errors_" + item).remove();
             }
 
-            s = app.$data.staff_edit_name_etc_form_ids;
+            s = app.staff_edit_name_etc_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
