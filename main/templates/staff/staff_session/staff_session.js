@@ -86,9 +86,6 @@ var app = Vue.createApp({
                 case "update_next_phase":
                     app.takeUpdateNextPhase(messageData);
                     break; 
-                case "update_move_goods":
-                    app.takeUpdateNotice(messageData);
-                    break;  
                 case "update_reset_experiment":
                     app.takeUpdateResetExperiment(messageData);
                     break;

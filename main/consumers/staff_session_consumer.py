@@ -439,22 +439,6 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
-    async def update_move_goods(self, event):
-        '''
-        update good count staff
-        '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info(f'update_goods{self.channel_name}')
-
-        message_data = {}
-        message_data["status"] = event["data"]
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
     async def update_time(self, event):
         '''
         update running, phase and time status
@@ -462,22 +446,6 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         message_data = {}
         message_data["status"] = event["data"]
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
-    async def update_groups(self, event)  :
-        '''
-        update groups on client
-        '''
-
-        result = await sync_to_async(take_update_groups)(self.session_id)
-
-        message_data = {}
-        message_data["status"] = result
 
         message = {}
         message["messageType"] = event["type"]
@@ -782,18 +750,6 @@ def take_do_period_timer(session_id):
     logger.info(f"take_do_period_timer: {return_json}")
 
     return return_json
-
-def take_update_groups(session_id):
-    '''
-    take update groups
-    '''
-
-    session = Session.objects.get(id=session_id)
-
-    status = "success"
-    
-    return {"status" : status,
-            "group_list" : session.json_for_group_update()}
 
 def take_download_summary_data(session_id):
     '''
