@@ -150,20 +150,12 @@ takeUpdateEmailList(messageData){
 
     if(messageData.status.value == "success")
     {            
-        app.uploadEmailModal.hide();    
-
-        result = messageData.status.result;
-
-        for(i=0; i<result.length; i++)
-        {
-            let session_player = app.findSessionPlayer(result[i].id);
-            session_player.email = (result[i].email);
-        }
+        app.uploadEmailModal.hide(); 
+        app.session = messageData.status.result.session;
     } 
     else
     {
-        app.cancelModal=true;                           
-        app.displayErrors(messageData.status.errors);
+        
     } 
 },
 

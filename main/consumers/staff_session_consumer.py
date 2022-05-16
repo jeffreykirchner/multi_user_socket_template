@@ -7,7 +7,7 @@ from asgiref.sync import async_to_sync
 import json
 import logging
 import asyncio
-import time
+import re
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
@@ -877,10 +877,6 @@ def take_send_invitations(session_id, data):
                         "invitation_text" : session.invitation_text }}
 
 def take_email_list(session_id, data):
-    '''
-    take uploaded csv server from list and load emails into session players
-    '''
-
     logger = logging.getLogger(__name__)
     logger.info(f'take_email_list: {session_id} {data}')
 
@@ -894,31 +890,21 @@ def take_email_list(session_id, data):
 
     raw_list = raw_list.splitlines()
 
+    counter = 1
     for i in range(len(raw_list)):
-        raw_list[i] = raw_list[i].split(',')
-    
-    u_list = []
+        raw_list[i] = re.split(r',|\t', raw_list[i])
 
-    for i in raw_list:
-        for j in i:
-            if "@" in j:
-                u_list.append(j)
-    
-    session.session_players.update(email=None)
+        if raw_list[i][0] != "Last Name":
+            p = session.session_players.filter(player_number=counter).first()
 
-    for i in u_list:
-        p = session.session_players.filter(email=None).first()
+            if p:
+                p.name = raw_list[i][0] + " " + raw_list[i][1]
+                p.email = raw_list[i][2]
+                p.student_id = raw_list[i][3]
 
-        if(p):
-            p.email = i
-            p.save()
-        else:
-            break
+                p.save()
+            
+            counter+=1
     
-    result = []
-    for p in session.session_players.all():
-        result.append({"id" : p.id, "email" : p.email})
-    
-    return {"value" : "success",
-            "result" : result}
+    return {"value" : "success", "result" : {"session":session.json()}}
     
