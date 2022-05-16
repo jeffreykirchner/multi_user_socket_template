@@ -49,7 +49,8 @@ def send_mass_email_service(user_list, message_subject, message_text, message_te
     request_result = requests.post(f'{settings.EMAIL_MS_HOST}/send-email/',
                                    json=data,
                                    auth=(str(settings.EMAIL_MS_USER_NAME), str(settings.EMAIL_MS_PASSWORD)),
-                                   headers=headers)
+                                   headers=headers,
+                                   timeout=60)
     
     if request_result.status_code == 500:        
         logger.warning(f'send_mass_email_service error: {request_result}')

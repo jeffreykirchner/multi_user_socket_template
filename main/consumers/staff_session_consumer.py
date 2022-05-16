@@ -869,7 +869,7 @@ def take_send_invitations(session_id, data):
 
     memo = f'Trade Steal: Session {session_id}, send invitations'
 
-    result = send_mass_email_service(user_list, session.invitation_subject, session.invitation_text , session.invitation_text, memo)
+    result = send_mass_email_service(user_list, session.invitation_subject, message_text , message_text, memo)
 
     return {"value" : "success",
             "result" : {"email_result" : result,
