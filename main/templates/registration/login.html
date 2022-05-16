@@ -3,7 +3,7 @@
 
 {%block head%}
 <script type="text/javascript">
-  $(document).ready(function(){  
+  document.addEventListener("DOMContentLoaded", function(){  
     {%include "registration/login.js"%}
   });
 
@@ -14,7 +14,7 @@
 
 {%for i in fpn_list%}
 <!-- notification cards -->
-<div class="row justify-content-center mb-4"> 
+<div class="row justify-content-center mb-4" > 
   <div class="col col-sm-6">
 
     <div class="card mx-auto">
@@ -33,7 +33,7 @@
 {%endfor%}
 
 <!-- login card -->
-<div class="row justify-content-center"> 
+<div class="row justify-content-center" v-cloak> 
   <div class="col col-md-6">
 
     <div class="card">
@@ -44,7 +44,7 @@
 
       <div class="card-body">
 
-        <form id="login_form" v-on:submit.prevent="onSubmit">
+        <form id="login_form" onsubmit="event.preventDefault();">
           {% csrf_token %}        
           <div class="row">
             <div class = "col-md-8 offset-md-2">  
@@ -65,7 +65,7 @@
                   <span v-html ="loginButtonText"></span>
                 </button> 
 
-                <span class="ps-4" style="color: red;" v-html="loginErrorText">
+                <span class="ps-4 text-danger" v-html="loginErrorText">
                 </span>
             </div>
         </div>

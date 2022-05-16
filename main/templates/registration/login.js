@@ -11,6 +11,8 @@
               loginButtonText : 'Submit <i class="fas fa-sign-in-alt"></i>',
               loginErrorText : "",
               form_ids : {{form_ids|safe}},
+              username:null,
+              password:null,
               }                          
           },
 
@@ -20,10 +22,11 @@
               login:function(){
                   app.loginButtonText = '<i class="fas fa-spinner fa-spin"></i>';
                   app.loginErrorText = "";
+                  var form = document.querySelector('login_form');
 
                   axios.post('/accounts/login/', {
                           action :"login",
-                          formData : $("#login_form").serializeArray(), 
+                          formData : {username:app.username, password:app.password},
                                                       
                       })
                       .then(function (response) {     
@@ -54,22 +57,23 @@
                       });                        
                   },
 
-                  clearMainFormErrors:function(){
+                  clearMainFormErrors(){
 
                         s = app.form_ids;                    
                         for(var i in s)
                         {
-                            $("#id_" + s[i]).attr("class","form-control");
-                            $("#id_errors_" + s[i]).remove();
+                            //e = document.getElementById("id_" + s[i]);
+                            e = document.getElementById("id_errors_" + s[i]);
+                            if(e) e.remove();
                         }
 
                     },
               
                 //display form errors
-                displayErrors:function(errors){
+                displayErrors(errors){
                       for(var e in errors)
                       {
-                          $("#id_" + e).attr("class","form-control is-invalid")
+                          //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")
                           var str='<span id=id_errors_'+ e +' class="text-danger">';
                           
                           for(var i in errors[e])
@@ -78,8 +82,8 @@
                           }
 
                           str+='</span>';
-                          $("#div_id_" + e).append(str); 
 
+                          document.getElementById("div_id_" + e).insertAdjacentHTML('beforeend', str);
                       }
                   },
 
