@@ -19,8 +19,8 @@
         <div class="row">
             <div class="col">
                 
-                <div class="d-flex flex-column">
-                    <div class="p-1" v-for="(c, index) in chat_list_to_display" v-bind:key="c.id">
+                <div class="chat">
+                    <div class="p-1" v-for="(c, index) in chat_list_to_display.slice().reverse()" v-bind:key="c.id">
 
                         <div class="text-start ps-2 pe-2" 
                              v-bind:style= "[(c.text=='|') ? {'opacity': '0'}:{}]"

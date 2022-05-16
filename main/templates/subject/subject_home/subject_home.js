@@ -180,12 +180,6 @@ var app = Vue.createApp({
         takeUpdateResetExperiment(messageData){
             app.takeGetSession(messageData);
 
-            this.production_slider_one = 50;
-            this.production_slider_two = 50;
-            this.production_slider = 0;
-            this.avatar_choice_grid_selected_row = 0;
-            this.avatar_choice_grid_selected_col = 0;
-
             app.endGameModal.hide();
             this.closeMoveModal();
         },
@@ -280,20 +274,6 @@ var app = Vue.createApp({
             for(var item in app.session)
             {
                 e = document.getElementById("id_errors_" + item);
-                if(e) e.remove();
-            }
-
-            s = this.session_player_move_two_form_ids;
-            for(var i in s)
-            {
-                e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
-
-            s = this.session_player_move_three_form_ids;
-            for(var i in s)
-            {
-                e = document.getElementById("id_errors_" + s[i]);
                 if(e) e.remove();
             }
 

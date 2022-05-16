@@ -49,9 +49,6 @@ doTestMode(){
         
         switch (this.session.current_experiment_phase)
         {
-            case "Selection":
-                this.doTestModeSelection();
-                break;
             case "Instructions":
                 this.doTestModeInstructions();
                 break;
@@ -65,26 +62,6 @@ doTestMode(){
 
     setTimeout(this.doTestMode, this.randomNumber(1000 , 10000));
 },
-
-/**
- * test during selection phase
- */
- doTestModeSelection()
- {
-
-    if(this.avatar_choice_grid_selected_row == 0 && this.avatar_choice_grid_selected_col == 0)
-    {
-        let r = this.randomNumber(1, this.session.parameter_set.avatar_grid_row_count);
-        let c = this.randomNumber(1, this.session.parameter_set.avatar_grid_col_count);
-
-        document.getElementById('choice_grid_' + r + '_' + c + '_id').click();
-    }
-    else if(this.session_player.avatar == null)
-    {
-        document.getElementById('submit_avatar_choice_id').click();
-    }
-
- },
 
 /**
  * test during instruction phase

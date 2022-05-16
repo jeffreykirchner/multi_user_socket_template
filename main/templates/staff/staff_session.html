@@ -30,12 +30,15 @@
 
 <style>
 
-    canvas {
-        background-color: white; 
+    .chat {       
         width: 100%;
-        height: 600px;
+        height: 300px;
+        word-breaK:break-word;
+        overflow-y:scroll;
+        background-color: ghostwhite;
+        display:flex; 
+        flex-direction:column-reverse;
     }
-
     .player_table_row {
         cursor: pointer;
     }
@@ -46,47 +49,6 @@
 
     .player_table_cell:hover {
         background-color:#ececec;
-    }
-
-    .container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: [row1-start] 30% [row1-end row2-start] 70% [row2-end];
-        align-content: end;
-    }
-
-    .one {
-        grid-column: 1 / 4;
-        grid-row: 1 / 3;
-        height: 600px;
-        background-color: white; 
-        width: 100%;
-        z-index: 1;
-        /* border-style: solid; */
-    }
-
-    .two {
-        grid-column: 2;
-        grid-row: 2 / 3;
-        height: 375px;
-        z-index: 2;
-        width: 100%;
-        word-breaK:break-word;
-        overflow-y:scroll;
-        margin-top: 20px;
-        background-color: ghostwhite;
-    }
-
-    .three{
-        grid-column: 2;
-        grid-row: 1 / 2;
-        height: 175px;
-        z-index: 2;
-        width: 100%;
-        word-breaK:break-word;
-        overflow-y:scroll;
-        margin-top: 10px;
-        background-color: ghostwhite;
     }
 
 </style>

@@ -125,22 +125,5 @@ updateChatDisplay(){
     {
         this.chat_list_to_display=Array.from(this.session.session_players[this.chat_recipients_index].chat_individual);
     }
-
-    //add spacers
-    for(let i=this.chat_list_to_display.length;i<12;i++)
-    {
-        this.chat_list_to_display.unshift({id:i*-1, text:"|", sender_id:this.session_player.id})
-    }
-
-    //scroll to view
-    if(this.chat_list_to_display.length>0)
-    {
-        Vue.nextTick(() => {app.updateChatDisplayScroll()});        
-    }
-},
-
-updateChatDisplayScroll(){
-    var elmnt = document.getElementById("chat_id_" + this.chat_list_to_display[this.chat_list_to_display.length-1].id.toString());
-    elmnt.scrollIntoView(); 
 },
 

@@ -7,12 +7,7 @@
     app.clearMainFormErrors();
     app.cancelModal=true;
     app.parametersetPlayerBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_players[index]);
-    app.parametersetPlayerBeforeEdit.good_one =  Object.assign({}, app.session.parameter_set.parameter_set_players[index].good_one);
-    app.parametersetPlayerBeforeEdit.good_two =  Object.assign({}, app.session.parameter_set.parameter_set_players[index].good_two);
-    app.parametersetPlayerBeforeEdit.good_three =  Object.assign({}, app.session.parameter_set.parameter_set_players[index].good_three);
-    app.parametersetPlayerBeforeEdit.parameter_set_type =  Object.assign({}, app.session.parameter_set.parameter_set_players[index].parameter_set_type);
-    app.parametersetPlayerBeforeEdit.avatar =  Object.assign({}, app.session.parameter_set.parameter_set_players[index].avatar);
-
+    
     app.parametersetPlayerBeforeEditIndex = index;
     app.current_parameter_set_player = app.session.parameter_set.parameter_set_players[index];
     
@@ -26,13 +21,7 @@ hideEditParametersetPlayer:function(){
     if(app.cancelModal)
     {
         Object.assign(app.session.parameter_set.parameter_set_players[app.parametersetPlayerBeforeEditIndex], app.parametersetPlayerBeforeEdit);
-
-        Object.assign(app.session.parameter_set.parameter_set_players[app.parametersetPlayerBeforeEditIndex].good_one, app.parametersetPlayerBeforeEdit.good_one);
-        Object.assign(app.session.parameter_set.parameter_set_players[app.parametersetPlayerBeforeEditIndex].good_two, app.parametersetPlayerBeforeEdit.good_two);
-        Object.assign(app.session.parameter_set.parameter_set_players[app.parametersetPlayerBeforeEditIndex].good_three, app.parametersetPlayerBeforeEdit.good_three);
-        Object.assign(app.session.parameter_set.parameter_set_players[app.parametersetPlayerBeforeEditIndex].parameter_set_type, app.parametersetPlayerBeforeEdit.parameter_set_type);
-        Object.assign(app.session.parameter_set.parameter_set_players[app.parametersetPlayerBeforeEditIndex].avatar, app.parametersetPlayerBeforeEdit.avatar);
-
+       
         app.parametersetPlayerBeforeEdit=null;
     }
 },
