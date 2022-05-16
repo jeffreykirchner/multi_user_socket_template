@@ -13,11 +13,15 @@
                 [[session.started ? 'View': 'Edit']] Parameters                
             </a>
 
-            <button type="button" class="btn btn-outline-primary ms-4" title="Upload Email List" v-on:click="showSendEmailList()">
+            <button type="button" class="btn btn-outline-primary ms-4" title="Upload Email List" v-on:click="copyEarnings()">
+                Copy Earnings <span v-if="earnings_copied"><i class="fas fa-check"></i></span><span v-else><i class="fas fa-copy"></i></span>
+            </button>
+
+            <button type="button" class="btn btn-outline-primary ms-2" title="Upload Email List" v-on:click="showSendEmailList()">
                 Upload Email List
             </button>
 
-            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Subject List')">
+            <button type="button" class="btn btn-link ms-2" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Subject List')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>          

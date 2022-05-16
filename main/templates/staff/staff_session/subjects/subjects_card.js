@@ -238,3 +238,51 @@ hideEditSubject:function(){
        
     }
 },
+
+/**
+ * copy earnings to clipboard
+ */
+ copyEarnings(){
+
+    var text="";
+ 
+     for(i=0;i<app.session.session_players.length;i++)
+     {
+         text += app.session.session_players[i].student_id + ",";
+         text += app.session.session_players[i].earnings;
+ 
+         if(i<app.session.session_players.length-1) text += "\r\n";
+     }
+ 
+    app.copyToClipboard(text);
+    app.earnings_copied = true;
+ },
+ 
+ //copy text to clipboard
+ copyToClipboard(text){
+ 
+     // Create a dummy input to copy the string array inside it
+     var dummy = document.createElement("textarea");
+ 
+     // Add it to the document
+     document.body.appendChild(dummy);
+ 
+     // Set its ID
+     dummy.setAttribute("id", "dummy_id");
+ 
+     // Output the array into it
+     document.getElementById("dummy_id").value=text;
+ 
+     // Select it
+     dummy.select();
+     dummy.setSelectionRange(0, 99999); /*For mobile devices*/
+ 
+     // Copy its contents
+     document.execCommand("copy");
+ 
+     // Remove it as its not needed anymore
+     document.body.removeChild(dummy);
+ 
+     /* Copy the text inside the text field */
+     document.execCommand("copy");
+ },

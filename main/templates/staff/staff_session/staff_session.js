@@ -27,6 +27,7 @@ var app = Vue.createApp({
                     notice_list_to_display : [],                //list of chats to display on screen
 
                     data_downloading : false,                   //show spinner when data downloading
+                    earnings_copied : false,                    //if true show earnings copied   
 
                     staffEditNameEtcForm : {name : "", student_id : "", email : "", id : -1},
                     sendMessageModalForm : {subject : "", text : ""},
