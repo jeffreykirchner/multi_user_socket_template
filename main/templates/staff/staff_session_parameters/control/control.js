@@ -4,7 +4,7 @@ sendImportParameters(){
     
     app.working = true;
     app.sendMessage("import_parameters", {"sessionID" : app.sessionID,
-                                          "formData" : $("#importParametersForm").serializeArray(),});
+                                          "formData" : {session:app.session_import} });
 },
 
 /** show parameters copied from another period 
@@ -29,11 +29,7 @@ takeImportParameters(){
 */
 showImportParameters:function(){
     
-    var myModal = new bootstrap.Modal(document.getElementById('importParametersModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.importParametersModal.toggle();
 },
 
 /** hide edit session modal

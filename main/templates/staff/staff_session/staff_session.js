@@ -42,6 +42,7 @@ var app = Vue.createApp({
                     editSessionModal : null,
                     sendMessageModal : null,
                     uploadEmailModal : null,
+                   
                 }},
     methods: {
 

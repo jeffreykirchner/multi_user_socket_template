@@ -29,6 +29,13 @@ var app = Vue.createApp({
                     uploadParametersetMessaage:'',
                     import_parameters_message : "",
 
+                    //modals
+                    importParametersModal : null,
+                    editParametersetModal : null,
+                    editParametersetPlayerModal : null,
+
+                    //form paramters
+                    session_import : null,
                 }},
     methods: {
 
@@ -54,9 +61,6 @@ var app = Vue.createApp({
                 case "get_session":
                     app.takeGetSession(messageData);
                     break;
-                case "update_session":
-                    app.takeUpdateSession(messageData);
-                    break;
                 case "update_parameterset":
                     app.takeUpdateParameterset(messageData);
                     break;        
@@ -75,9 +79,6 @@ var app = Vue.createApp({
                 case "download_parameters":
                     app.takeDownloadParameters(messageData);
                     break;
-                case "update_parameterset_avatar":
-                    app.takeUpdateParametersetAvatar(messageData);
-                    break;
                 case "help_doc":
                     app.takeLoadHelpDoc(messageData);
                     break;
@@ -93,12 +94,24 @@ var app = Vue.createApp({
         *    @param messageText {json} body of message being sent to server
         */
         sendMessage(messageType, messageText) {
-            
 
             app.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
                 }));
+        },
+
+        doFirstLoad()
+        {
+            app.importParametersModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('importParametersModal'), {keyboard: false})
+            app.editParametersetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetModal'), {keyboard: false})            
+            app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})   
+            app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})         
+   
+            document.getElementById('importParametersModal').addEventListener('hidden.bs.modal', app.hideImportParameters);
+            document.getElementById('editParametersetModal').addEventListener('hidden.bs.modal', app.hideEditParameterset);
+            document.getElementById('editParametersetPlayerModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayer);
+
         },
 
         /** take create new session
@@ -115,40 +128,18 @@ var app = Vue.createApp({
             else
             {
                 
-            }                     
+            }
+            
+            if(!app.first_load_done)
+            {
+                setTimeout(app.doFirstLoad, 500);
+            }
         },
 
         /** send winsock request to get session info
         */
         sendGetSession(){
             app.sendMessage("get_session",{"sessionID" : app.sessionID});
-        },
-
-        /** send session update form   
-        */
-        sendUpdateSession(){
-            app.cancelModal = false;
-            app.working = true;
-            app.sendMessage("update_session",{"formData" : $("#sessionForm").serializeArray(),
-                                              "sessionID" : app.sessionID});
-        },
-
-        /** take update session reponse
-         * @param messageData {json} result of update, either sucess or fail with errors
-        */
-        takeUpdateSession(messageData){
-            app.clearMainFormErrors();
-
-            if(messageData.status == "success")
-            {
-                app.takeGetSession(messageData);       
-                app.editSessionModal.hide();    
-            } 
-            else
-            {
-                app.cancelModal=true;                           
-                app.displayErrors(messageData.errors);
-            } 
         },
 
         //do nothing on when enter pressed for post
@@ -208,10 +199,7 @@ var app = Vue.createApp({
     },
 
     mounted(){
-        $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession); 
-        $('#importParametersModal').on("hidden.bs.modal", this.hideImportParameters); 
-        $('#editParametersetModal').on("hidden.bs.modal", this.hideEditParameterset);
-        $('#editParametersetPlayerModal').on("hidden.bs.modal", this.hideEditParametersetPlayer);
+       
     },
 
 }).mount('#app');

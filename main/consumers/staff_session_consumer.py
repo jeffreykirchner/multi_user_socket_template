@@ -638,10 +638,10 @@ def take_update_session_form(session_id, data):
     except ObjectDoesNotExist:
         logger.warning(f"take_update_session_form session, not found: {session_id}")
     
-    form_data_dict = {}
+    form_data_dict = form_data
 
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    # for field in form_data:            
+    #     form_data_dict[field["name"]] = field["value"]
 
     form = SessionForm(form_data_dict, instance=session)
 

@@ -174,12 +174,8 @@ showSendEmailList(){
     this.cancelModal=true;
 
     this.csv_email_list = "";
-    
-    var myModal = new bootstrap.Modal(document.getElementById('uploadEmailModal'), {
-        keyboard: false
-        })
 
-    myModal.toggle();
+    app.uploadEmailModal.toggle();
 },
 
 /** hide edit subject modal
@@ -237,12 +233,8 @@ showEditSubject:function(id){
     this.staffEditNameEtcForm.name = session_player.name;
     this.staffEditNameEtcForm.student_id = session_player.student_id;
     this.staffEditNameEtcForm.email = session_player.email;
-    
-    var myModal = new bootstrap.Modal(document.getElementById('editSubjectModal'), {
-        keyboard: false
-        })
 
-    myModal.toggle();
+    app.editSubjectModal.toggle();
 },
 
 /** hide edit subject modal

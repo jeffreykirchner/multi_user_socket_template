@@ -32,6 +32,8 @@ var app = Vue.createApp({
 
                     instruction_pages : {{instruction_pages|safe}},
 
+                    // modals
+                    endGameModal : null,
                 }},
     methods: {
 
@@ -107,6 +109,17 @@ var app = Vue.createApp({
                 }));
         },
 
+        /**
+         * do after session has loaded
+         */
+         doFirstLoad()
+         {           
+             app.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false})           
+             document.getElementById('endGameModal').addEventListener('hidden.bs.modal', app.hideEndGameModal);
+
+             {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
+         },
+
         /** send winsock request to get session info
         */
         sendGetSession(){
@@ -173,7 +186,7 @@ var app = Vue.createApp({
             this.avatar_choice_grid_selected_row = 0;
             this.avatar_choice_grid_selected_col = 0;
 
-            $('#endGameModal').modal('hide');
+            app.endGameModal.hide();
             this.closeMoveModal();
         },
 
@@ -211,13 +224,8 @@ var app = Vue.createApp({
 
             //hide transfer modals
             this.closeMoveModal();
-
-            //show endgame modal
-            var myModal = new bootstrap.Modal(document.getElementById('endGameModal'), {
-                keyboard: false
-                })
-            
-            myModal.toggle();
+           
+            app.endGameModal.toggle();
 
             this.end_game_modal_visible = true;
         },
@@ -234,8 +242,7 @@ var app = Vue.createApp({
          * @param messageData {json}
         */
         takeUpdateNextPhase(messageData){
-            $('#avatarChoiceGridModal').modal('hide');
-            $('#endGameModal').modal('hide');
+            app.endGameModal.hide();
 
             this.session.current_experiment_phase = messageData.status.session.current_experiment_phase;
             this.session.session_players = messageData.status.session_players;
@@ -355,13 +362,7 @@ var app = Vue.createApp({
     },
 
     mounted(){
-
-        $('#moveTwoGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
-        $('#moveThreeGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
-        $('#avatarChoiceGridModal').on("hidden.bs.modal", this.hideChoiceGridModal);
-        $('#endGameModal').on("hidden.bs.modal", this.hideEndGameModal);
-        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
-
+        
     },
 
 }).mount('#app');
