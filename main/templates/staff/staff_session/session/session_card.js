@@ -15,7 +15,7 @@ takeUpdateSession(messageData){
     if(messageData.status == "success")
     {
         app.takeGetSession(messageData);       
-        $('#editSessionModal').modal('hide');    
+        app.editSessionModal.hide();    
     } 
     else
     {

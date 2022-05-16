@@ -150,7 +150,7 @@ takeUpdateEmailList(messageData){
 
     if(messageData.status.value == "success")
     {            
-        $('#uploadEmailModal').modal('hide');    
+        app.uploadEmailModal.hide();    
 
         result = messageData.status.result;
 
@@ -210,7 +210,7 @@ takeUpdateSubject(messageData){
 
     if(messageData.status.value == "success")
     {            
-        $('#editSubjectModal').modal('hide');    
+        app.editSubjectModal.hide();    
 
         let session_player = app.findSessionPlayer(messageData.status.session_player.id);
         session_player.name = messageData.status.session_player.name;

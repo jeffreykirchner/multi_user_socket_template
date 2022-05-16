@@ -4,7 +4,7 @@ echo "drop template db: enter db password"
 dropdb multi_user_socket_template -U dbadmin -h localhost -i
 echo "create database: enter db password"
 createdb -h localhost -U dbadmin -O dbadmin multi_user_socket_template
-source ESIRecruiterEnv/bin/activate
+source _multi_user_socket_template_env/bin/activate
 python manage.py migrate
 python manage.py loaddata Parameters.json
 python manage.py loaddata InstructionSet.json
