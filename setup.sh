@@ -1,0 +1,15 @@
+echo "setup template"
+sudo service postgresql restart
+echo "drop template db: enter db password"
+dropdb multi_user_socket_template -U dbadmin -h localhost -i
+echo "create database: enter db password"
+createdb -h localhost -U dbadmin -O dbadmin multi_user_socket_template
+source ESIRecruiterEnv/bin/activate
+python manage.py migrate
+python manage.py loaddata Parameters.json
+python manage.py loaddata InstructionSet.json
+python manage.py loaddata Instruction.json
+echo "create super user"
+python manage.py createsuperuser 
+echo "setup done"
+python manage.py runserver
