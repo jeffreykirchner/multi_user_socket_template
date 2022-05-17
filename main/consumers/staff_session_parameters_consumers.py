@@ -62,38 +62,6 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
-    async def update_parameterset_type(self, event):
-        '''
-        update a parameterset type
-        '''
-
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_update_parameterset_type)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
-
-        message = {}
-        message["messageType"] = "update_parameterset_type"
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-    
-    async def update_parameterset_good(self, event):
-        '''
-        update a parameterset good
-        '''
-
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_update_parameterset_good)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
-
-        message = {}
-        message["messageType"] = "update_parameterset_good"
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
     async def update_parameterset_player(self, event):
         '''
         update a parameterset player
@@ -171,22 +139,6 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
-    async def update_parameterset_avatar(self, event):
-        '''
-        update a parameterset avatar
-        '''
-
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_update_parameterset_avatar)(event["message_text"])
-        #message_data["session"] = await get_session(event["message_text"]["sessionID"])
-
-        message = {}
-        message["messageType"] = "update_parameterset_avatar"
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
     #consumer updates
     async def update_connection_status(self, event):
         '''
@@ -246,74 +198,6 @@ def take_update_parameterset(data):
     logger.info("Invalid paramterset form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
-def take_update_parameterset_type(data):
-    '''
-    update parameterset type
-    '''   
-
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset type: {data}")
-
-    session_id = data["sessionID"]
-    paramterset_type_id = data["parameterset_type_id"]
-    form_data = data["formData"]
-
-    try:        
-        parameter_set_type = ParameterSetType.objects.get(id=paramterset_type_id)
-    except ObjectDoesNotExist:
-        logger.warning(f"take_update_parameterset_type paramterset_type, not found ID: {paramterset_type_id}")
-        return
-    
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
-
-    form = ParameterSetTypeForm(form_data_dict, instance=parameter_set_type)
-
-    if form.is_valid():
-        #print("valid form")             
-        form.save()              
-
-        return {"value" : "success"}                      
-                                
-    logger.info("Invalid parameterset type form")
-    return {"value" : "fail", "errors" : dict(form.errors.items())}
-
-def take_update_parameterset_good(data):
-    '''
-    update parameterset good
-    '''   
-
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset good: {data}")
-
-    session_id = data["sessionID"]
-    parameterset_good_id = data["parameterset_good_id"]
-    form_data = data["formData"]
-
-    try:        
-        parameter_set_good = ParameterSetGood.objects.get(id=parameterset_good_id)
-    except ObjectDoesNotExist:
-        logger.warning(f"take_update_parameterset_good paramterset_good, not found ID: {parameterset_good_id}")
-        return
-    
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
-
-    form = ParameterSetGoodForm(form_data_dict, instance=parameter_set_good)
-
-    if form.is_valid():
-        #print("valid form")             
-        form.save()              
-
-        return {"value" : "success"}                      
-                                
-    logger.info("Invalid parameterset good form")
-    return {"value" : "fail", "errors" : dict(form.errors.items())}
-
 def take_update_parameterset_player(data):
     '''
     update parameterset player
@@ -328,7 +212,7 @@ def take_update_parameterset_player(data):
     try:        
         parameter_set_player = ParameterSetPlayer.objects.get(id=paramterset_player_id)
     except ObjectDoesNotExist:
-        logger.warning(f"take_update_parameterset_type paramterset_player, not found ID: {paramterset_player_id}")
+        logger.warning(f"take_update_parameterset_player parameterset_player, not found ID: {paramterset_player_id}")
         return
     
     form_data_dict = form_data
@@ -429,37 +313,3 @@ def take_download_parameters(data):
     session = Session.objects.get(id=session_id)
    
     return {"status" : "success", "parameter_set":session.parameter_set.json()}                      
-
-def take_update_parameterset_avatar(data):
-    '''
-    update parameterset avatar
-    '''   
-
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset avatar: {data}")
-
-    session_id = data["sessionID"]
-    parameterset_avatar_id = data["parameterset_avatar_id"]
-    form_data = data["formData"]
-
-    try:        
-        parameter_set_avatar = ParameterSetAvatar.objects.get(id=parameterset_avatar_id)
-    except ObjectDoesNotExist:
-        logger.warning(f"take_update_parameterset_good paramterset_avatar, not found ID: {parameterset_avatar_id}")
-        return
-    
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
-
-    form = ParameterSetAvatarForm(form_data_dict, instance=parameter_set_avatar)
-
-    if form.is_valid():
-        #print("valid form")             
-        form.save()              
-
-        return {"value" : "success", "result" : parameter_set_avatar.parameter_set.json()}                      
-                                
-    logger.info("Invalid parameterset avatar form")
-    return {"value" : "fail", "errors" : dict(form.errors.items())}
