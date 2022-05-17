@@ -87,6 +87,11 @@ class Session(models.Model):
         self.start_date = datetime.now()
         self.time_remaining = self.parameter_set.period_length
 
+        if self.parameter_set.show_instructions:
+            self.current_experiment_phase = ExperimentPhase.INSTRUCTIONS
+        else:
+            self.current_experiment_phase = ExperimentPhase.RUN
+        
         session_periods = []
 
         for i in range(self.parameter_set.period_count):
@@ -108,6 +113,7 @@ class Session(models.Model):
         self.current_period = 1
         self.time_remaining = self.parameter_set.period_length
         self.timer_running = False
+        self.current_experiment_phase = ExperimentPhase.RUN
 
         for p in self.session_players.all():
             p.reset()

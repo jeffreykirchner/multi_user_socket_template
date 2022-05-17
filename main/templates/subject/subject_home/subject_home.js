@@ -118,6 +118,12 @@ var app = Vue.createApp({
              document.getElementById('endGameModal').addEventListener('hidden.bs.modal', app.hideEndGameModal);
 
              {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
+
+            // if game is finished show modal
+            if(app.session.finished)
+            {
+                this.showEndGameModal();
+            }
          },
 
         /** send winsock request to get session info
@@ -151,19 +157,17 @@ var app = Vue.createApp({
                 {
                     app.updateChatDisplay();               
                 }
-
-
-                // if game is finished show modal
-                if(app.session.finished)
-                {
-                    this.showEndGameModal();
-                }
             }
 
             if(this.session.current_experiment_phase == 'Instructions')
             {
                 setTimeout(this.processInstructionPage, 1000);
                 this.instructionDisplayScroll();
+            }
+
+            if(!app.first_load_done)
+            {
+                setTimeout(app.doFirstLoad, 500);
             }
         },
 
@@ -180,8 +184,7 @@ var app = Vue.createApp({
         takeUpdateResetExperiment(messageData){
             app.takeGetSession(messageData);
 
-            app.endGameModal.hide();
-            this.closeMoveModal();
+            app.endGameModal.hide();            
         },
 
         /**
@@ -215,10 +218,7 @@ var app = Vue.createApp({
          */
         showEndGameModal(){
             if(this.end_game_modal_visible) return;
-
-            //hide transfer modals
-            this.closeMoveModal();
-           
+   
             app.endGameModal.toggle();
 
             this.end_game_modal_visible = true;

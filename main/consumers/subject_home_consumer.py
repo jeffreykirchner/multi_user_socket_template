@@ -1,6 +1,7 @@
 '''
 websocket session list
 '''
+from pickle import TRUE
 from asgiref.sync import sync_to_async
 
 import logging
@@ -253,10 +254,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         event_data = deepcopy(event["data"])
 
-        #if new period is starting, update local info
-        if event_data["result"]["do_group_update"]:
-             await self.update_local_info(event)
-
         #remove other player earnings
         for session_players_earnings in event_data["result"]["session_player_earnings"]:
             if session_players_earnings["id"] == self.session_player_id:
@@ -464,17 +461,17 @@ def take_name(session_id, session_player_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Take name: {session_id} {session_player_id} {data}")
 
-    form_data_dict = {}
+    form_data_dict =  data["formData"]
 
-    try:
-        form_data = data["formData"]
+    # try:
+    #     form_data = data["formData"]
 
-        for field in form_data:            
-            form_data_dict[field["name"]] = field["value"]
+    #     # for field in form_data:            
+    #     #     form_data_dict[field["name"]] = field["value"]
 
-    except KeyError:
-        logger.warning(f"take_name , setup form: {session_player_id}")
-        return {"value" : "fail", "errors" : {f"name":["Invalid Entry."]}}
+    # except KeyError:
+    #     logger.warning(f"take_name , setup form: {session_player_id}")
+    #     return {"value" : "fail", "errors" : {f"name":["Invalid Entry."]}}
     
     session = Session.objects.get(id=session_id)
     session_player = session.session_players.get(id=session_player_id)
@@ -492,6 +489,7 @@ def take_name(session_id, session_player_id, data):
 
         session_player.name = form.cleaned_data["name"]
         session_player.student_id = form.cleaned_data["student_id"]
+        session_player.name_submitted = True
 
         session_player.name = string.capwords(session_player.name)
 
@@ -500,6 +498,7 @@ def take_name(session_id, session_player_id, data):
         return {"value" : "success",
                 "result" : {"id" : session_player_id,
                             "name" : session_player.name, 
+                            "name_submitted" : session_player.name_submitted,
                             "student_id" : session_player.student_id}}                      
                                 
     logger.info("Invalid session form")

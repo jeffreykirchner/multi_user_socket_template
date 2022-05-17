@@ -26,6 +26,7 @@ from main.models import Session
 from main.models import Parameters
 
 from main.globals import send_mass_email_service
+from main.globals import ExperimentPhase
 
 class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
@@ -688,13 +689,7 @@ def take_next_phase(session_id, data):
     #session_id = data["sessionID"]
     session = Session.objects.get(id=session_id)
 
-    if session.current_experiment_phase == ExperimentPhase.SELECTION:
-        if session.parameter_set.show_instructions:
-            session.current_experiment_phase = ExperimentPhase.INSTRUCTIONS
-        else:
-            session.current_experiment_phase = ExperimentPhase.RUN
-
-    elif session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
+    if session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
         session.current_experiment_phase = ExperimentPhase.RUN
 
     elif session.current_experiment_phase == ExperimentPhase.RUN:

@@ -11,10 +11,10 @@
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header fw-bold">
-                The Experiment is complete.
+                The experiment is complete.
             </div>
             <div class="modal-body">
-                <div v-show="session_player.name==''">
+                <div v-show="!session_player.name_submitted">
                     <form id="endGameForm" v-on:submit.prevent="onSubmit">
                         {% for i in end_game_form %}
                         <div class="row">
@@ -25,7 +25,8 @@
                         {% endfor %}
                     </form>
                 </div>
-                <div class="text-center" v-show="session_player.name!=''">
+
+                <div class="text-center" v-show="session_player.name_submitted">
                     <span class="fs-3 mt-4">Earnings: $[[(session_player.earnings/100).toFixed(2)]]<span></span>
                 </div>
                 
@@ -36,7 +37,7 @@
                         class="btn btn-outline-primary"
                         v-on:click = "sendName()"
                         title="Submit Name"
-                        v-show="session_player.name==''"
+                        v-show="!session_player.name_submitted"
                         v-bind:disabled="reconnecting || working">
                     Submit <i class="fas fa-sign-in-alt"></i>
                 </button>

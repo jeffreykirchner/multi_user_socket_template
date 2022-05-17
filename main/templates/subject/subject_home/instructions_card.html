@@ -15,21 +15,7 @@
         </div>    
 
         <div class="row mt-2">
-            <div class="col-md">
-                <button class="btn btn-outline-secondary ms-2"
-                        type="button" 
-                        title="Simulate Production"                 
-                        id="simulate_production_id"       
-                        v-bind:disabled="reconnecting || working"
-                        v-show="session_player.current_instruction==2 && session_player.current_instruction_complete<=2"
-                        v-on:click="simulateProductionInstructions()">Simulate Production <i class="fas fa-sync-alt"></i></button>
-                
-                <button class="btn btn-outline-secondary ms-2"
-                        type="button" 
-                        title="Simulate Production"                        
-                        v-bind:disabled="reconnecting || working"
-                        v-show="session_player.current_instruction==3 && session_player.current_instruction_complete<=3"
-                        v-on:click="setup_page_3_instructions()">Reset <i class="fas fa-sync-alt"></i></button>
+            <div class="col-md">              
 
                 <span class="float-end">
                     <span class="me-4 text-danger"

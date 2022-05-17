@@ -35,8 +35,9 @@ class SessionPlayer(models.Model):
 
     name = models.CharField(verbose_name='Full Name', max_length = 100, default="")                     #subject's full name
     student_id = models.CharField(verbose_name='Student ID', max_length = 100, default="")              #subject's student ID number
-    email =  models.EmailField(verbose_name='Email Address', max_length = 100, blank=True, null=True)              #subject's email address
+    email =  models.EmailField(verbose_name='Email Address', max_length = 100, blank=True, null=True)   #subject's email address
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)                         #earnings in cents
+    name_submitted = models.BooleanField(default=False, verbose_name='Name submitted')                  #true if subject has submitted name and student id
 
     current_instruction = models.IntegerField(verbose_name='Current Instruction', default=0)                     #current instruction page subject is on
     current_instruction_complete = models.IntegerField(verbose_name='Current Instruction Complete', default=0)   #furthest complete page subject has done
@@ -66,6 +67,11 @@ class SessionPlayer(models.Model):
         self.name = ""
         self.student_id = ""
         self.email = None
+        self.name_submitted = False
+
+        self.current_instruction = 1
+        self.current_instruction_complete = 0
+        self.instructions_finished = False
 
         self.save()
     
@@ -106,6 +112,7 @@ class SessionPlayer(models.Model):
             "name" : self.name,
             "student_id" : self.student_id,   
             "email" : self.email,
+            "name_submitted" : self.name_submitted,
 
             "earnings" : self.earnings,
 
