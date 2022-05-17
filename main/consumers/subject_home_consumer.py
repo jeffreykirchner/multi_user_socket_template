@@ -394,7 +394,7 @@ def take_chat(session_id, session_player_id, data):
         return {"value" : "fail", "result" : {"message" : "Session finished."}}
 
     if session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
-            return {"value" : "fail", "result" : {"message" : "Session not running."}}
+        return {"value" : "fail", "result" : {"message" : "Session not running."}}
 
     if recipients == "all":
         session_player_chat.chat_type = ChatTypes.ALL

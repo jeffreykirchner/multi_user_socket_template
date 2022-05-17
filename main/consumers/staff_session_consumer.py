@@ -694,6 +694,7 @@ def take_next_phase(session_id, data):
 
     elif session.current_experiment_phase == ExperimentPhase.RUN:
         session.current_experiment_phase = ExperimentPhase.DONE
+        session.finished = True
 
     session.save()
 

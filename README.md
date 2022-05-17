@@ -17,9 +17,6 @@ Activate virtual environment and install requirments:
 virtualenv --python=python3.9 _multi_user_socket_template_env
 pip install -U -r requirements.txt
 
-Migrate:
-python manage.py migrate
-
 Setup Environment:
 sh setup.sh
 

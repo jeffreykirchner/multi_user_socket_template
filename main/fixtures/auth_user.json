@@ -1,0 +1,38 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "password": "go panthers",
+            "last_login": "2022-01-18T17:00:11.577Z",
+            "is_superuser": true,
+            "username": "adamsmith@abc.edu",
+            "first_name": "Adam",
+            "last_name": "Smith",
+            "email": "adamsmith@abc.edu",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2021-10-15T18:55:33Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "password": "welcome to esi",
+            "last_login": "2022-01-17T23:18:34.567Z",
+            "is_superuser": false,
+            "username": "vernonsmith@abc.edu",
+            "first_name": "Vernon",
+            "last_name": "Smith",
+            "email": "vernonsmith@abc.edu",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2021-11-20T05:32:32.248Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]
