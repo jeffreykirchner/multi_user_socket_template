@@ -117,7 +117,7 @@ var app = Vue.createApp({
              app.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false})           
              document.getElementById('endGameModal').addEventListener('hidden.bs.modal', app.hideEndGameModal);
 
-             {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
+             {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 1500)); {%endif%}
 
             // if game is finished show modal
             if(app.session.finished)

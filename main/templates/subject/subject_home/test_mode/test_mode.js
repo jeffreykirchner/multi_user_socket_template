@@ -60,7 +60,7 @@ doTestMode(){
        
     }
 
-    setTimeout(this.doTestMode, this.randomNumber(1000 , 10000));
+    setTimeout(this.doTestMode, this.randomNumber(1000 , 1500));
 },
 
 /**
@@ -71,32 +71,34 @@ doTestMode(){
     if(this.session_player.instructions_finished) return;
     if(this.working) return;
     
+   
     if(this.session_player.current_instruction == this.session_player.current_instruction_complete)
     {
 
-        if(this.session_player.current_instruction == 5)
+        if(this.session_player.current_instruction == this.instruction_pages.length)
             document.getElementById("instructions_start_id").click();
         else
             document.getElementById("instructions_next_id").click();
 
     }else
     {
+        //take action if needed to complete page
         switch (this.session_player.current_instruction)
         {
             case 1:
                 break;
             case 2:
-               
+                
                 break;
             case 3:
-               
+                
                 break;
             case 4:
                 
                 break;
             case 5:
                 break;
-        }
+        }   
     }
 
     
@@ -139,15 +141,22 @@ doTestModeRun()
  */
 doTestModeChat(){
 
-    session_player_local = this.session.session_players[this.randomNumber(0,  this.session.session_players.length-1)];
-
-    if(session_player_local.id == this.session_player.id || this.session.current_experiment_phase == "Instructions")
+    if(app.session.parameter_set.private_chat)
     {
-        document.getElementById("chat_all_id").click();
+        session_player_local = this.session.session_players[this.randomNumber(0,  this.session.session_players.length-1)];
+
+        if(session_player_local.id == this.session_player.id || this.session.current_experiment_phase == "Instructions")
+        {
+            document.getElementById("chat_all_id").click();
+        }
+        else
+        {
+            document.getElementById('chat_invididual_' + session_player_local.id + '_id').click();
+        }        
     }
     else
     {
-        document.getElementById('chat_invididual_' + session_player_local.id + '_id').click();
+        document.getElementById("chat_all_id").click();
     }
 
     this.chat_text = this.randomString(5, 20);

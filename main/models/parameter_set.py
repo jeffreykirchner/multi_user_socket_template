@@ -136,6 +136,7 @@ class ParameterSet(models.Model):
             
             "period_length" : self.period_length,
             "show_instructions" : "True" if self.show_instructions else "False",
+            "private_chat" : self.private_chat,
 
             "test_mode" : self.test_mode,
         }
