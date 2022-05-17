@@ -70,7 +70,7 @@
                             {{request.user.last_name}}, {{request.user.first_name}}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdown">
-                            {%if user.is_superuser%}
+                            {%if user.is_staff%}
                                 <li>
                                     <a class="dropdown-item" href="{% url 'admin:index' %}"  data-placement="bottom" title="Admin Panel">
                                         <i class="fas fa-cogs fa-fw"></i> Admin
