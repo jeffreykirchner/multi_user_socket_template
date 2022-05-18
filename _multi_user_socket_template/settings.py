@@ -1,5 +1,5 @@
 """
-Django settings for trade_steal project.
+Django settings for multi_user_socket_template project.
 """
 
 from pathlib import Path

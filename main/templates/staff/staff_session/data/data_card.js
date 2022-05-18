@@ -15,7 +15,7 @@ takeDownloadSummaryData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Trade_Steal_Summary_Data_Session_" + app.session.id +".csv";
+    downloadLink.download = "Template_Data_Session_" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -41,7 +41,7 @@ takeDownloadActionData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Trade_Steal_Action_Data_Session_" + app.session.id +".csv";
+    downloadLink.download = "Template_Action_Data_Session_" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -67,7 +67,7 @@ takeDownloadRecruiterData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Trade_Steal_Recruiter_Data_Session_" + app.session.id +".csv";
+    downloadLink.download = "Template_Recruiter_Data_Session_" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -93,7 +93,7 @@ takeDownloadPaymentData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Trade_Steal_Payment_Data_Session_" + app.session.id +".csv";
+    downloadLink.download = "Template_Payment_Data_Session_" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();

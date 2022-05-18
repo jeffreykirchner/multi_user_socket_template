@@ -198,7 +198,7 @@ class Session(models.Model):
         writer.writerow(["Session ID", "Period", "Client #", "Label", "Earnings ¢"])
 
         session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
-                                                                        .order_by('session_period__period_number')
+                                                                        .order_by('session_period__period_number', 'session_player__player_number')
 
         for p in session_player_periods.all():
             p.write_summary_download_csv(writer)
@@ -213,7 +213,7 @@ class Session(models.Model):
 
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(["Session ID", "Period", "Time", "Client #", "Action", "Info", "Info (JSON)", "Timestamp"])
+        writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action", "Info", "Info (JSON)", "Timestamp"])
 
         session_player_chats = main.models.SessionPlayerChat.objects.filter(session_player__in=self.session_players.all())
 
@@ -250,7 +250,7 @@ class Session(models.Model):
         session_players = self.session_players.all()
 
         for p in session_players:
-            writer.writerow([p.name, p.student_id, p.earnings/100, p.avatar.label if p.avatar else 'None'])
+            writer.writerow([p.name, p.student_id, p.earnings/100])
 
         return output.getvalue()
 
