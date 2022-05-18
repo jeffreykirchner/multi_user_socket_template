@@ -1,8 +1,20 @@
 /**show edit parameter set player
  */
- showEditParametersetPlayer:function(index){
+ showEditParametersetPlayer:function(id){
     
     if(app.session.started) return;
+
+    var parameter_set_players = app.session.parameter_set.parameter_set_players;
+
+    index = -1;
+    for(i=0;i<parameter_set_players.length;i++)
+    {
+        if(parameter_set_players[i].id == id)
+        {
+            index = i;
+            break;
+        }
+    }
     
     app.clearMainFormErrors();
     app.cancelModal=true;

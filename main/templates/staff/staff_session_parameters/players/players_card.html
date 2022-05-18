@@ -29,12 +29,12 @@
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.parameter_set.parameter_set_players" v-bind:key="p.id">
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[index+1]]
+                        <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                            <td v-on:click="showEditParametersetPlayer(p.parameter_set_player.id)" class="player_table_cell">
+                                [[p.player_number]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.id_label]]
+                            <td v-on:click="showEditParametersetPlayer(p.parameter_set_player.id)" class="player_table_cell">
+                                [[p.parameter_set_player.id_label]]
                             </td>
                             
                         </tr>
