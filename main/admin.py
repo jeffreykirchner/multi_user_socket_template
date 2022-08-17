@@ -26,6 +26,7 @@ from main.models.instruction import Instruction
 
 admin.site.site_header = settings.ADMIN_SITE_HEADER
 
+@admin.register(Parameters)
 class ParametersAdmin(admin.ModelAdmin):
     '''
     parameters model admin
@@ -40,21 +41,16 @@ class ParametersAdmin(admin.ModelAdmin):
 
     actions = []
 
-admin.site.register(Parameters, ParametersAdmin)
-
 admin.site.register(ParameterSet)
 admin.site.register(ParameterSetPlayer)
-
-
-class SessionAdmin(admin.ModelAdmin):
-    form = SessionFormAdmin
-
-admin.site.register(Session, SessionAdmin)
-
-
 admin.site.register(SessionPlayer)
 admin.site.register(SessionPlayerChat)
 admin.site.register(SessionPlayerPeriod)
+admin.site.register(HelpDocs)
+
+@admin.register(Session)
+class SessionAdmin(admin.ModelAdmin):
+    form = SessionFormAdmin
 
 #instruction set page
 class InstructionPageInline(admin.TabularInline):
@@ -66,6 +62,7 @@ class InstructionPageInline(admin.TabularInline):
       model = Instruction
       can_delete = True
 
+@admin.register(InstructionSet)
 class InstructionSetAdmin(admin.ModelAdmin):
     form = InstructionSetFormAdmin
 
@@ -93,6 +90,3 @@ class InstructionSetAdmin(admin.ModelAdmin):
     
     actions = [duplicate_set]
 
-admin.site.register(InstructionSet, InstructionSetAdmin)
-
-admin.site.register(HelpDocs)
