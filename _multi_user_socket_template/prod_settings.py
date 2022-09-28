@@ -12,6 +12,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = 'main/static/'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS').split()
 
 # Database
 
