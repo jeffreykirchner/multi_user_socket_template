@@ -28,7 +28,6 @@ var app = Vue.createApp({
                     chat_list_to_display : [],                //list of chats to display on screen
 
                     end_game_modal_visible : false,
-                    avatar_choice_modal_visible : false,
 
                     instruction_pages : {{instruction_pages|safe}},
 
@@ -243,12 +242,6 @@ var app = Vue.createApp({
             this.session_player = messageData.status.session_player;
 
             app.updateChatDisplay();          
-        },
-
-        /** hide choice grid modal modal
-        */
-        hideChoiceGridModal(){
-            this.avatar_choice_modal_visible=false;
         },
 
         /** hide choice grid modal modal
