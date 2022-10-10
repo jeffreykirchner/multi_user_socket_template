@@ -14,7 +14,6 @@ from main.models import InstructionSet
 
 import main
 
-#experiment session parameters
 class ParameterSet(models.Model):
     '''
     parameter set
@@ -24,13 +23,13 @@ class ParameterSet(models.Model):
     period_count = models.IntegerField(verbose_name='Number of periods', default=20)                          #number of periods in the experiment
     period_length = models.IntegerField(verbose_name='Period Length, Production', default=60           )      #period length in seconds
     
-    private_chat = models.BooleanField(default=True, verbose_name = 'Private Chat')                          #if true subjects can privately chat one on one
-    show_instructions = models.BooleanField(default=True, verbose_name = 'Show Instructions')                #if true show instructions
+    private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                          #if true subjects can privately chat one on one
+    show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                #if true show instructions
 
-    test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
+    test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
 
-    timestamp = models.DateTimeField(auto_now_add= True)
-    updated= models.DateTimeField(auto_now= True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.id)

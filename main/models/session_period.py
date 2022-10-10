@@ -18,8 +18,8 @@ class SessionPeriod(models.Model):
 
     period_number = models.IntegerField()                       #period number from 1 to N
 
-    timestamp = models.DateTimeField(auto_now_add= True)
-    updated= models.DateTimeField(auto_now= True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.id}"

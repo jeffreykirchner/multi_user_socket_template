@@ -11,8 +11,8 @@ class HelpDocs(models.Model):
     title = models.CharField(verbose_name = 'Title', max_length = 300, default="")    
     text = HTMLField(verbose_name = 'Help Doc Text', max_length = 100000, default="")
 
-    timestamp = models.DateTimeField(auto_now_add= True)
-    updated= models.DateTimeField(auto_now= True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated= models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Help Doc'
