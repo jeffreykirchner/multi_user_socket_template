@@ -100,7 +100,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         '''
 
         message_data = {}
-        message_data["status"] = await sync_to_async(take_add_paramterset_player)(event["message_text"])
+        message_data["status"] = await sync_to_async(take_add_parameterset_player)(event["message_text"])
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
@@ -253,7 +253,7 @@ def take_remove_parameterset_player(data):
     
     return {"value" : "success"}
 
-def take_add_paramterset_player(data):
+def take_add_parameterset_player(data):
     '''
     add a new parameter player to the parameter set
     '''
