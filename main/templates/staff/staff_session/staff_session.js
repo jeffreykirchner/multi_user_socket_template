@@ -17,7 +17,7 @@ var app = Vue.createApp({
                     sessionID : {{session.id}},
                     sessionKey : "{{session.session_key}}",
                     other_color : 0xD3D3D3,
-                    session : {{session_json|safe}},
+                    session : null,
 
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
 

@@ -58,18 +58,22 @@
 {% block content %}
 
 <!-- modals -->
-{%include "help_modal.html"%}
-{%include "staff/staff_session/session/edit_session_modal.html"%}
-{%include "staff/staff_session/subjects/edit_subject_modal.html"%}
-{%include "staff/staff_session/subjects/upload_email_list_modal.html"%}
-{%include "staff/staff_session/control/sendInvitationModal.html"%}
-
-<!-- cards -->
-<div class="row justify-content-lg-center" v-cloak>
-        
+<div v-if="session">
+    {%include "help_modal.html"%}
+    {%include "staff/staff_session/session/edit_session_modal.html"%}
+    {%include "staff/staff_session/subjects/edit_subject_modal.html"%}
+    {%include "staff/staff_session/subjects/upload_email_list_modal.html"%}
+    {%include "staff/staff_session/control/sendInvitationModal.html"%}
 </div>
 
-<div class="row justify-content-lg-center mt-4" v-cloak>
+<!-- cards -->
+<div class="row justify-content-lg-center" v-if="!session">
+    <div class="col text-end">
+        <i class="fas fa-cog fa-spin fa-2x"></i>
+    </div>
+</div>
+
+<div class="row justify-content-lg-center mt-4" v-cloak v-if="session">
     <div class="col-md-9">
         <div class="row">
             <div class="col mb-2">
