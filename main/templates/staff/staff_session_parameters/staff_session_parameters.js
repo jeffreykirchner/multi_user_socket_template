@@ -15,7 +15,7 @@ var app = Vue.createApp({
                     helpText : "Loading ...",
                     sessionID : {{session.id}},
                     session : {{session_json|safe}},                   
-                    valuecost_modal_label:'Edit Value or Cost',
+    
                     current_parameter_set_player : {
                         id:0,
                     },                  

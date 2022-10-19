@@ -18,7 +18,7 @@ class ParameterSetForm(forms.ModelForm):
                                                                       "step":"1",
                                                                       "min":"1"}))
 
-    period_length = forms.IntegerField(label='Production Length (seconds)',
+    period_length = forms.IntegerField(label='Period Length (seconds)',
                                        min_value=1,
                                        widget=forms.NumberInput(attrs={"v-model":"session.parameter_set.period_length",
                                                                        "step":"1",
