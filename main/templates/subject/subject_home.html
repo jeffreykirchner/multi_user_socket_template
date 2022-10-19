@@ -35,44 +35,44 @@
 
 <!-- modals -->
 
+<div v-if="session">
+    <!-- instructions -->
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
+        <div class="col-md">
+            {%include "subject/subject_home/instructions_card.html"%}
+        </div>
+    </div>
 
-<!-- instructions -->
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
-    <div class="col-md">
-        {%include "subject/subject_home/instructions_card.html"%}
+    <!-- experiment -->
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
+        <div class="col-md-9">
+            {%include "subject/subject_home/graph_card.html"%}                
+        </div>
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md">
+                    {%include "subject/subject_home/summary_card.html"%}
+                </div>            
+            </div>     
+        </div>
+    </div>
+
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
+        <div class="col-12 fs-4 fw-bold text-center">
+            <br>
+            <br>
+            <br>
+            <br>
+            The session is complete, thank you for your participation!              
+        </div>    
+    </div>
+
+    <div class="row justify-content-lg-center mt-4">
+        <div class="col-12 text-end text-muted">
+            <span class="align-middle">Client [[session_player.player_number]]</span>
+        </div>  
     </div>
 </div>
-
-<!-- experiment -->
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
-    <div class="col-md-9">
-        {%include "subject/subject_home/graph_card.html"%}                
-    </div>
-    <div class="col-md-3">
-        <div class="row">
-            <div class="col-md">
-                {%include "subject/subject_home/summary_card.html"%}
-            </div>            
-        </div>     
-    </div>
-</div>
-
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
-    <div class="col-12 fs-4 fw-bold text-center">
-        <br>
-        <br>
-        <br>
-        <br>
-        The session is complete, thank you for your participation!              
-    </div>    
-</div>
-
-<div class="row justify-content-lg-center mt-4">
-    <div class="col-12 text-end text-muted">
-        <span class="align-middle">Client [[session_player.player_number]]</span>
-    </div>  
-</div>
-
 
 
 {% endblock %}

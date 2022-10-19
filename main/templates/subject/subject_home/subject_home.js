@@ -16,8 +16,8 @@ var app = Vue.createApp({
                     playerKey : "{{session_player.player_key}}",
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,
-                    session_player : {{session_player_json|safe}}, 
-                    session : {{session_json|safe}},
+                    session_player : null, 
+                    session : null,
 
                     end_game_form_ids: {{end_game_form_ids|safe}},
 
