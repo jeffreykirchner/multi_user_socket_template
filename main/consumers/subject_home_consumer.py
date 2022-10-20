@@ -289,16 +289,13 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         handle connection status update from group member
         '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Connection update")
+        pass
 
     async def update_name(self, event):
         '''
         no group broadcast of name to subjects
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
     
     async def update_next_phase(self, event):
         '''
@@ -320,17 +317,13 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         no group broadcast of avatar to current instruction
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
     
     async def update_finish_instructions(self, event):
         '''
         no group broadcast of avatar to current instruction
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
 
 
 #local sync functions  
