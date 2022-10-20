@@ -56,10 +56,9 @@ class SubjectHomeView(View):
                                "page_key" : f'session-{session.id}',
                                "instruction_pages" : json.dumps(session_player.get_instruction_set(), cls=DjangoJSONEncoder),
                                "session_player" : session_player,
-                               "session_player_json" : json.dumps(session_player.json(), cls=DjangoJSONEncoder),
                                "session" : session,
                                "parameters" : parameters,
-                               "session_json":json.dumps(session.json_for_subject(session_player), cls=DjangoJSONEncoder)})
+                               })
     
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):

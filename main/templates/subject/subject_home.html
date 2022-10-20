@@ -35,13 +35,13 @@
 
 <!-- modals -->
 
-
-<!-- instructions -->
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
-    <div class="col-md">
-        {%include "subject/subject_home/instructions_card.html"%}
+<div v-if="session">
+    <!-- instructions -->
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
+        <div class="col-md">
+            {%include "subject/subject_home/instructions_card.html"%}
+        </div>
     </div>
-</div>
 
 <!-- experiment -->
 <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
@@ -57,20 +57,26 @@
     </div>
 </div>
 
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
-    <div class="col-12 fs-4 fw-bold text-center">
-        <br>
-        <br>
-        <br>
-        <br>
-        The session is complete, thank you for your participation!              
-    </div>    
-</div>
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
+        <div class="col-12 fs-4 fw-bold text-center">
+            <br>
+            <br>
+            <br>
+            <br>
+            The session is complete, thank you for your participation!              
+        </div>    
+    </div>
 
-<div class="row justify-content-lg-center mt-4">
-    <div class="col-12 text-end text-muted">
-        <span class="align-middle">Client [[session_player.player_number]]</span>
-    </div>  
+    <div class="row justify-content-lg-center mt-4">
+        <div class="col-12 text-end text-muted">
+            <span class="align-middle">Client [[session_player.player_number]]</span>
+        </div>  
+    </div>
+</div>
+<div v-else>
+    <div class="col text-end">
+        <i class="fas fa-cog fa-spin fa-2x"></i>
+    </div>
 </div>
 
 
