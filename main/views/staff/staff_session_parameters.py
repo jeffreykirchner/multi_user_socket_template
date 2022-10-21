@@ -61,7 +61,6 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "page_key" : f'{self.websocket_path}-{session.id}',
                                "number_of_player_types" : range(4),
                                "session" : session,
-                               "session_json":json.dumps(session.json(), cls=DjangoJSONEncoder)
                                })
     
     @method_decorator(login_required)

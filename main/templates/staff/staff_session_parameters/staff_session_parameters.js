@@ -14,7 +14,7 @@ var app = Vue.createApp({
                     first_load_done : false,          //true after software is loaded for the first time
                     helpText : "Loading ...",
                     sessionID : {{session.id}},
-                    session : {{session_json|safe}},                   
+                    session : null,                   
     
                     current_parameter_set_player : {
                         id:0,
