@@ -728,7 +728,7 @@ def take_start_timer(session_id, data):
 
         session.save()
 
-    return {"value" : "success", "result" : session.json_for_timmer()}
+    return {"value" : "success", "result" : session.json_for_timer()}
 
 def take_do_period_timer(session_id):
     '''
