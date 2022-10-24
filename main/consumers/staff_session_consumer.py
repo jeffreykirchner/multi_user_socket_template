@@ -490,23 +490,6 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-    
-    async def update_avatar(self, event):
-        '''
-        send update avatar notice to staff screens
-        '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
-
-        message_data = {}
-        message_data["status"] = event["data"]
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     async def update_next_phase(self, event):
         '''
