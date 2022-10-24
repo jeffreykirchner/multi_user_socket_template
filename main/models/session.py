@@ -181,7 +181,7 @@ class Session(models.Model):
 
         self.save()
 
-        result = self.json_for_timmer()
+        result = self.json_for_timer()
 
         return {"value" : status,
                 "result" : result,
@@ -302,7 +302,7 @@ class Session(models.Model):
             "session_players":[i.json_for_subject(session_player) for i in session_player.session.session_players.all()]
         }
     
-    def json_for_timmer(self):
+    def json_for_timer(self):
         '''
         return json object for timer update
         '''
