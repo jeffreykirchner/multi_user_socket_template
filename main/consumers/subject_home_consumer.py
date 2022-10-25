@@ -578,7 +578,7 @@ def take_finish_instructions(session_id, session_player_id, data):
 
     except ObjectDoesNotExist:
         logger.warning(f"take_next_instruction : {session_player_id}")
-        return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+        return {"value" : "fail", "errors" : {}, "message" : "Error"}       
     
     return {"value" : "success",
             "result" : {"instructions_finished" : session_player.instructions_finished,
