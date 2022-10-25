@@ -151,7 +151,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     
     async def finish_instructions(self, event):
         '''
-        fisish instructions
+        finish instructions
         '''
         result = await sync_to_async(take_finish_instructions)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
