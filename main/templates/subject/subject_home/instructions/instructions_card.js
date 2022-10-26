@@ -110,6 +110,7 @@ processInstructionPage(){
  */
 instructionDisplayScroll(){
     
-    document.getElementById("instructions_frame").scrollIntoView();
+    if(document.getElementById("instructions_frame"))
+        document.getElementById("instructions_frame").scrollIntoView();
     
 },
