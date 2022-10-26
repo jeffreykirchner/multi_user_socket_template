@@ -31,7 +31,8 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [(os.environ['REDIS'])],
+            'hosts': [(os.environ['REDIS'])],
+            'prefix' : 'multi_user_socket_template',
         },
     },
 }
