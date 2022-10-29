@@ -65,7 +65,7 @@
         </div>
 
         <!-- end early -->
-        <div class="row mt-2" v-show="session.started && !session.locked">
+        <div class="row mt-2" v-show="session.started && !session.locked && session.current_experiment_phase =='Run'">
             <div class="col-md text-center">
                 <button type="button"
                         class="btn btn-outline-danger"
