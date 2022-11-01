@@ -76,6 +76,14 @@ class Session(models.Model):
         '''
         return  self.start_date.strftime("%#m/%#d/%Y")
 
+    def get_group_channel_name(self):
+        '''
+        return channel name for group
+        '''
+        page_key = f"session-{self.id}"
+        room_name = f"{self.channel_key}"
+        return  f'{page_key}-{room_name}'
+
     def start_experiment(self):
         '''
         setup and start experiment
