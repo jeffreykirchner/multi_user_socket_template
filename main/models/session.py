@@ -4,6 +4,8 @@ session model
 
 from datetime import datetime
 from tinymce.models import HTMLField
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 import logging
 import uuid
@@ -83,6 +85,15 @@ class Session(models.Model):
         page_key = f"session-{self.id}"
         room_name = f"{self.channel_key}"
         return  f'{page_key}-{room_name}'
+    
+    def send_message_to_group(self, message_type, message_data):
+        '''
+        send socket message to group
+        '''
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(self.get_group_channel_name(),
+                                                {"type" : message_type,
+                                                 "data" : message_data})
 
     def start_experiment(self):
         '''
