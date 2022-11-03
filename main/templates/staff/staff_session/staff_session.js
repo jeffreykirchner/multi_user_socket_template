@@ -177,6 +177,21 @@ var app = Vue.createApp({
              document.getElementById('editSessionModal').addEventListener('hidden.bs.modal', app.hideEditSession);
              document.getElementById('sendMessageModal').addEventListener('hidden.bs.modal', app.hideSendInvitations);
              document.getElementById('uploadEmailModal').addEventListener('hidden.bs.modal', app.hideSendEmailList);
+
+            tinyMCE.init({
+                target: document.getElementById('id_invitation_subject'),
+                height : "400",
+                theme: "silver",
+                plugins: "directionality,paste,searchreplace,code",
+                directionality: "{{ directionality }}",
+            });
+    
+            // Prevent Bootstrap dialog from blocking focusin
+            document.addEventListener('focusin', (e) => {
+            if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                e.stopImmediatePropagation();
+            }
+            });
          },
 
         /** send winsock request to get session info
