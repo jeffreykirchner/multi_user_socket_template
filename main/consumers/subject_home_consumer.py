@@ -325,6 +325,11 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         pass
 
+    async def update_anonymize_data(self, event):
+        '''
+        no anonmyize data update on client
+        '''
+
 
 #local sync functions  
 def take_get_session_subject(session_player_id):

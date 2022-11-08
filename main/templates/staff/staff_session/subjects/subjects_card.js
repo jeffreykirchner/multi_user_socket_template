@@ -286,3 +286,42 @@ hideEditSubject:function(){
      /* Copy the text inside the text field */
      document.execCommand("copy");
  },
+
+ /** send session update form   
+*/
+sendAnonymizeData(){
+    
+    if (!confirm('Anonymize data? Identifying information will be permanent removed.')) {
+        return;
+    }
+
+    this.working = true;
+    app.sendMessage("anonymize_data",{});
+},
+
+/** take update subject response
+ * @param messageData {json} result of update, either sucess or fail with errors
+*/
+takeAnonymizeData(messageData){
+    app.clearMainFormErrors();
+
+    if(messageData.status.value == "success")
+    {            
+
+        let session_player_updates = messageData.status.result;
+        let session_players = this.session.session_players;
+
+        for(let i=0; i<session_player_updates.length; i++)
+        {
+            session_player = app.findSessionPlayer(session_player_updates[i].id);
+
+            if(session_player)
+            {
+                session_player.email = session_player_updates[i].email;
+                session_player.name = session_player_updates[i].name;
+                session_player.student_id = session_player_updates[i].student_id;
+            }
+        }
+    
+    } 
+},

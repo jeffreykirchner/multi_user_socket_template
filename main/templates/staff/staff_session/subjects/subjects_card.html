@@ -13,6 +13,10 @@
                 [[session.started ? 'View': 'Edit']] Parameters                
             </a>
 
+            <button type="button" class="btn btn-outline-primary ms-4" title="Remove Names and Student IDs" v-on:click="sendAnonymizeData()">
+                Anonymize Data <i class="far fa-address-card"></i>
+            </button>
+
             <button type="button" class="btn btn-outline-primary ms-4" title="Upload Email List" v-on:click="copyEarnings()">
                 Copy Earnings <span v-if="earnings_copied"><i class="fas fa-check"></i></span><span v-else><i class="fas fa-copy"></i></span>
             </button>

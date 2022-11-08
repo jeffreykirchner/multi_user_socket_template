@@ -143,6 +143,9 @@ var app = Vue.createApp({
                 case "email_list":
                     app.takeUpdateEmailList(messageData);
                     break;
+                case "update_anonymize_data":
+                    app.takeAnonymizeData(messageData);
+                    break;
             }
 
             this.first_load_done = true;
