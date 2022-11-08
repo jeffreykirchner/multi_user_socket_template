@@ -113,4 +113,23 @@ instructionDisplayScroll(){
     if(document.getElementById("instructions_frame"))
         document.getElementById("instructions_frame").scrollIntoView();
     
+    setTimeout(app.scroll_update, 500);
+},
+
+scroll_update()
+{
+    var scrollTop = document.getElementById('instructions_frame_a').scrollTop;
+    var scrollHeight = document.getElementById('instructions_frame_a').scrollHeight; // added
+    var offsetHeight = document.getElementById('instructions_frame_a').offsetHeight;
+    // var clientHeight = document.getElementById('box').clientHeight;
+    var contentHeight = scrollHeight - offsetHeight; // added
+    if (contentHeight <= scrollTop) // modified
+    {
+        // Now this is called when scroll end!
+        app.instruction_pages_show_scroll = false;
+    }
+    else
+    {
+        app.instruction_pages_show_scroll = true;
+    }
 },

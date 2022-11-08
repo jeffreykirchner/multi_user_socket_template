@@ -8,14 +8,21 @@
         
     </div>
     <div class="card-body"> 
-        <div class="row instructions">
-            <div id="instructions_frame" class="col-md border" v-html = "getInstructionPage(session_player.current_instruction)">
+        <div class="row instructions" id="instructions_frame_a">
+            <div id="instructions_frame" 
+                 class="col-md border" 
+                 style="background-color: ghostwhite"
+                 v-html = "getInstructionPage(session_player.current_instruction)">
 
             </div>
         </div>    
 
         <div class="row mt-2">
-            <div class="col-md">              
+            <div class="col-md text-center ">        
+                
+                <span class="h5" v-if="instruction_pages_show_scroll">
+                    <i class="fas fa-arrow-down"></i><i class="fas fa-arrow-down"></i> Scroll Down <i class="fas fa-arrow-down"></i><i class="fas fa-arrow-down"></i>
+                </span>
 
                 <span class="float-end">
                     <span class="me-4 text-danger"
