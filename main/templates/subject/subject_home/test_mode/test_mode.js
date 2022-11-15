@@ -13,11 +13,11 @@ randomNumber(min, max){
 randomString(min_length, max_length){
 
     s = "";
-    r = this.randomNumber(min_length, max_length);
+    r = app.randomNumber(min_length, max_length);
 
     for(let i=0;i<r;i++)
     {
-        v = this.randomNumber(48, 122);
+        v = app.randomNumber(48, 122);
         s += String.fromCharCode(v);
     }
 
@@ -29,38 +29,38 @@ doTestMode(){
     console.log("Do Test Mode");
     {%endif%}
 
-    if(this.end_game_modal_visible)
+    if(app.end_game_modal_visible && app.test_mode)
     {
-        if(this.session_player.name == "")
+        if(app.session_player.name == "")
         {
-            document.getElementById("id_name").value =  this.randomString(5, 20);
-            document.getElementById("id_student_id").value =  this.randomNumber(1000, 10000);
+            document.getElementById("id_name").value =  app.randomString(5, 20);
+            document.getElementById("id_student_id").value =  app.randomNumber(1000, 10000);
 
-            this.sendName();
+            app.sendName();
         }
 
         return;
     }
 
-    if(this.session.started &&
-       this.session.parameter_set.test_mode
+    if(app.session.started &&
+       app.test_mode
        )
     {
         
-        switch (this.session.current_experiment_phase)
+        switch (app.session.current_experiment_phase)
         {
             case "Instructions":
-                this.doTestModeInstructions();
+                app.doTestModeInstructions();
                 break;
             case "Run":
-                this.doTestModeRun();
+                app.doTestModeRun();
                 break;
             
         }        
        
     }
 
-    setTimeout(this.doTestMode, this.randomNumber(1000 , 1500));
+    setTimeout(app.doTestMode, app.randomNumber(1000 , 1500));
 },
 
 /**
@@ -68,14 +68,14 @@ doTestMode(){
  */
  doTestModeInstructions()
  {
-    if(this.session_player.instructions_finished) return;
-    if(this.working) return;
+    if(app.session_player.instructions_finished) return;
+    if(app.working) return;
     
    
-    if(this.session_player.current_instruction == this.session_player.current_instruction_complete)
+    if(app.session_player.current_instruction == app.session_player.current_instruction_complete)
     {
 
-        if(this.session_player.current_instruction == this.instruction_pages.length)
+        if(app.session_player.current_instruction == app.instruction_pages.length)
             document.getElementById("instructions_start_id").click();
         else
             document.getElementById("instructions_next_id").click();
@@ -83,7 +83,7 @@ doTestMode(){
     }else
     {
         //take action if needed to complete page
-        switch (this.session_player.current_instruction)
+        switch (app.session_player.current_instruction)
         {
             case 1:
                 break;
@@ -113,7 +113,7 @@ doTestModeRun()
     let go = true;
 
     if(go)
-        if(this.chat_text != "")
+        if(app.chat_text != "")
         {
             document.getElementById("send_chat_id").click();
             go=false;
@@ -122,9 +122,9 @@ doTestModeRun()
     if(app.session.finished) return;
         
     if(go)
-        switch (this.randomNumber(1, 3)){
+        switch (app.randomNumber(1, 3)){
             case 1:
-                this.doTestModeChat();
+                app.doTestModeChat();
                 break;
             
             case 2:
@@ -143,9 +143,9 @@ doTestModeChat(){
 
     if(app.session.parameter_set.private_chat)
     {
-        session_player_local = this.session.session_players[this.randomNumber(0,  this.session.session_players.length-1)];
+        session_player_local = app.session.session_players[app.randomNumber(0,  app.session.session_players.length-1)];
 
-        if(session_player_local.id == this.session_player.id || this.session.current_experiment_phase == "Instructions")
+        if(session_player_local.id == app.session_player.id || app.session.current_experiment_phase == "Instructions")
         {
             document.getElementById("chat_all_id").click();
         }
@@ -159,7 +159,7 @@ doTestModeChat(){
         document.getElementById("chat_all_id").click();
     }
 
-    this.chat_text = this.randomString(5, 20);
+    app.chat_text = app.randomString(5, 20);
 },
 
 

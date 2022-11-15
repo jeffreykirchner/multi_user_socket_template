@@ -8,13 +8,13 @@
                 Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
             </span>
 
-            {%if session.parameter_set.test_mode%}
+            {%if test_mode%}
                 <div class="form-check">
                     <input class="form-check-input"
                            type="checkbox" 
                            value="" 
                            id="testModeCheckBox" 
-                           v-model="session.parameter_set.test_mode"
+                           v-model="test_mode"
                            >
                     <label class="form-check-label" for="testModeCheckBox">
                     Test Mode On

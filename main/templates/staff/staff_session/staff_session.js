@@ -252,7 +252,7 @@ var app = Vue.createApp({
                 }
                 else
                 {
-                    this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
+                    this.move_to_next_phase_text = 'Continue Session <i class="far fa-play-circle"></i>';
                 }
             }
         },

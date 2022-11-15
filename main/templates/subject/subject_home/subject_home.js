@@ -34,6 +34,7 @@ var app = Vue.createApp({
 
                     // modals
                     endGameModal : null,
+                    test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
                 }},
     methods: {
 
