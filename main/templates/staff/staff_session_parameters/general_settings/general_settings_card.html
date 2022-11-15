@@ -55,6 +55,14 @@
         </div> 
         <div class="row">
             <div class="col-7 text-end">
+                {{parameter_set_form.survey_required.label}}:                
+            </div>
+            <div class="col text-start">
+                <span v-if="session.parameter_set.survey_required=='True'">Yes</span><span v-else>No</span>                
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
                 {{parameter_set_form.test_mode.label}}:                
             </div>
             <div class="col text-start">
