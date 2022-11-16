@@ -93,9 +93,9 @@ var app = Vue.createApp({
                 
             }
 
-            this.first_load_done = true;
+            app.first_load_done = true;
 
-            this.working = false;
+            app.working = false;
         },
 
         /** send websocket message to server
@@ -104,7 +104,7 @@ var app = Vue.createApp({
         */
         sendMessage(messageType, messageText) {            
 
-            this.chatSocket.send(JSON.stringify({
+            app.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
                 }));
@@ -118,12 +118,18 @@ var app = Vue.createApp({
              app.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false})           
              document.getElementById('endGameModal').addEventListener('hidden.bs.modal', app.hideEndGameModal);
 
-             {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 1500)); {%endif%}
+             {%if session.parameter_set.test_mode%} setTimeout(app.doTestMode, app.randomNumber(1000 , 1500)); {%endif%}
 
             // if game is finished show modal
-            if(app.session.finished)
+            if(app.session.current_experiment_phase == 'Names')
             {
-                this.showEndGameModal();
+                app.showEndGameModal();
+            }
+            else if(app.session.current_experiment_phase == 'Done' && 
+                    app.session.parameter_set.survey_required=='True' && 
+                    !app.session_player.survey_complete)
+            {
+                window.location.replace(app.session_player.survey_link);
             }
 
             document.getElementById('instructions_frame_a').addEventListener('scroll',
@@ -138,7 +144,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         sendGetSession(){
-            app.sendMessage("get_session", {"playerKey" : this.playerKey});
+            app.sendMessage("get_session", {"playerKey" : app.playerKey});
         },
         
         /** take create new session
@@ -159,19 +165,19 @@ var app = Vue.createApp({
                 
             }            
             
-            if(this.session.current_experiment_phase != 'Done')
+            if(app.session.current_experiment_phase != 'Done')
             {
                                 
-                if(this.session.current_experiment_phase != 'Instructions')
+                if(app.session.current_experiment_phase != 'Instructions')
                 {
                     app.updateChatDisplay();               
                 }
             }
 
-            if(this.session.current_experiment_phase == 'Instructions')
+            if(app.session.current_experiment_phase == 'Instructions')
             {
-                setTimeout(this.processInstructionPage, 1000);
-                this.instructionDisplayScroll();
+                setTimeout(app.processInstructionPage, 1000);
+                app.instructionDisplayScroll();
             }
 
             if(!app.first_load_done)
@@ -206,31 +212,32 @@ var app = Vue.createApp({
 
             if(status == "fail") return;
 
-            this.session.started = result.started;
-            this.session.current_period = result.current_period;
-            this.session.time_remaining = result.time_remaining;
-            this.session.timer_running = result.timer_running;
-            this.session.finished = result.finished;
+            app.session.started = result.started;
+            app.session.current_period = result.current_period;
+            app.session.time_remaining = result.time_remaining;
+            app.session.timer_running = result.timer_running;
+            app.session.finished = result.finished;
+            app.session.current_experiment_phase = result.current_experiment_phase;
 
             //update subject earnings
-            this.session_player.earnings = result.session_player_earnings.earnings;
+            app.session_player.earnings = result.session_player_earnings.earnings;
 
-            //session complete
-            if(app.session.finished)
+            //collect names
+            if(app.session.current_experiment_phase == 'Names')
             {
-                this.showEndGameModal();
-            }            
+                app.showEndGameModal();
+            }          
         },
 
         /**
          * show the end game modal
          */
         showEndGameModal(){
-            if(this.end_game_modal_visible) return;
+            if(app.end_game_modal_visible) return;
    
             app.endGameModal.toggle();
 
-            this.end_game_modal_visible = true;
+            app.end_game_modal_visible = true;
         },
 
          /**
@@ -247,17 +254,33 @@ var app = Vue.createApp({
         takeUpdateNextPhase(messageData){
             app.endGameModal.hide();
 
-            this.session.current_experiment_phase = messageData.status.session.current_experiment_phase;
-            this.session.session_players = messageData.status.session_players;
-            this.session_player = messageData.status.session_player;
+            app.session.current_experiment_phase = messageData.status.session.current_experiment_phase;
+            app.session.session_players = messageData.status.session_players;
+            app.session_player = messageData.status.session_player;
 
-            app.updateChatDisplay();          
+            app.updateChatDisplay();    
+
+            if(app.session.current_experiment_phase == 'Names')
+            {
+                app.showEndGameModal();
+            }
+            else
+            {
+                app.hideEndGameModal();
+            }
+            
+            if(app.session.current_experiment_phase == 'Done' && 
+                    app.session.parameter_set.survey_required=='True' && 
+                    !app.session_player.survey_complete)
+            {
+                window.location.replace(app.session_player.survey_link);
+            }
         },
 
         /** hide choice grid modal modal
         */
         hideEndGameModal(){
-            this.end_game_modal_visible=false;
+            app.end_game_modal_visible=false;
         },
 
         //do nothing on when enter pressed for post
@@ -280,7 +303,7 @@ var app = Vue.createApp({
                 if(e) e.remove();
             }
 
-            s = this.end_game_form_ids;
+            s = app.end_game_form_ids;
             for(var i in s)
             {
                 e = document.getElementById("id_errors_" + s[i]);

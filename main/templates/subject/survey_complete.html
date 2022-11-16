@@ -1,0 +1,30 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+
+{%block head%}
+<script type="text/javascript">
+
+    document.addEventListener("DOMContentLoaded", function(){
+        {%include "subject/survey_complete/survey_complete.js"%}
+    });
+
+</script>
+
+<style>
+       
+</style>
+
+{%endblock head%}
+
+{% block content %}
+
+<!-- modals -->
+
+<!-- instructions -->
+<div class="row justify-content-lg-center mt-4 fw-bold fs-3 text-center">
+    <div class="col-md">
+        Survey complete: <a href='{{return_link}}'>Click to return</a>
+    </div>
+</div>
+
+{% endblock %}

@@ -52,7 +52,7 @@ var app = Vue.createApp({
         sendMessage(messageType,messageText) {
             //send socket message to server
 
-            this.chatSocket.send(JSON.stringify({
+            app.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
                 }));
@@ -68,7 +68,7 @@ var app = Vue.createApp({
 
             app.sessions = messageData.sessions;
 
-            if(this.sessions_full_admin_visible)
+            if(app.sessions_full_admin_visible)
             {
                 app.sendGetSessionsAdmin()
             }

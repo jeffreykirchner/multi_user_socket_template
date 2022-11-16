@@ -108,7 +108,7 @@ uploadAction:function(){
 
     if(app.upload_mode == "parameters")
     {
-        this.uploadParameterset();
+        app.uploadParameterset();
     }
     else
     {
@@ -119,7 +119,7 @@ uploadAction:function(){
 
 //file upload
 handleFileUpload:function(){
-    app.upload_file = this.$refs.file.files[0];
+    app.upload_file = app.$refs.file.files[0];
     app.upload_file_name = app.upload_file.name;
 },
 

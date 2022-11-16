@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelChoiceField
 from django.forms import ModelMultipleChoiceField
 
+from main.globals import ExperimentPhase
 
 class UserModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
@@ -24,6 +25,9 @@ class SessionFormAdmin(forms.ModelForm):
                                                  queryset=User.objects.all(),
                                                  required=False
                                                    )
+    
+    current_experiment_phase = forms.ChoiceField(label='Current Session Phase',
+                                                 choices=ExperimentPhase.choices,)
 
     title = forms.CharField(label='Title',
                             widget=forms.TextInput(attrs={"size":"50"}))
@@ -35,4 +39,4 @@ class SessionFormAdmin(forms.ModelForm):
 
     class Meta:
         model=Session
-        fields = ('creator', 'collaborators', 'title', 'shared', 'locked', 'soft_delete')
+        fields = ('creator', 'collaborators', 'current_experiment_phase', 'title', 'shared', 'locked', 'soft_delete')

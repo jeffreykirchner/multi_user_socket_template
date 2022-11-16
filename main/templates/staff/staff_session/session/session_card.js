@@ -1,8 +1,8 @@
 /** send session update form   
 */
 sendUpdateSession(){
-    this.cancelModal = false;
-    this.working = true;
+    app.cancelModal = false;
+    app.working = true;
     app.sendMessage("update_session",{"formData" : {title:app.session.title}});
 },
 
@@ -19,7 +19,7 @@ takeUpdateSession(messageData){
     } 
     else
     {
-        this.cancelModal=true;                           
+        app.cancelModal=true;                           
         app.displayErrors(messageData.errors);
     } 
 },
@@ -28,8 +28,8 @@ takeUpdateSession(messageData){
 */
 showEditSession:function(){
     app.clearMainFormErrors();
-    this.cancelModal=true;
-    this.sessionBeforeEdit = Object.assign({}, this.session);
+    app.cancelModal=true;
+    app.sessionBeforeEdit = Object.assign({}, app.session);
 
     app.editSessionModal.toggle();
 },
@@ -37,9 +37,9 @@ showEditSession:function(){
 /** hide edit session modal
 */
 hideEditSession:function(){
-    if(this.cancelModal)
+    if(app.cancelModal)
     {
-        Object.assign(this.session, this.sessionBeforeEdit);
-        this.sessionBeforeEdit=null;
+        Object.assign(app.session, app.sessionBeforeEdit);
+        app.sessionBeforeEdit=null;
     }
 },

@@ -146,9 +146,12 @@ var app = Vue.createApp({
                 case "update_anonymize_data":
                     app.takeAnonymizeData(messageData);
                     break;
+                case "update_survey_complete":
+                    app.take_update_survey_complete(messageData);
+                    break;
             }
 
-            this.first_load_done = true;
+            app.first_load_done = true;
             app.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
         },
@@ -159,7 +162,7 @@ var app = Vue.createApp({
         */
         sendMessage(messageType, messageText) {            
 
-            this.chatSocket.send(JSON.stringify({
+            app.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
                 }));
@@ -232,27 +235,27 @@ var app = Vue.createApp({
         /**update text of move on button based on current state
          */
         updatePhaseButtonText(){
-            if(this.session.finished && this.session.current_experiment_phase == "Done")
+            if(app.session.finished && app.session.current_experiment_phase == "Done")
             {
-                this.move_to_next_phase_text = '** Experiment complete **';
+                app.move_to_next_phase_text = '** Session complete **';
             }
-            else if(this.session.finished && this.session.current_experiment_phase != "Done")
+            else if(app.session.current_experiment_phase == "Names")
             {
-                this.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
+                app.move_to_next_phase_text = 'Complete Session <i class="fas fa-flag-checkered"></i>';
             }
-            else if(this.session.current_experiment_phase == "Run")
+            else if(app.session.current_experiment_phase == "Run")
             {
-                this.move_to_next_phase_text = 'Running ...';
+                app.move_to_next_phase_text = 'Running ...';
             }
-            else if(this.session.started && !this.session.finished)
+            else if(app.session.started && !app.session.finished)
             {
-                if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
+                if(app.session.current_experiment_phase == "Selection" && app.session.parameter_set.show_instructions == "True")
                 {
-                    this.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
+                    app.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
                 }
                 else
                 {
-                    this.move_to_next_phase_text = 'Continue Session <i class="far fa-play-circle"></i>';
+                    app.move_to_next_phase_text = 'Continue Session <i class="far fa-play-circle"></i>';
                 }
             }
         },
@@ -265,10 +268,10 @@ var app = Vue.createApp({
             let result = messageData.status;
             let chat = result.chat;
 
-            if(this.session.chat_all.length>=100)
-                this.session.chat_all.shift();
+            if(app.session.chat_all.length>=100)
+                app.session.chat_all.shift();
             
-            this.session.chat_all.push(chat);
+            app.session.chat_all.push(chat);
             app.updateChatDisplay();
         },
 
@@ -277,7 +280,7 @@ var app = Vue.createApp({
          */
         updateChatDisplay(){
             
-            this.chat_list_to_display=this.session.chat_all;
+            app.chat_list_to_display=app.session.chat_all;
         },
 
         /**
@@ -295,6 +298,7 @@ var app = Vue.createApp({
             app.session.time_remaining = result.time_remaining;
             app.session.timer_running = result.timer_running;
             app.session.finished = result.finished;
+            app.session.current_experiment_phase = result.current_experiment_phase;
 
             app.takeUpdateEarnings(messageData);
 

@@ -46,7 +46,7 @@ takeNextInstruction(messageData){
     {
         let result = messageData.status.result;
 
-        session_player = this.findSessionPlayer(result.id);
+        session_player = app.findSessionPlayer(result.id);
 
         if(session_player)
         {
@@ -65,7 +65,7 @@ takeFinishedInstructions(messageData){
     {
         let result = messageData.status.result;
 
-        session_player = this.findSessionPlayer(result.id);
+        session_player = app.findSessionPlayer(result.id);
 
         if(session_player)
         {
@@ -84,7 +84,7 @@ takeFinishedInstructions(messageData){
     if(messageData.status.value == "success")
     {
         let session_player_earnings = messageData.status.result.session_player_earnings;
-        let session_players = this.session.session_players;
+        let session_players = app.session.session_players;
 
         for(let i=0; i<session_player_earnings.length; i++)
         {
@@ -103,7 +103,7 @@ takeFinishedInstructions(messageData){
   */
  findSessionPlayer(id){
 
-    let session_players = this.session.session_players;
+    let session_players = app.session.session_players;
     for(let i=0; i<session_players.length; i++)
     {
         if(session_players[i].id == id)
@@ -135,11 +135,11 @@ findSessionPlayerIndex(id){
 /** send session update form   
 */
 sendEmailList(){
-    this.cancelModal = false;
-    this.working = true;
+    app.cancelModal = false;
+    app.working = true;
 
     app.sendMessage("email_list",
-                   {"csv_data" : this.csv_email_list});
+                   {"csv_data" : app.csv_email_list});
 },
 
 /** take update subject response
@@ -163,9 +163,9 @@ takeUpdateEmailList(messageData){
 */
 showSendEmailList(){
     app.clearMainFormErrors();
-    this.cancelModal=true;
+    app.cancelModal=true;
 
-    this.csv_email_list = "";
+    app.csv_email_list = "";
 
     app.uploadEmailModal.toggle();
 },
@@ -173,9 +173,9 @@ showSendEmailList(){
 /** hide edit subject modal
 */
 hideSendEmailList(){
-    this.csv_email_list = "";
+    app.csv_email_list = "";
 
-    if(this.cancelModal)
+    if(app.cancelModal)
     {      
        
     }
@@ -184,10 +184,10 @@ hideSendEmailList(){
 /** send session update form   
 */
 sendUpdateSubject(){
-    this.cancelModal = false;
-    this.working = true;
+    app.cancelModal = false;
+    app.working = true;
     app.sendMessage("update_subject",
-                   {"formData" : this.staffEditNameEtcForm});
+                   {"formData" : app.staffEditNameEtcForm});
 },
 
 /** take update subject response
@@ -216,15 +216,15 @@ takeUpdateSubject(messageData){
 */
 showEditSubject:function(id){
     app.clearMainFormErrors();
-    this.cancelModal=true;
+    app.cancelModal=true;
 
-    this.staffEditNameEtcForm.id = id;
+    app.staffEditNameEtcForm.id = id;
 
     let session_player = app.findSessionPlayer(id);
 
-    this.staffEditNameEtcForm.name = session_player.name;
-    this.staffEditNameEtcForm.student_id = session_player.student_id;
-    this.staffEditNameEtcForm.email = session_player.email;
+    app.staffEditNameEtcForm.name = session_player.name;
+    app.staffEditNameEtcForm.student_id = session_player.student_id;
+    app.staffEditNameEtcForm.email = session_player.email;
 
     app.editSubjectModal.toggle();
 },
@@ -232,7 +232,7 @@ showEditSubject:function(id){
 /** hide edit subject modal
 */
 hideEditSubject:function(){
-    if(this.cancelModal)
+    if(app.cancelModal)
     {
        
        
@@ -295,7 +295,7 @@ sendAnonymizeData(){
         return;
     }
 
-    this.working = true;
+    app.working = true;
     app.sendMessage("anonymize_data",{});
 },
 
@@ -309,7 +309,7 @@ takeAnonymizeData(messageData){
     {            
 
         let session_player_updates = messageData.status.result;
-        let session_players = this.session.session_players;
+        let session_players = app.session.session_players;
 
         for(let i=0; i<session_player_updates.length; i++)
         {
@@ -324,4 +324,14 @@ takeAnonymizeData(messageData){
         }
     
     } 
+},
+
+/** take survey completed by subject
+ * @param messageData {json} result of update, either sucess or fail with errors
+*/
+take_update_survey_complete(messageData){
+    result = messageData.status;
+
+    session_player = app.findSessionPlayer(result.player_id);
+    session_player.survey_complete = true;
 },

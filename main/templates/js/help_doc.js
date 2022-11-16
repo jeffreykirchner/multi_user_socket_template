@@ -3,8 +3,8 @@
  * @param title : string
  */
 sendLoadHelpDoc(title){
-    this.working = true;
-    this.helpText = "Loading ...";
+    app.working = true;
+    app.helpText = "Loading ...";
 
     var myModal = new bootstrap.Modal(document.getElementById('helpModal'), {
         keyboard: false
@@ -23,11 +23,11 @@ takeLoadHelpDoc(messageData){
 
     if(messageData.status.value == "success")
     {
-        this.helpText = messageData.status.result.help_doc.text;
+        app.helpText = messageData.status.result.help_doc.text;
     }
     else
     {
-        this.helpText = messageData.status.message;
+        app.helpText = messageData.status.message;
     }
 },
 

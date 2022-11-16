@@ -1,15 +1,15 @@
 sendChat(){
 
-    if(this.working) return;
-    if(this.chat_text.trim() == "") return;
-    if(this.chat_text.trim().length > 200) return;
+    if(app.working) return;
+    if(app.chat_text.trim() == "") return;
+    if(app.chat_text.trim().length > 200) return;
     
-    this.working = true;
-    app.sendMessage("chat", {"recipients" : this.chat_recipients,
-                             "text" : this.chat_text.trim(),
+    app.working = true;
+    app.sendMessage("chat", {"recipients" : app.chat_recipients,
+                             "text" : app.chat_text.trim(),
                             });
 
-    this.chat_text="";                   
+    app.chat_text="";                   
 },
 
 /** take result of moving goods
@@ -35,7 +35,7 @@ takeUpdateChat(messageData){
     
     let result = messageData.status;
     let chat = result.chat;
-    let session_player = this.session_player;
+    let session_player = app.session_player;
 
     if(result.chat_type=="All")
     {
@@ -43,7 +43,7 @@ takeUpdateChat(messageData){
             session_player.chat_all.shift();
 
         session_player.chat_all.push(chat);
-        if(this.chat_recipients != "all")
+        if(app.chat_recipients != "all")
         {
             session_player.new_chat_message = true;
         }
@@ -51,7 +51,7 @@ takeUpdateChat(messageData){
     else
     {
         var sesson_player_target =  result.sesson_player_target;
-        var session_players = this.session.session_players;
+        var session_players = app.session.session_players;
 
         var target = -1;
         if(sesson_player_target == session_player.id)
@@ -73,7 +73,7 @@ takeUpdateChat(messageData){
 
             session_player.chat_individual.push(chat);
 
-            if(session_player_index != this.chat_recipients_index)
+            if(session_player_index != app.chat_recipients_index)
             {
                 session_player.new_chat_message = true;
             }
@@ -97,19 +97,19 @@ takeUpdateChat(messageData){
 *    @param messageData {json} session day in json format
 */
 updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
-    this.chat_recipients = chat_recipients;
-    this.chat_button_label = chat_button_label;
-    this.chat_recipients_index = chat_recipients_index;
+    app.chat_recipients = chat_recipients;
+    app.chat_button_label = chat_button_label;
+    app.chat_recipients_index = chat_recipients_index;
 
     app.updateChatDisplay();
 
-    if(this.chat_recipients=="all")
+    if(app.chat_recipients=="all")
     {
-        this.session_player.new_chat_message = false;
+        app.session_player.new_chat_message = false;
     }
     else
     {
-        this.session.session_players[chat_recipients_index].new_chat_message = false;
+        app.session.session_players[chat_recipients_index].new_chat_message = false;
     }
 },
 
@@ -117,13 +117,13 @@ updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
  */
 updateChatDisplay(){
 
-    if(this.chat_recipients=="all")
+    if(app.chat_recipients=="all")
     {
-        this.chat_list_to_display=Array.from(this.session_player.chat_all);
+        app.chat_list_to_display=Array.from(app.session_player.chat_all);
     }
     else
     {
-        this.chat_list_to_display=Array.from(this.session.session_players[this.chat_recipients_index].chat_individual);
+        app.chat_list_to_display=Array.from(app.session.session_players[app.chat_recipients_index].chat_individual);
     }
 },
 

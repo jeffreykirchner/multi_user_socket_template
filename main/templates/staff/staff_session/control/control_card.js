@@ -85,8 +85,8 @@ next_experiment_phase(){
 */
 takeNextPhase(messageData){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
-    this.updatePhaseButtonText();
+    app.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    app.updatePhaseButtonText();
 
 },
 
@@ -95,8 +95,9 @@ takeNextPhase(messageData){
 */
 takeUpdateNextPhase(messageData){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
-    this.updatePhaseButtonText();
+    app.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    app.session.finished = messageData.status.finished;
+    app.updatePhaseButtonText();
 },
 
 /**
@@ -141,27 +142,27 @@ endEarly(){
  * @param messageData {json}
 */
 takeEndEarly(messageData){
-   this.session.parameter_set.period_count = messageData.status.result;
+   app.session.parameter_set.period_count = messageData.status.result;
 },
 
 /** send invitations
 */
 sendSendInvitations(){
 
-    this.sendMessageModalForm.text = tinymce.get("id_invitation_subject").getContent();
+    app.sendMessageModalForm.text = tinymce.get("id_invitation_subject").getContent();
 
-    if(this.sendMessageModalForm.subject == "" || this.sendMessageModalForm.text == "")
+    if(app.sendMessageModalForm.subject == "" || app.sendMessageModalForm.text == "")
     {
-        this.emailResult = "Error: Please enter a subject and email body.";
+        app.emailResult = "Error: Please enter a subject and email body.";
         return;
     }
 
-    this.cancelModal = false;
-    this.working = true;
-    this.emailResult = "Sending ...";
+    app.cancelModal = false;
+    app.working = true;
+    app.emailResult = "Sending ...";
 
     app.sendMessage("send_invitations",
-                   {"formData" : this.sendMessageModalForm});
+                   {"formData" : app.sendMessageModalForm});
 },
 
 /** take update subject response
@@ -172,14 +173,14 @@ takeSendInvitations(messageData){
 
     if(messageData.status.value == "success")
     {           
-        this.emailResult = "Result: " + messageData.status.result.email_result.mail_count.toString() + " messages sent.";
+        app.emailResult = "Result: " + messageData.status.result.email_result.mail_count.toString() + " messages sent.";
 
-        this.session.invitation_subject = messageData.status.result.invitation_subject;
-        this.session.invitation_text = messageData.status.result.invitation_text;
+        app.session.invitation_subject = messageData.status.result.invitation_subject;
+        app.session.invitation_text = messageData.status.result.invitation_text;
     } 
     else
     {
-        this.emailResult = messageData.status.result;
+        app.emailResult = messageData.status.result;
     } 
 },
 
@@ -187,12 +188,12 @@ takeSendInvitations(messageData){
 */
 showSendInvitations(){
 
-    this.cancelModal=true;
+    app.cancelModal=true;
 
-    this.sendMessageModalForm.subject = this.session.invitation_subject;
-    this.sendMessageModalForm.text = this.session.invitation_text;
+    app.sendMessageModalForm.subject = app.session.invitation_subject;
+    app.sendMessageModalForm.text = app.session.invitation_text;
 
-    tinymce.get("id_invitation_subject").setContent(this.sendMessageModalForm.text);
+    tinymce.get("id_invitation_subject").setContent(app.sendMessageModalForm.text);
 
     app.sendMessageModal.toggle();
 },
@@ -200,14 +201,14 @@ showSendInvitations(){
 /** hide edit subject modal
 */
 hideSendInvitations(){
-    this.emailResult = "";
+    app.emailResult = "";
 },
 
 /**
  * fill invitation with default values
  */
 fillDefaultInvitation(){
-    this.sendMessageModalForm.subject = this.emailDefaultSubject;
+    app.sendMessageModalForm.subject = app.emailDefaultSubject;
     
-    tinymce.get("id_invitation_subject").setContent(this.emailDefaultText);
+    tinymce.get("id_invitation_subject").setContent(app.emailDefaultText);
 },

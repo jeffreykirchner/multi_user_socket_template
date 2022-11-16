@@ -5,11 +5,11 @@
  */
 getInstructionPage(pageNumber){
 
-    for(i=0;i<this.instruction_pages.length;i++)
+    for(i=0;i<app.instruction_pages.length;i++)
     {
-        if(this.instruction_pages[i].page_number==pageNumber)
+        if(app.instruction_pages[i].page_number==pageNumber)
         {
-            return this.instruction_pages[i].text_html;
+            return app.instruction_pages[i].text_html;
         }
     }
 
@@ -21,10 +21,10 @@ getInstructionPage(pageNumber){
  */
 sendNextInstruction(direction){
 
-    if(this.working) return;
+    if(app.working) return;
     
-    this.working = true;
-    this.sendMessage("next_instruction", {"direction" : direction});
+    app.working = true;
+    app.sendMessage("next_instruction", {"direction" : direction});
 },
 
 /**
@@ -35,11 +35,11 @@ takeNextInstruction(messageData){
     {
         result = messageData.status.result;       
         
-        this.session_player.current_instruction = result.current_instruction;
-        this.session_player.current_instruction_complete = result.current_instruction_complete;
+        app.session_player.current_instruction = result.current_instruction;
+        app.session_player.current_instruction_complete = result.current_instruction_complete;
 
-        this.processInstructionPage();
-        this.instructionDisplayScroll();
+        app.processInstructionPage();
+        app.instructionDisplayScroll();
     } 
     else
     {
@@ -53,10 +53,10 @@ takeNextInstruction(messageData){
  */
 sendFinishInstructions(){
 
-    if(this.working) return;
+    if(app.working) return;
     
-    this.working = true;
-    this.sendMessage("finish_instructions", {});
+    app.working = true;
+    app.sendMessage("finish_instructions", {});
 },
 
 /**
@@ -67,8 +67,8 @@ takeFinishInstructions(messageData){
     {
         result = messageData.status.result;       
         
-        this.session_player.instructions_finished = result.instructions_finished;
-        this.session_player.current_instruction_complete = result.current_instruction_complete;
+        app.session_player.instructions_finished = result.instructions_finished;
+        app.session_player.current_instruction_complete = result.current_instruction_complete;
     } 
     else
     {
@@ -82,7 +82,7 @@ takeFinishInstructions(messageData){
 processInstructionPage(){
 
     //update view when instructions changes
-    switch(this.session_player.current_instruction){
+    switch(app.session_player.current_instruction){
         case 1:            
             break; 
         case 2:
@@ -97,9 +97,9 @@ processInstructionPage(){
             break;
     }
 
-    if(this.session_player.current_instruction_complete < this.session_player.current_instruction)
+    if(app.session_player.current_instruction_complete < app.session_player.current_instruction)
     {
-        this.session_player.current_instruction_complete = this.session_player.current_instruction;
+        app.session_player.current_instruction_complete = app.session_player.current_instruction;
     }
 
         

@@ -20,4 +20,5 @@ class ExperimentPhase(models.TextChoices):
     '''
     INSTRUCTIONS = 'Instructions', _('Instructions')
     RUN = 'Run', _('Run')
+    NAMES = 'Names', _('Names')
     DONE = 'Done', _('Done')
