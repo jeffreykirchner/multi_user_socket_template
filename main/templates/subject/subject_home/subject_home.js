@@ -123,13 +123,13 @@ var app = Vue.createApp({
             // if game is finished show modal
             if(app.session.current_experiment_phase == 'Names')
             {
-                app.showEndGameModal();
+                app.show_end_game_modal();
             }
             else if(app.session.current_experiment_phase == 'Done' && 
                     app.session.parameter_set.survey_required=='True' && 
                     !app.session_player.survey_complete)
             {
-                app.show_end_game_modal();
+                window.location.replace(app.session_player.survey_link);
             }
 
             document.getElementById('instructions_frame_a').addEventListener('scroll',
@@ -258,11 +258,11 @@ var app = Vue.createApp({
             app.session.session_players = message_data.status.session_players;
             app.session_player = message_data.status.session_player;
 
-            app.updateChatDisplay();    
+            app.update_chat_display();    
 
             if(app.session.current_experiment_phase == 'Names')
             {
-                app.showEndGameModal();
+                app.show_end_game_modal();
             }
             else
             {

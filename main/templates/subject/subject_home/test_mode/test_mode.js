@@ -10,7 +10,7 @@ random_number(min, max){
     return Math.floor(Math.random() * (max - min) + min);
 },
 
-randomString(min_length, max_length){
+random_string(min_length, max_length){
 
     s = "";
     r = app.random_number(min_length, max_length);
@@ -33,10 +33,12 @@ do_test_mode(){
     {
         if(app.session_player.name == "")
         {
-            document.getElementById("id_name").value =  app.randomString(5, 20);
-            document.getElementById("id_student_id").value =  app.random_number(1000, 10000);
+            Vue.nextTick(() => {
+                app.session_player.name = app.random_string(5, 20);
+                app.session_player.student_id =  app.random_number(1000, 10000);
 
-            app.sendName();
+                app.sendName();
+            })
         }
 
         return;
@@ -159,7 +161,7 @@ do_test_modeChat(){
         document.getElementById("chat_all_id").click();
     }
 
-    app.chat_text = app.randomString(5, 20);
+    app.chat_text = app.random_string(5, 20);
 },
 
 

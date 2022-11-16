@@ -147,7 +147,7 @@ var app = Vue.createApp({
                     app.take_anonymize_data(message_data);
                     break;
                 case "update_survey_complete":
-                    app.take_update_survey_complete(messageData);
+                    app.take_update_survey_complete(message_data);
                     break;
 
             }

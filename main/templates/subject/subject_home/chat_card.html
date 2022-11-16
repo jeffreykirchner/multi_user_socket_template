@@ -63,7 +63,7 @@
                         name="btnradio" 
                         id="chat_all_id" 
                         autocomplete="off" 
-                        v-on:click="updateChatRecipients('all', 'Everyone', -1)" 
+                        v-on:click="update_chat_recipients('all', 'Everyone', -1)" 
                         checked>
                     <label class="btn btn-outline-secondary" for="chat_all_id">
                         Everyone
@@ -78,7 +78,7 @@
                             v-bind:id="'chat_invididual_' + p.id + '_id'" 
                             autocomplete="off" 
                             v-if="p.id != session_player.id"
-                            v-on:click="updateChatRecipients(p.id, 'Person '+ p.parameter_set_player.id_label, index)">
+                            v-on:click="update_chat_recipients(p.id, 'Person '+ p.parameter_set_player.id_label, index)">
                         <label class="btn btn-outline-secondary"
                                v-if="p.id != session_player.id"
                                v-bind:for="'chat_invididual_' + p.id + '_id'">

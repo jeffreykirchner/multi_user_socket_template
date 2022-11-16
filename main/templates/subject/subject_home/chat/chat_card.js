@@ -96,7 +96,7 @@ take_update_chat(message_data){
 /** update who should receive chat
 *    @param message_data {json} session day in json format
 */
-updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
+update_chat_recipients(chat_recipients, chat_button_label, chat_recipients_index){
     app.chat_recipients = chat_recipients;
     app.chat_button_label = chat_button_label;
     app.chat_recipients_index = chat_recipients_index;

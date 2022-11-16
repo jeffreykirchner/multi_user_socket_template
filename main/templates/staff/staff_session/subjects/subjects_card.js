@@ -327,11 +327,11 @@ take_anonymize_data(message_data){
 },
 
 /** take survey completed by subject
- * @param messageData {json} result of update, either sucess or fail with errors
+ * @param message_data {json} result of update, either sucess or fail with errors
 */
-take_update_survey_complete(messageData){
-    result = messageData.status;
+take_update_survey_complete(message_data){
+    result = message_data.status;
 
-    session_player = app.findSessionPlayer(result.player_id);
+    session_player = app.find_session_player(result.player_id);
     session_player.survey_complete = true;
 },
