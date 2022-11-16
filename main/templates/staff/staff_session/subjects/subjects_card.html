@@ -13,19 +13,19 @@
                 [[session.started ? 'View': 'Edit']] Parameters                
             </a>
 
-            <button type="button" class="btn btn-outline-primary ms-4" title="Remove Names and Student IDs" v-on:click="sendAnonymizeData()">
+            <button type="button" class="btn btn-outline-primary ms-4" title="Remove Names and Student IDs" v-on:click="send_anonymize_data()">
                 Anonymize Data <i class="far fa-address-card"></i>
             </button>
 
-            <button type="button" class="btn btn-outline-primary ms-4" title="Upload Email List" v-on:click="copyEarnings()">
+            <button type="button" class="btn btn-outline-primary ms-4" title="Upload Email List" v-on:click="copy_earnings()">
                 Copy Earnings <span v-if="earnings_copied"><i class="fas fa-check"></i></span><span v-else><i class="fas fa-copy"></i></span>
             </button>
 
-            <button type="button" class="btn btn-outline-primary ms-2" title="Upload Email List" v-on:click="showSendEmailList()">
+            <button type="button" class="btn btn-outline-primary ms-2" title="Upload Email List" v-on:click="show_send_email_list()">
                 Upload Email List
             </button>
 
-            <button type="button" class="btn btn-link ms-2" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Subject List')">
+            <button type="button" class="btn btn-link ms-2" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Subject List')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>          
@@ -70,19 +70,19 @@
                     </thead>
                     <tbody id="player_list">
                         <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
-                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
                                 [[p.player_number]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
                                 [[p.parameter_set_player.id_label]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
                                 [[p.name=="" ? "---" : p.name]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
                                 [[(!p.email || p.email=="") ? "---" : p.email]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
                                 [[p.student_id=="" ? "---" : p.student_id]]
                             </td>
                             <td class="player_table_cell text-nowrap">

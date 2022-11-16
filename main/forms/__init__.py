@@ -9,9 +9,9 @@ from .session_send_invitation_form import  SessionInvitationForm
 from .import_parameters_form import ImportParametersForm
 
 from .parameter_set_form import ParameterSetForm
-from .parameter_set_player_form import ParameterSetPlayerForm
+from .parameter_set_player_form import parameter_set_player_form
 
-from .session_player_name_etc_form import StaffEditNameEtcForm
+from .session_player_name_etc_form import staff_edit_name_etc_form
 
 from .session_form_admin import SessionFormAdmin
 from .instruction_set_form_admin import InstructionSetFormAdmin

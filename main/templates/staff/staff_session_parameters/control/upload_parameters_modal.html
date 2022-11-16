@@ -1,31 +1,31 @@
 {% load crispy_forms_tags %}
-<div class="modal fade" id="parameterSetModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editSessionModalLabel" aria-hidden="true">
+<div class="modal fade" id="upload_parameter_set_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit_session_modalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="parameterSetModalLabel">Upload Parameter Set</h5>
+                <h5 class="modal-title" id="upload_parameter_set_modal_label">Upload Parameter Set</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class = "col" style="text-align: center;">
                         
-                        <input class="form-control" type="file" ref="file" id="parameterFileUpload" v-on:change="handleFileUpload()">
+                        <input class="form-control" type="file" ref="file" id="parameterFileUpload" v-on:change="handle_file_upload()">
 
                     </div>   
                 </div>
                 <div class="row mt-2">
                     <div class = "col" style="text-align: center;">
                         <button class="btn btn-outline-primary"
-                                v-on:click="uploadAction()"
+                                v-on:click="upload_action()"
                                 v-bind:disabled="session.started || reconnecting || working">
-                            <span v-html="uploadParametersetButtonText"></span>
+                            <span v-html="upload_parameter_set_button_text"></span>
                         </button>
                     </div>   
                 </div>
                 <div class="row mt-4">
                     <div class = "col">
-                        <span v-html="uploadParametersetMessaage"></span>
+                        <span v-html="upload_parameter_set_messaage"></span>
                     </div>
                 </div>
             </div>

@@ -6,7 +6,7 @@
             {%if user.is_superuser%}
             <a href='/admin/main/session/{{session.id}}/change/' class='link-primary pe-4'>Lock/Share</a>
             {%endif%}                        
-            <button class="btn btn-outline-primary" type="button" v-on:click = "showEditSession()" title="Edit Session Info">
+            <button class="btn btn-outline-primary" type="button" v-on:click = "show_edit_session()" title="Edit Session Info">
                 Edit <i class="far fa-edit"></i>
             </button>
         </span>

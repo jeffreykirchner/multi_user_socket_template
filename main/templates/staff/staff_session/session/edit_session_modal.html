@@ -1,11 +1,11 @@
 {% load crispy_forms_tags %}
 
 <!-- Edit Session Modal -->
-<div class="modal fade" id="editSessionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editSessionModalLabel" aria-hidden="true">
+<div class="modal fade" id="edit_session_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit_session_modalLabel" aria-hidden="true">
 <div class="modal-dialog">
     <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title" id="editSessionModalLabel">Edit Settings</h5>
+        <h5 class="modal-title" id="edit_session_modalLabel">Edit Settings</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
@@ -24,7 +24,7 @@
         <button type="button"
                 class="btn btn-outline-primary"
                 v-bind:disabled="reconnecting || working"
-                v-on:click = "sendUpdateSession()">
+                v-on:click = "send_update_session()">
             Update <i class="fas fa-sign-in-alt"></i>
         </button>
     </div>

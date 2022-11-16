@@ -1,104 +1,104 @@
 /**send download summary data
 */
-downloadSummaryData(){
+download_summary_data(){
     app.working = true;
-    this.data_downloading = true;
-    app.sendMessage("download_summary_data", {});
+    app.data_downloading = true;
+    app.send_message("download_summary_data", {});
 },
 
 /** take download summary data
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeDownloadSummaryData(messageData){
+take_download_summary_data(message_data){
 
-    var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.status.result]);
-    var url = URL.createObjectURL(blob);
-    downloadLink.href = url;
-    downloadLink.download = "Template_Data_Session_" + app.session.id +".csv";
+    let download_link = document.createElement("a");
+    let blob = new Blob(["\ufeff", message_data.status.result]);
+    let url = URL.createObjectURL(blob);
+    download_link.href = url;
+    download_link.download = "Template_Data_Session_" + app.session.id +".csv";
 
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    document.body.appendChild(download_link);
+    download_link.click();
+    document.body.removeChild(download_link);
 
-    this.data_downloading = false;
+    app.data_downloading = false;
 },
 
 /**send download summary data
 */
-downloadActionsData(){
+download_actions_data(){
     app.working = true;
-    this.data_downloading = true;
-    app.sendMessage("download_action_data", {});
+    app.data_downloading = true;
+    app.send_message("download_action_data", {});
 },
 
 /** take download summary data
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeDownloadActionData(messageData){
+take_download_action_data(message_data){
 
-    var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.status.result]);
-    var url = URL.createObjectURL(blob);
-    downloadLink.href = url;
-    downloadLink.download = "Template_Action_Data_Session_" + app.session.id +".csv";
+    let download_link = document.createElement("a");
+    let blob = new Blob(["\ufeff", message_data.status.result]);
+    let url = URL.createObjectURL(blob);
+    download_link.href = url;
+    download_link.download = "Template_Action_Data_Session_" + app.session.id +".csv";
 
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    document.body.appendChild(download_link);
+    download_link.click();
+    document.body.removeChild(download_link);
 
-    this.data_downloading = false;
+    app.data_downloading = false;
 },
 
 /**send download recruiter data
 */
-downloadRecruiterData(){
+download_recruiter_data(){
     app.working = true;
-    this.data_downloading = true;
-    app.sendMessage("download_recruiter_data", {});
+    app.data_downloading = true;
+    app.send_message("download_recruiter_data", {});
 },
 
 /** take download recruiter data
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeDownloadRecruiterData(messageData){
+take_download_recruiter_data(message_data){
 
-    var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.status.result]);
-    var url = URL.createObjectURL(blob);
-    downloadLink.href = url;
-    downloadLink.download = "Template_Recruiter_Data_Session_" + app.session.id +".csv";
+    let download_link = document.createElement("a");
+    let blob = new Blob(["\ufeff", message_data.status.result]);
+    let url = URL.createObjectURL(blob);
+    download_link.href = url;
+    download_link.download = "Template_Recruiter_Data_Session_" + app.session.id +".csv";
 
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    document.body.appendChild(download_link);
+    download_link.click();
+    document.body.removeChild(download_link);
 
-    this.data_downloading = false;
+    app.data_downloading = false;
 },
 
 /**send download payment data
 */
-downloadPaymentData(){
+download_payment_data(){
     app.working = true;
-    this.data_downloading = true;
-    app.sendMessage("download_payment_data", {});
+    app.data_downloading = true;
+    app.send_message("download_payment_data", {});
 },
 
 /** take download payment data
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeDownloadPaymentData(messageData){
+take_download_payment_data(message_data){
 
-    var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.status.result]);
-    var url = URL.createObjectURL(blob);
-    downloadLink.href = url;
-    downloadLink.download = "Template_Payment_Data_Session_" + app.session.id +".csv";
+    let download_link = document.createElement("a");
+    let blob = new Blob(["\ufeff", message_data.status.result]);
+    let url = URL.createObjectURL(blob);
+    download_link.href = url;
+    download_link.download = "Template_Payment_Data_Session_" + app.session.id +".csv";
 
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    document.body.appendChild(download_link);
+    download_link.click();
+    document.body.removeChild(download_link);
 
-    this.data_downloading = false;
+    app.data_downloading = false;
 },
 

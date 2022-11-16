@@ -8,14 +8,14 @@ axios.defaults.xsrfCookieName = "csrftoken";
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     working : false,
                     is_subject : false,
                     first_load_done : false,          //true after software is loaded for the first time
-                    helpText : "Loading ...",
-                    sessionID : {{session.id}},
-                    sessionKey : "{{session.session_key}}",
+                    help_text : "Loading ...",
+                    session_id : {{session.id}},
+                    session_key : "{{session.session_key}}",
                     other_color : 0xD3D3D3,
                     session : null,
 
@@ -28,157 +28,157 @@ var app = Vue.createApp({
                     data_downloading : false,                   //show spinner when data downloading
                     earnings_copied : false,                    //if true show earnings copied   
 
-                    staffEditNameEtcForm : {name : "", student_id : "", email : "", id : -1},
-                    sendMessageModalForm : {subject : "", text : ""},
+                    staff_edit_name_etc_form : {name : "", student_id : "", email : "", id : -1},
+                    send_message_modal_form : {subject : "", text : ""},
 
-                    emailResult : "",                          //result of sending invitation emails
-                    emailDefaultSubject : "{{parameters.invitation_subject}}",
-                    emailDefaultText : `{{parameters.invitation_text|safe}}`,
+                    email_result : "",                          //result of sending invitation emails
+                    email_default_subject : "{{parameters.invitation_subject}}",
+                    email_default_text : `{{parameters.invitation_text|safe}}`,
 
                     csv_email_list : "",           //csv email list
 
                     //modals
-                    editSubjectModal : null,
-                    editSessionModal : null,
-                    sendMessageModal : null,
-                    uploadEmailModal : null,
+                    edit_subject_modal : null,
+                    edit_session_modal : null,
+                    send_message_modal : null,
+                    upload_email_modal : null,
                    
                 }},
     methods: {
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected(){            
-            app.sendGetSession();
+        handle_socket_connected(){            
+            app.send_get_session();
         },
 
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage(data) {
+        take_message(data) {
 
             {%if DEBUG%}
             console.log(data);
             {%endif%}
 
-            messageType = data.message.messageType;
-            messageData = data.message.messageData;
+            message_type = data.message.message_type;
+            message_data = data.message.message_data;
 
-            switch(messageType) {                
+            switch(message_type) {                
                 case "get_session":
-                    app.takeGetSession(messageData);
+                    app.take_get_session(message_data);
                     break;
                 case "update_session":
-                    app.takeUpdateSession(messageData);
+                    app.take_update_session(message_data);
                     break;
                 case "start_experiment":
-                    app.takeStartExperiment(messageData);
+                    app.take_start_experiment(message_data);
                     break;
                 case "update_start_experiment":
-                    app.takeUpdateStartExperiment(messageData);
+                    app.take_update_start_experiment(message_data);
                     break;
                 case "reset_experiment":
-                    app.takeResetExperiment(messageData);
+                    app.take_reset_experiment(message_data);
                     break;
                 case "next_phase":
-                    app.takeNextPhase(messageData);
+                    app.take_next_phase(message_data);
                     break; 
                 case "update_next_phase":
-                    app.takeUpdateNextPhase(messageData);
+                    app.take_update_next_phase(message_data);
                     break; 
                 case "update_reset_experiment":
-                    app.takeUpdateResetExperiment(messageData);
+                    app.take_update_reset_experiment(message_data);
                     break;
                 case "update_chat":
-                    app.takeUpdateChat(messageData);
+                    app.take_update_chat(message_data);
                     break;
                 case "update_time":
-                    app.takeUpdateTime(messageData);
+                    app.take_update_time(message_data);
                     break;
                 case "start_timer":
-                    app.takeStartTimer(messageData);
+                    app.take_start_timer(message_data);
                     break;   
                 case "update_connection_status":
-                    app.takeUpdateConnectionStatus(messageData);
+                    app.take_update_connection_status(message_data);
                     break;   
                 case "reset_connections":
-                    app.takeResetConnections(messageData);
+                    app.take_reset_connections(message_data);
                     break; 
                 case "update_reset_connections":
-                    app.takeUpdateResetConnections(messageData);
+                    app.take_update_reset_connections(message_data);
                     break; 
                 case "update_name":
-                    app.takeUpdateName(messageData);
+                    app.take_update_name(message_data);
                     break;         
                 case "download_summary_data":
-                    app.takeDownloadSummaryData(messageData);
+                    app.take_download_summary_data(message_data);
                     break;
                 case "download_action_data":
-                    app.takeDownloadActionData(messageData);
+                    app.take_download_action_data(message_data);
                     break;
                 case "download_recruiter_data":
-                    app.takeDownloadRecruiterData(messageData);
+                    app.take_download_recruiter_data(message_data);
                     break;
                 case "download_payment_data":
-                    app.takeDownloadPaymentData(messageData);
+                    app.take_download_payment_data(message_data);
                     break;
                 case "update_next_instruction":
-                    app.takeNextInstruction(messageData);
+                    app.take_next_instruction(message_data);
                     break;
                 case "update_finish_instructions":
-                    app.takeFinishedInstructions(messageData);
+                    app.take_finished_instructions(message_data);
                     break;
                 case "help_doc":
-                    app.takeLoadHelpDoc(messageData);
+                    app.take_load_help_doc(message_data);
                     break;
                 case "end_early":
-                    app.takeEndEarly(messageData);
+                    app.take_end_early(message_data);
                     break;
                 case "update_subject":
-                    app.takeUpdateSubject(messageData);
+                    app.take_update_subject(message_data);
                     break;
                 case "send_invitations":
-                    app.takeSendInvitations(messageData);
+                    app.take_send_invitations(message_data);
                     break;
                 case "email_list":
-                    app.takeUpdateEmailList(messageData);
+                    app.take_update_email_list(message_data);
                     break;
                 case "update_anonymize_data":
-                    app.takeAnonymizeData(messageData);
+                    app.take_anonymize_data(message_data);
                     break;
             }
 
-            this.first_load_done = true;
+            app.first_load_done = true;
             app.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
         },
 
         /** send websocket message to server
-        *    @param messageType {string} type of message sent to server
-        *    @param messageText {json} body of message being sent to server
+        *    @param message_type {string} type of message sent to server
+        *    @param message_text {json} body of message being sent to server
         */
-        sendMessage(messageType, messageText) {            
+        send_message(message_type, message_text) {            
 
-            this.chatSocket.send(JSON.stringify({
-                    'messageType': messageType,
-                    'messageText': messageText,
+            app.chat_socket.send(JSON.stringify({
+                    'message_type': message_type,
+                    'message_text': message_text,
                 }));
         },
 
         /**
          * do after session has loaded
          */
-         doFirstLoad()
+         do_first_load()
          {
-             app.editSubjectModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editSubjectModal'), {keyboard: false})
-             app.editSessionModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editSessionModal'), {keyboard: false})            
-             app.sendMessageModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('sendMessageModal'), {keyboard: false})            
-             app.uploadEmailModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('uploadEmailModal'), {keyboard: false})
+             app.edit_subject_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_subject_modal'), {keyboard: false})
+             app.edit_session_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_session_modal'), {keyboard: false})            
+             app.send_message_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('send_message_modal'), {keyboard: false})            
+             app.upload_email_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_email_modal'), {keyboard: false})
  
-             document.getElementById('editSubjectModal').addEventListener('hidden.bs.modal', app.hideEditSubject);
-             document.getElementById('editSessionModal').addEventListener('hidden.bs.modal', app.hideEditSession);
-             document.getElementById('sendMessageModal').addEventListener('hidden.bs.modal', app.hideSendInvitations);
-             document.getElementById('uploadEmailModal').addEventListener('hidden.bs.modal', app.hideSendEmailList);
+             document.getElementById('edit_subject_modal').addEventListener('hidden.bs.modal', app.hide_edit_subject);
+             document.getElementById('edit_session_modal').addEventListener('hidden.bs.modal', app.hide_edit_session);
+             document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
+             document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
 
             tinyMCE.init({
                 target: document.getElementById('id_invitation_subject'),
@@ -198,18 +198,16 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-        sendGetSession(){
-            app.sendMessage("get_session",{"sessionKey" : app.sessionKey});
+        send_get_session(){
+            app.send_message("get_session",{"session_key" : app.session_key});
         },
 
         /** take create new session
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeGetSession(messageData){
+        take_get_session(message_data){
             
-           
-
-            app.session = messageData.session;
+            app.session = message_data.session;
 
             if(app.session.started)
             {
@@ -222,71 +220,71 @@ var app = Vue.createApp({
 
             if(!app.first_load_done)
             {
-                setTimeout(app.doFirstLoad, 500);
+                setTimeout(app.do_first_load, 500);
             }
             
-            app.updateChatDisplay();
-            app.updatePhaseButtonText();    
+            app.update_chat_display();
+            app.update_phase_button_text();    
         },
 
         /**update text of move on button based on current state
          */
-        updatePhaseButtonText(){
-            if(this.session.finished && this.session.current_experiment_phase == "Done")
+        update_phase_button_text(){
+            if(app.session.finished && app.session.current_experiment_phase == "Done")
             {
-                this.move_to_next_phase_text = '** Experiment complete **';
+                app.move_to_next_phase_text = '** Experiment complete **';
             }
-            else if(this.session.finished && this.session.current_experiment_phase != "Done")
+            else if(app.session.finished && app.session.current_experiment_phase != "Done")
             {
-                this.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
+                app.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
             }
-            else if(this.session.current_experiment_phase == "Run")
+            else if(app.session.current_experiment_phase == "Run")
             {
-                this.move_to_next_phase_text = 'Running ...';
+                app.move_to_next_phase_text = 'Running ...';
             }
-            else if(this.session.started && !this.session.finished)
+            else if(app.session.started && !app.session.finished)
             {
-                if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
+                if(app.session.current_experiment_phase == "Selection" && app.session.parameter_set.show_instructions == "True")
                 {
-                    this.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
+                    app.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
                 }
                 else
                 {
-                    this.move_to_next_phase_text = 'Continue Session <i class="far fa-play-circle"></i>';
+                    app.move_to_next_phase_text = 'Continue Session <i class="far fa-play-circle"></i>';
                 }
             }
         },
 
         /** take updated data from goods being moved by another player
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeUpdateChat(messageData){
+        take_update_chat(message_data){
             
-            let result = messageData.status;
+            let result = message_data.status;
             let chat = result.chat;
 
-            if(this.session.chat_all.length>=100)
-                this.session.chat_all.shift();
+            if(app.session.chat_all.length>=100)
+                app.session.chat_all.shift();
             
-            this.session.chat_all.push(chat);
-            app.updateChatDisplay();
+            app.session.chat_all.push(chat);
+            app.update_chat_display();
         },
 
         /**
          * update chat
          */
-        updateChatDisplay(){
+        update_chat_display(){
             
-            this.chat_list_to_display=this.session.chat_all;
+            app.chat_list_to_display=app.session.chat_all;
         },
 
         /**
          * update time and start status
          */
-        takeUpdateTime(messageData){
+        take_update_time(message_data){
 
-            let result = messageData.status.result;
-            let status = messageData.status.value;
+            let result = message_data.status.result;
+            let status = message_data.status.value;
 
             if(status == "fail") return;
 
@@ -296,18 +294,10 @@ var app = Vue.createApp({
             app.session.timer_running = result.timer_running;
             app.session.finished = result.finished;
 
-            app.takeUpdateEarnings(messageData);
+            app.take_update_earnings(message_data);
 
-            app.updatePhaseButtonText();
+            app.update_phase_button_text();
         },
-
-        /**
-         * take update end game
-         */
-         takeUpdateEndGame(messageData){
-
-         },
-
        
         //do nothing on when enter pressed for post
         onSubmit(){
@@ -323,7 +313,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors(){
+        clear_main_form_errors(){
             
             for(var item in app.session)
             {
@@ -341,7 +331,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors(errors){
+        display_errors(errors){
             for(var e in errors)
                 {
                     //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")

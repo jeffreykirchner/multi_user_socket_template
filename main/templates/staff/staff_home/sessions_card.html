@@ -5,8 +5,8 @@
         </span>
 
         <span class="float-end">
-            <button class="btn btn-outline-success" type="button" v-on:click = "sendCreateSession()" v-bind:disabled = "reconnecting || working">
-                <span v-html="createSessionButtonText"></span>
+            <button class="btn btn-outline-success" type="button" v-on:click = "send_create_session()" v-bind:disabled = "reconnecting || working">
+                <span v-html="create_session_button_text"></span>
             </button>
         </span>
                                                         
@@ -20,13 +20,13 @@
 
             <thead>
                 <th scope="col">
-                    <button type="button" class="btn btn-outline-link btn-sm" v-on:click = "sortByTitle()">
-                        <span v-html="titleSortButtonText" class="table_header"></span>
+                    <button type="button" class="btn btn-outline-link btn-sm" v-on:click = "sort_by_title()">
+                        <span v-html="title_sort_button_text" class="table_header"></span>
                     </button>
                 </th> 
                 <th scope="col" class="text-center">
-                    <button type="button" class="btn btn-outline-link btn-sm" v-on:click = "sortByDate()">
-                        <span v-html="dateSortButtonText" class="table_header"></span>
+                    <button type="button" class="btn btn-outline-link btn-sm" v-on:click = "sort_by_date()">
+                        <span v-html="date_sort_button_text" class="table_header"></span>
                     </button>                             
                 </th>                                                              
                 <th scope="col" class="text-center">
@@ -40,7 +40,7 @@
                         <a :href="'/staff-session/' + s.id + '/' "><span v-html="s.title"></span></a>                                        
                     </td>
                     <td class="text-center"> 
-                        [[formatDate(s.start_date)]]                             
+                        [[format_date(s.start_date)]]                             
                     </td>
                     <td class="text-center">
                         <div v-if="s.locked">
@@ -50,7 +50,7 @@
                             <button v-bind:id="'deleteSession' + s.id"
                                     type="button"
                                     class="btn btn-outline-danger btn-sm"
-                                    v-on:click = "sendDeleteSession(s.id)"
+                                    v-on:click = "send_delete_session(s.id)"
                                     title = "Delete session and its data."
                                     v-bind:disabled = "reconnecting || working">
                                 Delete <i class="fas fa-user-minus fa-xs"></i>  

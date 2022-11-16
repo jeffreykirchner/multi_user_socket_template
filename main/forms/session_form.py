@@ -12,7 +12,7 @@ class SessionForm(forms.ModelForm):
     '''
     title = forms.CharField(label='Title',
                             widget=forms.TextInput(attrs={"v-model":"session.title",
-                                                           "v-on:keyup.enter":"sendUpdateSession()"}))
+                                                           "v-on:keyup.enter":"send_update_session()"}))
 
     class Meta:
         model=Session

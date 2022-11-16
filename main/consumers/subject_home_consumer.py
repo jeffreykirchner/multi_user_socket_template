@@ -58,8 +58,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
@@ -89,8 +89,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = subject_result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send reply to sending channel
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -114,8 +114,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -131,13 +131,13 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         advance instruction page
         '''
-        result = await sync_to_async(take_next_instruction)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_finish_instructions)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -158,8 +158,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -188,8 +188,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         #if self.channel_name != event['sender_channel_name']:
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -208,8 +208,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -222,8 +222,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] =  event["subject_result"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         if self.channel_name == event['sender_channel_name']:
             return
@@ -280,8 +280,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event_data
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -308,8 +308,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -336,7 +336,7 @@ def take_get_session_subject(session_player_id):
     '''
     get session info for subject
     '''
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     #uuid = data["uuid"]
 
     #session = Session.objects.get(id=session_id)
@@ -459,10 +459,10 @@ def take_name(session_id, session_player_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Take name: {session_id} {session_player_id} {data}")
 
-    form_data_dict =  data["formData"]
+    form_data_dict =  data["form_data"]
 
     # try:
-    #     form_data = data["formData"]
+    #     form_data = data["form_data"]
 
     #     # for field in form_data:            
     #     #     form_data_dict[field["name"]] = field["value"]
@@ -523,7 +523,7 @@ def take_update_next_phase(session_id, session_player_id):
         logger.warning(f"take_update_next_phase: session not found, session {session_id}, session_player_id {session_player_id}")
         return {"value" : "fail", "result" : {}, "message" : "Update next phase error"}
 
-def take_next_instruction(session_id, session_player_id, data):
+def take_finish_instructions(session_id, session_player_id, data):
     '''
     take show next instruction page
     '''
@@ -552,10 +552,10 @@ def take_next_instruction(session_id, session_player_id, data):
         session_player.save()
 
     except ObjectDoesNotExist:
-        logger.warning(f"take_next_instruction not found: {session_player_id}")
+        logger.warning(f"take_finish_instructions not found: {session_player_id}")
         return {"value" : "fail", "errors" : {}, "message" : "Instruction Error."} 
     except KeyError:
-        logger.warning(f"take_next_instruction key error: {session_player_id}")
+        logger.warning(f"take_finish_instructions key error: {session_player_id}")
         return {"value" : "fail", "errors" : {}, "message" : "Instruction Error."}       
     
     return {"value" : "success",
@@ -582,7 +582,7 @@ def take_finish_instructions(session_id, session_player_id, data):
         session_player.save()
 
     except ObjectDoesNotExist:
-        logger.warning(f"take_next_instruction : {session_player_id}")
+        logger.warning(f"take_finish_instructions : {session_player_id}")
         return {"value" : "fail", "errors" : {}, "message" : "Error"}       
     
     return {"value" : "success",

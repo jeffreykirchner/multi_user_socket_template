@@ -1,5 +1,5 @@
 {% load crispy_forms_tags %}
-<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModal" aria-hidden="true">
+<div class="modal fade" id="send_message_modal" tabindex="-1" aria-labelledby="send_message_modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -31,7 +31,7 @@
                 </div>               
                 <div class="row">
                     <div class="col" style="text-align: center;color:red">
-                        <span v-html="emailResult"></span>
+                        <span v-html="email_result"></span>
                     </div>
                 </div>
             </div>
@@ -39,14 +39,14 @@
                 <button type="button" 
                         title="Fill with default subject and body."
                         class="btn btn-outline-secondary" 
-                        v-on:click = "fillDefaultInvitation()" 
+                        v-on:click = "fill_default_invitation()" 
                         v-bind:disabled = "reconnecting || working">                        
                     Fill with default invitation <i class="fas fa-fill"></i>
                 </button>                         
                 <button type="button" 
                         title="Send email invitations."
                         class="btn btn-outline-success" 
-                        v-on:click = "sendSendInvitations()" 
+                        v-on:click = "send_send_invitations()" 
                         v-bind:disabled = "reconnecting || working">                        
                     Send <i class="far fa-envelope"></i>
                 </button>

@@ -8,12 +8,12 @@ axios.defaults.xsrfCookieName = "csrftoken";
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     working : false,
                     first_load_done : false,          //true after software is loaded for the first time
-                    helpText : "Loading ...",
-                    sessionID : {{session.id}},
+                    help_text : "Loading ...",
+                    session_id : {{session.id}},
                     session : null,                   
     
                     current_parameter_set_player : {
@@ -25,14 +25,14 @@ var app = Vue.createApp({
 
                     upload_file: null,
                     upload_file_name:'Choose File',
-                    uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
-                    uploadParametersetMessaage:'',
+                    upload_parameter_set_button_text:'Upload  <i class="fas fa-upload"></i>',
+                    upload_parameter_set_messaage:'',
                     import_parameters_message : "",
 
                     //modals
-                    importParametersModal : null,
-                    editParametersetModal : null,
-                    editParametersetPlayerModal : null,
+                    import_parameters_modal : null,
+                    edit_parameterset_modal : null,
+                    edit_parameterset_player_modal : null,
 
                     //form paramters
                     session_import : null,
@@ -41,46 +41,46 @@ var app = Vue.createApp({
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected(){            
-            app.sendGetSession();
+        handle_socket_connected(){            
+            app.send_get_session();
         },
 
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage(data) {
+        take_message(data) {
 
             {%if DEBUG%}
             console.log(data);
             {%endif%}
 
-            messageType = data.message.messageType;
-            messageData = data.message.messageData;
+            message_type = data.message.message_type;
+            message_data = data.message.message_data;
 
-            switch(messageType) {                
+            switch(message_type) {                
                 case "get_session":
-                    app.takeGetSession(messageData);
+                    app.take_get_session(message_data);
                     break;
-                case "update_parameterset":
-                    app.takeUpdateParameterset(messageData);
+                case "update_parameter_set":
+                    app.take_update_parameter_set(message_data);
                     break;        
-                case "update_parameterset_player":
-                    app.takeUpdateParametersetPlayer(messageData);
+                case "update_parameter_set_player":
+                    app.take_update_parameter_setPlayer(message_data);
                     break;     
                 case "remove_parameterset_player":
-                    app.takeRemoveParameterSetPlayer(messageData);
+                    app.take_remove_parameter_set_player(message_data);
                     break;
                 case "add_parameterset_player":
-                    app.takeAddParameterSetPlayer(messageData);
+                    app.take_add_parameter_set_player(message_data);
                     break;                
                 case "import_parameters":
-                    app.takeImportParameters(messageData);
+                    app.take_import_parameters(message_data);
                     break;
                 case "download_parameters":
-                    app.takeDownloadParameters(messageData);
+                    app.take_download_parameters(message_data);
                     break;
                 case "help_doc":
-                    app.takeLoadHelpDoc(messageData);
+                    app.take_load_help_doc(message_data);
                     break;
             }
 
@@ -90,36 +90,36 @@ var app = Vue.createApp({
         },
 
         /** send websocket message to server
-        *    @param messageType {string} type of message sent to server
-        *    @param messageText {json} body of message being sent to server
+        *    @param message_type {string} type of message sent to server
+        *    @param message_text {json} body of message being sent to server
         */
-        sendMessage(messageType, messageText) {
+        send_message(message_type, message_text) {
 
-            app.chatSocket.send(JSON.stringify({
-                    'messageType': messageType,
-                    'messageText': messageText,
+            app.chat_socket.send(JSON.stringify({
+                    'message_type': message_type,
+                    'message_text': message_text,
                 }));
         },
 
-        doFirstLoad()
+        do_first_load()
         {
-            app.importParametersModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('importParametersModal'), {keyboard: false})
-            app.editParametersetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetModal'), {keyboard: false})            
-            app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})   
-            app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})         
-   
-            document.getElementById('importParametersModal').addEventListener('hidden.bs.modal', app.hideImportParameters);
-            document.getElementById('editParametersetModal').addEventListener('hidden.bs.modal', app.hideEditParameterset);
-            document.getElementById('editParametersetPlayerModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayer);
-
+            app.import_parameters_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('import_parameters_modal'), {keyboard: false})
+            app.edit_parameterset_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_modal'), {keyboard: false})            
+            app.edit_parameterset_player_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_player_modal'), {keyboard: false})
+            app.upload_parameter_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_parameter_set_modal'), {keyboard: false})   
+               
+            document.getElementById('import_parameters_modal').addEventListener('hidden.bs.modal', app.hide_import_parameters);
+            document.getElementById('edit_parameterset_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameter_set);
+            document.getElementById('edit_parameterset_player_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameter_set_player);
+            document.getElementById('upload_parameter_set_modal').addEventListener('hidden.bs.modal', app.hide_upload_parameters);
         },
 
         /** take create new session
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeGetSession(messageData){
+        take_get_session(message_data){
             
-            app.session = messageData.session;
+            app.session = message_data.session;
 
             if(app.session.started)
             {
@@ -132,14 +132,14 @@ var app = Vue.createApp({
             
             if(!app.first_load_done)
             {
-                setTimeout(app.doFirstLoad, 500);
+                setTimeout(app.do_first_load, 500);
             }
         },
 
         /** send winsock request to get session info
         */
-        sendGetSession(){
-            app.sendMessage("get_session",{"sessionID" : app.sessionID});
+        send_get_session(){
+            app.send_message("get_session",{"session_id" : app.session_id});
         },
 
         //do nothing on when enter pressed for post
@@ -154,7 +154,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors(){
+        clear_main_form_errors(){
             
             for(var item in app.session)
             {
@@ -179,7 +179,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors(errors){
+        display_errors(errors){
             for(var e in errors)
                 {
                     //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")

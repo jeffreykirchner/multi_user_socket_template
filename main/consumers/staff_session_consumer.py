@@ -20,7 +20,7 @@ from main.consumers import SocketConsumerMixin
 from main.consumers import StaffSubjectUpdateMixin
 
 from main.forms import SessionForm
-from main.forms import StaffEditNameEtcForm
+from main.forms import staff_edit_name_etc_form
 
 from main.models import Session
 from main.models import Parameters
@@ -43,7 +43,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         # logger = logging.getLogger(__name__) 
         # logger.info(f"Get Session {event}")
 
-        self.connection_uuid = event["message_text"]["sessionKey"]
+        self.connection_uuid = event["message_text"]["session_key"]
         self.connection_type = "staff"
 
         #build response
@@ -53,8 +53,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         self.session_id = message_data["session"]["id"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
@@ -71,8 +71,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data =  await sync_to_async(take_update_session_form)(self.session_id, event["message_text"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -85,8 +85,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         #Send message to staff page
         if message_data["status"]["value"] == "fail":
@@ -107,8 +107,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         if message_data["status"]["value"] == "fail":
@@ -130,8 +130,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_reset_connections)(self.session_id, event["message_text"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         if message_data["status"]["value"] == "fail":
@@ -153,8 +153,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         if message_data["status"]["value"] == "fail":
@@ -182,8 +182,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         if event["message_text"]["action"] == "start":
             self.timer_running = True
@@ -271,8 +271,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_download_summary_data)(self.session_id)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -285,8 +285,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_download_action_data)(self.session_id)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -299,8 +299,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_download_recruiter_data)(self.session_id)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -313,8 +313,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_download_payment_data)(self.session_id)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -327,8 +327,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_end_early)(self.session_id)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -341,8 +341,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_update_subject)(self.session_id,  event["message_text"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -355,8 +355,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_email_list)(self.session_id,  event["message_text"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -369,8 +369,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = await sync_to_async(take_send_invitations)(self.session_id,  event["message_text"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -404,8 +404,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["session"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         #if self.channel_name != event['sender_channel_name']:
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -419,8 +419,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -434,8 +434,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -450,8 +450,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -464,8 +464,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -484,8 +484,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -501,8 +501,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -515,8 +515,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
@@ -532,8 +532,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -549,8 +549,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -566,8 +566,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
@@ -583,8 +583,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 #local async function
@@ -614,8 +614,8 @@ def take_update_session_form(session_id, data):
     logger = logging.getLogger(__name__)
     logger.info(f'take_update_session_form: {data}')
 
-    #session_id = data["sessionID"]
-    form_data = data["formData"]
+    #session_id = data["session_id"]
+    form_data = data["form_data"]
 
     try:        
         session = Session.objects.get(id=session_id)
@@ -646,7 +646,7 @@ def take_start_experiment(session_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Start Experiment: {data}")
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     with transaction.atomic():
         session = Session.objects.get(id=session_id)
 
@@ -665,7 +665,7 @@ def take_reset_experiment(session_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Reset Experiment: {data}")
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     session = Session.objects.get(id=session_id)
 
     if session.started:
@@ -683,7 +683,7 @@ def take_reset_connections(session_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Reset connection counts: {data}")
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     session = Session.objects.get(id=session_id)
 
     if not session.started:
@@ -701,7 +701,7 @@ def take_next_phase(session_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Advance to Next Phase: {data}")
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     session = Session.objects.get(id=session_id)
 
     if session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
@@ -819,8 +819,8 @@ def take_update_subject(session_id, data):
     logger = logging.getLogger(__name__)
     logger.info(f'take_update_subject: {data}')
 
-    #session_id = data["sessionID"]
-    form_data = dict(data["formData"])
+    #session_id = data["session_id"]
+    form_data = dict(data["form_data"])
 
     try:        
         session = Session.objects.get(id=session_id)
@@ -828,7 +828,7 @@ def take_update_subject(session_id, data):
         logger.warning(f"take_update_session_form session, not found: {session_id}")
         return {"status":"fail", "message":"session not found"}
 
-    form = StaffEditNameEtcForm(form_data)
+    form = staff_edit_name_etc_form(form_data)
 
     if form.is_valid():
 
@@ -861,7 +861,7 @@ def take_send_invitations(session_id, data):
         return {"status":"fail", "result":"session not found"}
 
     p = Parameters.objects.first()
-    message = data["formData"]
+    message = data["form_data"]
 
     session.invitation_text =  message["text"]
     session.invitation_subject =  message["subject"]

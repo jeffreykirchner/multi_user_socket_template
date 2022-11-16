@@ -2,28 +2,28 @@
 */
 start_experiment(){
     app.working = true;
-    app.sendMessage("start_experiment", {});
+    app.send_message("start_experiment", {});
 },
 
 /** take start experiment response
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeStartExperiment(messageData){
-    app.takeGetSession(messageData);
+take_start_experiment(message_data){
+    app.take_get_session(message_data);
 },
 
 /** update start status
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-takeUpdateStartExperiment(messageData){
-    app.takeGetSession(messageData);
+take_update_start_experiment(message_data){
+    app.take_get_session(message_data);
 },
 
 /** update start status
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-takeUpdateResetExperiment(messageData){
-    app.takeGetSession(messageData);
+take_update_reset_experiment(message_data){
+    app.take_get_session(message_data);
 },
 
 /**reset experiment, remove all bids, asks and trades
@@ -34,38 +34,38 @@ reset_experiment(){
     }
 
     app.working = true;
-    app.sendMessage("reset_experiment", {});
+    app.send_message("reset_experiment", {});
 },
 
 /** take reset experiment response
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeResetExperiment(messageData){
+take_reset_experiment(message_data){
     app.chat_list_to_display=[];
-    app.takeGetSession(messageData);
+    app.take_get_session(message_data);
 },
 
-resetConnections(){
+reset_connections(){
     if (!confirm('Reset connection status?.')) {
         return;
     }
 
     app.working = true;
-    app.sendMessage("reset_connections", {});
+    app.send_message("reset_connections", {});
 },
 
 /** update start status
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-takeUpdateResetConnections(messageData){
-    app.takeGetSession(messageData);
+take_update_reset_connections(message_data){
+    app.take_get_session(message_data);
 },
 
 /** take reset experiment response
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeResetConnections(messageData){
-    app.takeGetSession(messageData);
+take_reset_connections(message_data){
+    app.take_get_session(message_data);
 },
 
 /**advance to next phase
@@ -77,32 +77,32 @@ next_experiment_phase(){
     }    
 
     app.working = true;
-    app.sendMessage("next_phase", {});
+    app.send_message("next_phase", {});
 },
 
 /** take next period response
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeNextPhase(messageData){
+take_next_phase(message_data){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
-    this.updatePhaseButtonText();
+    app.session.current_experiment_phase = message_data.status.current_experiment_phase;
+    app.update_phase_button_text();
 
 },
 
 /** take next period response
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeUpdateNextPhase(messageData){
+take_update_next_phase(message_data){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
-    this.updatePhaseButtonText();
+    app.session.current_experiment_phase = message_data.status.current_experiment_phase;
+    app.update_phase_button_text();
 },
 
 /**
  * start the period timer
 */
-startTimer(){
+start_timer(){
     app.working = true;
 
     let action = "";
@@ -116,98 +116,98 @@ startTimer(){
         action = "start";
     }
 
-    app.sendMessage("start_timer", {action : action});
+    app.send_message("start_timer", {action : action});
 },
 
 /** take start experiment response
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeStartTimer(messageData){
-    app.takeUpdateTime(messageData);
+take_start_timer(message_data){
+    app.take_update_time(message_data);
 },
 
 /**reset experiment, remove all bids, asks and trades
 */
-endEarly(){
+end_early(){
     if (!confirm('End the experiment after this period completes?')) {
         return;
     }
 
     app.working = true;
-    app.sendMessage("end_early", {});
+    app.send_message("end_early", {});
 },
 
 /** take reset experiment response
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeEndEarly(messageData){
-   this.session.parameter_set.period_count = messageData.status.result;
+take_end_early(message_data){
+   app.session.parameter_set.period_count = message_data.status.result;
 },
 
 /** send invitations
 */
-sendSendInvitations(){
+send_send_invitations(){
 
-    this.sendMessageModalForm.text = tinymce.get("id_invitation_subject").getContent();
+    app.send_message_modal_form.text = tinymce.get("id_invitation_subject").getContent();
 
-    if(this.sendMessageModalForm.subject == "" || this.sendMessageModalForm.text == "")
+    if(app.send_message_modal_form.subject == "" || app.send_message_modal_form.text == "")
     {
-        this.emailResult = "Error: Please enter a subject and email body.";
+        app.email_result = "Error: Please enter a subject and email body.";
         return;
     }
 
-    this.cancelModal = false;
-    this.working = true;
-    this.emailResult = "Sending ...";
+    app.cancel_modal = false;
+    app.working = true;
+    app.email_result = "Sending ...";
 
-    app.sendMessage("send_invitations",
-                   {"formData" : this.sendMessageModalForm});
+    app.send_message("send_invitations",
+                   {"form_data" : app.send_message_modal_form});
 },
 
 /** take update subject response
- * @param messageData {json} result of update, either sucess or fail with errors
+ * @param message_data {json} result of update, either sucess or fail with errors
 */
-takeSendInvitations(messageData){
-    app.clearMainFormErrors();
+take_send_invitations(message_data){
+    app.clear_main_form_errors();
 
-    if(messageData.status.value == "success")
+    if(message_data.status.value == "success")
     {           
-        this.emailResult = "Result: " + messageData.status.result.email_result.mail_count.toString() + " messages sent.";
+        app.email_result = "Result: " + message_data.status.result.email_result.mail_count.toString() + " messages sent.";
 
-        this.session.invitation_subject = messageData.status.result.invitation_subject;
-        this.session.invitation_text = messageData.status.result.invitation_text;
+        app.session.invitation_subject = message_data.status.result.invitation_subject;
+        app.session.invitation_text = message_data.status.result.invitation_text;
     } 
     else
     {
-        this.emailResult = messageData.status.result;
+        app.email_result = message_data.status.result;
     } 
 },
 
 /** show edit subject modal
 */
-showSendInvitations(){
+show_send_invitations(){
 
-    this.cancelModal=true;
+    app.cancel_modal=true;
 
-    this.sendMessageModalForm.subject = this.session.invitation_subject;
-    this.sendMessageModalForm.text = this.session.invitation_text;
+    app.send_message_modal_form.subject = app.session.invitation_subject;
+    app.send_message_modal_form.text = app.session.invitation_text;
 
-    tinymce.get("id_invitation_subject").setContent(this.sendMessageModalForm.text);
+    tinymce.get("id_invitation_subject").setContent(app.send_message_modal_form.text);
 
-    app.sendMessageModal.toggle();
+    app.send_message_modal.toggle();
 },
 
 /** hide edit subject modal
 */
-hideSendInvitations(){
-    this.emailResult = "";
+hide_send_invitations(){
+    app.email_result = "";
 },
 
 /**
  * fill invitation with default values
  */
-fillDefaultInvitation(){
-    this.sendMessageModalForm.subject = this.emailDefaultSubject;
+fill_default_invitation(){
+    app.send_message_modal_form.subject = app.email_default_subject;
     
-    tinymce.get("id_invitation_subject").setContent(this.emailDefaultText);
+    tinymce.get("id_invitation_subject").setContent(app.email_default_text);
 },

@@ -1,11 +1,11 @@
 {% load crispy_forms_tags %}
 <!--Edit Period Modal -->
 <div class="modal fade"
-     id="editParametersetPlayerModal"
+     id="edit_parameterset_player_modal"
      data-bs-backdrop="static"
      data-bs-keyboard="false"
      tabindex="-1"
-     aria-labelledby="editParametersetPlayerModal"
+     aria-labelledby="edit_parameterset_player_modal"
      aria-hidden="true">
 
     <div class="modal-dialog">
@@ -14,7 +14,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="parametersetPlayerForm" v-on:submit.prevent="onSubmit">
+                <form id="parameter_set_player_form" v-on:submit.prevent="onSubmit">
                     {% for i in parameter_set_player_form %}
                     <div class="row">
                         <div class = "col col-md-10 offset-md-1">  
@@ -28,14 +28,14 @@
                 <button type="button"
                         class="btn btn-outline-danger"
                         title="Remove player from parameter set."
-                        v-on:click = "sendRemoveParameterSetPlayer()"
+                        v-on:click = "send_remove_parameter_set_player()"
                         v-bind:disabled="reconnecting || working">
                     Delete Player <i class="far fa-trash-alt"></i>
                 </button>
                 <button type="button"
                         class="btn btn-outline-primary"
                         title="Update player settings."
-                        v-on:click = "sendUpdateParametersetPlayer()"
+                        v-on:click = "send_update_parameter_set_player()"
                         v-bind:disabled="reconnecting || working">
                     Update <i class="fas fa-sign-in-alt"></i>
                 </button>

@@ -4,18 +4,18 @@
 
 from django import forms
 
-class StaffEditNameEtcForm(forms.Form):
+class staff_edit_name_etc_form(forms.Form):
     '''
     staff page, edit name etc form
     '''
     name = forms.CharField(label='Full Name',
                            required=False,
-                           widget=forms.TextInput(attrs={"v-model":"staffEditNameEtcForm.name",}))
+                           widget=forms.TextInput(attrs={"v-model":"staff_edit_name_etc_form.name",}))
 
     student_id = forms.CharField(label='Student ID',
                                  required=False,
-                                 widget=forms.TextInput(attrs={"v-model":"staffEditNameEtcForm.student_id",}))
+                                 widget=forms.TextInput(attrs={"v-model":"staff_edit_name_etc_form.student_id",}))
 
     email =  forms.EmailField(label='Email',
                               required=False,
-                              widget=forms.EmailInput(attrs={"v-model":"staffEditNameEtcForm.email",}))
+                              widget=forms.EmailInput(attrs={"v-model":"staff_edit_name_etc_form.email",}))

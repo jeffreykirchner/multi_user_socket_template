@@ -8,7 +8,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     is_subject : true,
                     working : false,
@@ -33,97 +33,97 @@ var app = Vue.createApp({
                     instruction_pages_show_scroll : false,
 
                     // modals
-                    endGameModal : null,
+                    end_game_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
                 }},
     methods: {
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected(){            
-            app.sendGetSession();
+        handle_socket_connected(){            
+            app.send_get_session();
         },
 
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage(data) {
+        take_message(data) {
 
             {%if DEBUG%}
             console.log(data);
             {%endif%}
 
-            messageType = data.message.messageType;
-            messageData = data.message.messageData;
+            message_type = data.message.message_type;
+            message_data = data.message.message_data;
 
-            switch(messageType) {                
+            switch(message_type) {                
                 case "get_session":
-                    app.takeGetSession(messageData);
+                    app.take_get_session(message_data);
                     break; 
                 case "update_start_experiment":
-                    app.takeUpdateStartExperiment(messageData);
+                    app.take_update_start_experiment(message_data);
                     break;
                 case "update_reset_experiment":
-                    app.takeUpdateResetExperiment(messageData);
+                    app.take_update_reset_experiment(message_data);
                     break;
                 case "chat":
-                    app.takeChat(messageData);
+                    app.take_chat(message_data);
                     break;
                 case "update_chat":
-                    app.takeUpdateChat(messageData);
+                    app.take_update_chat(message_data);
                     break;
                 case "update_time":
-                    app.takeUpdateTime(messageData);
+                    app.take_update_time(message_data);
                     break;
                 case "update_end_game":
-                    app.takeEndGame(messageData);
+                    app.take_end_game(message_data);
                     break;
                 case "name":
-                    app.takeName(messageData);
+                    app.take_name(message_data);
                     break;
                 case "update_next_phase":
-                    app.takeUpdateNextPhase(messageData);
+                    app.take_update_next_phase(message_data);
                     break;
                 case "next_instruction":
-                    app.takeNextInstruction(messageData);
+                    app.take_next_instruction(message_data);
                     break;
                 case "finish_instructions":
-                    app.takeFinishInstructions(messageData);
+                    app.take_finish_instructions(message_data);
                     break;
                 
             }
 
-            this.first_load_done = true;
+            app.first_load_done = true;
 
-            this.working = false;
+            app.working = false;
         },
 
         /** send websocket message to server
-        *    @param messageType {string} type of message sent to server
-        *    @param messageText {json} body of message being sent to server
+        *    @param message_type {string} type of message sent to server
+        *    @param message_text {json} body of message being sent to server
         */
-        sendMessage(messageType, messageText) {            
+        send_message(message_type, message_text) {            
 
-            this.chatSocket.send(JSON.stringify({
-                    'messageType': messageType,
-                    'messageText': messageText,
+            app.chat_socket.send(JSON.stringify({
+                    'message_type': message_type,
+                    'message_text': message_text,
                 }));
         },
 
         /**
          * do after session has loaded
          */
-         doFirstLoad()
+         do_first_load()
          {           
-             app.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false})           
-             document.getElementById('endGameModal').addEventListener('hidden.bs.modal', app.hideEndGameModal);
+             app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})           
+             document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
 
-             {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 1500)); {%endif%}
+             {%if session.parameter_set.test_mode%} setTimeout(app.do_test_mode, app.random_number(1000 , 1500)); {%endif%}
 
             // if game is finished show modal
             if(app.session.finished)
             {
-                this.showEndGameModal();
+                app.show_end_game_modal();
             }
 
             document.getElementById('instructions_frame_a').addEventListener('scroll',
@@ -137,18 +137,18 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-        sendGetSession(){
-            app.sendMessage("get_session", {"playerKey" : this.playerKey});
+        send_get_session(){
+            app.send_message("get_session", {"playerKey" : app.playerKey});
         },
         
         /** take create new session
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeGetSession(messageData){
+        take_get_session(message_data){
             
 
-            app.session = messageData.status.session;
-            app.session_player = messageData.status.session_player;
+            app.session = message_data.status.session;
+            app.session_player = message_data.status.session_player;
 
             if(app.session.started)
             {
@@ -159,105 +159,105 @@ var app = Vue.createApp({
                 
             }            
             
-            if(this.session.current_experiment_phase != 'Done')
+            if(app.session.current_experiment_phase != 'Done')
             {
                                 
-                if(this.session.current_experiment_phase != 'Instructions')
+                if(app.session.current_experiment_phase != 'Instructions')
                 {
-                    app.updateChatDisplay();               
+                    app.update_chat_display();               
                 }
             }
 
-            if(this.session.current_experiment_phase == 'Instructions')
+            if(app.session.current_experiment_phase == 'Instructions')
             {
-                setTimeout(this.processInstructionPage, 1000);
-                this.instructionDisplayScroll();
+                setTimeout(app.processInstructionPage, 1000);
+                app.instruction_display_scroll();
             }
 
             if(!app.first_load_done)
             {
-                setTimeout(app.doFirstLoad, 500);
+                setTimeout(app.do_first_load, 500);
             }
         },
 
         /** update start status
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeUpdateStartExperiment(messageData){
-            app.takeGetSession(messageData);
+        take_update_start_experiment(message_data){
+            app.take_get_session(message_data);
         },
 
         /** update reset status
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeUpdateResetExperiment(messageData){
-            app.takeGetSession(messageData);
+        take_update_reset_experiment(message_data){
+            app.take_get_session(message_data);
 
-            app.endGameModal.hide();            
+            app.end_game_modal.hide();            
         },
 
         /**
         * update time and start status
         */
-        takeUpdateTime(messageData){
-            let result = messageData.status.result;
-            let status = messageData.status.value;
-            let notice_list = messageData.status.notice_list;
+        take_update_time(message_data){
+            let result = message_data.status.result;
+            let status = message_data.status.value;
+            let notice_list = message_data.status.notice_list;
 
             if(status == "fail") return;
 
-            this.session.started = result.started;
-            this.session.current_period = result.current_period;
-            this.session.time_remaining = result.time_remaining;
-            this.session.timer_running = result.timer_running;
-            this.session.finished = result.finished;
+            app.session.started = result.started;
+            app.session.current_period = result.current_period;
+            app.session.time_remaining = result.time_remaining;
+            app.session.timer_running = result.timer_running;
+            app.session.finished = result.finished;
 
             //update subject earnings
-            this.session_player.earnings = result.session_player_earnings.earnings;
+            app.session_player.earnings = result.session_player_earnings.earnings;
 
             //session complete
             if(app.session.finished)
             {
-                this.showEndGameModal();
+                app.show_end_game_modal();
             }            
         },
 
         /**
          * show the end game modal
          */
-        showEndGameModal(){
-            if(this.end_game_modal_visible) return;
+        show_end_game_modal(){
+            if(app.end_game_modal_visible) return;
    
-            app.endGameModal.toggle();
+            app.end_game_modal.toggle();
 
-            this.end_game_modal_visible = true;
+            app.end_game_modal_visible = true;
         },
 
          /**
          * take end of game notice
          */
-        takeEndGame(messageData){
+        take_end_game(message_data){
 
         },
 
       
         /** take next period response
-         * @param messageData {json}
+         * @param message_data {json}
         */
-        takeUpdateNextPhase(messageData){
-            app.endGameModal.hide();
+        take_update_next_phase(message_data){
+            app.end_game_modal.hide();
 
-            this.session.current_experiment_phase = messageData.status.session.current_experiment_phase;
-            this.session.session_players = messageData.status.session_players;
-            this.session_player = messageData.status.session_player;
+            app.session.current_experiment_phase = message_data.status.session.current_experiment_phase;
+            app.session.session_players = message_data.status.session_players;
+            app.session_player = message_data.status.session_player;
 
-            app.updateChatDisplay();          
+            app.update_chat_display();          
         },
 
         /** hide choice grid modal modal
         */
-        hideEndGameModal(){
-            this.end_game_modal_visible=false;
+        hide_end_game_modal(){
+            app.end_game_modal_visible=false;
         },
 
         //do nothing on when enter pressed for post
@@ -272,7 +272,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors(){
+        clear_main_form_errors(){
             
             for(var item in app.session)
             {
@@ -280,7 +280,7 @@ var app = Vue.createApp({
                 if(e) e.remove();
             }
 
-            s = this.end_game_form_ids;
+            s = app.end_game_form_ids;
             for(var i in s)
             {
                 e = document.getElementById("id_errors_" + s[i]);
@@ -290,7 +290,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors(errors){
+        display_errors(errors){
             for(var e in errors)
                 {
                     //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")
@@ -311,7 +311,7 @@ var app = Vue.createApp({
         /**
          * return session player that has specified id
          */
-        findSessionPlayer(id){
+        find_session_player(id){
 
             let session_players = app.session.session_players;
             for(let i=0; i<session_players.length; i++)
@@ -328,7 +328,7 @@ var app = Vue.createApp({
         /**
          * return session player index that has specified id
          */
-        findSessionPlayerIndex(id){
+        find_session_player_index(id){
 
             let session_players = app.session.session_players;
             for(let i=0; i<session_players.length; i++)

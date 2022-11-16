@@ -31,8 +31,8 @@ class StaffSubjectUpdateMixin():
         message_data["status"] = result
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send reply to sending channel
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))

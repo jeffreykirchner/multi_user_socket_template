@@ -50,8 +50,8 @@ class StaffHomeConsumer(SocketConsumerMixin):
         message_data["sessions"] = await sync_to_async(get_session_list_json)(self.user)
 
         message = {}
-        message["messageType"] = "get_sessions"
-        message["messageData"] = message_data
+        message["message_type"] = "get_sessions"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
@@ -73,8 +73,8 @@ class StaffHomeConsumer(SocketConsumerMixin):
         message_data["sessions"] = await sync_to_async(get_session_list_json)(self.user)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
@@ -94,8 +94,8 @@ class StaffHomeConsumer(SocketConsumerMixin):
         message_data["sessions"] = await sync_to_async(get_session_list_json)(self.user)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
@@ -115,8 +115,8 @@ class StaffHomeConsumer(SocketConsumerMixin):
         message_data["sessions_admin"] = await sync_to_async(get_session_list_admin_json)(self.user)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
@@ -136,8 +136,8 @@ class StaffHomeConsumer(SocketConsumerMixin):
         message_data["sessions_admin"] = await sync_to_async(get_session_list_admin_json)(self.user)
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))

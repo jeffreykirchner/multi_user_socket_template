@@ -8,11 +8,11 @@
           delimiters: ["[[", "]]"],
 
           data() { return {
-              loginButtonText : 'Submit <i class="fas fa-sign-in-alt"></i>',
-              loginErrorText : "",
+              login_button_text : 'Submit <i class="fas fa-sign-in-alt"></i>',
+              login_error_text : "",
               form_ids : {{form_ids|safe}},
-              username:null,
-              password:null,
+              username : null,
+              password : null,
               }                          
           },
 
@@ -20,36 +20,35 @@
               //get current, last or next month
 
               login:function(){
-                  app.loginButtonText = '<i class="fas fa-spinner fa-spin"></i>';
-                  app.loginErrorText = "";
-                  var form = document.querySelector('login_form');
+                  app.login_button_text = '<i class="fas fa-spinner fa-spin"></i>';
+                  app.login_error_text = "";
+                  let form = document.querySelector('login_form');
 
                   axios.post('/accounts/login/', {
                           action :"login",
-                          formData : {username:app.username, password:app.password},
-                                                      
+                          form_data : {username:app.username, password:app.password},                              
                       })
                       .then(function (response) {     
                           
                         status=response.data.status;                               
 
-                        app.clearMainFormErrors();
+                        app.clear_main_form_errors();
 
                         if(status == "validation")
                         {              
                           //form validation error           
-                          app.displayErrors(response.data.errors);
+                          app.display_errors(response.data.errors);
                         }
                         else if(status == "error")
                         {
-                          app.loginErrorText = "Username or Password is incorrect."
+                          app.login_error_text = "Username or Password is incorrect."
                         }
                         else
                         {
                           window.location = response.data.redirect_path;
                         }
 
-                        app.loginButtonText = 'Submit <i class="fas fa-sign-in-alt"></i>';
+                        app.login_button_text = 'Submit <i class="fas fa-sign-in-alt"></i>';
 
                       })
                       .catch(function (error) {
@@ -57,7 +56,7 @@
                       });                        
                   },
 
-                  clearMainFormErrors(){
+                  clear_main_form_errors(){
 
                         s = app.form_ids;                    
                         for(var i in s)
@@ -70,7 +69,7 @@
                     },
               
                 //display form errors
-                displayErrors(errors){
+                display_errors(errors){
                       for(var e in errors)
                       {
                           //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")

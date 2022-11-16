@@ -5,7 +5,7 @@
         </span>      
 
         <span class="float-end">
-            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Parameters Players')">
+            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Parameters Players')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span> 
@@ -30,10 +30,10 @@
                     </thead>
                     <tbody id="player_list">
                         <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
-                            <td v-on:click="showEditParametersetPlayer(p.parameter_set_player.id)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameter_set_player(p.parameter_set_player.id)" class="player_table_cell">
                                 [[p.player_number]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p.parameter_set_player.id)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameter_set_player(p.parameter_set_player.id)" class="player_table_cell">
                                 [[p.parameter_set_player.id_label]]
                             </td>
                             
@@ -47,7 +47,7 @@
                                         type="button"
                                         title="Add player"
                                         v-bind:disabled="session.started || reconnecting || working || session.parameter_set.parameter_set_players.length >= 24"
-                                        v-on:click="sendAddParameterSetPlayer()">
+                                        v-on:click="send_add_parameter_set_player()">
                                        Add <i class="fas fa-plus"></i>
                                 </button>
                             </td>                            

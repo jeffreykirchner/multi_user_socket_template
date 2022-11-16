@@ -2,18 +2,18 @@
 
 /**show edit paramter set
  */
-showEditParameterset:function(){
-    app.clearMainFormErrors();
-    app.cancelModal=true;
+show_edit_parameter_set:function(){
+    app.clear_main_form_errors();
+    app.cancel_modal=true;
     app.paramtersetBeforeEdit = Object.assign({}, app.session.parameter_set);
 
-    app.editParametersetModal.toggle();
+    app.edit_parameterset_modal.toggle();
 },
 
 /** hide edit session modal
 */
-hideEditParameterset:function(){
-    if(app.cancelModal)
+hide_edit_parameter_set:function(){
+    if(app.cancel_modal)
     {
         Object.assign(app.session.parameter_set, app.paramtersetBeforeEdit);
         app.paramtersetBeforeEdit=null;
@@ -22,40 +22,38 @@ hideEditParameterset:function(){
 
 /** update parameterset settings
 */
-sendUpdateParameterset(){
+send_update_parameter_set(){
     
     app.working = true;
 
-    formData = {}
+    let form_data = {}
 
     for(i=0;i<app.parameterset_form_ids.length;i++)
     {
         v=app.parameterset_form_ids[i];
-        formData[v]=app.session.parameter_set[v];
+        form_data[v]=app.session.parameter_set[v];
     }
 
-    app.sendMessage("update_parameterset", {"sessionID" : app.sessionID,
-                                            "formData" : formData});
+    app.send_message("update_parameter_set", {"session_id" : app.session_id,
+                                            "form_data" : form_data});
 },
 
 /** handle result of updating parameter set
 */
-takeUpdateParameterset(messageData){
-    //app.cancelModal=false;
-    //app.clearMainFormErrors();
+take_update_parameter_set(message_data){
 
-    app.cancelModal=false;
-    app.clearMainFormErrors();
+    app.cancel_modal=false;
+    app.clear_main_form_errors();
 
-    if(messageData.status.value == "success")
+    if(message_data.status.value == "success")
     {
-        app.takeGetSession(messageData);       
-        app.editParametersetModal.hide();            
+        app.take_get_session(message_data);       
+        app.edit_parameterset_modal.hide();            
     } 
     else
     {
-        app.cancelModal=true;                           
-        app.displayErrors(messageData.status.errors);
+        app.cancel_modal=true;                           
+        app.display_errors(message_data.status.errors);
     } 
 },
 

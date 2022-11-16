@@ -19,7 +19,7 @@ from main.models import Session
 
 from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
-from main.forms import ParameterSetPlayerForm
+from main.forms import parameter_set_player_form
 
 class StaffSessionParametersView(SingleObjectMixin, View):
     '''
@@ -37,7 +37,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         '''
         session = self.get_object()
 
-        parameterset_player_form = ParameterSetPlayerForm()
+        parameterset_player_form = parameter_set_player_form()
 
         parameterset_form_ids=[]
         for i in ParameterSetForm():

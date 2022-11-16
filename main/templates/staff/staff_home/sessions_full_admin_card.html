@@ -1,7 +1,7 @@
 <div class="card">                  
     <div class="card-header">
         <span class="float-end">
-            <button class="btn btn-outline-primary" type="button" v-on:click = "sendGetSessionsAdmin()" v-bind:disabled = "reconnecting || working">
+            <button class="btn btn-outline-primary" type="button" v-on:click = "send_get_sessionsAdmin()" v-bind:disabled = "reconnecting || working">
                 Show <i class="far fa-eye"></i>
             </button>
         </span>
@@ -18,21 +18,21 @@
                 <th scope="col">
                     <button type="button"
                             class="btn btn-outline-link btn-sm table_header"
-                            v-on:click = "sortByTitleAllSessions()">
+                            v-on:click = "sort_by_title_all_sessions()">
                         Title <i class="fas fa-sort"></i>
                     </button>
                 </th> 
                 <th scope="col" class="text-center">
                     <button type="button"
                             class="btn btn-outline-link btn-sm table_header"
-                            v-on:click = "sortByOwnerAllSessions()">
+                            v-on:click = "sort_by_owner_all_sessions()">
                             Owner <i class="fas fa-sort"></i>
                     </button>
                 </th>
                 <th scope="col" class="text-center">
                     <button type="button"
                             class="btn btn-outline-link btn-sm table_header"
-                            v-on:click = "sortByDateAllSessions()">
+                            v-on:click = "sort_by_date_all_sessions()">
                             Date <i class="fas fa-sort"></i>
                     </button>                             
                 </th>                                                              
@@ -50,7 +50,7 @@
                         [[s.creator__last_name]], [[s.creator__first_name]]
                     </td>
                     <td class="text-center"> 
-                        [[formatDate(s.start_date)]]                               
+                        [[format_date(s.start_date)]]                               
                     </td>
                     <td class="text-center">
                         <div v-if="s.locked">
@@ -60,7 +60,7 @@
                             <button v-bind:id="'deleteSession' + s.id"
                                     type="button"
                                     class="btn btn-outline-danger btn-sm"
-                                    v-on:click = "sendDeleteSession(s.id)"
+                                    v-on:click = "send_delete_session(s.id)"
                                     title = "Delete session and its data."
                                     v-bind:disabled = "reconnecting || working">
                                 Delete <i class="fas fa-user-minus fa-xs"></i>  

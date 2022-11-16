@@ -6,42 +6,42 @@ axios.defaults.xsrfCookieName = "csrftoken";
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     working : false,
-                    helpText : "Loading ...",
+                    help_text : "Loading ...",
                     sessions : [],
                     sessions_full_admin : [],
                     sessions_full_admin_visible : false,
-                    createSessionButtonText : 'Create Session <i class="fas fa-plus"></i>',
-                    dateSortButtonText: 'Date <i class="fas fa-sort"></i>',
-                    titleSortButtonText: 'Title <i class="fas fa-sort"></i>',
+                    create_session_button_text : 'Create Session <i class="fas fa-plus"></i>',
+                    date_sort_button_text: 'Date <i class="fas fa-sort"></i>',
+                    title_sort_button_text: 'Title <i class="fas fa-sort"></i>',
                 }},
     methods: {
-        handleSocketConnected(){
+        handle_socket_connected(){
             //fire when socket connects
-            app.sendGetSessions();
+            app.send_get_sessions();
         },
 
-        takeMessage(data) {
+        take_message(data) {
            //process socket message from server
 
            {%if DEBUG%}
            console.log(data);
            {%endif%}
 
-           messageType = data.message.messageType;
-           messageData = data.message.messageData;
+           message_type = data.message.message_type;
+           message_data = data.message.message_data;
 
-            switch(messageType) {
+            switch(message_type) {
                 case "create_session":
-                    app.takeCreateSession(messageData);
+                    app.take_create_session(message_data);
                     break;
                 case "get_sessions":
-                    app.takeGetSessions(messageData);
+                    app.take_get_sessions(message_data);
                     break;
                 case "get_sessions_admin":
-                    app.takeGetSessionsAdmin(messageData);
+                    app.take_get_sessionsAdmin(message_data);
                     break;
     
             }
@@ -49,33 +49,33 @@ var app = Vue.createApp({
             app.working = false;
         },
 
-        sendMessage(messageType,messageText) {
+        send_message(message_type,message_text) {
             //send socket message to server
 
-            this.chatSocket.send(JSON.stringify({
-                    'messageType': messageType,
-                    'messageText': messageText,
+            app.chat_socket.send(JSON.stringify({
+                    'message_type': message_type,
+                    'message_text': message_text,
                 }));
         },
 
-        sendGetSessions(){
+        send_get_sessions(){
             //get list of sessions
-            app.sendMessage("get_sessions",{});
+            app.send_message("get_sessions",{});
         },
 
-        takeGetSessions(messageData){
+        take_get_sessions(message_data){
             //process list of sessions
 
-            app.sessions = messageData.sessions;
+            app.sessions = message_data.sessions;
 
-            if(this.sessions_full_admin_visible)
+            if(app.sessions_full_admin_visible)
             {
-                app.sendGetSessionsAdmin()
+                app.send_get_sessionsAdmin()
             }
             
         },       
 
-        formatDate: function(value){
+        format_date: function(value){
             if (value) {        
                 //console.log(value);                    
                 return moment(String(value)).local().format('MM/DD/YYYY');

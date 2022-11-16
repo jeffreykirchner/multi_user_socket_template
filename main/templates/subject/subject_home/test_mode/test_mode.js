@@ -3,7 +3,7 @@
 /**
  * do random self test actions
  */
-randomNumber(min, max){
+random_number(min, max){
     //return a random number between min and max
     min = Math.ceil(min);
     max = Math.floor(max+1);
@@ -13,18 +13,18 @@ randomNumber(min, max){
 randomString(min_length, max_length){
 
     s = "";
-    r = app.randomNumber(min_length, max_length);
+    r = app.random_number(min_length, max_length);
 
     for(let i=0;i<r;i++)
     {
-        v = app.randomNumber(48, 122);
+        v = app.random_number(48, 122);
         s += String.fromCharCode(v);
     }
 
     return s;
 },
 
-doTestMode(){
+do_test_mode(){
     {%if DEBUG%}
     console.log("Do Test Mode");
     {%endif%}
@@ -34,7 +34,7 @@ doTestMode(){
         if(app.session_player.name == "")
         {
             document.getElementById("id_name").value =  app.randomString(5, 20);
-            document.getElementById("id_student_id").value =  app.randomNumber(1000, 10000);
+            document.getElementById("id_student_id").value =  app.random_number(1000, 10000);
 
             app.sendName();
         }
@@ -50,23 +50,23 @@ doTestMode(){
         switch (app.session.current_experiment_phase)
         {
             case "Instructions":
-                app.doTestModeInstructions();
+                app.do_test_modeInstructions();
                 break;
             case "Run":
-                app.doTestModeRun();
+                app.do_test_modeRun();
                 break;
             
         }        
        
     }
 
-    setTimeout(app.doTestMode, app.randomNumber(1000 , 1500));
+    setTimeout(app.do_test_mode, app.random_number(1000 , 1500));
 },
 
 /**
  * test during instruction phase
  */
- doTestModeInstructions()
+ do_test_modeInstructions()
  {
     if(app.session_player.instructions_finished) return;
     if(app.working) return;
@@ -107,7 +107,7 @@ doTestMode(){
 /**
  * test during run phase
  */
-doTestModeRun()
+do_test_modeRun()
 {
     //do chat
     let go = true;
@@ -122,9 +122,9 @@ doTestModeRun()
     if(app.session.finished) return;
         
     if(go)
-        switch (app.randomNumber(1, 3)){
+        switch (app.random_number(1, 3)){
             case 1:
-                app.doTestModeChat();
+                app.do_test_modeChat();
                 break;
             
             case 2:
@@ -139,11 +139,11 @@ doTestModeRun()
 /**
  * test mode chat
  */
-doTestModeChat(){
+do_test_modeChat(){
 
     if(app.session.parameter_set.private_chat)
     {
-        session_player_local = app.session.session_players[app.randomNumber(0,  app.session.session_players.length-1)];
+        session_player_local = app.session.session_players[app.random_number(0,  app.session.session_players.length-1)];
 
         if(session_player_local.id == app.session_player.id || app.session.current_experiment_phase == "Instructions")
         {

@@ -1,7 +1,7 @@
 {% load crispy_forms_tags %}
 
 <!-- Edit Session Modal -->
-<div class="modal fade" id="uploadEmailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploadEmailModalLabel" aria-hidden="true">
+<div class="modal fade" id="upload_email_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="upload_email_modalLabel" aria-hidden="true">
 <div class="modal-dialog">
     <div class="modal-content">
     <div class="modal-header">
@@ -17,7 +17,7 @@
         <button type="button"
                 class="btn btn-outline-primary"
                 v-bind:disabled="reconnecting || working"
-                v-on:click = "sendEmailList()">
+                v-on:click = "send_email_list()">
             Send <i class="fas fa-sign-in-alt"></i>
         </button>
     </div>
