@@ -121,7 +121,13 @@ var app = Vue.createApp({
              {%if session.parameter_set.test_mode%} setTimeout(app.do_test_mode, app.random_number(1000 , 1500)); {%endif%}
 
             // if game is finished show modal
-            if(app.session.finished)
+            if(app.session.current_experiment_phase == 'Names')
+            {
+                app.showEndGameModal();
+            }
+            else if(app.session.current_experiment_phase == 'Done' && 
+                    app.session.parameter_set.survey_required=='True' && 
+                    !app.session_player.survey_complete)
             {
                 app.show_end_game_modal();
             }
@@ -211,12 +217,13 @@ var app = Vue.createApp({
             app.session.time_remaining = result.time_remaining;
             app.session.timer_running = result.timer_running;
             app.session.finished = result.finished;
+            app.session.current_experiment_phase = result.current_experiment_phase;
 
             //update subject earnings
             app.session_player.earnings = result.session_player_earnings.earnings;
 
-            //session complete
-            if(app.session.finished)
+            //collect names
+            if(app.session.current_experiment_phase == 'Names')
             {
                 app.show_end_game_modal();
             }            
@@ -251,7 +258,23 @@ var app = Vue.createApp({
             app.session.session_players = message_data.status.session_players;
             app.session_player = message_data.status.session_player;
 
-            app.update_chat_display();          
+            app.updateChatDisplay();    
+
+            if(app.session.current_experiment_phase == 'Names')
+            {
+                app.showEndGameModal();
+            }
+            else
+            {
+                app.hideEndGameModal();
+            }
+            
+            if(app.session.current_experiment_phase == 'Done' && 
+                    app.session.parameter_set.survey_required=='True' && 
+                    !app.session_player.survey_complete)
+            {
+                window.location.replace(app.session_player.survey_link);
+            }
         },
 
         /** hide choice grid modal modal

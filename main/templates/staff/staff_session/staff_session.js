@@ -146,6 +146,10 @@ var app = Vue.createApp({
                 case "update_anonymize_data":
                     app.take_anonymize_data(message_data);
                     break;
+                case "update_survey_complete":
+                    app.take_update_survey_complete(messageData);
+                    break;
+
             }
 
             app.first_load_done = true;
@@ -232,11 +236,11 @@ var app = Vue.createApp({
         update_phase_button_text(){
             if(app.session.finished && app.session.current_experiment_phase == "Done")
             {
-                app.move_to_next_phase_text = '** Experiment complete **';
+                app.move_to_next_phase_text = '** Session complete **';
             }
-            else if(app.session.finished && app.session.current_experiment_phase != "Done")
+            else if(app.session.current_experiment_phase == "Names")
             {
-                app.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
+                app.move_to_next_phase_text = 'Complete Session <i class="fas fa-flag-checkered"></i>';
             }
             else if(app.session.current_experiment_phase == "Run")
             {
@@ -293,6 +297,7 @@ var app = Vue.createApp({
             app.session.time_remaining = result.time_remaining;
             app.session.timer_running = result.timer_running;
             app.session.finished = result.finished;
+            app.session.current_experiment_phase = result.current_experiment_phase;
 
             app.take_update_earnings(message_data);
 

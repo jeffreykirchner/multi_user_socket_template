@@ -176,26 +176,23 @@ class Session(models.Model):
         do period timer actions
         '''
 
-        status = "success"
-        end_game = False
+        status = "success"        
+        stop_timer = False
 
         #check session over
         if self.time_remaining == 0 and \
            self.current_period >= self.parameter_set.period_count:
 
-            self.finished = True
-            end_game = True
-
-
-        if not status == "fail" and not end_game:
+            self.current_experiment_phase = ExperimentPhase.NAMES
+            stop_timer = True
+           
+        if not status == "fail" and \
+           self.current_experiment_phase != ExperimentPhase.NAMES:
 
             if self.time_remaining == 0:
-               
                 self.current_period += 1
                 self.time_remaining = self.parameter_set.period_length
-        
             else:                                     
-
                 self.time_remaining -= 1
 
         self.save()
@@ -204,7 +201,8 @@ class Session(models.Model):
 
         return {"value" : status,
                 "result" : result,
-                "end_game" : end_game}
+                "stop_timer" : stop_timer,
+                }
 
     def get_download_summary_csv(self):
         '''
@@ -335,6 +333,7 @@ class Session(models.Model):
             "timer_running":self.timer_running,
             "finished":self.finished,
             "session_players":session_players,
+            "current_experiment_phase" : self.current_experiment_phase,
             "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
         }
         

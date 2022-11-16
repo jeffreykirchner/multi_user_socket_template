@@ -43,14 +43,47 @@ class ParametersAdmin(admin.ModelAdmin):
 
 admin.site.register(ParameterSet)
 admin.site.register(ParameterSetPlayer)
-admin.site.register(SessionPlayer)
 admin.site.register(SessionPlayerChat)
 admin.site.register(SessionPlayerPeriod)
 admin.site.register(HelpDocs)
 
+@admin.register(SessionPlayer)
+class SessionPlayerAdmin(admin.ModelAdmin):
+    
+    def render_change_form(self, request, context, *args, **kwargs):
+         context['adminform'].form.fields['parameter_set_player'].queryset = kwargs['obj'].parameter_set_player.parameter_set.parameter_set_players.all()
+
+         return super(SessionPlayerAdmin, self).render_change_form(request, context, *args, **kwargs)
+
+    readonly_fields=['session','player_number','player_key']
+    list_display = ['parameter_set_player', 'name', 'student_id', 'email',]
+    fields = ['session','name', 'student_id', 'email', 'parameter_set_player','player_number','player_key', 'name_submitted', 'survey_complete']
+    inlines = [
+        
+      ]
+
+class SessionPlayerInline(admin.TabularInline):
+
+    def has_add_permission(self, request, obj=None):
+        return False
+    
+    @admin.display(description='Player ID')
+    def get_parameter_set_player_id_label(self, obj):
+        return obj.parameter_set_player.id_label
+
+    extra = 0  
+    model = SessionPlayer
+    can_delete = False   
+    show_change_link = True
+    fields = ['name', 'student_id', 'email', 'name_submitted', 'survey_complete']
+    readonly_fields = ('get_parameter_set_player_id_label',)
+
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
     form = SessionFormAdmin
+
+    readonly_fields=['parameter_set', 'session_key','channel_key']
+    inlines = [SessionPlayerInline]
 
 #instruction set page
 class InstructionPageInline(admin.TabularInline):

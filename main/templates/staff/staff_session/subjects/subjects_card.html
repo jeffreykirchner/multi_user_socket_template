@@ -39,32 +39,35 @@
                 <table class="table table-condensed"> 
                     <thead>
                         <tr>
-                            <th scope="col" class = "m-1 p-1">
+                            <th scope="col" class = "">
                                 Client #
                             </th>
-                            <th scope="col" class = "m-1 p-1">
+                            <th scope="col" class = "">
                                 ID Label
                             </th>
-                            <th scope="col" class = "m-1 p-1">
+                            <th scope="col" class = "">
                                 Name
                             </th>
-                            <th scope="col" class = "m-1 p-1">
+                            <th scope="col" class = "">
                                 Email
                             </th>
-                            <th scope="col" class = "text-center m-1 p-1">
+                            <th scope="col" class = "text-center">
                                 Student ID
                             </th>
-                            <th scope="col" class = "text-center m-1 p-1">
+                            <th scope="col" class = "text-center">
                                 Earnings
                             </th>                       
-                            <th scope="col" class = "text-center m-1 p-1">
+                            <th scope="col" class = "text-center">
                                 Shareable<br>Login Link
                             </th> 
-                            <th scope="col" class = "text-center m-1 p-1">
+                            <th scope="col" class = "text-center">
                                 Connected
                             </th>
-                            <th scope="col" class = "text-center m-1 p-1" v-show="session.current_experiment_phase == 'Instructions'">
+                            <th scope="col" class = "text-center" v-show="session.current_experiment_phase == 'Instructions'">
                                 Instructions
+                            </th>
+                            <th scope="col" class = "text-center" v-if="session.parameter_set.survey_required=='True'">
+                                Survey Complete
                             </th>                            
                         </tr>
                     </thead>
@@ -101,6 +104,10 @@
                             </td>
                             <td class="player_table_cell text-nowrap" v-show="session.current_experiment_phase == 'Instructions'">
                                 [[p.instructions_finished ? "Finished" : "Page " + p.current_instruction.toString()]]
+                            </td>
+                            <td class="player_table_cell text-nowrap" v-if="session.parameter_set.survey_required=='True'">
+                                <span v-if="p.survey_complete">Yes</span>
+                                <span v-else>No</span>
                             </td>                           
                         </tr>
                     </tbody>

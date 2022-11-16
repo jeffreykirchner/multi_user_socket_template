@@ -242,12 +242,12 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_time",
-                "data": timer_result,
-                "sender_channel_name": self.channel_name,},
+                 "data": timer_result,
+                 "sender_channel_name": self.channel_name,},
             )
 
             #if session is not over continue
-            if not timer_result["end_game"]:
+            if not timer_result["stop_timer"]:
 
                 loop = asyncio.get_event_loop()
 
@@ -587,6 +587,20 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_survey_complete(self, event):
+        '''
+        send survey complete update
+        '''
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, 
+                        cls=DjangoJSONEncoder))
 #local async function
 
 #local sync functions    
@@ -708,6 +722,9 @@ def take_next_phase(session_id, data):
         session.current_experiment_phase = ExperimentPhase.RUN
 
     elif session.current_experiment_phase == ExperimentPhase.RUN:
+        session.current_experiment_phase = ExperimentPhase.NAMES
+
+    elif session.current_experiment_phase == ExperimentPhase.NAMES:
         session.current_experiment_phase = ExperimentPhase.DONE
         session.finished = True
 
@@ -717,6 +734,7 @@ def take_next_phase(session_id, data):
     
     return {"value" : status,
             "current_experiment_phase" : session.current_experiment_phase,
+            "finished" : session.finished,
             }
 
 def take_start_timer(session_id, data):

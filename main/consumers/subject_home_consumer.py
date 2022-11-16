@@ -26,6 +26,7 @@ from main.models import SessionPlayerChat
 
 from main.globals import ChatTypes
 from main.globals import round_half_away_from_zero
+from main.globals import ExperimentPhase
 
 from main.decorators import check_sesison_started_ws
 
@@ -330,6 +331,12 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         no anonmyize data update on client
         '''
 
+    async def update_survey_complete(self, event):
+        '''
+        no group broadcast of survey complete
+        '''
+        pass
+
 
 #local sync functions  
 def take_get_session_subject(session_player_id):
@@ -474,7 +481,7 @@ def take_name(session_id, session_player_id, data):
     session = Session.objects.get(id=session_id)
     session_player = session.session_players.get(id=session_player_id)
 
-    if not session.finished:
+    if session.current_experiment_phase != ExperimentPhase.NAMES:
         return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
                 "message" : "Session not complete."}
 
