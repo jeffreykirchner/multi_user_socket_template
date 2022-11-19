@@ -61,6 +61,8 @@ class ParameterSet(models.Model):
             self.survey_required = new_ps.get("survey_required")
             self.survey_link = new_ps.get("survey_link")
 
+            self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
+
             self.save()
 
             #parameter set players
