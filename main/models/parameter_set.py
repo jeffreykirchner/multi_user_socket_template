@@ -7,6 +7,7 @@ from decimal import Decimal
 
 from django.db import models
 from django.db.utils import IntegrityError
+from django.core.serializers.json import DjangoJSONEncoder
 
 from main import globals
 
@@ -30,6 +31,9 @@ class ParameterSet(models.Model):
     survey_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Survey Link', blank=True, null=True)
 
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
+
+    json_for_session = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set 
+    json_for_subject = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set  
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -87,6 +91,9 @@ class ParameterSet(models.Model):
             for index, p in enumerate(self.parameter_set_players.all()):                
                 p.from_dict(new_parameter_set_players[index])
 
+            self.json_for_session = self.json()
+            self.save()
+
         except IntegrityError as exp:
             message = f"Failed to load parameter set: {exp}"
             status = "fail"
@@ -113,43 +120,64 @@ class ParameterSet(models.Model):
         player.parameter_set = self
 
         player.save()
+    
+    def update_json_local(self):
+        '''
+        update json model
+        '''
 
-    def json(self):
+        self.json_for_session["id"] = self.id
+                
+        self.json_for_session["period_count"] = self.period_count,
+
+        self.json_for_session["period_length"] = self.period_length,
+
+        self.json_for_session["private_chat"] = "True" if self.private_chat else "False",
+        self.json_for_session["show_instructions"] = "True" if self.show_instructions else "False",
+        self.json_for_session["instruction_set"] = self.instruction_set.json_min(),
+
+        self.json_for_session["survey_required"] = "True" if self.survey_required else "False",
+        self.json_for_session["survey_link"] = self.survey_link,  
+
+        self.json_for_session["test_mode"] = "True" if self.test_mode else "False",
+            
+        self.save()
+    
+    def update_json_fk(self):
+        '''
+        update json model
+        '''
+        self.json_for_session["parameter_set_players"] = [p.json() for p in self.parameter_set_players.all()],
+
+    def json(self, update_required=False):
         '''
         return json object of model
         '''
-        return{
-            "id" : self.id,
-            "period_count" : self.period_count,
+        if not self.json_for_session or update_required:
+            self.update_json_local()
+            self.update_json_fk()
 
-            "period_length" : self.period_length,
-
-            "private_chat" : "True" if self.private_chat else "False",
-            "show_instructions" : "True" if self.show_instructions else "False",
-            "instruction_set" : self.instruction_set.json_min(),
-
-            "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
-
-            "survey_required" : "True" if self.survey_required else "False",
-            "survey_link" : self.survey_link,  
-
-            "test_mode" : "True" if self.test_mode else "False",
-        }
+        return self.json_for_session
     
-    def json_for_subject(self):
+    def json_for_subject(self, update_required=True):
         '''
         return json object for subject
         '''
-        return{
-            "id" : self.id,
-            
-            "period_length" : self.period_length,
-            "show_instructions" : "True" if self.show_instructions else "False",
-            "private_chat" : self.private_chat,
+        if not self.json_for_session or update_required:
+            self.json_for_session ={
+                "id" : self.id,
+                
+                "period_length" : self.period_length,
+                "show_instructions" : "True" if self.show_instructions else "False",
+                "private_chat" : self.private_chat,
 
-            "survey_required" : "True" if self.survey_required else "False",
-            "survey_link" : self.survey_link,  
+                "survey_required" : "True" if self.survey_required else "False",
+                "survey_link" : self.survey_link,  
 
-            "test_mode" : self.test_mode,
-        }
+                "test_mode" : self.test_mode,
+            }
+            self.save()
+        
+        return self.json_for_session
+        
 

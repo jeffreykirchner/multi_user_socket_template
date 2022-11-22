@@ -16,6 +16,7 @@ class ParameterSetPlayer(models.Model):
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_players")
 
     id_label = models.CharField(verbose_name='ID Label', max_length=2, default="1")      #id label shown on screen to subjects
+    player_number = models.IntegerField(verbose_name='Player number', default=0)         #player number, from 1 to N 
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
