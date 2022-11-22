@@ -132,7 +132,9 @@ var app = Vue.createApp({
             
             if(!app.first_load_done)
             {
-                setTimeout(app.do_first_load, 500);
+                Vue.nextTick(() => {
+                    app.do_first_load();
+                });
             }
         },
 

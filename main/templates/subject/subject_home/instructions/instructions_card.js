@@ -113,7 +113,9 @@ instruction_display_scroll(){
     if(document.getElementById("instructions_frame"))
         document.getElementById("instructions_frame").scrollIntoView();
     
-    setTimeout(app.scroll_update, 500);
+    Vue.nextTick(() => {
+        app.scroll_update();
+    });
 },
 
 scroll_update()

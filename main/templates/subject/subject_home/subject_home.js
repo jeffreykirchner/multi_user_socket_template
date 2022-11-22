@@ -132,13 +132,18 @@ var app = Vue.createApp({
                 window.location.replace(app.session_player.survey_link);
             }
 
-            document.getElementById('instructions_frame_a').addEventListener('scroll',
-                function()
-                {
-                    app.scroll_update();
-                },
-                false
-            )
+            if(document.getElementById('instructions_frame_a'))
+            {
+                document.getElementById('instructions_frame_a').addEventListener('scroll',
+                    function()
+                    {
+                        app.scroll_update();
+                    },
+                    false
+                )
+
+                app.scroll_update();
+            }
          },
 
         /** send winsock request to get session info
@@ -176,13 +181,17 @@ var app = Vue.createApp({
 
             if(app.session.current_experiment_phase == 'Instructions')
             {
-                setTimeout(app.processInstructionPage, 1000);
-                app.instruction_display_scroll();
+                Vue.nextTick(() => {
+                    app.processInstructionPage();
+                    app.instruction_display_scroll();
+                })
             }
 
             if(!app.first_load_done)
             {
-                setTimeout(app.do_first_load, 500);
+                Vue.nextTick(() => {
+                    app.do_first_load();
+                })
             }
         },
 

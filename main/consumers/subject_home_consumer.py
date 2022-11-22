@@ -132,7 +132,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         advance instruction page
         '''
-        result = await sync_to_async(take_finish_instructions)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_next_instruction)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
         message_data["status"] = result
 
@@ -530,7 +530,7 @@ def take_update_next_phase(session_id, session_player_id):
         logger.warning(f"take_update_next_phase: session not found, session {session_id}, session_player_id {session_player_id}")
         return {"value" : "fail", "result" : {}, "message" : "Update next phase error"}
 
-def take_finish_instructions(session_id, session_player_id, data):
+def take_next_instruction(session_id, session_player_id, data):
     '''
     take show next instruction page
     '''
