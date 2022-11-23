@@ -139,6 +139,8 @@ class Session(models.Model):
 
         self.save()
         self.session_periods.all().delete()
+
+        self.parameter_set.setup()
     
     def reset_connection_counts(self):
         '''

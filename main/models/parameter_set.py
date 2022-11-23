@@ -105,7 +105,12 @@ class ParameterSet(models.Model):
         '''
         default setup
         '''    
-        pass
+        self.json_for_subject = None
+        self.save()
+
+        for i in self.parameter_set_players.all():
+            i.json_for_session = None
+            i.save()
 
     def add_new_player(self):
         '''
@@ -128,18 +133,18 @@ class ParameterSet(models.Model):
 
         self.json_for_session["id"] = self.id
                 
-        self.json_for_session["period_count"] = self.period_count,
+        self.json_for_session["period_count"] = self.period_count
 
-        self.json_for_session["period_length"] = self.period_length,
+        self.json_for_session["period_length"] = self.period_length
 
-        self.json_for_session["private_chat"] = "True" if self.private_chat else "False",
-        self.json_for_session["show_instructions"] = "True" if self.show_instructions else "False",
-        self.json_for_session["instruction_set"] = self.instruction_set.json_min(),
+        self.json_for_session["private_chat"] = "True" if self.private_chat else "False"
+        self.json_for_session["show_instructions"] = "True" if self.show_instructions else "False"
+        self.json_for_session["instruction_set"] = self.instruction_set.json_min()
 
-        self.json_for_session["survey_required"] = "True" if self.survey_required else "False",
-        self.json_for_session["survey_link"] = self.survey_link,  
+        self.json_for_session["survey_required"] = "True" if self.survey_required else "False"
+        self.json_for_session["survey_link"] = self.survey_link
 
-        self.json_for_session["test_mode"] = "True" if self.test_mode else "False",
+        self.json_for_session["test_mode"] = "True" if self.test_mode else "False"
             
         self.save()
     
@@ -147,7 +152,8 @@ class ParameterSet(models.Model):
         '''
         update json model
         '''
-        self.json_for_session["parameter_set_players"] = [p.json() for p in self.parameter_set_players.all()],
+        self.json_for_session["parameter_set_players"] = [p.json() for p in self.parameter_set_players.all()]
+        self.save()
 
     def json(self, update_required=False):
         '''
@@ -159,7 +165,7 @@ class ParameterSet(models.Model):
 
         return self.json_for_session
     
-    def json_for_subject(self, update_required=True):
+    def json_for_subject(self, update_required=False):
         '''
         return json object for subject
         '''

@@ -192,6 +192,7 @@ def take_update_parameter_set(data):
     if form.is_valid():
         #print("valid form")                
         form.save()    
+        session.parameter_set.update_json_local()
 
         return {"value" : "success"}                      
                                 
@@ -227,6 +228,7 @@ def take_update_parameter_set_player(data):
     if form.is_valid():
         #print("valid form")             
         form.save()              
+        parameter_set_player.update_json_local()
 
         return {"value" : "success"}                      
                                 
