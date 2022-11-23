@@ -3,8 +3,8 @@
 send_import_parameters(){
     
     app.working = true;
-    app.send_message("import_parameters", {"session_id" : app.session_id,
-                                          "form_data" : {session:app.session_import} });
+    app.send_message("import_parameters", {"session_id" : app.session.id,
+                                           "form_data" : {session:app.session_import} });
 },
 
 /** show parameters copied from another period 
@@ -13,7 +13,7 @@ take_import_parameters(){
 
     if(message_data.status.status == "success")
     {
-        app.take_get_session(message_data);       
+        app.take_get_parameter_set(message_data);       
         app.import_parameters_message = message_data.status.message;
         location.reload();    
     } 
@@ -41,7 +41,7 @@ hide_import_parameters:function(){
 send_download_parameters(){
     
     app.working = true;
-    app.send_message("download_parameters", {"session_id" : app.session_id,});
+    app.send_message("download_parameters", {"session_id" : app.session.id,});
 },
 
 /** download parameter set into a file 

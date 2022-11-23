@@ -1,7 +1,7 @@
-<div class="card" v-show="first_load_done">                  
+<div class="card">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">
-            Players ([[session.parameter_set.parameter_set_players.length]]) 
+            Players ([[parameter_set.parameter_set_players.length]]) 
         </span>      
 
         <span class="float-end">
@@ -29,12 +29,12 @@
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
-                            <td v-on:click="show_edit_parameter_set_player(p.parameter_set_player.id)" class="player_table_cell">
+                        <tr v-for="(p, index) in parameter_set.parameter_set_players" v-bind:key="p.id">
+                            <td v-on:click="show_edit_parameter_set_player(p.json_index)" class="player_table_cell">
                                 [[p.player_number]]
                             </td>
-                            <td v-on:click="show_edit_parameter_set_player(p.parameter_set_player.id)" class="player_table_cell">
-                                [[p.parameter_set_player.id_label]]
+                            <td v-on:click="show_edit_parameter_set_player(p.json_index)" class="player_table_cell">
+                                [[p.id_label]]
                             </td>
                             
                         </tr>
@@ -46,7 +46,7 @@
                                 <button class="btn btn-outline-success btn-sm"
                                         type="button"
                                         title="Add player"
-                                        v-bind:disabled="session.started || reconnecting || working || session.parameter_set.parameter_set_players.length >= 24"
+                                        v-bind:disabled="session.started || reconnecting || working || parameter_set.parameter_set_players.length >= 24"
                                         v-on:click="send_add_parameter_set_player()">
                                        Add <i class="fas fa-plus"></i>
                                 </button>

@@ -11,6 +11,7 @@ import logging
 import uuid
 import csv
 import io
+import json
 
 from django.conf import settings
 
@@ -19,6 +20,7 @@ from django.db import models
 from django.db.models.signals import post_delete
 from django.utils.timezone import now
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 
 import main
 
@@ -169,7 +171,7 @@ class Session(models.Model):
 
             new_session_player.session = self
             new_session_player.parameter_set_player = i
-            new_session_player.player_number = count + 1
+            new_session_player.player_number = i.player_number
 
             new_session_player.save()
 
@@ -338,6 +340,17 @@ class Session(models.Model):
             "current_experiment_phase" : self.current_experiment_phase,
             "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
         }
+    
+    def json_for_parameter_set(self):
+        '''
+        return json for parameter set setup.
+        '''
+        message = {
+            "id" : self.id,
+            "started": self.started,
+        }
+    
+        return message
         
 @receiver(post_delete, sender=Session)
 def post_delete_parameterset(sender, instance, *args, **kwargs):

@@ -35,33 +35,30 @@
 {% block content %}
 
 
-<div class="row justify-content-lg-center" v-if="!session">
-    <div class="col text-end">
+<div class="row justify-content-lg-center" v-if="!first_load_done">
+    <div class="col text-end mb-4">
         <i class="fas fa-cog fa-spin fa-2x"></i>
     </div>
 </div>
 
-<div v-else>
-    <!-- modals -->
-    {%include "staff/staff_session_parameters/general_settings/edit_parameterset_modal.html"%}
-    {%include "staff/staff_session_parameters/players/edit_parameterset_player_modal.html"%}
-    {%include "staff/staff_session_parameters/control/upload_parameters_modal.html"%}
-    {%include "staff/staff_session_parameters/control/import_parameters_modal.html"%}
-    {%include "help_modal.html"%}
+<!-- modals -->
+{%include "staff/staff_session_parameters/general_settings/edit_parameterset_modal.html"%}
+{%include "staff/staff_session_parameters/players/edit_parameterset_player_modal.html"%}
+{%include "staff/staff_session_parameters/control/upload_parameters_modal.html"%}
+{%include "staff/staff_session_parameters/control/import_parameters_modal.html"%}
+{%include "help_modal.html"%}
 
-    <!-- cards -->
-    <div class="row justify-content-lg-center" v-cloak>
-        <div class="col-md">
-            {%include "staff/staff_session_parameters/general_settings/general_settings_card.html"%}  
-        </div>
-        <div class="col">   
-            {%include "staff/staff_session_parameters/players/players_card.html"%}                  
-        </div> 
-        <div class="col-md">
-            {%include "staff/staff_session_parameters/control/control_card.html"%}  
-        </div>              
+<!-- cards -->
+<div class="row justify-content-lg-center" v-cloak>
+    <div class="col-md">
+        {%include "staff/staff_session_parameters/general_settings/general_settings_card.html"%}  
     </div>
+    <div class="col">   
+        {%include "staff/staff_session_parameters/players/players_card.html"%}                  
+    </div> 
+    <div class="col-md">
+        {%include "staff/staff_session_parameters/control/control_card.html"%}  
+    </div>              
 </div>
-
-                        
+                  
 {% endblock %}

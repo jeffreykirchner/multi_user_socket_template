@@ -28,16 +28,16 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
     websocket session list
     '''    
 
-    async def get_session(self, event):
+    async def get_parameter_set(self, event):
         '''
-        return a list of sessions
+        return parameterset
         '''
         logger = logging.getLogger(__name__) 
-        logger.info(f"Get Session {event}")
+        logger.info(f"Get Parameter Set {event}")
 
         #build response
         message_data = {}
-        message_data["session"] = await get_session(event["message_text"]["session_id"])
+        message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
 
         message = {}
         message["message_type"] = event["type"]
@@ -53,7 +53,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         #build response
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameter_set)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["session_id"])
+        message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
 
         message = {}
         message["message_type"] = "update_parameter_set"
@@ -69,7 +69,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameter_set_player)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["session_id"])
+        message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
 
         message = {}
         message["message_type"] = "update_parameter_set_player"
@@ -85,7 +85,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_remove_parameterset_player)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["session_id"])
+        message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
 
         message = {}
         message["message_type"] = "remove_parameterset_player"
@@ -101,7 +101,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_add_parameterset_player)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["session_id"])
+        message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
 
         message = {}
         message["message_type"] = "add_parameterset_player"
@@ -118,7 +118,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data = {}
         message_data["status"] = await sync_to_async(take_import_parameters)(event["message_text"])
 
-        message_data["session"] = await get_session(event["message_text"]["session_id"])
+        message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
 
         message = {}
         message["message_type"] = "import_parameters"
@@ -149,7 +149,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
 #local sync functions
 @sync_to_async
-def get_session(id_):
+def take_get_parameter_set(id_):
     '''
     return session with specified id
     param: id_ {int} session id
@@ -159,9 +159,9 @@ def get_session(id_):
 
     try:        
         session = Session.objects.get(id=id_)
-        return session.json()
+        return session.parameter_set.json()
     except ObjectDoesNotExist:
-        logger.warning(f"get_session session, not found: {id_}")
+        logger.warning(f"take_get_parameter_set session, not found: {id_}")
         return {}
         
 def take_update_parameter_set(data):

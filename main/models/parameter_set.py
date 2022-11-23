@@ -2,6 +2,7 @@
 parameter set
 '''
 import logging
+import json
 
 from decimal import Decimal
 
@@ -33,7 +34,8 @@ class ParameterSet(models.Model):
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
 
     json_for_session = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set 
-    json_for_subject = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set  
+    json_for_subject = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set for subject
+    json_for_subject_update_required = models.BooleanField(default=False, verbose_name="Update json for subject required")  #update json model for subject on next load
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -106,25 +108,35 @@ class ParameterSet(models.Model):
         default setup
         '''    
         self.json_for_subject = None
+        self.json_for_session = None
+
         self.save()
 
         for i in self.parameter_set_players.all():
-            i.json_for_session = None
-            i.save()
+            i.setup()
 
     def add_new_player(self):
         '''
         add a new player of type subject_type
         '''
 
-        #24 players max
-        if self.parameter_set_players.all().count() >= 24:
-            return
-
         player = main.models.ParameterSetPlayer()
         player.parameter_set = self
-
+        player.player_number = self.parameter_set_players.count() + 1
+        player.json_index = player.player_number - 1
         player.save()
+
+        self.update_player_count()
+    
+    def update_player_count(self):
+        '''
+        update the number of parameterset players
+        '''
+        for count, i in enumerate(self.parameter_set_players.all()):
+            i.player_number = count + 1
+            i.json_index = count
+            i.update_json_local()
+            i.save()
     
     def update_json_local(self):
         '''
@@ -145,7 +157,9 @@ class ParameterSet(models.Model):
         self.json_for_session["survey_link"] = self.survey_link
 
         self.json_for_session["test_mode"] = "True" if self.test_mode else "False"
-            
+
+        self.json_for_subject_update_required = True
+
         self.save()
     
     def update_json_fk(self):
@@ -157,9 +171,11 @@ class ParameterSet(models.Model):
 
     def json(self, update_required=False):
         '''
-        return json object of model
+        return json object of model, return cached version if unchanged
         '''
-        if not self.json_for_session or update_required:
+        if not self.json_for_session or \
+           update_required:
+            self.json_for_session = {}
             self.update_json_local()
             self.update_json_fk()
 
@@ -167,9 +183,12 @@ class ParameterSet(models.Model):
     
     def json_for_subject(self, update_required=False):
         '''
-        return json object for subject
+        return json object for subject, return cached version if unchanged
         '''
-        if not self.json_for_session or update_required:
+        if not self.json_for_session or \
+           update_required or \
+           self.json_for_subject_update_required:
+
             self.json_for_session ={
                 "id" : self.id,
                 
@@ -182,6 +201,8 @@ class ParameterSet(models.Model):
 
                 "test_mode" : self.test_mode,
             }
+
+            self.json_for_subject_update_required = False
             self.save()
         
         return self.json_for_session

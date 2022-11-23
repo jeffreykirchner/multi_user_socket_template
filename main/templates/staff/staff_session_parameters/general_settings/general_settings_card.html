@@ -1,4 +1,4 @@
-<div class="card" v-show="first_load_done">                  
+<div class="card">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">
             General Settings
@@ -18,7 +18,7 @@
                 {{parameter_set_form.period_count.label}}:
             </div>
             <div class="col text-start">
-                [[session.parameter_set.period_count]]
+                [[parameter_set.period_count]]
             </div>
         </div>
         <div class="row">
@@ -26,7 +26,7 @@
                 {{parameter_set_form.period_length.label}}:
             </div>
             <div class="col text-start">
-                [[session.parameter_set.period_length]]
+                [[parameter_set.period_length]]
             </div>
         </div>
         <div class="row">
@@ -34,7 +34,7 @@
                 {{parameter_set_form.private_chat.label}}:                
             </div>
             <div class="col text-start">
-                <span v-if="session.parameter_set.private_chat=='True'">Yes</span><span v-else>No</span>                
+                <span v-if="parameter_set.private_chat=='True'">Yes</span><span v-else>No</span>                
             </div>  
         </div>
         <div class="row">
@@ -42,7 +42,7 @@
                 {{parameter_set_form.show_instructions.label}}:                
             </div>
             <div class="col text-start">
-                <span v-if="session.parameter_set.show_instructions=='True'">Yes</span><span v-else>No</span>                
+                <span v-if="parameter_set.show_instructions=='True'">Yes</span><span v-else>No</span>                
             </div>  
         </div> 
         <div class="row">
@@ -50,7 +50,7 @@
                 {{parameter_set_form.instruction_set.label}}:                
             </div>
             <div class="col text-start">
-                [[session.parameter_set.instruction_set.label]]                
+                [[parameter_set.instruction_set.label]]                
             </div>  
         </div> 
         <div class="row">
@@ -58,7 +58,7 @@
                 {{parameter_set_form.survey_required.label}}:                
             </div>
             <div class="col text-start">
-                <span v-if="session.parameter_set.survey_required=='True'">Yes</span><span v-else>No</span>                
+                <span v-if="parameter_set.survey_required=='True'">Yes</span><span v-else>No</span>                
             </div>  
         </div>
         <div class="row">
@@ -66,7 +66,7 @@
                 {{parameter_set_form.test_mode.label}}:                
             </div>
             <div class="col text-start">
-                <span v-if="session.parameter_set.test_mode=='True'">Yes</span><span v-else>No</span>                
+                <span v-if="parameter_set.test_mode=='True'">Yes</span><span v-else>No</span>                
             </div>  
         </div>        
         <div class="row justify-content-center">

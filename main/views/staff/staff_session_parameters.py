@@ -60,6 +60,8 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',
                                "number_of_player_types" : range(4),
+                               "session_json" : json.dumps(session.json_for_parameter_set(), cls=DjangoJSONEncoder),
+                               "parameter_set_json" : json.dumps(session.parameter_set.json(), cls=DjangoJSONEncoder),
                                "session" : session,
                                })
     

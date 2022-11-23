@@ -13,8 +13,8 @@ var app = Vue.createApp({
                     working : false,
                     first_load_done : false,          //true after software is loaded for the first time
                     help_text : "Loading ...",
-                    session_id : {{session.id}},
-                    session : null,                   
+                    session : {{session_json | safe}},
+                    parameter_set : {{parameter_set_json | safe}},                   
     
                     current_parameter_set_player : {
                         id:0,
@@ -42,7 +42,12 @@ var app = Vue.createApp({
         /** fire when websocket connects to server
         */
         handle_socket_connected(){            
-            app.send_get_session();
+            if(!app.first_load_done)
+            {
+                Vue.nextTick(() => {
+                    app.do_first_load();
+                });
+            }
         },
 
         /** take websocket message from server
@@ -58,8 +63,8 @@ var app = Vue.createApp({
             message_data = data.message.message_data;
 
             switch(message_type) {                
-                case "get_session":
-                    app.take_get_session(message_data);
+                case "get_parameter_set":
+                    app.take_get_parameter_set(message_data);
                     break;
                 case "update_parameter_set":
                     app.take_update_parameter_set(message_data);
@@ -83,8 +88,6 @@ var app = Vue.createApp({
                     app.take_load_help_doc(message_data);
                     break;
             }
-
-            app.first_load_done = true;
 
             app.working = false;
         },
@@ -112,14 +115,16 @@ var app = Vue.createApp({
             document.getElementById('edit_parameterset_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameter_set);
             document.getElementById('edit_parameterset_player_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameter_set_player);
             document.getElementById('upload_parameter_set_modal').addEventListener('hidden.bs.modal', app.hide_upload_parameters);
+
+            app.first_load_done = true;
         },
 
         /** take create new session
         *    @param message_data {json} session day in json format
         */
-        take_get_session(message_data){
+        take_get_parameter_set(message_data){
             
-            app.session = message_data.session;
+            app.parameter_set = message_data.parameter_set;
 
             if(app.session.started)
             {
@@ -129,20 +134,13 @@ var app = Vue.createApp({
             {
                 
             }
-            
-            if(!app.first_load_done)
-            {
-                Vue.nextTick(() => {
-                    app.do_first_load();
-                });
-            }
         },
 
         /** send winsock request to get session info
         */
-        send_get_session(){
-            app.send_message("get_session",{"session_id" : app.session_id});
-        },
+        // send_get_session(){
+        //     app.send_message("get_parameter_set", {"session_id" : app.session.id});
+        // },
 
         //do nothing on when enter pressed for post
         onSubmit(){

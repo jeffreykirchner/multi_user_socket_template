@@ -26,6 +26,37 @@ from main.models.instruction import Instruction
 
 admin.site.site_header = settings.ADMIN_SITE_HEADER
 
+@admin.register(ParameterSetPlayer)
+class ParameterSetPlayerAdmin(admin.ModelAdmin):
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    readonly_fields=['parameter_set']
+    list_display = ['id_label']
+
+    inlines = [
+        
+      ]
+
+class ParameterSetPlayerInline(admin.TabularInline):
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    extra = 0  
+    model = ParameterSetPlayer
+    can_delete = True   
+    show_change_link = True
+
+@admin.register(ParameterSet)
+class ParameterSetAdmin(admin.ModelAdmin):
+    inlines = [
+        ParameterSetPlayerInline,
+      ]
+
+    list_display = ['id', 'period_count', 'period_length']
+
 @admin.register(Parameters)
 class ParametersAdmin(admin.ModelAdmin):
     '''
@@ -41,8 +72,6 @@ class ParametersAdmin(admin.ModelAdmin):
 
     actions = []
 
-admin.site.register(ParameterSet)
-admin.site.register(ParameterSetPlayer)
 admin.site.register(SessionPlayerChat)
 admin.site.register(SessionPlayerPeriod)
 admin.site.register(HelpDocs)
