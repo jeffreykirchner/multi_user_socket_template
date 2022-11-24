@@ -145,7 +145,7 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
 
-            "parameter_set_player" : self.parameter_set_player.json(),
+            "parameter_set_player" : self.parameter_set_player.get_json_for_subject(),
 
             "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)
                                                                                    .order_by('-timestamp')[:100:-1]
@@ -181,7 +181,7 @@ class SessionPlayer(models.Model):
 
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
-            "parameter_set_player" : self.parameter_set_player.json_for_subject(),
+            "parameter_set_player" : self.parameter_set_player.get_json_for_subject(),
         }
 
     def json_min(self, session_player_notice=None):

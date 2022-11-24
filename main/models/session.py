@@ -318,7 +318,7 @@ class Session(models.Model):
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "finished":self.finished,
-            "parameter_set":self.parameter_set.json_for_subject(),
+            "parameter_set":self.parameter_set.get_json_for_subject(),
 
             "session_players":[i.json_for_subject(session_player) for i in session_player.session.session_players.all()]
         }

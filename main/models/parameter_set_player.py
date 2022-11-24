@@ -80,16 +80,16 @@ class ParameterSetPlayer(models.Model):
             "id_label" : self.id_label,
         }
     
-    def json_for_subject(self, update_required=False):
+    def get_json_for_subject(self, update_required=False):
         '''
         return json object for subject screen, return cached version if unchanged
         '''
 
-        if not self.json_for_session or \
+        if not self.json_for_subject or \
            update_required or \
            self.json_for_subject_update_required:
 
-            self.json_for_session = {
+            self.json_for_subject = {
 
                 "id" : self.id,
                 "id_label" : self.id_label,
@@ -99,6 +99,6 @@ class ParameterSetPlayer(models.Model):
             self.json_for_subject_update_required = False
             self.save()
 
-        return self.json_for_session
+        return self.json_for_subject
 
 

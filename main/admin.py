@@ -48,6 +48,7 @@ class ParameterSetPlayerInline(admin.TabularInline):
     model = ParameterSetPlayer
     can_delete = True   
     show_change_link = True
+    fields = ['id_label', 'player_number', 'json_index', 'json_for_subject']
 
 @admin.register(ParameterSet)
 class ParameterSetAdmin(admin.ModelAdmin):

@@ -113,7 +113,6 @@ var app = Vue.createApp({
                
             document.getElementById('import_parameters_modal').addEventListener('hidden.bs.modal', app.hide_import_parameters);
             document.getElementById('edit_parameterset_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameter_set);
-            document.getElementById('edit_parameterset_player_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameter_set_player);
             document.getElementById('upload_parameter_set_modal').addEventListener('hidden.bs.modal', app.hide_upload_parameters);
 
             app.first_load_done = true;
