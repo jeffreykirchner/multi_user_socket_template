@@ -207,13 +207,13 @@ def take_update_parameter_set_player(data):
     logger.info(f"Update parameterset player: {data}")
 
     session_id = data["session_id"]
-    paramterset_player_id = data["paramterset_player_id"]
+    parameterset_player_id = data["parameterset_player_id"]
     form_data = data["form_data"]
 
     try:        
-        parameter_set_player = ParameterSetPlayer.objects.get(id=paramterset_player_id)
+        parameter_set_player = ParameterSetPlayer.objects.get(id=parameterset_player_id)
     except ObjectDoesNotExist:
-        logger.warning(f"take_update_parameter_set_player parameterset_player, not found ID: {paramterset_player_id}")
+        logger.warning(f"take_update_parameter_set_player parameterset_player, not found ID: {parameterset_player_id}")
         return
     
     form_data_dict = form_data
@@ -243,14 +243,14 @@ def take_remove_parameterset_player(data):
     logger.info(f"Remove parameterset player: {data}")
 
     session_id = data["session_id"]
-    paramterset_player_id = data["paramterset_player_id"]
+    parameterset_player_id = data["parameterset_player_id"]
 
     try:        
         session = Session.objects.get(id=session_id)
-        session.parameter_set.parameter_set_players.get(id=paramterset_player_id).delete()
+        session.parameter_set.remove_player(parameterset_player_id)
         session.update_player_count()
     except ObjectDoesNotExist:
-        logger.warning(f"take_remove_parameterset_player paramterset_player, not found ID: {paramterset_player_id}")
+        logger.warning(f"take_remove_parameterset_player paramterset_player, not found ID: {parameterset_player_id}")
         return
     
     return {"value" : "success"}
@@ -270,7 +270,7 @@ def take_add_parameterset_player(data):
         logger.warning(f"take_update_take_update_parameter_set session, not found ID: {session_id}")
         return
 
-    session.parameter_set.add_new_player()
+    session.parameter_set.add_player()
 
     session.update_player_count()
     

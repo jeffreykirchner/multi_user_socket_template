@@ -19,10 +19,6 @@ class ParameterSetPlayer(models.Model):
     id_label = models.CharField(verbose_name='ID Label', max_length=2, default="1")      #id label shown on screen to subjects
     player_number = models.IntegerField(verbose_name='Player number', default=0)         #player number, from 1 to N 
 
-    json_index = models.IntegerField(verbose_name='Parameter set json index', default=0)         #player number, from 1 to N 
-    json_for_subject = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)        #json model of parameter set
-    json_for_subject_update_required = models.BooleanField(default=False, verbose_name="Update json for subject required")        #update json for subject on next load
-
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
 
@@ -42,7 +38,6 @@ class ParameterSetPlayer(models.Model):
 
         self.id_label = new_ps.get("id_label")
         self.player_number = new_ps.get("player_number")
-        self.json_index = new_ps.get("json_index")
 
         self.save()
         
@@ -54,17 +49,15 @@ class ParameterSetPlayer(models.Model):
         '''
         default setup
         '''    
-        self.json_for_subject = None
         self.save()
     
     def update_json_local(self):
         '''
         update parameter set json
         '''
-        self.parameter_set.json_for_session["parameter_set_players"][self.json_index] = self.json()
+        self.parameter_set.json_for_session["parameter_set_players"][self.id] = self.json()
         self.parameter_set.save()
 
-        self.json_for_subject_update_required = True
         self.save()
 
     def json(self):
@@ -75,7 +68,6 @@ class ParameterSetPlayer(models.Model):
         return{
 
             "id" : self.id,
-            "json_index" : self.json_index,
             "player_number" : self.player_number,
             "id_label" : self.id_label,
         }
@@ -85,20 +77,10 @@ class ParameterSetPlayer(models.Model):
         return json object for subject screen, return cached version if unchanged
         '''
 
-        if not self.json_for_subject or \
-           update_required or \
-           self.json_for_subject_update_required:
+        v = self.parameter_set.json_for_session["parameter_set_players"][str(self.id)]
 
-            self.json_for_subject = {
+        # edit v as needed
 
-                "id" : self.id,
-                "id_label" : self.id_label,
-                "json_index" : self.json_index,
-                }
-
-            self.json_for_subject_update_required = False
-            self.save()
-
-        return self.json_for_subject
+        return v
 
 

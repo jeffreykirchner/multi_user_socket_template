@@ -3,6 +3,7 @@
 show_edit_parameter_set_player:function(index){
     
     if(app.session.started) return;
+    if(app.working) return;
 
     app.clear_main_form_errors();
     app.current_parameter_set_player = Object.assign({}, app.parameter_set.parameter_set_players[index]);
@@ -17,7 +18,7 @@ send_update_parameter_set_player(){
     app.working = true;
 
     app.send_message("update_parameter_set_player", {"session_id" : app.session.id,
-                                                     "paramterset_player_id" : app.current_parameter_set_player.id,
+                                                     "parameterset_player_id" : app.current_parameter_set_player.id,
                                                      "form_data" : app.current_parameter_set_player});
 },
 
@@ -46,7 +47,7 @@ send_remove_parameter_set_player(){
 
     app.working = true;
     app.send_message("remove_parameterset_player", {"session_id" : app.session.id,
-                                                    "paramterset_player_id" : app.current_parameter_set_player.id,});
+                                                    "parameterset_player_id" : app.current_parameter_set_player.id,});
                                                    
 },
 

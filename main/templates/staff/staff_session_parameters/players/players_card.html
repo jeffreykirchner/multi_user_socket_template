@@ -29,12 +29,14 @@
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in parameter_set.parameter_set_players" v-bind:key="p.id">
-                            <td v-on:click="show_edit_parameter_set_player(p.json_index)" class="player_table_cell">
-                                [[p.player_number]]
+                        <tr v-for="(p, index) in parameter_set.parameter_set_players_order" v-bind:key="p">
+                            <td v-on:click="show_edit_parameter_set_player(p)" 
+                                class="player_table_cell">
+                                [[parameter_set.parameter_set_players[p].player_number]]
                             </td>
-                            <td v-on:click="show_edit_parameter_set_player(p.json_index)" class="player_table_cell">
-                                [[p.id_label]]
+                            <td v-on:click="show_edit_parameter_set_player(p)" 
+                                class="player_table_cell">
+                                [[parameter_set.parameter_set_players[p].id_label]]
                             </td>
                             
                         </tr>
@@ -46,7 +48,7 @@
                                 <button class="btn btn-outline-success btn-sm"
                                         type="button"
                                         title="Add player"
-                                        v-bind:disabled="session.started || reconnecting || working || parameter_set.parameter_set_players.length >= 24"
+                                        v-bind:disabled="session.started || reconnecting || working"
                                         v-on:click="send_add_parameter_set_player()">
                                        Add <i class="fas fa-plus"></i>
                                 </button>

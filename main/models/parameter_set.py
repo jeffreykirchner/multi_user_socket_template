@@ -9,6 +9,7 @@ from decimal import Decimal
 from django.db import models
 from django.db.utils import IntegrityError
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.exceptions import ObjectDoesNotExist
 
 from main import globals
 
@@ -34,8 +35,6 @@ class ParameterSet(models.Model):
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
 
     json_for_session = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set 
-    json_for_subject = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set for subject
-    json_for_subject_update_required = models.BooleanField(default=False, verbose_name="Update json for subject required")  #update json model for subject on next load
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -72,30 +71,16 @@ class ParameterSet(models.Model):
             self.save()
 
             #parameter set players
-            new_parameter_set_players = new_ps.get("parameter_set_players")
-
-            if len(new_parameter_set_players) > self.parameter_set_players.count():
-                #add more players
-                new_player_count = len(new_parameter_set_players) - self.parameter_set_players.count()
-
-                for i in range(new_player_count):
-                    self.add_new_player(self.parameter_set_types.first())
-
-            elif len(new_parameter_set_players) < self.parameter_set_players.count():
-                #remove excess players
-
-                extra_player_count = self.parameter_set_players.count() - len(new_parameter_set_players)
-
-                for i in range(extra_player_count):
-                    self.parameter_set_players.last().delete()
+            self.parameter_set_players.all().delete()
 
             new_parameter_set_players = new_ps.get("parameter_set_players")
-            for index, p in enumerate(self.parameter_set_players.all()):                
-                p.from_dict(new_parameter_set_players[index])
 
-            self.json_for_session = self.json()
-            self.save()
+            for i in new_parameter_set_players:
+                p = main.models.ParameterSetPlayer.objects.create(parameter_set=self)
+                p.from_dict(new_parameter_set_players[i])
 
+            self.json_for_session = self.json(update_required=True)
+            
         except IntegrityError as exp:
             message = f"Failed to load parameter set: {exp}"
             status = "fail"
@@ -107,7 +92,6 @@ class ParameterSet(models.Model):
         '''
         default setup
         '''    
-        self.json_for_subject = None
         self.json_for_session = None
 
         self.save()
@@ -115,18 +99,34 @@ class ParameterSet(models.Model):
         for i in self.parameter_set_players.all():
             i.setup()
 
-    def add_new_player(self):
+    def add_player(self):
         '''
-        add a new player of type subject_type
+        add a parameterset player
         '''
 
         player = main.models.ParameterSetPlayer()
         player.parameter_set = self
         player.player_number = self.parameter_set_players.count() + 1
-        player.json_index = player.player_number - 1
+        player.id_label = player.player_number
         player.save()
 
+        self.update_json_fk(update_players=True)
+    
+    def remove_player(self, parameterset_player_id):
+        '''
+        remove specified parameterset player
+        '''
+        
+        try:
+            player = self.parameter_set_players.get(id=parameterset_player_id)
+            player.delete()
+
+        except ObjectDoesNotExist:
+            logger = logging.getLogger(__name__) 
+            logger.warning(f"parameter set remove_player, not found ID: {parameterset_player_id}")
+
         self.update_player_count()
+        self.update_json_fk(update_players=True)
     
     def update_player_count(self):
         '''
@@ -134,7 +134,6 @@ class ParameterSet(models.Model):
         '''
         for count, i in enumerate(self.parameter_set_players.all()):
             i.player_number = count + 1
-            i.json_index = count
             i.update_json_local()
             i.save()
     
@@ -158,15 +157,16 @@ class ParameterSet(models.Model):
 
         self.json_for_session["test_mode"] = "True" if self.test_mode else "False"
 
-        self.json_for_subject_update_required = True
-
         self.save()
     
-    def update_json_fk(self):
+    def update_json_fk(self, update_players=False):
         '''
         update json model
         '''
-        self.json_for_session["parameter_set_players"] = [p.json() for p in self.parameter_set_players.all()]
+        if update_players:
+            self.json_for_session["parameter_set_players_order"] = list(self.parameter_set_players.all().values_list('id', flat=True))
+            self.json_for_session["parameter_set_players"] = {p.id : p.json() for p in self.parameter_set_players.all()}
+
         self.save()
 
     def json(self, update_required=False):
@@ -177,34 +177,20 @@ class ParameterSet(models.Model):
            update_required:
             self.json_for_session = {}
             self.update_json_local()
-            self.update_json_fk()
+            self.update_json_fk(update_players=True)
 
         return self.json_for_session
     
-    def get_json_for_subject(self, update_required=False):
+    def get_json_for_subject(self):
         '''
         return json object for subject, return cached version if unchanged
         '''
-        if not self.json_for_subject or \
-           update_required or \
-           self.json_for_subject_update_required:
-
-            self.json_for_subject ={
-                "id" : self.id,
-                
-                "period_length" : self.period_length,
-                "show_instructions" : "True" if self.show_instructions else "False",
-                "private_chat" : self.private_chat,
-
-                "survey_required" : "True" if self.survey_required else "False",
-                "survey_link" : self.survey_link,  
-
-                "test_mode" : self.test_mode,
-            }
-
-            self.json_for_subject_update_required = False
-            self.save()
         
-        return self.json_for_subject
+        v = self.json_for_session
+
+        v.pop("parameter_set_players")
+        v.pop("parameter_set_players_order")
+        
+        return v
         
 
