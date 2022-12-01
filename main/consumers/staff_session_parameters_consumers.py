@@ -72,11 +72,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
 
         message = {}
-        message["message_type"] = "update_parameter_set_player"
-        message["message_data"] = message_data
+        message["message_type"] = "update_parameter_set"
+        message["message_data"] = message_data 
 
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     async def remove_parameterset_player(self, event):
         '''
@@ -88,11 +88,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
 
         message = {}
-        message["message_type"] = "remove_parameterset_player"
+        message["message_type"] = "update_parameter_set"
         message["message_data"] = message_data
 
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))   
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
     async def add_parameterset_player(self, event):
         '''
@@ -104,7 +104,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
 
         message = {}
-        message["message_type"] = "add_parameterset_player"
+        message["message_type"] = "update_parameter_set"
         message["message_data"] = message_data
 
         # Send message to WebSocket
@@ -268,9 +268,12 @@ def take_add_parameterset_player(data):
         session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
         logger.warning(f"take_update_take_update_parameter_set session, not found ID: {session_id}")
-        return
+        return {"value" : "fail"}
 
     session.parameter_set.add_player()
+
+    return {"value" : "success"}
+
 
     session.update_player_count()
     

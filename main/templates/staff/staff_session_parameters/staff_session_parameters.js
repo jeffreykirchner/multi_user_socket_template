@@ -68,16 +68,7 @@ var app = Vue.createApp({
                     break;
                 case "update_parameter_set":
                     app.take_update_parameter_set(message_data);
-                    break;        
-                case "update_parameter_set_player":
-                    app.take_update_parameter_setPlayer(message_data);
-                    break;     
-                case "remove_parameterset_player":
-                    app.take_remove_parameter_set_player(message_data);
-                    break;
-                case "add_parameterset_player":
-                    app.take_add_parameter_set_player(message_data);
-                    break;                
+                    break;                        
                 case "import_parameters":
                     app.take_import_parameters(message_data);
                     break;
