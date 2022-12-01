@@ -79,7 +79,10 @@ class ParameterSet(models.Model):
                 p = main.models.ParameterSetPlayer.objects.create(parameter_set=self)
                 p.from_dict(new_parameter_set_players[i])
 
-            self.json_for_session = self.json(update_required=True)
+            self.update_player_count()
+
+            self.json_for_session = None
+            self.save()
             
         except IntegrityError as exp:
             message = f"Failed to load parameter set: {exp}"
