@@ -16,6 +16,7 @@ class UserModelMultipleChoiceField(ModelMultipleChoiceField):
 
 class SessionFormAdmin(forms.ModelForm):
 
+    
     creator =  UserModelChoiceField(label="Creator",
                                      empty_label=None,
                                      queryset=User.objects.all(),
@@ -39,4 +40,4 @@ class SessionFormAdmin(forms.ModelForm):
 
     class Meta:
         model=Session
-        fields = ('creator', 'collaborators', 'current_experiment_phase', 'title', 'shared', 'locked', 'soft_delete')
+        fields = ('parameter_set', 'creator', 'collaborators', 'current_experiment_phase', 'title', 'shared', 'locked', 'soft_delete')
