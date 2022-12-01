@@ -9,11 +9,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
-        <label for="id_email_list" class="form-label">CSV/TAB format.</label>
+        <label for="id_email_list" class="form-label">CSV/TAB format:<br>First Name, Last Name, Email, Student ID</label>
         <textarea class="form-control" id="id_email_list" v-model="csv_email_list" rows="10"></textarea>
     </div>
     <div class="modal-footer">
-        
+        <label class="form-label text-danger me-4">[[email_list_error]]</label>
+
         <button type="button"
                 class="btn btn-outline-primary"
                 v-bind:disabled="reconnecting || working"

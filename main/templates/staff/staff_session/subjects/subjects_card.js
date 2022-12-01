@@ -152,10 +152,11 @@ take_update_email_list(message_data){
     {            
         app.upload_email_modal.hide(); 
         app.session = message_data.status.result.session;
+        app.email_list_error = "";
     } 
     else
     {
-        
+        app.email_list_error = message_data.status.result;
     } 
 },
 
@@ -164,6 +165,8 @@ take_update_email_list(message_data){
 show_send_email_list(){
     app.clear_main_form_errors();
     app.cancel_modal=true;
+
+    app.email_list_error = "";
 
     app.csv_email_list = "";
 

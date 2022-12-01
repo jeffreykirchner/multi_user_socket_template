@@ -35,6 +35,8 @@ var app = Vue.createApp({
                     email_default_subject : "{{parameters.invitation_subject}}",
                     email_default_text : `{{parameters.invitation_text|safe}}`,
 
+                    email_list_error : "",
+
                     csv_email_list : "",           //csv email list
 
                     //modals

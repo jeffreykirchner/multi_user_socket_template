@@ -912,29 +912,33 @@ def take_email_list(session_id, data):
     try:        
         session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
-        logger.warning(f"take_send_invitations session, not found: {session_id}")
+        logger.warning(f"take_email_list session, not found: {session_id}")
         return {"status":"fail", "result":"session not found"}
     
-    raw_list = data["csv_data"]
+    try:
+        raw_list = data["csv_data"]
 
-    raw_list = raw_list.splitlines()
+        raw_list = raw_list.splitlines()
 
-    counter = 1
-    for i in range(len(raw_list)):
-        raw_list[i] = re.split(r',|\t', raw_list[i])
+        counter = 1
+        for i in range(len(raw_list)):
+            raw_list[i] = re.split(r',|\t', raw_list[i])
 
-        if raw_list[i][0] != "Last Name":
-            p = session.session_players.filter(player_number=counter).first()
+            if raw_list[i][0] != "Last Name":
+                p = session.session_players.filter(player_number=counter).first()
 
-            if p:
-                p.name = raw_list[i][0] + " " + raw_list[i][1]
-                p.email = raw_list[i][2]
-                p.student_id = raw_list[i][3]
+                if p:
+                    p.name = raw_list[i][0] + " " + raw_list[i][1]
+                    p.email = raw_list[i][2]
+                    p.student_id = raw_list[i][3]
 
-                p.save()
-            
-            counter+=1
-    
+                    p.save()
+                
+                counter+=1
+    except:
+        logger.warning(f"take_email_list session, not found: {session_id}")
+        return {"status":"fail", "result":"Invalid Format"}
+
     return {"value" : "success", "result" : {"session":session.json()}}
 
 def take_anonymize_data(session_id, data):
