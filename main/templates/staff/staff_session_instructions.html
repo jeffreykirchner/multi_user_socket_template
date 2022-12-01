@@ -1,0 +1,37 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{%block head%}
+<script type="text/javascript">
+
+</script>
+<style>
+    .signal_image{
+        width: auto;
+        height: 150px;              
+    }
+</style>
+
+{%endblock head%}
+
+{% block content %}
+<div class="row d-print-none mb-4">
+    <div class="col">
+        Instructions for session: <a href="/staff-session/{{session.id}}/">{{session.title}}</a>
+    </div>
+</div>
+
+{% for i in instruction_set %}
+    <div class="mb-4">
+        <center><u><span class="h2">Part {{forloop.counter}}</span></u></center>
+    
+        {% for j in i %}
+        <div class="mb-2" style="page-break-after: always;">
+            {{j.text_html|safe}}
+        </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+
+{% endblock %}

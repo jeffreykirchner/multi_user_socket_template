@@ -23,7 +23,8 @@ urlpatterns = [
     path('staff-session/<int:pk>/', views.StaffSessionView.as_view(), name='staff_session'),
     path('staff-session/<int:pk>/parameters', views.StaffSessionParametersView.as_view(), name='staff_session_parameters'),
     path('staff-session-subject-earnings/<int:pk>/', views.StaffSessionSubjectEarnings.as_view(), name='staff_session_subject_earnings'),
-
+    path('staff-session-instructions/<int:pk>/', views.StaffSessionInstructions.as_view(), name='staff_session_instructions'),
+    
     path('subject-home/<uuid:player_key>', views.SubjectHomeView.as_view(), name='subject_home'),
 
     path('auto-login/<uuid:session_key>/', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect'),
