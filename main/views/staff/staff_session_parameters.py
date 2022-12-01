@@ -56,7 +56,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "parameter_set_player_form" : parameterset_player_form,
                                "parameterset_form_ids" : parameterset_form_ids,
                                "parameterset_player_form_ids" : parameterset_player_form_ids,
-                               "import_parameters_form" : ImportParametersForm(user=request.user),     
+                               "import_parameters_form" : ImportParametersForm(user=request.user, session_id=session.id),     
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',
                                "number_of_player_types" : range(4),

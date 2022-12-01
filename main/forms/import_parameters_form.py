@@ -10,9 +10,11 @@ class ImportParametersForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
+        self.session_id = kwargs.pop('session_id', None)
         super(ImportParametersForm, self).__init__(*args, **kwargs)
         self.fields['session'].queryset = Session.objects.filter(soft_delete=False) \
-                                                         .filter(Q(creator=self.user) | Q(shared=True))
+                                                         .exclude(id=self.session_id) \
+                                                         .filter(Q(creator=self.user) | Q(shared=True) | Q(collaborators=self.user))
     
     session =  forms.ModelChoiceField(label="Select session to import.",
                                       queryset=None,
