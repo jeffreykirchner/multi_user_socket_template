@@ -142,8 +142,14 @@ class SessionPlayerInline(admin.TabularInline):
 class SessionAdmin(admin.ModelAdmin):
     form = SessionFormAdmin
 
+    @admin.display(description='Creator')
+    def get_creator_email(self, obj):
+        return obj.creator.email
+
     readonly_fields=['parameter_set', 'session_key','channel_key']
     inlines = [SessionPlayerInline]
+
+    list_display = ['title', 'get_creator_email']
 
 #instruction set page
 class InstructionPageInline(admin.TabularInline):
