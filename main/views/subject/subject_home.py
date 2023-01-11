@@ -16,7 +16,6 @@ from django.http import JsonResponse
 from main.models import SessionPlayer
 from main.models import Parameters
 
-from main.forms import SessionForm
 from main.forms import EndGameForm
 
 class SubjectHomeView(View):
@@ -49,7 +48,6 @@ class SubjectHomeView(View):
                       context={"channel_key" : session.channel_key,
                                "player_key" :  session_player.player_key,
                                "id" : session.id,
-                               "session_form" : SessionForm(),
                                "end_game_form" : EndGameForm(),
                                "end_game_form_ids" : end_game_form_ids,
                                "websocket_path" : self.websocket_path,
