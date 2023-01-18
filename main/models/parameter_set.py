@@ -59,11 +59,11 @@ class ParameterSet(models.Model):
             self.period_count = new_ps.get("period_count")
             self.period_length = new_ps.get("period_length")
 
-            self.private_chat = new_ps.get("private_chat")
+            self.private_chat = True if new_ps.get("private_chat") == "True" else False
 
-            self.show_instructions = new_ps.get("show_instructions")
+            self.show_instructions = True if new_ps.get("show_instructions") == "True" else False
 
-            self.survey_required = new_ps.get("survey_required")
+            self.survey_required = True if new_ps.get("survey_required") == "True" else False
             self.survey_link = new_ps.get("survey_link")
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
