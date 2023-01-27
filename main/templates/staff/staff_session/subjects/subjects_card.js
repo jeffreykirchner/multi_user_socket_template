@@ -302,7 +302,7 @@ send_anonymize_data(){
     app.send_message("anonymize_data",{});
 },
 
-/** take update subject response
+/** take anonymize data result for server
  * @param message_data {json} result of update, either sucess or fail with errors
 */
 take_anonymize_data(message_data){
