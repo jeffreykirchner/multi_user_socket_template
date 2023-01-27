@@ -290,7 +290,7 @@ hide_edit_subject:function(){
      document.execCommand("copy");
  },
 
- /** send session update form   
+ /** send request to anonymize the data
 */
 send_anonymize_data(){
     
