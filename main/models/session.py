@@ -208,6 +208,19 @@ class Session(models.Model):
                 "stop_timer" : stop_timer,
                 }
 
+    def user_is_owner(self, user):
+        '''
+        return turn is user is owner or an admin
+        '''
+
+        if user.is_staff:
+            return True
+
+        if user==self.creator:
+            return True
+        
+        return False
+
     def get_download_summary_csv(self):
         '''
         return data summary in csv format
