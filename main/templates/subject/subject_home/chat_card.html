@@ -63,27 +63,29 @@
                         name="btnradio" 
                         id="chat_all_id" 
                         autocomplete="off" 
-                        v-on:click="update_chat_recipients('all', 'Everyone', -1)" 
+                        v-on:click="update_chat_recipients('all')" 
                         checked>
                     <label class="btn btn-outline-secondary" for="chat_all_id">
                         Everyone
                         <span v-if=session_player.new_chat_message>*</span>
                     </label>
                     
-                    <div v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                    <div v-for="(p, index) in session.session_players_order" 
+                         v-bind:key="p"
+                         :set="temp_p=session.session_players[p]">
                         
                         <input type="radio"
                             class="btn-check" 
                             name="btnradio" 
-                            v-bind:id="'chat_invididual_' + p.id + '_id'" 
+                            v-bind:id="'chat_invididual_' + p + '_id'" 
                             autocomplete="off" 
-                            v-if="p.id != session_player.id"
-                            v-on:click="update_chat_recipients(p.id, 'Person '+ p.parameter_set_player.id_label, index)">
+                            v-if="p != session_player.id"
+                            v-on:click="update_chat_recipients(p)">
                         <label class="btn btn-outline-secondary"
-                               v-if="p.id != session_player.id"
-                               v-bind:for="'chat_invididual_' + p.id + '_id'">
-                            [[p.parameter_set_player.id_label]]
-                            <span v-if=p.new_chat_message>*</span>
+                               v-if="p != session_player.id"
+                               v-bind:for="'chat_invididual_' + p + '_id'">
+                            [[temp_p.parameter_set_player.id_label]]
+                            <span v-if=temp_p.new_chat_message>*</span>
                         </label>
                     </div>
 

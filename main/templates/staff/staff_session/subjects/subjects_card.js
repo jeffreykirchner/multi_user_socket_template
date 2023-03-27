@@ -9,7 +9,7 @@
         let result = message_data.status.result;
         let session_players = app.session.session_players;
 
-        session_player = app.find_session_player(result.id);
+        session_player = app.session.session_players[result.id];
 
         if(session_player)
         {
@@ -27,7 +27,7 @@ take_update_name(message_data){
     {
         let result = message_data.status.result;
 
-        session_player = app.find_session_player(result.id);
+        session_player = app.session.session_players[result.id];
 
         if(session_player)
         {
@@ -46,7 +46,7 @@ take_next_instruction(message_data){
     {
         let result = message_data.status.result;
 
-        session_player = app.find_session_player(result.id);
+        session_player = app.session.session_players[result.id];
 
         if(session_player)
         {
@@ -65,7 +65,7 @@ take_finished_instructions(message_data){
     {
         let result = message_data.status.result;
 
-        session_player = app.find_session_player(result.id);
+        session_player = app.session.session_players[result.id];
 
         if(session_player)
         {
@@ -88,7 +88,7 @@ take_finished_instructions(message_data){
 
         for(let i=0; i<session_player_earnings.length; i++)
         {
-            session_player = app.find_session_player(session_player_earnings[i].id);
+            session_player = app.session.session_players[session_player_earnings[i].id];
 
             if(session_player)
             {
@@ -98,22 +98,6 @@ take_finished_instructions(message_data){
     }
  },
 
- /**
-  * return session player that has specified id
-  */
- find_session_player(id){
-
-    let session_players = app.session.session_players;
-    for(let i=0; i<session_players.length; i++)
-    {
-        if(session_players[i].id == id)
-        {
-            return session_players[i];
-        }
-    }
-
-    return null;
- },
 
 /**
  * return session player index that has specified id
@@ -121,9 +105,9 @@ take_finished_instructions(message_data){
 find_session_player_index(id){
 
     let session_players = app.session.session_players;
-    for(let i=0; i<session_players.length; i++)
+    for(let i=0; i<session_players_order.length; i++)
     {
-        if(session_players[i].id == id)
+        if(session_players_order[i] == id)
         {
             return i;
         }
@@ -203,10 +187,14 @@ take_update_subject(message_data){
     {            
         app.edit_subject_modal.hide();    
 
-        let session_player = app.find_session_player(message_data.status.session_player.id);
-        session_player.name = message_data.status.session_player.name;
-        session_player.student_id = message_data.status.session_player.student_id;
-        session_player.email = message_data.status.session_player.email;
+        let session_player = app.session.session_players[message_data.status.session_player.id];
+
+        if(session_player)
+        {
+            session_player.name = message_data.status.session_player.name;
+            session_player.student_id = message_data.status.session_player.student_id;
+            session_player.email = message_data.status.session_player.email;
+        }
     } 
     else
     {
@@ -223,11 +211,14 @@ show_edit_subject:function(id){
 
     app.staff_edit_name_etc_form.id = id;
 
-    let session_player = app.find_session_player(id);
+    let session_player = app.session.session_players[id];
 
-    app.staff_edit_name_etc_form.name = session_player.name;
-    app.staff_edit_name_etc_form.student_id = session_player.student_id;
-    app.staff_edit_name_etc_form.email = session_player.email;
+    if(session_player)
+    {
+        app.staff_edit_name_etc_form.name = session_player.name;
+        app.staff_edit_name_etc_form.student_id = session_player.student_id;
+        app.staff_edit_name_etc_form.email = session_player.email;
+    }
 
     app.edit_subject_modal.toggle();
 },
@@ -316,7 +307,7 @@ take_anonymize_data(message_data){
 
         for(let i=0; i<session_player_updates.length; i++)
         {
-            session_player = app.find_session_player(session_player_updates[i].id);
+            session_player = app.session.session_players[session_player_updates[i].id];
 
             if(session_player)
             {
@@ -335,6 +326,6 @@ take_anonymize_data(message_data){
 take_update_survey_complete(message_data){
     result = message_data.status;
 
-    session_player = app.find_session_player(result.player_id);
+    session_player = app.session.session_players[result.player_id];
     session_player.survey_complete = true;
 },

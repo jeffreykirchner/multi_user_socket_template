@@ -76,30 +76,32 @@
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
-                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
-                                [[p.player_number]]
+                        <tr v-for="(p, index) in session.session_players_order" 
+                            v-bind:key="p"
+                            :set="temp_p=session.session_players[p]">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
+                                [[temp_p.player_number]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
-                                [[p.parameter_set_player.id_label]]
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
+                                [[temp_p.parameter_set_player.id_label]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
-                                [[p.name=="" ? "---" : p.name]]
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
+                                [[temp_p.name=="" ? "---" : temp_p.name]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
-                                [[(!p.email || p.email=="") ? "---" : p.email]]
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
+                                [[(!temp_p.email || temp_p.email=="") ? "---" : temp_p.email]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p.id)">
-                                [[p.student_id=="" ? "---" : p.student_id]]
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
+                                [[temp_p.student_id=="" ? "---" : temp_p.student_id]]
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                $[[(p.earnings/100).toFixed(2)]]
+                                $[[(temp_p.earnings/100).toFixed(2)]]
                             </td>                            
                             <td class="player_table_cell text-nowrap">
-                                <a v-bind:href="p.login_link">Login Link</a>
+                                <a v-bind:href="temp_p.login_link">Login Link</a>
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                <span v-if="p.connected_count > 0" style="color: lightgreen;">
+                                <span v-if="temp_p.connected_count > 0" style="color: lightgreen;">
                                     <i class="fas fa-check"></i>
                                 </span>
                                 <span v-else style="color: crimson;">
@@ -107,10 +109,10 @@
                                 </span>
                             </td>
                             <td class="player_table_cell text-nowrap" v-show="session.current_experiment_phase == 'Instructions'">
-                                [[p.instructions_finished ? "Finished" : "Page " + p.current_instruction.toString()]]
+                                [[temp_p.instructions_finished ? "Finished" : "Page " + temp_p.current_instruction.toString()]]
                             </td>
                             <td class="player_table_cell text-nowrap" v-if="session.parameter_set.survey_required=='True'">
-                                <span v-if="p.survey_complete">Yes</span>
+                                <span v-if="temp_p.survey_complete">Yes</span>
                                 <span v-else>No</span>
                             </td>                           
                         </tr>

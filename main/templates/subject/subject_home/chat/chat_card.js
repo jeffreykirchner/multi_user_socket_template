@@ -63,8 +63,7 @@ take_update_chat(message_data){
             target = sesson_player_target;
         }
 
-        session_player = app.find_session_player(target);
-        session_player_index = app.find_session_player_index(target);
+        session_player = app.session.session_players[target];
 
         if(session_player)
         {
@@ -73,21 +72,11 @@ take_update_chat(message_data){
 
             session_player.chat_individual.push(chat);
 
-            if(session_player_index != app.chat_recipients_index)
+            if(session_player.id != app.chat_recipients)
             {
                 session_player.new_chat_message = true;
             }
-        }
-
-        // for(let i=0; i<session_players.length; i++)
-        // {
-        //     if(session_players[i].id == target)
-        //     {
-                
-                
-        //         break;
-        //     }
-        // }        
+        }      
     }
 
     app.update_chat_display();
@@ -96,20 +85,22 @@ take_update_chat(message_data){
 /** update who should receive chat
 *    @param message_data {json} session day in json format
 */
-update_chat_recipients(chat_recipients, chat_button_label, chat_recipients_index){
+update_chat_recipients(chat_recipients){
     app.chat_recipients = chat_recipients;
-    app.chat_button_label = chat_button_label;
-    app.chat_recipients_index = chat_recipients_index;
+    
 
     app.update_chat_display();
 
     if(app.chat_recipients=="all")
     {
         app.session_player.new_chat_message = false;
+        app.chat_button_label = "Everyone";
     }
     else
     {
-        app.session.session_players[chat_recipients_index].new_chat_message = false;
+        let session_player = app.session.session_players[chat_recipients];
+        session_player.new_chat_message = false;
+        app.chat_button_label =session_player.parameter_set_player.id_label;
     }
 },
 
@@ -123,7 +114,7 @@ update_chat_display(){
     }
     else
     {
-        app.chat_list_to_display=Array.from(app.session.session_players[app.chat_recipients_index].chat_individual);
+        app.chat_list_to_display=Array.from(app.session.session_players[app.chat_recipients].chat_individual);
     }
 },
 

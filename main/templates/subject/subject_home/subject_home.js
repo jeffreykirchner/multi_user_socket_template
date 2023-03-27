@@ -23,7 +23,6 @@ var app = Vue.createApp({
 
                     chat_text : "",
                     chat_recipients : "all",
-                    chat_recipients_index : 0,
                     chat_button_label : "Everyone",
                     chat_list_to_display : [],                //list of chats to display on screen
 
@@ -339,23 +338,6 @@ var app = Vue.createApp({
                     document.getElementById("div_id_" + e).scrollIntoView(); 
                 }
         }, 
-
-        /**
-         * return session player that has specified id
-         */
-        find_session_player(id){
-
-            let session_players = app.session.session_players;
-            for(let i=0; i<session_players.length; i++)
-            {
-                if(session_players[i].id == id)
-                {
-                    return session_players[i];
-                }
-            }
-
-            return null;
-        },
 
         /**
          * return session player index that has specified id
