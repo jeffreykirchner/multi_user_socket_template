@@ -82,6 +82,21 @@ class SessionPlayerChat(models.Model):
             "sender_id" : self.session_player.id,    
             "text" : self.text,
         }
+    
+    async def ajson_for_subject(self):
+        '''
+        json object of model
+        '''
+
+        v = await SessionPlayer.objects.values('parameter_set_player__id_label',)\
+                                       .aget(id=self.session_player.id)
+
+        return{
+            "id" : self.id,    
+            "text" : self.text,
+            "sender_label" : v['parameter_set_player__id_label'],  
+            "sender_id" : self.session_player.id,    
+        }
         
     #return json object of class
     def json_for_staff(self):
@@ -96,6 +111,25 @@ class SessionPlayerChat(models.Model):
 
             "session_player_recipients" : [i.parameter_set_player.id_label for i in self.session_player_recipients.all()],
 
+            "text" : self.text,
+            "chat_type" : self.chat_type,
+        }
+    
+    async def ajson_for_staff(self):
+        '''
+        json object of model
+        '''
+
+        session_player = await SessionPlayer.objects.values('parameter_set_player__id_label',)\
+                                            .aget(id=self.session_player.id)
+        
+        session_player_recipient_labels = SessionPlayer.objects.filter(id__in=self.session_player_recipients.all()) \
+                                                         .values_list('parameter_set_player__id_label', flat=True) 
+
+        return{
+            "id" : self.id,        
+            "sender_label" : session_player['parameter_set_player__id_label'],
+            "session_player_recipients" : [i async for i in session_player_recipient_labels],
             "text" : self.text,
             "chat_type" : self.chat_type,
         }

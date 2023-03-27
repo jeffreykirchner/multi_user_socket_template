@@ -264,6 +264,7 @@ var app = Vue.createApp({
 
             app.session.current_experiment_phase = message_data.status.session.current_experiment_phase;
             app.session.session_players = message_data.status.session_players;
+            app.session.session_players_order = message_data.status.session_players_order;
             app.session_player = message_data.status.session_player;
 
             app.update_chat_display();    
@@ -274,7 +275,7 @@ var app = Vue.createApp({
             }
             else
             {
-                app.hideEndGameModal();
+                app.hide_end_game_modal();
             }
             
             if(app.session.current_experiment_phase == 'Done' && 

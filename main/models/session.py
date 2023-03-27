@@ -158,6 +158,15 @@ class Session(models.Model):
             return None
 
         return self.session_periods.get(period_number=self.current_period)
+
+    async def aget_current_session_period(self):
+        '''
+        return the current session period
+        '''
+        if not self.started:
+            return None
+
+        return await self.session_periods.aget(period_number=self.current_period)
     
     def update_player_count(self):
         '''
