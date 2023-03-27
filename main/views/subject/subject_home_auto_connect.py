@@ -36,7 +36,7 @@ class SubjectHomeAutoConnectView(View):
 
             try:
                 with transaction.atomic():
-                    session_player = session.session_players.filter(connecting=False, connected_count=0).first()
+                    session_player = session.session_players.select_for_update().filter(connecting=False, connected_count=0).first()
 
                     if session_player:
                         player_key = session_player.player_key
