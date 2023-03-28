@@ -39,6 +39,28 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''    
 
     session_player_id = 0   #session player id number
+
+    async def send_message(self, message_to_self:dict, message_to_subjects:dict, message_to_staff:dict,
+                                 message_type:dict, send_to_client:bool, send_to_group:bool):
+        '''
+        send response to client
+        '''
+        # Send message to local client
+        if send_to_client:
+            message_to_self_data = {}
+            message_to_self_data["message_type"] = message_type
+            message_to_self_data["message_data"] = message_to_self
+
+            await self.send(text_data=json.dumps({'message': message_to_self_data,}, cls=DjangoJSONEncoder))
+
+        if send_to_group:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                    {"type": f"update_{message_type}",
+                     "subject_data": message_to_subjects,
+                     "staff_data": message_to_staff,
+                     "sender_channel_name": self.channel_name},
+                )
     
     async def get_session(self, event):
         '''
@@ -57,18 +79,10 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         # await self.update_local_info(event)
 
-        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
+        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
 
-        #build response
-        message_data = {"status":{}}
-        message_data["status"] = result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
    
     async def chat(self, event):
         '''
@@ -152,100 +166,83 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         event_result = result["result"]
 
-        subject_result = {}
-        subject_result["chat_type"] = event_result["chat_type"]
-        subject_result["sesson_player_target"] = event_result.get("sesson_player_target", -1)
-        subject_result["chat"] = event_result["chat_for_subject"]
-        subject_result["value"] = result["value"]
+        message_to_subjects = {}
+        message_to_subjects["chat_type"] = event_result["chat_type"]
+        message_to_subjects["sesson_player_target"] = event_result.get("sesson_player_target", -1)
+        message_to_subjects["chat"] = event_result["chat_for_subject"]
+        message_to_subjects["value"] = result["value"]
 
-        staff_result = {}
-        staff_result["chat"] = event_result["chat_for_staff"]
+        message_to_staff = {}
+        message_to_staff["chat"] = event_result["chat_for_staff"]
 
-        message_data = {}
-        message_data["status"] = subject_result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send reply to sending channel
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
-        #if success send to all connected clients
-        if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_chat",
-                 "subject_result": subject_result,
-                 "staff_result": staff_result,
-                 "sender_channel_name": self.channel_name},
-            )
-
+        await self.send_message(message_to_self=message_to_subjects, message_to_subjects=message_to_subjects, message_to_staff=message_to_staff, 
+                                message_type=event['type'], send_to_client=True, send_to_group=True)
+       
     async def name(self, event):
         '''
         take name and id number
         '''
-        result = await sync_to_async(take_name)(self.session_id, self.session_player_id, event["message_text"])
-        message_data = {}
-        message_data["status"] = result
+        # result = await sync_to_async(take_name)(self.session_id, self.session_player_id, event["message_text"])
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
+        data = event["message_text"]
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        logger = logging.getLogger(__name__) 
+        logger.info(f"Take name: {self.session_id} {self.session_player_id} {data}")
 
-        if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_name",
-                 "data": result,
-                 "sender_channel_name": self.channel_name},
-            )
+        form_data_dict =  data["form_data"]
+        
+        session = await Session.objects.aget(id=self.session_id)
+        session_player = await session.session_players.aget(id=self.session_player_id)
+
+        if session.current_experiment_phase != ExperimentPhase.NAMES:
+            result = {"value" : "fail", "errors" : {f"name":["Session not complete."]},
+                      "message" : "Session not complete."}
+        else:
+            logger.info(f'form_data_dict : {form_data_dict}')       
+
+            form = EndGameForm(form_data_dict)
+                
+            if form.is_valid():
+                #print("valid form") 
+
+                session_player.name = form.cleaned_data["name"]
+                session_player.student_id = form.cleaned_data["student_id"]
+                session_player.name_submitted = True
+
+                session_player.name = string.capwords(session_player.name)
+
+                await sync_to_async(session_player.save, thread_sensitive=False)()    
+                
+                result = {"value" : "success",
+                            "result" : {"id" : self.session_player_id,
+                                        "name" : session_player.name, 
+                                        "name_submitted" : session_player.name_submitted,
+                                        "student_id" : session_player.student_id}}                      
+            else:                            
+                logger.info("Invalid name form")
+
+                result = {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
+
+        await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=result, 
+                                message_type=event['type'], send_to_client=True, send_to_group=True)
 
     async def next_instruction(self, event):
         '''
         advance instruction page
         '''
-        result = await sync_to_async(take_next_instruction)(self.session_id, self.session_player_id, event["message_text"])
-        message_data = {}
-        message_data["status"] = result
+        result = await sync_to_async(take_next_instruction, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
-        if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_next_instruction",
-                 "data": result,
-                 "sender_channel_name": self.channel_name},
-            )
+        await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=result, 
+                                message_type=event['type'], send_to_client=True, send_to_group=True)
     
     async def finish_instructions(self, event):
         '''
         finish instructions
         '''
-        result = await sync_to_async(take_finish_instructions)(self.session_id, self.session_player_id, event["message_text"])
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
-        if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_finish_instructions",
-                 "data": result,
-                 "sender_channel_name": self.channel_name},
-            )
+        result = await sync_to_async(take_finish_instructions, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
+        
+        await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=result, 
+                                message_type=event['type'], send_to_client=True, send_to_group=True)
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -255,20 +252,10 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         #logger = logging.getLogger(__name__) 
         #logger.info(f'update start subjects {self.channel_name}')
 
-        # await self.update_local_info(event)
+        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
 
-        #get session json object
-        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
-
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        #if self.channel_name != event['sender_channel_name']:
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_reset_experiment(self, event):
         '''
@@ -278,50 +265,28 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         #logger.info(f'update start subjects {self.channel_name}')
 
         #get session json object
-        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
+        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_chat(self, event):
         '''
         send chat to clients, if clients can view it
         '''
-
-        message_data = {}
-        message_data["status"] =  event["subject_result"]
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
+        subject_data = event["subject_data"]
 
         if self.channel_name == event['sender_channel_name']:
             return
         
-        if message_data['status']['chat_type'] == "Individual" and \
-           message_data['status']['sesson_player_target'] != self.session_player_id and \
-           message_data['status']['chat']['sender_id'] != self.session_player_id:
+        if subject_data['chat_type'] == "Individual" and \
+           subject_data['sesson_player_target'] != self.session_player_id and \
+           subject_data['chat']['sender_id'] != self.session_player_id:
 
            return
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
-    # async def update_local_info(self, event):
-    #     '''
-    #     update connection's information
-    #     '''
-    #     result = await sync_to_async(take_update_local_info)(self.session_id, self.connection_uuid, event)
-
-    #     logger = logging.getLogger(__name__) 
-    #     logger.info(f"update_local_info {result}")
-
-    #     self.session_player_id = result["session_player_id"]
+        await self.send_message(message_to_self=subject_data, message_to_subjects=None, message_to_staff=None, 
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_time(self, event):
         '''
@@ -340,26 +305,11 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         session_players = []
         for session_player in event_data["result"]["session_players"]:
             session_players.append(session_player)
-        
-        #remove other player notices
-        notice_list = []
-        for session_player_notice in event_data.get("notice_list", []):
-            if session_player_notice["session_player_id"] == self.session_player_id:
-                notice_list.append(session_player_notice)
-                break
-
-        event_data["notice_list"] = notice_list   
 
         event_data["result"]["session_players"] = session_players
 
-        message_data = {}
-        message_data["status"] = event_data
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_connection_status(self, event):
         '''
@@ -378,16 +328,10 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         update session phase
         '''
 
-        result = await sync_to_async(take_update_next_phase)(self.session_id, self.session_player_id)
+        result = await sync_to_async(take_update_next_phase, thread_sensitive=False)(self.session_id, self.session_player_id)
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_next_instruction(self, event):
         '''
@@ -431,47 +375,6 @@ def take_get_session_subject(session_player_id):
     except ObjectDoesNotExist:
         return {"session" : None, 
                 "session_player" : None}
-  
-def take_name(session_id, session_player_id, data):
-    '''
-    take name and student id at end of game
-    '''
-
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Take name: {session_id} {session_player_id} {data}")
-
-    form_data_dict =  data["form_data"]
-    
-    session = Session.objects.get(id=session_id)
-    session_player = session.session_players.get(id=session_player_id)
-
-    if session.current_experiment_phase != ExperimentPhase.NAMES:
-        return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
-                "message" : "Session not complete."}
-
-    logger.info(f'form_data_dict : {form_data_dict}')       
-
-    form = EndGameForm(form_data_dict)
-        
-    if form.is_valid():
-        #print("valid form") 
-
-        session_player.name = form.cleaned_data["name"]
-        session_player.student_id = form.cleaned_data["student_id"]
-        session_player.name_submitted = True
-
-        session_player.name = string.capwords(session_player.name)
-
-        session_player.save()    
-        
-        return {"value" : "success",
-                "result" : {"id" : session_player_id,
-                            "name" : session_player.name, 
-                            "name_submitted" : session_player.name_submitted,
-                            "student_id" : session_player.student_id}}                      
-                                
-    logger.info("Invalid session form")
-    return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
 
 def take_update_next_phase(session_id, session_player_id):
     '''

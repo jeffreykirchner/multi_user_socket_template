@@ -444,7 +444,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         send chat to clients, if clients can view it
         '''
-        result = event["staff_result"]
+        result = event["staff_data"]
 
         message_data = {}
         message_data["status"] = result
@@ -498,7 +498,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         # logger.info("Eng game update")
 
         message_data = {}
-        message_data["status"] = event["data"]
+        message_data["status"] = event["staff_data"]
 
         message = {}
         message["message_type"] = event["type"]
@@ -529,7 +529,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         # logger.info("Eng game update")
 
         message_data = {}
-        message_data["status"] = event["data"]
+        message_data["status"] = event["staff_data"]
 
         message = {}
         message["message_type"] = event["type"]
@@ -546,7 +546,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         # logger.info("Eng game update")
 
         message_data = {}
-        message_data["status"] = event["data"]
+        message_data["status"] = event["staff_data"]
 
         message = {}
         message["message_type"] = event["type"]

@@ -11,14 +11,14 @@ take_name(message_data){
 
     app.clear_main_form_errors();
 
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {
-        app.session_player.name = message_data.status.result.name; 
-        app.session_player.student_id = message_data.status.result.student_id;           
-        app.session_player.name_submitted = message_data.status.result.name_submitted;       
+        app.session_player.name = message_data.result.name; 
+        app.session_player.student_id = message_data.result.student_id;           
+        app.session_player.name_submitted = message_data.result.name_submitted;       
     } 
     else
     {
-        app.display_errors(message_data.status.errors);
+        app.display_errors(message_data.errors);
     }
 },

@@ -61,9 +61,9 @@ take_next_instruction(message_data){
 */
 take_finished_instructions(message_data){
            
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {
-        let result = message_data.status.result;
+        let result = message_data.result;
 
         session_player = app.session.session_players[result.id];
 

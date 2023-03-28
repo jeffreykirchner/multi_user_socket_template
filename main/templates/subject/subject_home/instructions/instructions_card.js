@@ -31,9 +31,9 @@ sendNextInstruction(direction){
  * advance to next instruction page
  */
 take_next_instruction(message_data){
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {
-        result = message_data.status.result;       
+        result = message_data.result;       
         
         app.session_player.current_instruction = result.current_instruction;
         app.session_player.current_instruction_complete = result.current_instruction_complete;
@@ -63,9 +63,9 @@ sendFinishInstructions(){
  * finish instructions
  */
 take_finish_instructions(message_data){
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {
-        result = message_data.status.result;       
+        result = message_data.result;       
         
         app.session_player.instructions_finished = result.instructions_finished;
         app.session_player.current_instruction_complete = result.current_instruction_complete;

@@ -18,7 +18,7 @@ take_chat(message_data){
     //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {
         app.take_update_chat(message_data);                        
     } 
@@ -33,11 +33,10 @@ take_chat(message_data){
 */
 take_update_chat(message_data){
     
-    let result = message_data.status;
-    let chat = result.chat;
+    let chat = message_data.chat;
     let session_player = app.session_player;
 
-    if(result.chat_type=="All")
+    if(message_data.chat_type=="All")
     {
         if(session_player.chat_all.length >= 100)
             session_player.chat_all.shift();
@@ -50,13 +49,13 @@ take_update_chat(message_data){
     }
     else
     {
-        var sesson_player_target =  result.sesson_player_target;
+        var sesson_player_target =  message_data.sesson_player_target;
         var session_players = app.session.session_players;
 
         var target = -1;
         if(sesson_player_target == session_player.id)
         {
-            target = result.chat.sender_id;
+            target = message_data.chat.sender_id;
         }
         else
         {

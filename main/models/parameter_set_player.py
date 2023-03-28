@@ -77,6 +77,12 @@ class ParameterSetPlayer(models.Model):
         return json object for subject screen, return cached version if unchanged
         '''
 
+        if not self.parameter_set.json_for_session:
+            return None
+        
+        if not self.parameter_set.json_for_session.get("parameter_set_players", None):
+            return None
+
         v = self.parameter_set.json_for_session["parameter_set_players"][str(self.id)]
 
         # edit v as needed

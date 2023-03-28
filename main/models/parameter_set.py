@@ -189,6 +189,9 @@ class ParameterSet(models.Model):
         return json object for subject, return cached version if unchanged
         '''
         
+        if not self.json_for_session:
+            return None
+
         v = self.json_for_session
 
         v.pop("parameter_set_players")
