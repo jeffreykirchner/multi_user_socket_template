@@ -441,16 +441,6 @@ def take_name(session_id, session_player_id, data):
     logger.info(f"Take name: {session_id} {session_player_id} {data}")
 
     form_data_dict =  data["form_data"]
-
-    # try:
-    #     form_data = data["form_data"]
-
-    #     # for field in form_data:            
-    #     #     form_data_dict[field["name"]] = field["value"]
-
-    # except KeyError:
-    #     logger.warning(f"take_name , setup form: {session_player_id}")
-    #     return {"value" : "fail", "errors" : {f"name":["Invalid Entry."]}}
     
     session = Session.objects.get(id=session_id)
     session_player = session.session_players.get(id=session_player_id)
