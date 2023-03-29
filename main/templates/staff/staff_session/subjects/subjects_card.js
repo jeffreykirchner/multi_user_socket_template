@@ -81,9 +81,9 @@ take_finished_instructions(message_data){
   */
  take_update_earnings(message_data){
 
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {
-        let session_player_earnings = message_data.status.result.session_player_earnings;
+        let session_player_earnings = message_data.result.session_player_earnings;
         let session_players = app.session.session_players;
 
         for(let i=0; i<session_player_earnings.length; i++)

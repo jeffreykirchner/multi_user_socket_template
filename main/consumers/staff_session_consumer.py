@@ -35,172 +35,130 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
     has_timer_control = False
     timer_running = False
+
+    async def send_message(self, message_to_self:dict, message_to_group:dict,
+                                 message_type:dict, send_to_client:bool, send_to_group:bool):
+        '''
+        send response to client
+        '''
+        # Send message to local client
+        if send_to_client:
+            message_to_self_data = {}
+            message_to_self_data["message_type"] = message_type
+            message_to_self_data["message_data"] = message_to_self
+
+            await self.send(text_data=json.dumps({'message': message_to_self_data,}, cls=DjangoJSONEncoder))
+
+        if send_to_group:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                    {"type": f"update_{message_type}",
+                     "group_data": message_to_group,
+                     "sender_channel_name": self.channel_name},
+                )
         
     async def get_session(self, event):
         '''
-        return a list of sessions
+        return the session
         '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info(f"Get Session {event}")
 
         self.connection_uuid = event["message_text"]["session_key"]
         self.connection_type = "staff"
 
-        #build response
-        message_data = {}
-        message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)       
+        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)       
 
-        self.session_id = message_data["session"]["id"]
+        self.session_id = result["id"]
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_session(self, event):
         '''
-        return a list of sessions
+        update session and return it
         '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info(f"Update Session: {event}")
 
-        #build response
-        message_data = {}
-        message_data =  await sync_to_async(take_update_session_form)(self.session_id, event["message_text"])
+        result =  await sync_to_async(take_update_session_form, thread_sensitive=False)(self.session_id, event["message_text"])
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def start_experiment(self, event):
         '''
         start experiment
         '''
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
+        result = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
 
         #Send message to staff page
-        if message_data["status"]["value"] == "fail":
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        if result["value"] == "fail":
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         else:
-            #send message to client pages
-            await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {"type": "update_start_experiment",
-                    "sender_channel_name": self.channel_name},
-                )
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
     
     async def reset_experiment(self, event):
         '''
-        reset experiment, removes all trades, bids and asks
+        reset experiment
         '''
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        if message_data["status"]["value"] == "fail":
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        #Send message to staff page
+        if result["value"] == "fail":
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         else:
-            #send message to client pages
-            await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {"type": "update_reset_experiment",
-                     "sender_channel_name": self.channel_name},
-                )
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
     
     async def reset_connections(self, event):
         '''
-        reset connection counts for experiment
+        reset connections
         '''
-        #update subject count
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_reset_connections)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_reset_connections)(self.session_id, event["message_text"])
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        if message_data["status"]["value"] == "fail":
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        #Send message to staff page
+        if result["value"] == "fail":
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         else:
-            #send message to client pages
-            await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {"type": "update_reset_connections",
-                     "sender_channel_name": self.channel_name},
-                )
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def next_phase(self, event):
         '''
-        advance to next phase in experiment
+        next phase
         '''
-        #update subject count
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        if message_data["status"]["value"] == "fail":
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        #Send message to staff page
+        if result["value"] == "fail":
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         else:
-            #send message to client pages
-            await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {"type": "update_next_phase",
-                    "data": message_data["status"],
-                     "sender_channel_name": self.channel_name},
-                )
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def start_timer(self, event):
         '''
         start or stop timer 
         '''
         logger = logging.getLogger(__name__)
-
         logger.info(f"start_timer {event}")
-
-        result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
-
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
 
         if event["message_text"]["action"] == "start":
             self.timer_running = True
         else:
             self.timer_running = False
 
-        #Send reply to sending channel
-        if self.timer_running == True:
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
 
-        #update all that timer has started
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {"type": "update_time",
-                "data": result,
-                "sender_channel_name": self.channel_name,},
-        )
+        # #Send reply to sending channel
+        if self.timer_running == True:
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+        await self.send_message(message_to_self=False, message_to_group=result,
+                                message_type="time", send_to_client=False, send_to_group=True)
 
         if result["value"] == "success" and event["message_text"]["action"] == "start":
             #start continue timer
@@ -212,7 +170,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 }
             )
         else:
-            logger.warning(f"start_timer: {message}")
+            logger.warning(f"start_timer fail: {result}")
         
         logger.info(f"start_timer complete {event}")
 
@@ -227,27 +185,19 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             logger.info(f"continue_timer timer off")
             return
 
-        # await asyncio.sleep(1)
-
         if not self.timer_running:
             logger.info(f"continue_timer timer off")
             return
 
-        timer_result = await sync_to_async(take_do_period_timer)(self.session_id)
+        result = await sync_to_async(take_do_period_timer)(self.session_id)
 
-        # timer_result = await do_period_timer(self.session_id)
+        if result["value"] == "success":
 
-        if timer_result["value"] == "success":
-
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_time",
-                 "data": timer_result,
-                 "sender_channel_name": self.channel_name,},
-            )
+            await self.send_message(message_to_self=False, message_to_group=result,
+                                    message_type="time", send_to_client=False, send_to_group=True)
 
             #if session is not over continue
-            if not timer_result["stop_timer"]:
+            if not result["stop_timer"]:
 
                 loop = asyncio.get_event_loop()
 
@@ -394,51 +344,50 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         start experiment on staff
         '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info(f'update_goods{self.channel_name}')
 
-        #get session json object
-        result = await sync_to_async(take_get_session)(self.connection_uuid)
+        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
 
-        message_data = {}
-        message_data["session"] = result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        #if self.channel_name != event['sender_channel_name']:
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_reset_experiment(self, event):
         '''
-        update reset experiment
+        reset experiment on staff
         '''
-        #update subject count
-        message_data = {}
-        message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
+        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
 
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_reset_connections(self, event):
         '''
-        update reset experiment
+        update reset connections
         '''
-        #update subject count
-        message_data = {}
-        message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
+        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def update_next_phase(self, event):
+        '''
+        update session phase
+        '''
 
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        event_data = event["group_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+
+    async def update_time(self, event):
+        '''
+        update time phase
+        '''
+
+        event_data = event["group_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_chat(self, event):
         '''
@@ -448,20 +397,6 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         message_data = {}
         message_data["status"] = result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
-    async def update_time(self, event):
-        '''
-        update running, phase and time status
-        '''
-
-        message_data = {}
-        message_data["status"] = event["data"]
 
         message = {}
         message["message_type"] = event["type"]
@@ -499,20 +434,6 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         message_data = {}
         message_data["status"] = event["staff_data"]
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
-    async def update_next_phase(self, event):
-        '''
-        update session phase
-        '''
-
-        message_data = {}
-        message_data["status"] = event["data"]
 
         message = {}
         message["message_type"] = event["type"]
@@ -647,7 +568,7 @@ def take_update_session_form(session_id, data):
         #print("valid form")                
         form.save()              
 
-        return {"status":"success", "session" : session.json()}                      
+        return {"status":"success", "result" : session.json()}                      
                                 
     logger.info("Invalid session form")
     return {"status":"fail", "errors":dict(form.errors.items())}

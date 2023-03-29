@@ -249,8 +249,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         start experiment on subjects
         '''
-        #logger = logging.getLogger(__name__) 
-        #logger.info(f'update start subjects {self.channel_name}')
 
         result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
 
@@ -269,6 +267,12 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def update_reset_connections(self, event):
+        '''
+        reset connections on subjects
+        '''
+        pass
 
     async def update_chat(self, event):
         '''
@@ -293,7 +297,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         update running, phase and time status
         '''
 
-        event_data = deepcopy(event["data"])
+        event_data = deepcopy(event["group_data"])
 
         #remove other player earnings
         for session_players_earnings in event_data["result"]["session_player_earnings"]:
