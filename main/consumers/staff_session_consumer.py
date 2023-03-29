@@ -30,7 +30,7 @@ from main.globals import ExperimentPhase
 
 class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
-    websocket session list
+    websocket function list
     '''    
 
     has_timer_control = False

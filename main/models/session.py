@@ -135,14 +135,14 @@ class Session(models.Model):
         self.time_remaining = self.parameter_set.period_length
         self.timer_running = False
         self.current_experiment_phase = ExperimentPhase.RUN
+        self.save()
 
         for p in self.session_players.all():
             p.reset()
 
-        self.save()
         self.session_periods.all().delete()
 
-        self.parameter_set.setup()
+        # self.parameter_set.setup()
     
     def reset_connection_counts(self):
         '''
