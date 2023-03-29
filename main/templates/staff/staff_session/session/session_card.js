@@ -14,7 +14,7 @@ take_update_session(message_data){
 
     if(message_data.status == "success")
     {
-        app.take_get_session(message_data);       
+        app.take_get_session(message_data.result);       
         app.edit_session_modal.hide();    
     } 
     else

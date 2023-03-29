@@ -85,7 +85,7 @@ next_experiment_phase(){
 */
 take_next_phase(message_data){
     
-    app.session.current_experiment_phase = message_data.status.current_experiment_phase;
+    app.session.current_experiment_phase = message_data.current_experiment_phase;
     app.update_phase_button_text();
 
 },
@@ -95,7 +95,7 @@ take_next_phase(message_data){
 */
 take_update_next_phase(message_data){
     
-    app.session.current_experiment_phase = message_data.status.current_experiment_phase;
+    app.session.current_experiment_phase = message_data.current_experiment_phase;
     app.update_phase_button_text();
 },
 

@@ -213,7 +213,7 @@ var app = Vue.createApp({
         */
         take_get_session(message_data){
             
-            app.session = message_data.session;
+            app.session = message_data;
 
             if(app.session.started)
             {
@@ -291,8 +291,8 @@ var app = Vue.createApp({
          */
         take_update_time(message_data){
 
-            let result = message_data.status.result;
-            let status = message_data.status.value;
+            let result = message_data.result;
+            let status = message_data.value;
 
             if(status == "fail") return;
 
