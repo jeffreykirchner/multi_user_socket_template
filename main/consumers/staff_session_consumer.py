@@ -57,8 +57,31 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "sender_channel_name": self.channel_name},
                 )
         
+
+    async def send_message(self, message_to_self:dict, message_to_group:dict,
+                                 message_type:dict, send_to_client:bool, send_to_group:bool):
+        '''
+        send response to client
+        '''
+        # Send message to local client
+        if send_to_client:
+            message_to_self_data = {}
+            message_to_self_data["message_type"] = message_type
+            message_to_self_data["message_data"] = message_to_self
+
+            await self.send(text_data=json.dumps({'message': message_to_self_data,}, cls=DjangoJSONEncoder))
+
+        if send_to_group:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                    {"type": f"update_{message_type}",
+                     "group_data": message_to_group,
+                     "sender_channel_name": self.channel_name},
+                )
+        
     async def get_session(self, event):
         '''
+        return the session
         return the session
         '''
 
@@ -66,19 +89,28 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         self.connection_type = "staff"
 
         result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)       
+        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)       
 
         self.session_id = result["id"]
+        self.session_id = result["id"]
 
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+    
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_session(self, event):
         '''
         update session and return it
+        update session and return it
         '''
 
         result =  await sync_to_async(take_update_session_form, thread_sensitive=False)(self.session_id, event["message_text"])
+        result =  await sync_to_async(take_update_session_form, thread_sensitive=False)(self.session_id, event["message_text"])
 
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
@@ -87,35 +119,55 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         start experiment
         '''
         result = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
 
         #Send message to staff page
         if result["value"] == "fail":
             await self.send_message(message_to_self=result, message_to_group=None,
                                     message_type=event['type'], send_to_client=True, send_to_group=False)
+        if result["value"] == "fail":
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         else:
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
             await self.send_message(message_to_self=None, message_to_group=result,
                                     message_type=event['type'], send_to_client=False, send_to_group=True)
     
     async def reset_experiment(self, event):
         '''
         reset experiment
+        reset experiment
         '''
+        result = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
         result = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
 
         #Send message to staff page
         if result["value"] == "fail":
             await self.send_message(message_to_self=result, message_to_group=None,
                                     message_type=event['type'], send_to_client=True, send_to_group=False)
+        #Send message to staff page
+        if result["value"] == "fail":
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         else:
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
             await self.send_message(message_to_self=None, message_to_group=result,
                                     message_type=event['type'], send_to_client=False, send_to_group=True)
     
     async def reset_connections(self, event):
         '''
         reset connections
+        reset connections
         '''
         result = await sync_to_async(take_reset_connections)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_reset_connections)(self.session_id, event["message_text"])
 
+        #Send message to staff page
+        if result["value"] == "fail":
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         #Send message to staff page
         if result["value"] == "fail":
             await self.send_message(message_to_self=result, message_to_group=None,
@@ -123,18 +175,28 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         else:
             await self.send_message(message_to_self=None, message_to_group=result,
                                     message_type=event['type'], send_to_client=False, send_to_group=True)
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def next_phase(self, event):
         '''
         next phase
+        next phase
         '''
+        result = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
         result = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
 
         #Send message to staff page
         if result["value"] == "fail":
             await self.send_message(message_to_self=result, message_to_group=None,
                                     message_type=event['type'], send_to_client=True, send_to_group=False)
+        #Send message to staff page
+        if result["value"] == "fail":
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         else:
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
             await self.send_message(message_to_self=None, message_to_group=result,
                                     message_type=event['type'], send_to_client=False, send_to_group=True)
 
@@ -153,7 +215,15 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
 
         # #Send reply to sending channel
+        result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
+
+        # #Send reply to sending channel
         if self.timer_running == True:
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+        await self.send_message(message_to_self=False, message_to_group=result,
+                                message_type="time", send_to_client=False, send_to_group=True)
             await self.send_message(message_to_self=result, message_to_group=None,
                                     message_type=event['type'], send_to_client=True, send_to_group=False)
         
@@ -170,6 +240,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 }
             )
         else:
+            logger.warning(f"start_timer fail: {result}")
             logger.warning(f"start_timer fail: {result}")
         
         logger.info(f"start_timer complete {event}")
@@ -190,13 +261,18 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             return
 
         result = await sync_to_async(take_do_period_timer)(self.session_id)
+        result = await sync_to_async(take_do_period_timer)(self.session_id)
 
+        if result["value"] == "success":
         if result["value"] == "success":
 
             await self.send_message(message_to_self=False, message_to_group=result,
                                     message_type="time", send_to_client=False, send_to_group=True)
+            await self.send_message(message_to_self=False, message_to_group=result,
+                                    message_type="time", send_to_client=False, send_to_group=True)
 
             #if session is not over continue
+            if not result["stop_timer"]:
             if not result["stop_timer"]:
 
                 loop = asyncio.get_event_loop()
@@ -343,41 +419,60 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
 
         result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
+        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
 
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+    
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_reset_experiment(self, event):
         '''
         reset experiment on staff
+        reset experiment on staff
         '''
 
         result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
+        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
 
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_reset_connections(self, event):
         '''
         update reset connections
+        update reset connections
         '''
+        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
         result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_next_phase(self, event):
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def update_next_phase(self, event):
         '''
+        update session phase
         update session phase
         '''
 
         event_data = event["group_data"]
+        event_data = event["group_data"]
 
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_time(self, event):
         '''
+        update time phase
         update time phase
         '''
 
@@ -392,7 +487,19 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         result = event["staff_data"]
 
+        event_data = event["group_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def update_chat(self, event):
+        '''
+        send chat to clients, if clients can view it
+        '''
+        result = event["staff_data"]
+
         message_data = {}
+        message_data["status"] = result
         message_data["status"] = result
 
         message = {}
@@ -565,6 +672,7 @@ def take_update_session_form(session_id, data):
         #print("valid form")                
         form.save()              
 
+        return {"status":"success", "result" : session.json()}                      
         return {"status":"success", "result" : session.json()}                      
                                 
     logger.info("Invalid session form")
