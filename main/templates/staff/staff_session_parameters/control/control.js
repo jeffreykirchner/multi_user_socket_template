@@ -9,30 +9,30 @@ send_import_parameters(){
 
 /** show parameters copied from another period 
 */
-take_import_parameters(){
+take_import_parameters(message_data){
 
-    if(message_data.status.status == "success")
+    if(message_data == "success")
     {
         app.take_get_parameter_set(message_data);       
-        app.import_parameters_message = message_data.status.message;
+        app.import_parameters_message = message_data.message;
         location.reload();    
     } 
     else
     {
-        app.import_parameters_message = message_data.status.message;
+        app.import_parameters_message = message_data.message;
     } 
 },
 
 /** show edit session modal
 */
-show_import_parameters:function(){
+show_import_parameters(){
     
     app.import_parameters_modal.toggle();
 },
 
 /** hide edit session modal
 */
-hide_import_parameters:function(){
+hide_import_parameters(){
     
 },
 
@@ -49,7 +49,7 @@ send_download_parameters(){
 */
 take_download_parameters(message_data){
 
-    if(message_data.status == "success")
+    if(message_data == "success")
     {                  
         console.log(message_data.parameter_set);
 

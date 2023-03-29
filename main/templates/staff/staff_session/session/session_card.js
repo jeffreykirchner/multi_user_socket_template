@@ -12,7 +12,7 @@ send_update_session(){
 take_update_session(message_data){
     app.clear_main_form_errors();
 
-    if(message_data.status == "success")
+    if(message_data == "success")
     {
         app.take_get_session(message_data.result);       
         app.edit_session_modal.hide();    

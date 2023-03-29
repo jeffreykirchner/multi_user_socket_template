@@ -141,7 +141,7 @@ end_early(){
  * @param message_data {json}
 */
 take_end_early(message_data){
-   app.session.parameter_set.period_count = message_data.status.result;
+   app.session.parameter_set.period_count = message_data.result;
 },
 
 /** send invitations
@@ -170,16 +170,16 @@ send_send_invitations(){
 take_send_invitations(message_data){
     app.clear_main_form_errors();
 
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {           
-        app.email_result = "Result: " + message_data.status.result.email_result.mail_count.toString() + " messages sent.";
+        app.email_result = "Result: " + message_data.result.email_result.mail_count.toString() + " messages sent.";
 
-        app.session.invitation_subject = message_data.status.result.invitation_subject;
-        app.session.invitation_text = message_data.status.result.invitation_text;
+        app.session.invitation_subject = message_data.result.invitation_subject;
+        app.session.invitation_text = message_data.result.invitation_text;
     } 
     else
     {
-        app.email_result = message_data.status.result;
+        app.email_result = message_data.result;
     } 
 },
 

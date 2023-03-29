@@ -259,8 +259,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         reset experiment on subjects
         '''
-        #logger = logging.getLogger(__name__) 
-        #logger.info(f'update start subjects {self.channel_name}')
 
         #get session json object
         result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)

@@ -4,9 +4,9 @@
  */
   take_update_connection_status(message_data){
             
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {
-        let result = message_data.status.result;
+        let result = message_data.result;
         let session_players = app.session.session_players;
 
         session_player = app.session.session_players[result.id];
@@ -23,9 +23,9 @@
 */
 take_update_name(message_data){
            
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {
-        let result = message_data.status.result;
+        let result = message_data.result;
 
         session_player = app.session.session_players[result.id];
 
@@ -42,9 +42,9 @@ take_update_name(message_data){
 */
 take_next_instruction(message_data){
            
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {
-        let result = message_data.status.result;
+        let result = message_data.result;
 
         session_player = app.session.session_players[result.id];
 
@@ -132,15 +132,15 @@ send_email_list(){
 take_update_email_list(message_data){
     app.clear_main_form_errors();
 
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {            
         app.upload_email_modal.hide(); 
-        app.session = message_data.status.result.session;
+        app.session = message_data.result.session;
         app.email_list_error = "";
     } 
     else
     {
-        app.email_list_error = message_data.status.result;
+        app.email_list_error = message_data.result;
     } 
 },
 
@@ -183,29 +183,32 @@ send_update_subject(){
 take_update_subject(message_data){
     app.clear_main_form_errors();
 
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {            
         app.edit_subject_modal.hide();    
 
-        let session_player = app.session.session_players[message_data.status.session_player.id];
+        let session_player = app.session.session_players[message_data.session_player.id];
 
         if(session_player)
         {
-            session_player.name = message_data.status.session_player.name;
-            session_player.student_id = message_data.status.session_player.student_id;
-            session_player.email = message_data.status.session_player.email;
+            session_player.name = message_data.session_player.name;
+            session_player.student_id = message_data.session_player.student_id;
+            session_player.email = message_data.session_player.email;
         }
     } 
     else
     {
         app.cancel_modal=true;                           
-        app.display_errors(message_data.status.errors);
+        app.display_errors(message_data.errors);
     } 
 },
 
 /** show edit subject modal
 */
 show_edit_subject:function(id){
+
+    if(!app.session.started) return;
+
     app.clear_main_form_errors();
     app.cancel_modal=true;
 
@@ -299,10 +302,10 @@ send_anonymize_data(){
 take_anonymize_data(message_data){
     app.clear_main_form_errors();
 
-    if(message_data.status.value == "success")
+    if(message_data.value == "success")
     {            
 
-        let session_player_updates = message_data.status.result;
+        let session_player_updates = message_data.result;
         let session_players = app.session.session_players;
 
         for(let i=0; i<session_player_updates.length; i++)
@@ -324,7 +327,7 @@ take_anonymize_data(message_data){
  * @param message_data {json} result of update, either sucess or fail with errors
 */
 take_update_survey_complete(message_data){
-    result = message_data.status;
+    result = message_data;
 
     session_player = app.session.session_players[result.player_id];
     session_player.survey_complete = true;

@@ -217,124 +217,91 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         download summary data
         '''
 
-        result =  await sync_to_async(take_download_summary_data, thread_sensitive=False)(self.session_id)
+        result = await sync_to_async(take_download_summary_data, thread_sensitive=False)(self.session_id)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
-    
     async def download_action_data(self, event):
         '''
-        download summary data
+        download action data
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_download_action_data)(self.session_id)
+        result = await sync_to_async(take_download_action_data, thread_sensitive=False)(self.session_id)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def download_recruiter_data(self, event):
         '''
-        download summary data
+        download recruiter data
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_download_recruiter_data)(self.session_id)
+        result = await sync_to_async(take_download_recruiter_data, thread_sensitive=False)(self.session_id)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def download_payment_data(self, event):
         '''
         download payment data
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_download_payment_data)(self.session_id)
+        result = await sync_to_async(take_download_payment_data, thread_sensitive=False)(self.session_id)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def end_early(self, event):
         '''
-        set the current period as the last period
+        end experiment early
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_end_early)(self.session_id)
+        result = await sync_to_async(take_end_early, thread_sensitive=False)(self.session_id)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_subject(self, event):
         '''
-        set the name etc info of a subjec from staff screen
+        update subject
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_update_subject)(self.session_id,  event["message_text"])
+        result = await sync_to_async(take_update_subject, thread_sensitive=False)(self.session_id, event["message_text"])
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def email_list(self, event):
         '''
-        take csv email list and load in to session players
+        take email list
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_email_list)(self.session_id,  event["message_text"])
+        result = await sync_to_async(take_email_list, thread_sensitive=False)(self.session_id, event["message_text"])
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def send_invitations(self, event):
         '''
         send invitations to subjects
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_send_invitations)(self.session_id,  event["message_text"])
+        result = await sync_to_async(take_send_invitations, thread_sensitive=False)(self.session_id, event["message_text"])
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def anonymize_data(self, event):
         '''
         send invitations to subjects
         '''
 
-        result = await sync_to_async(take_anonymize_data)(self.session_id,  event["message_text"])
+        result = await sync_to_async(take_anonymize_data, thread_sensitive=False)(self.session_id,  event["message_text"])
 
         #update all 
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {"type": "update_anonymize_data",
-             "data": result,
-             "sender_channel_name": self.channel_name,},
-        )
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -390,135 +357,72 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         send chat to clients, if clients can view it
         '''
-        result = event["staff_data"]
+        event_data = event["staff_data"]
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_connection_status(self, event):
         '''
         handle connection status update from group member
         '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Connection update")
+        event_data = event["data"]
 
         #update not from a client
-        if event["data"]["value"] == "fail":
+        if event_data["value"] == "fail":
             return
 
-        message_data = {}
-        message_data["status"] = event["data"]
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_name(self, event):
         '''
         send update name notice to staff screens
         '''
 
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        event_data = event["staff_data"]
 
-        message_data = {}
-        message_data["status"] = event["staff_data"]
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_next_instruction(self, event):
         '''
         send instruction status to staff
         '''
 
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        event_data = event["staff_data"]
 
-        message_data = {}
-        message_data["status"] = event["staff_data"]
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_finish_instructions(self, event):
         '''
         send instruction status to staff
         '''
 
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        event_data = event["staff_data"]
 
-        message_data = {}
-        message_data["status"] = event["staff_data"]
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-    
-    async def update_production_time(self, event):
-        '''
-        send production settings update
-        '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
-
-        message_data = {}
-        message_data["status"] = event["data"]
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_anonymize_data(self, event):
         '''
         send anonymize data update to staff sessions
         '''
 
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        event_data = event["group_data"]
 
-        message_data = {}
-        message_data["status"] = event["data"]
-
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_survey_complete(self, event):
         '''
         send survey complete update
         '''
-        message_data = {}
-        message_data["status"] = event["data"]
+        event_data = event["data"]
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, 
-                        cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 #local async function
 
 #local sync functions    
@@ -742,6 +646,7 @@ def take_end_early(session_id):
     session = Session.objects.get(id=session_id)
 
     session.parameter_set.period_count = session.current_period
+    session.parameter_set.update_json_local()
     session.parameter_set.save()
 
     return {"value" : "success", "result" : session.parameter_set.period_count}
@@ -853,9 +758,9 @@ def take_email_list(session_id, data):
                     p.save()
                 
                 counter+=1
-    except:
-        logger.warning(f"take_email_list session, not found: {session_id}")
-        return {"status":"fail", "result":"Invalid Format"}
+    except Exception as e:
+        logger.warning(f"take_email_list invalid format: {e}")
+        return {"status":"fail", "result":str(e)}
 
     return {"value" : "success", "result" : {"session":session.json()}}
 

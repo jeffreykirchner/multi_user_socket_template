@@ -268,7 +268,7 @@ var app = Vue.createApp({
         */
         take_update_chat(message_data){
             
-            let result = message_data.status;
+            let result = message_data;
             let chat = result.chat;
 
             if(app.session.chat_all.length>=100)

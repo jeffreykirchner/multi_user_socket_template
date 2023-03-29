@@ -5,11 +5,11 @@
         </span>       
 
         <span class="float-end"> 
-            <a href='{%url "staff_session_instructions" session.id %}' class='link-primary me-4' title='Open print out'>
+            <a href='{%url "staff_session_instructions" session.id %}' class='link-primary me-4' title='Open print instructions'>
                 Print Instructions                
             </a>
             
-            <a href='{%url "staff_session_subject_earnings" session.id %}' class='link-primary me-4' title='Open print out'>
+            <a href='{%url "staff_session_subject_earnings" session.id %}' class='link-primary me-4' title='Open print earnings' v-if="session.started">
                 Print Earnings                
             </a>
 
@@ -17,19 +17,34 @@
                 [[session.started ? 'View': 'Edit']] Parameters                
             </a>
 
-            <button type="button" class="btn btn-outline-primary ms-4" title="Remove Names and Student IDs" v-on:click="send_anonymize_data()">
+            <button type="button" 
+                    class="btn btn-outline-primary ms-4" 
+                    title="Remove Names and Student IDs" 
+                    v-on:click="send_anonymize_data()"
+                    v-if="session.started">
                 Anonymize Data <i class="far fa-address-card"></i>
             </button>
 
-            <button type="button" class="btn btn-outline-primary ms-4" title="Upload Email List" v-on:click="copy_earnings()">
+            <button type="button" 
+                    class="btn btn-outline-primary ms-4" 
+                    title="Upload Email List" 
+                    v-on:click="copy_earnings()"
+                    v-if="session.started">
                 Copy Earnings <span v-if="earnings_copied"><i class="fas fa-check"></i></span><span v-else><i class="fas fa-copy"></i></span>
             </button>
 
-            <button type="button" class="btn btn-outline-primary ms-2" title="Upload Email List" v-on:click="show_send_email_list()">
+            <button type="button" 
+                    class="btn btn-outline-primary ms-2" 
+                    title="Upload Email List" 
+                    v-on:click="show_send_email_list()"
+                    v-if="session.started">
                 Upload Email List
             </button>
 
-            <button type="button" class="btn btn-link ms-2" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Subject List')">
+            <button type="button" 
+                    class="btn btn-link ms-2" 
+                    title="Show Help Doc" 
+                    v-on:click="send_load_help_doc('Staff Subject List')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>          
