@@ -3,12 +3,12 @@ websocket session list
 '''
 from pickle import TRUE
 from asgiref.sync import sync_to_async
-from asgiref.sync import async_to_sync
 
 import logging
 import copy
 import json
 import string
+
 from copy import copy
 from copy import deepcopy
 
@@ -33,6 +33,13 @@ from main.decorators import check_sesison_started_ws
 
 import main
 
+from main.consumers import lib
+
+from main.consumers.subject_home_consumer_methods import get_session_method
+from main.consumers.subject_home_consumer_methods import chat_method
+
+@lib.add_methods_from(get_session_method)
+@lib.add_methods_from(chat_method)
 class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
     websocket session list
@@ -61,123 +68,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "staff_data": message_to_staff,
                      "sender_channel_name": self.channel_name},
                 )
-    
-    async def get_session(self, event):
-        '''
-        return a list of sessions
-        '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f"Get Session {event}")
-
-        self.connection_uuid = event["message_text"]["playerKey"]
-        self.connection_type = "subject"
-
-        #get session id for subject
-        session_player = await SessionPlayer.objects.select_related('session').aget(player_key=self.connection_uuid)
-        self.session_id = session_player.session.id
-        self.session_player_id = session_player.id
-
-        # await self.update_local_info(event)
-
-        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
-
-        await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
-   
-    async def chat(self, event):
-        '''
-        take chat from client
-        '''        
-        data = event["message_text"]
-        logger = logging.getLogger(__name__) 
-        logger.info(f"take chat: Session {self.session_id}, Player {self.session_player_id}, Data {data}")
-
-        try:
-            recipients = data["recipients"] 
-            chat_text = data["text"]
-        except KeyError:
-            return {"value" : "fail", "result" : {"message" : "Invalid chat."}}
-
-        result = {}
-        #result["recipients"] = []
-
-        session = await Session.objects.prefetch_related('session_players', 'parameter_set').aget(id=self.session_id)
-        session_player = await session.session_players.aget(id=self.session_player_id)
-        
-        session_player_chat = SessionPlayerChat()
-
-        session_player_chat.session_player = session_player
-        session_player_chat.session_period = await session.aget_current_session_period()
-
-        if not session.started:
-            result =  {"value" : "fail", "result" : {"message" : "Session not started."}, }
-        elif session.finished:
-            result = {"value" : "fail", "result" : {"message" : "Session finished."}}
-        elif session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
-            result = {"value" : "fail", "result" : {"message" : "Session not running."}}
-        else :
-            if recipients == "all":
-                session_player_chat.chat_type = ChatTypes.ALL
-            else:
-                if not session.parameter_set.private_chat:
-                    logger.warning(f"take chat: private chat not enabled :{self.session_id} {self.session_player_id} {data}")
-                    result = {"value" : "fail",
-                            "result" : {"message" : "Private chat not allowed."}}
-
-                session_player_chat.chat_type = ChatTypes.INDIVIDUAL
-
-            result["chat_type"] = session_player_chat.chat_type
-            result["recipients"] = []
-
-            session_player_chat.text = chat_text
-            session_player_chat.time_remaining = session.time_remaining
-
-            await sync_to_async(session_player_chat.save, thread_sensitive=False)()
-
-            if recipients == "all":
-                await sync_to_async(session_player_chat.session_player_recipients.add, thread_sensitive=False)(*session.session_players.all())
-
-                result["recipients"] = [i.id for i in session.session_players.all()]
-            else:
-                sesson_player_target = await SessionPlayer.objects.aget(id=recipients)
-
-                if sesson_player_target in session.session_players.all():
-                    await sync_to_async(session_player_chat.session_player_recipients.add, thread_sensitive=False)(sesson_player_target)
-                else:
-                    await sync_to_async(session_player_chat.delete)()
-                    logger.warning(f"take chat: chat at none group member : {self.session_id} {self.session_player_id} {data}")
-                    result = {"value" : "fail", "result" : {"Player not in group."}}
-
-                result["sesson_player_target"] = sesson_player_target.id
-
-                result["recipients"].append(session_player.id)
-                result["recipients"].append(sesson_player_target.id)
-            
-            result["chat_for_subject"] = await session_player_chat.ajson_for_subject()
-            result["chat_for_staff"] = await session_player_chat.ajson_for_staff()
-
-            await sync_to_async(session_player_chat.save, thread_sensitive=False)()
-
-            result = {"value" : "success", "result" : result}
-
-        if result["value"] == "fail":
-            await self.send(text_data=json.dumps({'message': result}, cls=DjangoJSONEncoder))
-            return
-
-        event_result = result["result"]
-
-        message_to_subjects = {}
-        message_to_subjects["chat_type"] = event_result["chat_type"]
-        message_to_subjects["sesson_player_target"] = event_result.get("sesson_player_target", -1)
-        message_to_subjects["chat"] = event_result["chat_for_subject"]
-        message_to_subjects["value"] = result["value"]
-
-        message_to_staff = {}
-        message_to_staff["chat"] = event_result["chat_for_staff"]
-
-        await self.send_message(message_to_self=message_to_subjects, message_to_subjects=message_to_subjects, message_to_staff=message_to_staff, 
-                                message_type=event['type'], send_to_client=True, send_to_group=True)
-       
+           
     async def name(self, event):
         '''
         take name and id number
@@ -272,24 +163,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         pass
 
-    async def update_chat(self, event):
-        '''
-        send chat to clients, if clients can view it
-        '''
-        subject_data = event["subject_data"]
-
-        if self.channel_name == event['sender_channel_name']:
-            return
-        
-        if subject_data['chat_type'] == "Individual" and \
-           subject_data['sesson_player_target'] != self.session_player_id and \
-           subject_data['chat']['sender_id'] != self.session_player_id:
-
-           return
-
-        await self.send_message(message_to_self=subject_data, message_to_subjects=None, message_to_staff=None, 
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
-
     async def update_time(self, event):
         '''
         update running, phase and time status
@@ -360,23 +233,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
 
 #local sync functions  
-def take_get_session_subject(session_player_id):
-    '''
-    get session info for subject
-    '''
-    #session_id = data["session_id"]
-    #uuid = data["uuid"]
 
-    #session = Session.objects.get(id=session_id)
-    try:
-        session_player = SessionPlayer.objects.get(id=session_player_id)
-
-        return {"session" : session_player.session.json_for_subject(session_player), 
-                "session_player" : session_player.json() }
-
-    except ObjectDoesNotExist:
-        return {"session" : None, 
-                "session_player" : None}
 
 def take_update_next_phase(session_id, session_player_id):
     '''
