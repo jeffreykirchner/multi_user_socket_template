@@ -1,0 +1,43 @@
+import logging
+
+from asgiref.sync import sync_to_async
+
+from django.core.exceptions import ObjectDoesNotExist
+
+from main.models import Session
+
+class GetSessionMixin():
+    '''
+    Get session mixin for staff session consumer
+    '''
+
+    async def get_session(self, event):
+        '''
+        return the session
+        '''
+
+        self.connection_uuid = event["message_text"]["session_key"]
+        self.connection_type = "staff"
+
+        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)       
+
+        self.session_id = result["id"]
+
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+
+#local sync functions    
+def take_get_session(session_key):
+    '''
+    return session with specified id
+    param: session_key {uuid} session uuid
+    '''
+    session = None
+    logger = logging.getLogger(__name__)
+
+    try:        
+        session = Session.objects.get(session_key=session_key)
+        return session.json()
+    except ObjectDoesNotExist:
+        logger.warning(f"staff get_session session, not found: {session_key}")
+        return {}
