@@ -11,7 +11,7 @@ show_edit_parameter_set_player:function(index){
     app.edit_parameterset_player_modal.toggle();
 },
 
-/** update parameterset type settings
+/** update parameterset player
 */
 send_update_parameter_set_player(){
     
@@ -22,7 +22,7 @@ send_update_parameter_set_player(){
                                                      "form_data" : app.current_parameter_set_player});
 },
 
-/** copy specified period's groups forward to future groups
+/** remove the selected parameterset player
 */
 send_remove_parameter_set_player(){
 
@@ -32,7 +32,7 @@ send_remove_parameter_set_player(){
                                                    
 },
 
-/** copy specified period's groups forward to future groups
+/** add a new parameterset player
 */
 send_add_parameter_set_player(player_id){
     app.working = true;

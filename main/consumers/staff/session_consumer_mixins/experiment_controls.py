@@ -8,7 +8,7 @@ from main.models import Session
 
 from main.globals import ExperimentPhase
 
-from main.consumers.staff_session_consumer_mixins.get_session import take_get_session
+from ..session_consumer_mixins.get_session import take_get_session
 
 class ExperimentControlsMixin():
     '''

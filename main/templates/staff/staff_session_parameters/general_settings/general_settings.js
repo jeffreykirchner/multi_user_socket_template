@@ -45,16 +45,17 @@ take_update_parameter_set(message_data){
     app.cancel_modal=false;
     app.clear_main_form_errors();
 
-    if(message_data.value == "success")
+    if(message_data.status.value == "success")
     {
         app.take_get_parameter_set(message_data);       
+
         app.edit_parameterset_modal.hide();            
         app.edit_parameterset_player_modal.hide();
     } 
     else
     {
         app.cancel_modal=true;                           
-        app.display_errors(message_data.errors);
+        app.display_errors(message_data.status.errors);
     } 
 },
 

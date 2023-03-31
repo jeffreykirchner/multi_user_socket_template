@@ -11,10 +11,10 @@ send_import_parameters(){
 */
 take_import_parameters(message_data){
 
-    if(message_data == "success")
+    if(message_data.status.status == "success")
     {
         app.take_get_parameter_set(message_data);       
-        app.import_parameters_message = message_data.message;
+        app.import_parameters_message = message_data.status.message;
         location.reload();    
     } 
     else
@@ -49,7 +49,7 @@ send_download_parameters(){
 */
 take_download_parameters(message_data){
 
-    if(message_data == "success")
+    if(message_data.status == "success")
     {                  
         console.log(message_data.parameter_set);
 
