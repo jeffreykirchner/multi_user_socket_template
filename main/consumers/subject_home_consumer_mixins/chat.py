@@ -6,8 +6,6 @@ from asgiref.sync import sync_to_async
 
 from django.core.serializers.json import DjangoJSONEncoder
 
-from main.consumers.lib import register_method
-
 from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerChat
@@ -16,11 +14,11 @@ from main.globals import ChatTypes
 
 import main
 
-__methods__ = [] # self is a DataStore
-register_method = register_method(__methods__)
-
-@register_method
-async def chat(self, event):
+class ChatMixin():
+    '''
+    Get chat mixin for subject home consumer
+    '''
+    async def chat(self, event):
         '''
         take chat from client
         '''        
@@ -114,8 +112,7 @@ async def chat(self, event):
         await self.send_message(message_to_self=message_to_subjects, message_to_subjects=message_to_subjects, message_to_staff=message_to_staff, 
                                 message_type=event['type'], send_to_client=True, send_to_group=True)
 
-@register_method
-async def update_chat(self, event):
+    async def update_chat(self, event):
         '''
         send chat to clients, if clients can view it
         '''
@@ -127,8 +124,7 @@ async def update_chat(self, event):
         if subject_data['chat_type'] == "Individual" and \
            subject_data['sesson_player_target'] != self.session_player_id and \
            subject_data['chat']['sender_id'] != self.session_player_id:
-
-           return
+            return
 
         await self.send_message(message_to_self=subject_data, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
