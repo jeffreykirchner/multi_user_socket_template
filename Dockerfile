@@ -22,3 +22,4 @@ RUN pip install -r requirements.txt
 
 CMD daphne -b 0.0.0.0 _multi_user_socket_template.asgi:application
 #CMD python manage.py runserver
+#test
