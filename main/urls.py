@@ -29,8 +29,10 @@ urlpatterns = [
 
     path('auto-login/<uuid:session_key>/', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect'),
     path('auto-login/<uuid:session_key>/<int:player_number>/', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect_player_number'),
+    path('auto-login-prolific/<uuid:session_key>/', views.SubjectHomeAutoConnectProlificView.as_view(), name='subject_home_auto_connect_prolific'),
+
     path('survey-complete/<uuid:player_key>', views.SubjectSurveyCompleteView.as_view(), name='subject_survey_complete'),
-    
+
     #txt
     path('robots.txt', views.RobotsTxt, name='robotsTxt'),
     path('ads.txt', views.AdsTxt, name='adsTxt'),

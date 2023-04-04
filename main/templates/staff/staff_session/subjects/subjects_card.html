@@ -65,16 +65,36 @@
                                 ID Label
                             </th>
                             <th scope="col" class = "">
-                                Name
+                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                    Name
+                                </span>
+                                <span v-else>
+                                    Prolific<br>Session ID
+                                </span>
                             </th>
                             <th scope="col" class = "">
-                                Email
+                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                    Email
+                                </span>
+                                <span v-else>
+                                    Study<br>Subject ID
+                                </span>
                             </th>
                             <th scope="col" class = "text-center">
-                                Student ID
+                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                    Student ID
+                                </span>
+                                <span v-else>
+                                    Prolific<br>Subject ID
+                                </span>
                             </th>
                             <th scope="col" class = "text-center">
-                                Earnings
+                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                    Earnings
+                                </span>
+                                <span v-else>
+                                    Bonus<br>Earnings
+                                </span>
                             </th>                       
                             <th scope="col" class = "text-center">
                                 Shareable<br>Login Link
@@ -104,7 +124,12 @@
                                 [[temp_p.name=="" ? "---" : temp_p.name]]
                             </td>
                             <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
-                                [[(!temp_p.email || temp_p.email=="") ? "---" : temp_p.email]]
+                                <span v-if="session.parameter_set.prolific_mode=='False'" v-on:click="show_edit_subject(p.id)">
+                                    [[(!temp_p.email || temp_p.email=="") ? "---" : temp_p.email]]
+                                </span>
+                                <span v-else>
+                                    [[temp_p.player_key]]
+                                </span>
                             </td>
                             <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
                                 [[temp_p.student_id=="" ? "---" : temp_p.student_id]]
@@ -139,26 +164,49 @@
         </div>  
         
         <!-- private links -->
-        <div class="row justify-content-center">            
-            <div class="col-md-auto text-center">
-                Private Login Links (do not share with subjects)
+        <div v-if="session.parameter_set.prolific_mode=='False'">
+            <div class="row justify-content-center">            
+                <div class="col-md-auto text-center">
+                    Private Login Links (do not share with subjects)
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-auto text-center">
+                    Next available connection:
+                </div>
+                <div class="col-md-auto text-center">
+                    <a href='{%url "subject_home_auto_connect" session.session_key%}' class = 'link-primary'>{{parameters.site_url}}{%url "subject_home_auto_connect" session.session_key%}</a>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-auto text-center">
+                    Login by client number:
+                </div>
+                <div class="col-md-auto text-center">
+                    <a href='{%url "subject_home_auto_connect" session.session_key%}[client_number]' class = 'link-primary'>{{parameters.site_url}}{%url "subject_home_auto_connect" session.session_key%}[client_number]</a>
+                </div>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-md-auto text-center">
-                Next available connection:
+
+         <!-- auto login for prolific -->
+         <div v-else>
+            <div class="row justify-content-center">
+                <div class="col-md-3 text-end">
+                    Prolific auto-login link:
+                </div>
+                <div class="col-md-9 text-start">
+                    {{parameters.site_url}}{%url "subject_home_auto_connect_prolific" session.session_key%}{% verbatim %}?PROLIFIC_PID={{%PROLIFIC_PID%}}&SESSION_ID={{%SESSION_ID%}}{% endverbatim %}
+                </div>
             </div>
-            <div class="col-md-auto text-center">
-                <a href='{%url "subject_home_auto_connect" session.session_key%}' class = 'link-primary'>{{parameters.site_url}}{%url "subject_home_auto_connect" session.session_key%}</a>
+            <div class="row justify-content-center">
+                <div class="col-md-3 text-end">
+                    Optional, Study Subject ID<br>(log subject into this slot only):
+                </div>
+                <div class="col-md-9 text-start">
+                    {% verbatim %}&SUBJECT_ID=Study Subject ID{% endverbatim %}
+                </div>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-md-auto text-center">
-                Login by client number:
-            </div>
-            <div class="col-md-auto text-center">
-                <a href='{%url "subject_home_auto_connect" session.session_key%}[client_number]' class = 'link-primary'>{{parameters.site_url}}{%url "subject_home_auto_connect" session.session_key%}[client_number]</a>
-            </div>
-        </div>
+
     </div>                    
 </div> 

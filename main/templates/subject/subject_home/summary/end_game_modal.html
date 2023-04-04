@@ -14,7 +14,7 @@
                 The experiment is complete.
             </div>
             <div class="modal-body">
-                <div v-show="!session_player.name_submitted">
+                <div v-show="!session_player.name_submitted && session.parameter_set.prolific_mode == 'False'">
                     <form id="endGameForm" v-on:submit.prevent="onSubmit">
                         {% for i in end_game_form %}
                         <div class="row">
@@ -26,8 +26,14 @@
                     </form>
                 </div>
 
-                <div class="text-center" v-show="session_player.name_submitted">
-                    <span class="fs-3 mt-4">Earnings: $[[(session_player.earnings/100).toFixed(2)]]<span></span>
+                <div class="text-center" v-show="session_player.name_submitted || session.parameter_set.prolific_mode == 'True'">
+                    <span class="fs-3 mt-4" v-if="session.parameter_set.prolific_mode == 'False'">
+                        Earnings: 
+                    </span>
+                    <span class="fs-3 mt-4" v-else>
+                        Bonus Earnings: 
+                    </span>
+                    <span class="fs-3 mt-4">$[[(session_player.earnings/100).toFixed(2)]]</span>
                 </div>
                 
             </div>
@@ -37,9 +43,19 @@
                         class="btn btn-outline-primary"
                         v-on:click = "sendName()"
                         title="Submit Name"
-                        v-show="!session_player.name_submitted"
+                        v-show="!session_player.name_submitted && session.parameter_set.prolific_mode == 'False'"
                         v-bind:disabled="reconnecting || working">
                     Submit <i class="fas fa-sign-in-alt"></i>
+                </button>
+
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "post_session_link()"
+                        title="Press to continue"
+                        v-else-if="(session.parameter_set.post_forward_link && session.parameter_set.post_forward_link != '') || 
+                                   (session.parameter_set.survey_required == 'True' && session_player.survey_complete == False)"
+                        v-bind:disabled="reconnecting || working">
+                    Press here to continue <i class="fas fa-sign-in-alt"></i>
                 </button>
             </div>
         </div>
