@@ -53,6 +53,15 @@ class GetSessionMixin():
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+    async def update_refresh_screens(self, event):
+        '''
+        refresh staff screen
+        '''
+        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
+
+        await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
 def take_get_session_subject(session_player_id):
     '''
@@ -63,8 +72,10 @@ def take_get_session_subject(session_player_id):
         session_player = SessionPlayer.objects.get(id=session_player_id)
 
         return {"session" : session_player.session.json_for_subject(session_player), 
-                "session_player" : session_player.json() }
+                "session_player" : session_player.json(),
+                "value" : "success"}
 
     except ObjectDoesNotExist:
         return {"session" : None, 
-                "session_player" : None}
+                "session_player" : None,
+                "value" : "fail"}

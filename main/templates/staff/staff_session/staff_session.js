@@ -151,6 +151,9 @@ var app = Vue.createApp({
                 case "update_survey_complete":
                     app.take_update_survey_complete(message_data);
                     break;
+                case "update_refresh_screens":
+                    app.take_refresh_screens(message_data);
+                    break;
 
             }
 

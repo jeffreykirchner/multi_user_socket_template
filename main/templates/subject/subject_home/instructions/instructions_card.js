@@ -38,7 +38,7 @@ take_next_instruction(message_data){
         app.session_player.current_instruction = result.current_instruction;
         app.session_player.current_instruction_complete = result.current_instruction_complete;
 
-        app.processInstructionPage();
+        app.processInstruction_page();
         app.instruction_display_scroll();
     } 
     else
@@ -79,7 +79,7 @@ take_finish_instructions(message_data){
 /**
  * process instruction page
  */
-processInstructionPage(){
+processInstruction_page(){
 
     //update view when instructions changes
     switch(app.session_player.current_instruction){

@@ -211,3 +211,23 @@ fill_default_invitation(){
     
     tinymce.get("id_invitation_subject").setContent(app.email_default_text);
 },
+
+send_refresh_screens(message_data){
+    if (!confirm('Refresh the client and server screens?')) {
+        return;
+    }
+
+    app.working = true;
+    app.send_message("refresh_screens", {});
+},
+
+take_refresh_screens(message_data){
+    if(message_data.session != {})
+    {           
+        app.session = message_data.session;
+    } 
+    else
+    {
+       
+    }
+},

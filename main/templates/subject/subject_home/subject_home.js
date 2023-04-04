@@ -89,6 +89,9 @@ var app = Vue.createApp({
                 case "finish_instructions":
                     app.take_finish_instructions(message_data);
                     break;
+                case "update_refresh_screens":
+                    app.take_refresh_screens(message_data);
+                    break;
                 
             }
 
@@ -181,7 +184,7 @@ var app = Vue.createApp({
             if(app.session.current_experiment_phase == 'Instructions')
             {
                 Vue.nextTick(() => {
-                    app.processInstructionPage();
+                    app.processInstruction_page();
                     app.instruction_display_scroll();
                 })
             }
@@ -253,6 +256,21 @@ var app = Vue.createApp({
          */
         take_end_game(message_data){
 
+        },
+
+        /** take refresh screen
+         * @param messageData {json} result of update, either sucess or fail with errors
+        */
+        take_refresh_screens(message_data){
+            if(message_data.value == "success")
+            {           
+                app.session = message_data.session;
+                app.session_player = message_data.session_player;
+            } 
+            else
+            {
+            
+            }
         },
 
       

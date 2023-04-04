@@ -3,6 +3,7 @@ import logging
 from asgiref.sync import sync_to_async
 
 from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist
 
 from main.models import Session
 
@@ -119,6 +120,27 @@ class ExperimentControlsMixin():
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def refresh_screens(self, event):
+        '''
+        refresh client and server screens
+        '''
+
+        result = await sync_to_async(take_refresh_screens, thread_sensitive=False)(self.session_id,  event["message_text"])
+
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
+    
+    async def update_refresh_screens(self, event):
+        '''
+        refresh staff screen
+        '''
+
+        result = {}
+        result["session"] = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
+
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
 def take_start_experiment(session_id, data):
     '''
@@ -217,3 +239,22 @@ def take_end_early(session_id):
     session.parameter_set.save()
 
     return {"value" : "success", "result" : session.parameter_set.period_count}
+
+def take_refresh_screens(session_id, data):
+    '''
+    refresh screen
+    '''
+    logger = logging.getLogger(__name__)
+    logger.info(f'refresh screen: {session_id} {data}')
+
+    try:        
+        session = Session.objects.get(id=session_id)
+        session.parameter_set.json(update_required=True)
+
+    except ObjectDoesNotExist:
+        logger.warning(f"take_refresh_screens session not found: {session_id}")
+        return {"status":"fail", 
+                "message":"Session not found",
+                "result":{}}
+
+    return None
