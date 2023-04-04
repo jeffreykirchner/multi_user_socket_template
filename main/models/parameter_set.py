@@ -32,6 +32,9 @@ class ParameterSet(models.Model):
     survey_required = models.BooleanField(default=False, verbose_name="Survey Required")                      #if true show the survey below
     survey_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Survey Link', blank=True, null=True)
 
+    prolific_mode = models.BooleanField(default=False, verbose_name="Prolific Mode")                          #put study into prolific mode
+    prolific_completion_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Forward to Prolific after sesison', blank=True, null=True) #at the completion of the study forward subjects to link
+
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
 
     json_for_session = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set 
@@ -65,6 +68,9 @@ class ParameterSet(models.Model):
 
             self.survey_required = True if new_ps.get("survey_required") == "True" else False
             self.survey_link = new_ps.get("survey_link")
+
+            self.prolific_mode = new_ps.get("prolific_mode", False)
+            self.prolific_completion_link = new_ps.get("prolific_completion_link", None)
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
 
@@ -157,6 +163,9 @@ class ParameterSet(models.Model):
 
         self.json_for_session["survey_required"] = "True" if self.survey_required else "False"
         self.json_for_session["survey_link"] = self.survey_link
+
+        self.json_for_session["prolific_mode"] = "True" if self.prolific_mode else "False"
+        self.json_for_session["prolific_completion_link"] = self.prolific_completion_link
 
         self.json_for_session["test_mode"] = "True" if self.test_mode else "False"
 

@@ -64,19 +64,6 @@
             </div>
         </div>
 
-        <!-- refresh clients -->
-        <div class="row mt-2" v-show="session.started">
-            <div class="col-md text-center">
-                <button type="button"
-                        class="btn btn-outline-warning"
-                        v-on:click = "send_refresh_screens()"
-                        title="Refresh Screens"
-                        v-bind:disabled="reconnecting || working">
-                    Refresh Clients <i class="fas fa-sync"></i>
-                </button>
-            </div>
-        </div>
-
         <!-- end early -->
         <div class="row mt-2" v-show="session.started && !session.locked && session.current_experiment_phase =='Run'">
             <div class="col-md text-center">
@@ -118,6 +105,19 @@
                         title="Send Invitations by Email"
                         v-bind:disabled="reconnecting || working">
                     Send Invitations <i class="far fa-envelope"></i>
+                </button>
+            </div>
+        </div>
+
+         <!-- refresh clients -->
+         <div class="row mt-2" v-show="session.started">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-warning"
+                        v-on:click = "send_refresh_screens()"
+                        title="Refresh Screens"
+                        v-bind:disabled="reconnecting || working">
+                    Refresh Clients <i class="fas fa-sync"></i>
                 </button>
             </div>
         </div>

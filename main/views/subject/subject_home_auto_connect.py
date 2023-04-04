@@ -1,14 +1,13 @@
 '''
 auto log subject in view
 '''
-import logging
-import uuid
 
 from django.db import transaction
 
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.urls import reverse
 from django.views import View
 
@@ -28,6 +27,9 @@ class SubjectHomeAutoConnectView(View):
         except ObjectDoesNotExist:
             raise Http404("Session not found.")
         
+        if session.parameter_set.prolific_mode:
+            raise Http404("Not available for Prolfic.")
+        
         player_number = kwargs.get('player_number', -1)
         player_key = ""
 
@@ -41,13 +43,13 @@ class SubjectHomeAutoConnectView(View):
                     if session_player:
                         player_key = session_player.player_key
                     else:
-                        raise Http404("Connections are full.")
+                        return HttpResponse("<br><br><center><h1>All connections are full.</h1></center>")
                     
                     session_player.connecting = True
                     session_player.save()
 
             except ObjectDoesNotExist:
-                raise Http404("Connections are full.")
+               return HttpResponse("<br><br><center><h1>All connections are full.</h1></center>")
         else:
             try:
                 player_key = session.session_players.get(player_number=player_number).player_key
