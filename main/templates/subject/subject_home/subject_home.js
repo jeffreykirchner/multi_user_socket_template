@@ -93,9 +93,6 @@ var app = Vue.createApp({
                 case "update_time":
                     app.take_update_time(message_data);
                     break;
-                case "update_end_game":
-                    app.take_end_game(message_data);
-                    break;
                 case "name":
                     app.take_name(message_data);
                     break;
@@ -268,13 +265,6 @@ var app = Vue.createApp({
             app.end_game_modal.toggle();
 
             app.end_game_modal_visible = true;
-        },
-
-         /**
-         * take end of game notice
-         */
-        take_end_game(message_data){
-
         },
 
         /** take refresh screen
