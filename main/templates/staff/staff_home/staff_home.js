@@ -23,6 +23,13 @@ var app = Vue.createApp({
             app.send_get_sessions();
         },
 
+        /** fire trys to connect to server
+         * return true if re-connect should be allowed else false
+        */
+        handle_socket_connection_try(){            
+            return true;
+        },
+
         take_message(data) {
            //process socket message from server
 

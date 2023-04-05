@@ -35,6 +35,8 @@ class ParameterSet(models.Model):
     prolific_mode = models.BooleanField(default=False, verbose_name="Prolific Mode")                          #put study into prolific mode
     prolific_completion_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Forward to Prolific after sesison', blank=True, null=True) #at the completion of the study forward subjects to link
 
+    reconnection_limit = models.IntegerField(verbose_name='Age Warning', default=25)       #age cut that issues a warning for invalid age range
+
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
 
     json_for_session = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set 
@@ -71,6 +73,8 @@ class ParameterSet(models.Model):
 
             self.prolific_mode = new_ps.get("prolific_mode", False)
             self.prolific_completion_link = new_ps.get("prolific_completion_link", None)
+
+            self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
 
@@ -166,6 +170,8 @@ class ParameterSet(models.Model):
 
         self.json_for_session["prolific_mode"] = "True" if self.prolific_mode else "False"
         self.json_for_session["prolific_completion_link"] = self.prolific_completion_link
+
+        self.json_for_session["reconnection_limit"] = self.reconnection_limit
 
         self.json_for_session["test_mode"] = "True" if self.test_mode else "False"
 

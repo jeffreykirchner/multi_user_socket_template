@@ -1,4 +1,4 @@
-sendChat(){
+send_chat(){
 
     if(app.working) return;
     if(app.chat_text.trim() == "") return;

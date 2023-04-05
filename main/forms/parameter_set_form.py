@@ -52,6 +52,12 @@ class ParameterSetForm(forms.ModelForm):
     prolific_completion_link =  forms.CharField(label='After Session, Forward Subjects to URL',
                                    required=False,
                                    widget=forms.TextInput(attrs={"v-model":"parameter_set.prolific_completion_link",}))
+    
+    reconnection_limit = forms.IntegerField(label='Re-connection Limit',
+                                    min_value=1,
+                                    widget=forms.NumberInput(attrs={"v-model":"parameter_set.reconnection_limit",
+                                                                    "step":"1",
+                                                                    "min":"1"}))
 
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
@@ -60,7 +66,7 @@ class ParameterSetForm(forms.ModelForm):
     class Meta:
         model=ParameterSet
         fields =['period_count', 'period_length', 'private_chat', 'show_instructions', 'instruction_set', 
-                 'survey_required', 'survey_link', 'test_mode', 'prolific_mode', 'prolific_completion_link']
+                 'survey_required', 'survey_link', 'test_mode', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit']
 
     def clean_survey_link(self):
         

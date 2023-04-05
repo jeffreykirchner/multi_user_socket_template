@@ -13,7 +13,13 @@ do_web_sockets = function()
     
         app.chat_socket.onclose = function(e) {
             console.error('Socket closed, trying to connect ... ');
+
             app.reconnecting=true;
+            if(!app.handle_socket_connection_try()) 
+            {
+                console.error('Socket re-connection limit reached.');
+                return;
+            } 
             window.setTimeout(do_web_sockets(), random_number(500,1500));            
         }; 
 
