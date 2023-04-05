@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from main.models import Session
 from main.models import Parameters
 
-from main.forms import staff_edit_name_etc_form
+from main.forms import StaffEditNameEtcForm
 
 from main.globals import send_mass_email_service
 
@@ -89,7 +89,7 @@ def take_update_subject(session_id, data):
         logger.warning(f"take_update_session_form session, not found: {session_id}")
         return {"status":"fail", "message":"session not found"}
 
-    form = staff_edit_name_etc_form(form_data)
+    form = StaffEditNameEtcForm(form_data)
 
     if form.is_valid():
 

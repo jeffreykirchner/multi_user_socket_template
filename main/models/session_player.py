@@ -61,7 +61,7 @@ class SessionPlayer(models.Model):
             models.UniqueConstraint(fields=['session', 'email'], name='unique_email_session_player', condition=~Q(email="")),
         ]
 
-    def reset(self):
+    def reset(self, full_reset=True):
         '''
         reset player to starting state
         '''

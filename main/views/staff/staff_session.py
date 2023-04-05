@@ -20,7 +20,7 @@ from main.models import Parameters
 
 from main.forms import SessionForm
 from main.forms import SessionInvitationForm
-from main.forms import staff_edit_name_etc_form
+from main.forms import StaffEditNameEtcForm
 
 class StaffSessionView(SingleObjectMixin, View):
     '''
@@ -42,7 +42,7 @@ class StaffSessionView(SingleObjectMixin, View):
         session = self.get_object()
 
         staff_edit_name_etc_form_ids=[]
-        for i in staff_edit_name_etc_form():
+        for i in StaffEditNameEtcForm():
             staff_edit_name_etc_form_ids.append(i.html_name)
 
         return render(request=request,
@@ -52,7 +52,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "id" : session.id,
                                "session_form" : SessionForm(),
                                "session_invitation_form" : SessionInvitationForm(),
-                               "staff_edit_name_etc_form" : staff_edit_name_etc_form(),
+                               "staff_edit_name_etc_form" : StaffEditNameEtcForm(prolific_mode=session.parameter_set.prolific_mode),
                                "staff_edit_name_etc_form_ids" : staff_edit_name_etc_form_ids,
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'session-{session.id}',

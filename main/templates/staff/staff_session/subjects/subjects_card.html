@@ -71,6 +71,14 @@
                                 <span v-else>
                                     Prolific<br>Session ID
                                 </span>
+                            </th>                            
+                            <th scope="col" class = "text-center">
+                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                    Student ID
+                                </span>
+                                <span v-else>
+                                    Prolific<br>Subject ID
+                                </span>
                             </th>
                             <th scope="col" class = "">
                                 <span v-if="session.parameter_set.prolific_mode=='False'">
@@ -78,14 +86,6 @@
                                 </span>
                                 <span v-else>
                                     Study<br>Subject ID
-                                </span>
-                            </th>
-                            <th scope="col" class = "text-center">
-                                <span v-if="session.parameter_set.prolific_mode=='False'">
-                                    Student ID
-                                </span>
-                                <span v-else>
-                                    Prolific<br>Subject ID
                                 </span>
                             </th>
                             <th scope="col" class = "text-center">
@@ -122,17 +122,17 @@
                             </td>
                             <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
                                 [[temp_p.name=="" ? "---" : temp_p.name]]
-                            </td>
+                            </td>                           
                             <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
+                                [[temp_p.student_id=="" ? "---" : temp_p.student_id]]
+                            </td>
+                            <td class="player_table_cell text-nowrap">
                                 <span v-if="session.parameter_set.prolific_mode=='False'" v-on:click="show_edit_subject(p.id)">
                                     [[(!temp_p.email || temp_p.email=="") ? "---" : temp_p.email]]
                                 </span>
                                 <span v-else>
                                     [[temp_p.player_key]]
                                 </span>
-                            </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
-                                [[temp_p.student_id=="" ? "---" : temp_p.student_id]]
                             </td>
                             <td class="player_table_cell text-nowrap">
                                 $[[(temp_p.earnings/100).toFixed(2)]]

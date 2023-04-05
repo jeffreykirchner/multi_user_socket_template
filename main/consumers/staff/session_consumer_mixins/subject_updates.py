@@ -1,4 +1,6 @@
 
+from main.models import SessionPlayer
+
 class SubjectUpdatesMixin():
     '''
     subject updates mixin for staff session consumer
@@ -22,6 +24,15 @@ class SubjectUpdatesMixin():
         #update not from a client
         if event_data["value"] == "fail":
             return
+        
+        subject_id = event_data["result"]["id"]
+
+        session_player = await SessionPlayer.objects.aget(id=subject_id)
+        event_data["result"]["name"] = session_player.name
+        event_data["result"]["student_id"] = session_player.student_id
+        event_data["result"]["current_instruction"] = session_player.current_instruction
+        event_data["result"]["survey_complete"] = session_player.survey_complete
+        event_data["result"]["instructions_finished"] = session_player.instructions_finished
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
