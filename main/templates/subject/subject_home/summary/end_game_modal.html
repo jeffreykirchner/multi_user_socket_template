@@ -43,7 +43,7 @@
                         class="btn btn-outline-primary"
                         v-on:click = "sendName()"
                         title="Submit Name"
-                        v-show="!session_player.name_submitted && session.parameter_set.prolific_mode == 'False'"
+                        v-if="!session_player.name_submitted && session.parameter_set.prolific_mode == 'False'"
                         v-bind:disabled="reconnecting || working">
                     Submit <i class="fas fa-sign-in-alt"></i>
                 </button>
@@ -52,8 +52,10 @@
                         class="btn btn-outline-primary"
                         v-on:click = "post_session_link()"
                         title="Press to continue"
-                        v-else-if="(session.parameter_set.post_forward_link && session.parameter_set.post_forward_link != '') || 
-                                   (session.parameter_set.survey_required == 'True' && session_player.survey_complete == False)"
+                        v-else-if="(session.parameter_set.prolific_mode == 'True') || 
+                                   (session.parameter_set.survey_required == 'True' && 
+                                    session_player.survey_complete == false && 
+                                    session_player.name_submitted)"
                         v-bind:disabled="reconnecting || working">
                     Press here to continue <i class="fas fa-sign-in-alt"></i>
                 </button>

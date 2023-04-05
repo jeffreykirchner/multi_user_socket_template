@@ -22,3 +22,20 @@ take_name(message_data){
         app.display_errors(message_data.errors);
     }
 },
+
+/**
+ * 
+ */
+post_session_link(){
+
+    if(app.session.parameter_set.survey_required == 'True' && 
+       app.session_player.survey_complete == false)
+    {
+        location.href = app.session_player.survey_link;
+    }
+    else if(app.session.parameter_set.prolific_mode=='True')
+    {
+        location.href = app.session.parameter_set.prolific_completion_link;
+    }
+
+},
