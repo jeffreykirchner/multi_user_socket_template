@@ -49,10 +49,10 @@ take_update_chat(message_data){
     }
     else
     {
-        var sesson_player_target =  message_data.sesson_player_target;
-        var session_players = app.session.session_players;
+        let sesson_player_target =  message_data.sesson_player_target;
+        let session_players = app.session.session_players;
 
-        var target = -1;
+        let target = -1;
         if(sesson_player_target == session_player.id)
         {
             target = message_data.chat.sender_id;

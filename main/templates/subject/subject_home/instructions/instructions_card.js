@@ -3,9 +3,9 @@
  * Given the page number return the requested instruction text
  * @param pageNumber : int
  */
-getInstructionPage(pageNumber){
+get_instruction_page(pageNumber){
 
-    for(i=0;i<app.instruction_pages.length;i++)
+    for(let i=0;i<app.instruction_pages.length;i++)
     {
         if(app.instruction_pages[i].page_number==pageNumber)
         {
@@ -19,7 +19,7 @@ getInstructionPage(pageNumber){
 /**
  * advance to next instruction page
  */
-sendNextInstruction(direction){
+send_next_instruction(direction){
 
     if(app.working) return;
     
@@ -38,7 +38,7 @@ take_next_instruction(message_data){
         app.session_player.current_instruction = result.current_instruction;
         app.session_player.current_instruction_complete = result.current_instruction_complete;
 
-        app.processInstruction_page();
+        app.process_instruction_page();
         app.instruction_display_scroll();
     } 
     else
@@ -51,7 +51,7 @@ take_next_instruction(message_data){
 /**
  * finish instructions
  */
-sendFinishInstructions(){
+send_finish_instructions(){
 
     if(app.working) return;
     
@@ -79,7 +79,7 @@ take_finish_instructions(message_data){
 /**
  * process instruction page
  */
-processInstruction_page(){
+process_instruction_page(){
 
     //update view when instructions changes
     switch(app.session_player.current_instruction){
@@ -120,12 +120,12 @@ instruction_display_scroll(){
 
 scroll_update()
 {
-    var scrollTop = document.getElementById('instructions_frame_a').scrollTop;
-    var scrollHeight = document.getElementById('instructions_frame_a').scrollHeight; // added
-    var offsetHeight = document.getElementById('instructions_frame_a').offsetHeight;
-    // var clientHeight = document.getElementById('box').clientHeight;
-    var contentHeight = scrollHeight - offsetHeight; // added
-    if (contentHeight <= scrollTop) // modified
+    let scroll_top = document.getElementById('instructions_frame_a').scrollTop;
+    let scroll_height = document.getElementById('instructions_frame_a').scrollHeight; // added
+    let offset_height = document.getElementById('instructions_frame_a').offsetHeight;
+
+    let content_height = scroll_height - offset_height; // added
+    if (content_height <= scroll_top) // modified
     {
         // Now this is called when scroll end!
         app.instruction_pages_show_scroll = false;

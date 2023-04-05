@@ -59,9 +59,8 @@
                   clear_main_form_errors(){
 
                         s = app.form_ids;                    
-                        for(var i in s)
+                        for(let i in s)
                         {
-                            //e = document.getElementById("id_" + s[i]);
                             e = document.getElementById("id_errors_" + s[i]);
                             if(e) e.remove();
                         }
@@ -70,12 +69,11 @@
               
                 //display form errors
                 display_errors(errors){
-                      for(var e in errors)
+                      for(let e in errors)
                       {
-                          //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")
-                          var str='<span id=id_errors_'+ e +' class="text-danger">';
+                          let str='<span id=id_errors_'+ e +' class="text-danger">';
                           
-                          for(var i in errors[e])
+                          for(let i in errors[e])
                           {
                               str +=errors[e][i] + '<br>';
                           }

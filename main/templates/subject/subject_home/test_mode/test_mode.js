@@ -12,12 +12,12 @@ random_number(min, max){
 
 random_string(min_length, max_length){
 
-    s = "";
-    r = app.random_number(min_length, max_length);
+    let s = "";
+    let r = app.random_number(min_length, max_length);
 
     for(let i=0;i<r;i++)
     {
-        v = app.random_number(48, 122);
+        let v = app.random_number(48, 122);
         s += String.fromCharCode(v);
     }
 
@@ -52,10 +52,10 @@ do_test_mode(){
         switch (app.session.current_experiment_phase)
         {
             case "Instructions":
-                app.do_test_modeInstructions();
+                app.do_test_mode_instructions();
                 break;
             case "Run":
-                app.do_test_modeRun();
+                app.do_test_mode_run();
                 break;
             
         }        
@@ -68,7 +68,7 @@ do_test_mode(){
 /**
  * test during instruction phase
  */
- do_test_modeInstructions()
+ do_test_mode_instructions()
  {
     if(app.session_player.instructions_finished) return;
     if(app.working) return;
@@ -109,7 +109,7 @@ do_test_mode(){
 /**
  * test during run phase
  */
-do_test_modeRun()
+do_test_mode_run()
 {
     //do chat
     let go = true;
@@ -126,7 +126,7 @@ do_test_modeRun()
     if(go)
         switch (app.random_number(1, 3)){
             case 1:
-                app.do_test_modeChat();
+                app.do_test_mode_chat();
                 break;
             
             case 2:
@@ -141,7 +141,7 @@ do_test_modeRun()
 /**
  * test mode chat
  */
-do_test_modeChat(){
+do_test_mode_chat(){
 
     if(app.session.parameter_set.private_chat)
     {

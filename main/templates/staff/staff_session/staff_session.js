@@ -70,8 +70,8 @@ var app = Vue.createApp({
             console.log(data);
             {%endif%}
 
-            message_type = data.message.message_type;
-            message_data = data.message.message_data;
+            let message_type = data.message.message_type;
+            let message_data = data.message.message_data;
 
             switch(message_type) {                
                 case "get_session":
@@ -206,10 +206,10 @@ var app = Vue.createApp({
     
             // Prevent Bootstrap dialog from blocking focusin
             document.addEventListener('focusin', (e) => {
-            if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
-                e.stopImmediatePropagation();
-            }
-            });
+                if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                    e.stopImmediatePropagation();
+                }
+                });
          },
 
         /** send winsock request to get session info
@@ -334,14 +334,14 @@ var app = Vue.createApp({
         */
         clear_main_form_errors(){
             
-            for(var item in app.session)
+            for(let item in app.session)
             {
                 e = document.getElementById("id_errors_" + item);
                 if(e) e.remove();
             }
 
             s = app.staff_edit_name_etc_form_ids;
-            for(var i in s)
+            for(let i in s)
             {
                 e = document.getElementById("id_errors_" + s[i]);
                 if(e) e.remove();
@@ -351,12 +351,11 @@ var app = Vue.createApp({
         /** display form error messages
         */
         display_errors(errors){
-            for(var e in errors)
+            for(let e in errors)
                 {
-                    //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")
-                    var str='<span id=id_errors_'+ e +' class="text-danger">';
+                    let str='<span id=id_errors_'+ e +' class="text-danger">';
                     
-                    for(var i in errors[e])
+                    for(let i in errors[e])
                     {
                         str +=errors[e][i] + '<br>';
                     }

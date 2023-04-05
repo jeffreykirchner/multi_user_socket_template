@@ -51,7 +51,7 @@ take_next_instruction(message_data){
     {
         let result = message_data.result;
 
-        session_player = app.session.session_players[result.id];
+        let session_player = app.session.session_players[result.id];
 
         if(session_player)
         {
@@ -70,7 +70,7 @@ take_finished_instructions(message_data){
     {
         let result = message_data.result;
 
-        session_player = app.session.session_players[result.id];
+        let session_player = app.session.session_players[result.id];
 
         if(session_player)
         {
@@ -246,7 +246,7 @@ hide_edit_subject:function(){
  */
  copy_earnings(){
 
-    var text="";
+    let text="";
  
      for(i=0;i<app.session.session_players.length;i++)
      {
@@ -264,7 +264,7 @@ hide_edit_subject:function(){
  copy_to_clipboard(text){
  
      // Create a dummy input to copy the string array inside it
-     var dummy = document.createElement("textarea");
+     let dummy = document.createElement("textarea");
  
      // Add it to the document
      document.body.appendChild(dummy);
@@ -315,7 +315,7 @@ take_anonymize_data(message_data){
 
         for(let i=0; i<session_player_updates.length; i++)
         {
-            session_player = app.session.session_players[session_player_updates[i].id];
+            let session_player = app.session.session_players[session_player_updates[i].id];
 
             if(session_player)
             {
@@ -332,8 +332,8 @@ take_anonymize_data(message_data){
  * @param message_data {json} result of update, either sucess or fail with errors
 */
 take_update_survey_complete(message_data){
-    result = message_data;
+    let result = message_data;
 
-    session_player = app.session.session_players[result.player_id];
+    let session_player = app.session.session_players[result.player_id];
     session_player.survey_complete = true;
 },

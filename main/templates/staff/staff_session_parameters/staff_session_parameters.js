@@ -146,23 +146,23 @@ var app = Vue.createApp({
         */
         clear_main_form_errors(){
             
-            for(var item in app.session)
+            for(let item in app.session)
             {
-                e = document.getElementById("id_errors_" + item);
+                let e = document.getElementById("id_errors_" + item);
                 if(e) e.remove();
             }
 
             s = app.parameterset_form_ids;
-            for(var i in s)
+            for(let i in s)
             {
-                e = document.getElementById("id_errors_" + s[i]);
+                let e = document.getElementById("id_errors_" + s[i]);
                 if(e) e.remove();
             }
 
             s = app.parameterset_player_form_ids;
-            for(var i in s)
+            for(let i in s)
             {
-                e = document.getElementById("id_errors_" + s[i]);
+                let e = document.getElementById("id_errors_" + s[i]);
                 if(e) e.remove();
             }
         },
@@ -170,12 +170,12 @@ var app = Vue.createApp({
         /** display form error messages
         */
         display_errors(errors){
-            for(var e in errors)
+            for(let e in errors)
                 {
                     //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")
-                    var str='<span id=id_errors_'+ e +' class="text-danger">';
+                    let str='<span id=id_errors_'+ e +' class="text-danger">';
                     
-                    for(var i in errors[e])
+                    for(let i in errors[e])
                     {
                         str +=errors[e][i] + '<br>';
                     }
