@@ -15,7 +15,7 @@ class PhaseMixin():
         update session phase
         '''
 
-        result = await sync_to_async(take_update_next_phase, thread_sensitive=False)(self.session_id, self.session_player_id)
+        result = await sync_to_async(take_update_next_phase, thread_sensitive=self.thread_sensitive)(self.session_id, self.session_player_id)
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

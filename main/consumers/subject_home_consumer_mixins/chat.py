@@ -66,17 +66,17 @@ class ChatMixin():
             session_player_chat.text = chat_text
             session_player_chat.time_remaining = session.time_remaining
 
-            await sync_to_async(session_player_chat.save, thread_sensitive=False)()
+            await sync_to_async(session_player_chat.save, thread_sensitive=self.thread_sensitive)()
 
             if recipients == "all":
-                await sync_to_async(session_player_chat.session_player_recipients.add, thread_sensitive=False)(*session.session_players.all())
+                await sync_to_async(session_player_chat.session_player_recipients.add, thread_sensitive=self.thread_sensitive)(*session.session_players.all())
 
                 result["recipients"] = [i.id for i in session.session_players.all()]
             else:
                 sesson_player_target = await SessionPlayer.objects.aget(id=recipients)
 
                 if sesson_player_target in session.session_players.all():
-                    await sync_to_async(session_player_chat.session_player_recipients.add, thread_sensitive=False)(sesson_player_target)
+                    await sync_to_async(session_player_chat.session_player_recipients.add, thread_sensitive=self.thread_sensitive)(sesson_player_target)
                 else:
                     await sync_to_async(session_player_chat.delete)()
                     logger.warning(f"take chat: chat at none group member : {self.session_id} {self.session_player_id} {data}")
@@ -90,7 +90,7 @@ class ChatMixin():
             result["chat_for_subject"] = await session_player_chat.ajson_for_subject()
             result["chat_for_staff"] = await session_player_chat.ajson_for_staff()
 
-            await sync_to_async(session_player_chat.save, thread_sensitive=False)()
+            await sync_to_async(session_player_chat.save, thread_sensitive=self.thread_sensitive)()
 
             result = {"value" : "success", "result" : result}
 

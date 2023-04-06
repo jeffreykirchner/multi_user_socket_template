@@ -1,5 +1,6 @@
 
 import logging
+import sys
 
 from asgiref.sync import sync_to_async
 from django.core.exceptions import  ObjectDoesNotExist
@@ -15,9 +16,9 @@ class GetSessionMixin():
             return a list of sessions
             '''
             logger = logging.getLogger(__name__) 
-            logger.info(f"Get Session {event}")
+            logger.info(f"Get Session {event}, thread sensitive {self.thread_sensitive}")
 
-            self.connection_uuid = event["message_text"]["playerKey"]
+            self.connection_uuid = event["message_text"]["player_key"]
             self.connection_type = "subject"
 
             #get session id for subject
@@ -28,7 +29,7 @@ class GetSessionMixin():
             except ObjectDoesNotExist:
                 result = {"session" : None, "session_player" : None}
             else:        
-                result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
+                result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)
 
             await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                     message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -38,7 +39,7 @@ class GetSessionMixin():
         start experiment on subjects
         '''
 
-        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
+        result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -49,7 +50,7 @@ class GetSessionMixin():
         '''
 
         #get session json object
-        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
+        result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -58,7 +59,7 @@ class GetSessionMixin():
         '''
         refresh staff screen
         '''
-        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
+        result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -67,6 +68,9 @@ def take_get_session_subject(session_player_id):
     '''
     get session info for subject
     '''
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f'take_get_session_subject: id {session_player_id}')
 
     try:
         session_player = SessionPlayer.objects.get(id=session_player_id)

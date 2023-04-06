@@ -19,7 +19,7 @@ class UpdateSessionMixin():
         update session and return it
         '''
 
-        result =  await sync_to_async(take_update_session_form, thread_sensitive=False)(self.session_id, event["message_text"])
+        result =  await sync_to_async(take_update_session_form, thread_sensitive=self.thread_sensitive)(self.session_id, event["message_text"])
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

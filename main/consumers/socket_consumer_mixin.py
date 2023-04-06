@@ -3,6 +3,7 @@ core socket communication mixin
 '''
 import json
 import logging
+import sys
 
 from asgiref.sync import sync_to_async
 
@@ -21,11 +22,14 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
     channel_session_user = True
     http_user = True
     player_key = ""                  #SessionPlayer.player_key
+    thread_sensitive = False
 
     async def connect(self):
         '''
         inital connection from websocket
         '''
+        self.thread_sensitive = True if hasattr(sys, '_called_from_test') else False
+
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         
         kwargs = self.scope['url_route']['kwargs']

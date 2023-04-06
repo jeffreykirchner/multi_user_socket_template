@@ -9,7 +9,7 @@ class SendMessageMixin:
     '''
 
     async def send_message(self, message_to_self:dict, message_to_group:dict,
-                                    message_type:dict, send_to_client:bool, send_to_group:bool):
+                                 message_type:dict, send_to_client:bool, send_to_group:bool):
             '''
             send response to client
             '''

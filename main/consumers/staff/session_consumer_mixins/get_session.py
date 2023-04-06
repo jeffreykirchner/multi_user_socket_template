@@ -16,10 +16,13 @@ class GetSessionMixin():
         return the session
         '''
 
+        logger = logging.getLogger(__name__)
+        logger.info(f"get_session, thread sensitive {self.thread_sensitive}")
+
         self.connection_uuid = event["message_text"]["session_key"]
         self.connection_type = "staff"
 
-        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)       
+        result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)       
 
         self.session_id = result["id"]
 

@@ -35,7 +35,7 @@ class ExperimentControlsMixin():
         start experiment on staff
         '''
 
-        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
+        result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -59,7 +59,7 @@ class ExperimentControlsMixin():
         reset experiment on staff
         '''
 
-        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
+        result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -82,7 +82,7 @@ class ExperimentControlsMixin():
         '''
         update reset connections
         '''
-        result = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
+        result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -116,7 +116,7 @@ class ExperimentControlsMixin():
         end experiment early
         '''
 
-        result = await sync_to_async(take_end_early, thread_sensitive=False)(self.session_id)
+        result = await sync_to_async(take_end_early, thread_sensitive=self.thread_sensitive)(self.session_id)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -126,7 +126,7 @@ class ExperimentControlsMixin():
         refresh client and server screens
         '''
 
-        result = await sync_to_async(take_refresh_screens, thread_sensitive=False)(self.session_id,  event["message_text"])
+        result = await sync_to_async(take_refresh_screens, thread_sensitive=self.thread_sensitive)(self.session_id,  event["message_text"])
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
@@ -137,7 +137,7 @@ class ExperimentControlsMixin():
         '''
 
         result = {}
-        result["session"] = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)
+        result["session"] = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -148,7 +148,7 @@ def take_start_experiment(session_id, data):
     '''   
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"Start Experiment: {data}")
+    logger.info(f"Start Experiment: session {session_id}, data {data}")
 
     #session_id = data["session_id"]
     with transaction.atomic():
@@ -158,8 +158,8 @@ def take_start_experiment(session_id, data):
             session.start_experiment()
 
         value = "success"
-    
-    return {"value" : value, "started" : session.started}
+        
+        return {"value" : value, "started" : session.started}
 
 def take_reset_experiment(session_id, data):
     '''

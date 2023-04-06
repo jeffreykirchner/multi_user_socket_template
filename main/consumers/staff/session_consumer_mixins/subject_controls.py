@@ -24,7 +24,7 @@ class SubjectControlsMixin():
         update subject
         '''
 
-        result = await sync_to_async(take_update_subject, thread_sensitive=False)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_update_subject, thread_sensitive=self.thread_sensitive)(self.session_id, event["message_text"])
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -34,7 +34,7 @@ class SubjectControlsMixin():
         take email list
         '''
 
-        result = await sync_to_async(take_email_list, thread_sensitive=False)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_email_list, thread_sensitive=self.thread_sensitive)(self.session_id, event["message_text"])
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -44,7 +44,7 @@ class SubjectControlsMixin():
         send invitations to subjects
         '''
 
-        result = await sync_to_async(take_send_invitations, thread_sensitive=False)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_send_invitations, thread_sensitive=self.thread_sensitive)(self.session_id, event["message_text"])
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -54,7 +54,7 @@ class SubjectControlsMixin():
         send invitations to subjects
         '''
 
-        result = await sync_to_async(take_anonymize_data, thread_sensitive=False)(self.session_id,  event["message_text"])
+        result = await sync_to_async(take_anonymize_data, thread_sensitive=self.thread_sensitive)(self.session_id,  event["message_text"])
 
         #update all 
         await self.send_message(message_to_self=None, message_to_group=result,

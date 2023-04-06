@@ -14,7 +14,7 @@ var app = Vue.createApp({
                     working : false,
                     reconnection_count : 0,
                     first_load_done : false,                       //true after software is loaded for the first time
-                    playerKey : "{{session_player.player_key}}",
+                    player_key : "{{session_player.player_key}}",
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,
                     session_player : null, 
@@ -167,7 +167,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         send_get_session(){
-            app.send_message("get_session", {"playerKey" : app.playerKey});
+            app.send_message("get_session", {"player_key" : app.player_key});
         },
         
         /** take create new session

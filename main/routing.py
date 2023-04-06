@@ -13,10 +13,8 @@ from channels.auth import AuthMiddlewareStack
 
 #web socket routing
 websocket_urlpatterns = [
-    # re_path(r'ws/subject/(?P<room_name>[-\w]+)/$', SubjectConsumer.as_asgi()),
     re_path(r'ws/staff-home/(?P<room_name>[-\w]+)/(?P<page_key>[-\w]+)/(?P<player_key>[-\w]+)', StaffHomeConsumer.as_asgi()),
     re_path(r'ws/staff-session/(?P<room_name>[-\w]+)/(?P<page_key>[-\w]+)/(?P<player_key>[-\w]+)', StaffSessionConsumer.as_asgi()),
     re_path(r'ws/staff-session-parameters/(?P<room_name>[-\w]+)/(?P<page_key>[-\w]+)/(?P<player_key>[-\w]+)', StaffSessionParametersConsumer.as_asgi()),
     re_path(r'ws/subject-home/(?P<room_name>[-\w]+)/(?P<page_key>[-\w]+)/(?P<player_key>[-\w]+)', SubjectHomeConsumer.as_asgi()),
-    # re_path(r'ws/staff-admin-tools/(?P<room_name>[-\w]+)/(?P<page_key>[-\w]+)', StaffAdminToolsConsumer.as_asgi()),
 ]

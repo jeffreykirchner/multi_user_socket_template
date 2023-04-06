@@ -14,7 +14,9 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 
-from main.consumers import SocketConsumerMixin
+from .. import SocketConsumerMixin
+from .send_message_mixin import SendMessageMixin
+
 
 import main
 
@@ -24,7 +26,8 @@ from main.models import Parameters
 
 # from main.globals import create_new_session_parameterset
 
-class StaffHomeConsumer(SocketConsumerMixin):
+class StaffHomeConsumer(SocketConsumerMixin,
+                        SendMessageMixin):
     '''
     websocket session list
     '''    
@@ -46,15 +49,10 @@ class StaffHomeConsumer(SocketConsumerMixin):
         logger.info(f"Delete Session success: {status}")
 
         #build response
-        message_data = {}
-        message_data["sessions"] = await sync_to_async(get_session_list_json)(self.user)
+        result = await sync_to_async(get_session_list_json)(self.user)
 
-        message = {}
-        message["message_type"] = "get_sessions"
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type='get_sessions', send_to_client=True, send_to_group=False)
 
     async def create_session(self, event):
         '''
@@ -69,15 +67,10 @@ class StaffHomeConsumer(SocketConsumerMixin):
         await sync_to_async(create_new_session)(self.user)
         
         #build response
-        message_data = {}
-        message_data["sessions"] = await sync_to_async(get_session_list_json)(self.user)
+        result = await sync_to_async(get_session_list_json)(self.user)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def get_sessions(self, event):
         '''
@@ -90,15 +83,10 @@ class StaffHomeConsumer(SocketConsumerMixin):
         logger.info(f"User {self.user}")     
 
         #build response
-        message_data = {}
-        message_data["sessions"] = await sync_to_async(get_session_list_json)(self.user)
+        result = await sync_to_async(get_session_list_json)(self.user)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def get_sessions_admin(self, event):
         '''
@@ -111,15 +99,10 @@ class StaffHomeConsumer(SocketConsumerMixin):
         logger.info(f"User {self.user}")     
 
         #build response
-        message_data = {}
-        message_data["sessions_admin"] = await sync_to_async(get_session_list_admin_json)(self.user)
+        result = await sync_to_async(get_session_list_admin_json)(self.user)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def get_sessions_admin(self, event):
         '''
@@ -132,15 +115,10 @@ class StaffHomeConsumer(SocketConsumerMixin):
         logger.info(f"User {self.user}")     
 
         #build response
-        message_data = {}
-        message_data["sessions_admin"] = await sync_to_async(get_session_list_admin_json)(self.user)
+        result = await sync_to_async(get_session_list_admin_json)(self.user)
 
-        message = {}
-        message["message_type"] = event["type"]
-        message["message_data"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
    
     async def update_connection_status(self, event):
         '''
@@ -186,20 +164,24 @@ def get_session_list_json(usr):
     session_list_1 = usr.sessions_a.all()
     session_list_2 = usr.sessions_b.all()
 
-    return list(Session.objects.filter(soft_delete=False) \
+    session_list = list(Session.objects.filter(soft_delete=False) \
                                .filter(Q(id__in=session_list_1) | Q(id__in=session_list_2)) \
                                .values('title', 'id', 'locked', 'start_date'))
+
+    return {"sessions" : session_list}
 
 def get_session_list_admin_json(usr):
     '''
     get list of all sessions if admin
     '''
     if usr.is_superuser:
-        return list(Session.objects.filter(soft_delete=False) \
+        session_list = list(Session.objects.filter(soft_delete=False) \
                               .order_by('-start_date') \
                               .values('title', 'id', 'locked', 'creator__last_name', 'creator__first_name', 'start_date'))
     else:
-        return []
+        session_list = []
+    
+    return {"sessions_admin" : session_list}
 
 def delete_session(id_, user):
     '''

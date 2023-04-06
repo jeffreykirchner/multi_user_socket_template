@@ -12,7 +12,7 @@ class DataMixin():
         download summary data
         '''
 
-        result = await sync_to_async(take_download_summary_data, thread_sensitive=False)(self.session_id)
+        result = await sync_to_async(take_download_summary_data, thread_sensitive=self.thread_sensitive)(self.session_id)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -22,7 +22,7 @@ class DataMixin():
         download action data
         '''
 
-        result = await sync_to_async(take_download_action_data, thread_sensitive=False)(self.session_id)
+        result = await sync_to_async(take_download_action_data, thread_sensitive=self.thread_sensitive)(self.session_id)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -32,7 +32,7 @@ class DataMixin():
         download recruiter data
         '''
 
-        result = await sync_to_async(take_download_recruiter_data, thread_sensitive=False)(self.session_id)
+        result = await sync_to_async(take_download_recruiter_data, thread_sensitive=self.thread_sensitive)(self.session_id)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -42,7 +42,7 @@ class DataMixin():
         download payment data
         '''
 
-        result = await sync_to_async(take_download_payment_data, thread_sensitive=False)(self.session_id)
+        result = await sync_to_async(take_download_payment_data, thread_sensitive=self.thread_sensitive)(self.session_id)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

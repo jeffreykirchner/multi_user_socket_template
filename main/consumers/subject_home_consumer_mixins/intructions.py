@@ -19,7 +19,7 @@ class InstructionsMixin():
         '''
         advance instruction page
         '''
-        result = await sync_to_async(take_next_instruction, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_next_instruction, thread_sensitive=self.thread_sensitive)(self.session_id, self.session_player_id, event["message_text"])
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=result, 
                                 message_type=event['type'], send_to_client=True, send_to_group=True)
@@ -34,7 +34,7 @@ class InstructionsMixin():
         '''
         finish instructions
         '''
-        result = await sync_to_async(take_finish_instructions, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_finish_instructions, thread_sensitive=self.thread_sensitive)(self.session_id, self.session_player_id, event["message_text"])
         
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=result, 
                                 message_type=event['type'], send_to_client=True, send_to_group=True)
