@@ -123,6 +123,7 @@ def take_add_parameterset_player(data):
         return {"value" : "fail"}
 
     session.parameter_set.add_player()
+    session.update_player_count()
 
     return {"value" : "success"}
     
