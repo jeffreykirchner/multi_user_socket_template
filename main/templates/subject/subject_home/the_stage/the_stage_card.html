@@ -1,0 +1,41 @@
+<div class="card" id="graph_card">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle"></span>
+
+        <span class="float-end">
+           
+        </span>
+
+    </div>
+    <div class="card-body">
+        
+        <!-- field -->
+        <div class="row">
+            <div class="col">           
+                <canvas class="field" 
+                        key="sd_graph" 
+                        id="sd_graph_id" 
+                        style="border-style: solid;border-width: 1px;"></canvas>                
+            </div>
+        </div>
+
+        <!-- controls -->
+        <div class="row" v-if="pixi_mode=='staff'">
+            <div class="col">
+                <label for="zoom_range" 
+                       class="form-label">
+                    Zoom
+                </label>
+                <input type="range" 
+                       class="form-range" 
+                       min=0.05
+                       max=1 
+                       step=0.05
+                       v-model="pixi_scale"
+                       v-on:input="updateZoom()"
+                       id="zoom_range">
+            </div>
+        </div>
+       
+    </div>                    
+</div> 

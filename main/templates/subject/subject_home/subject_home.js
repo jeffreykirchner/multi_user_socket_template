@@ -35,6 +35,21 @@ var app = Vue.createApp({
                     // modals
                     end_game_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
+
+                    //pixi
+                    //pixi_app : null,
+                    canvas_width  : null,
+                    canvas_height : null,
+                    tilingSprite : null,
+                    target_location : {x:0,y:0},
+                    current_location : {x:0,y:0},
+                    move_speed : 5,
+                    scroll_speed : 10,
+                    pixi_mode : "subject",
+                    pixi_scale : 1,
+                    stage_width : 10000,
+                    stage_height : 10000,
+                    scroll_direction : {x:0, y:0},
                 }},
     methods: {
 
@@ -162,6 +177,8 @@ var app = Vue.createApp({
 
                 app.scroll_update();
             }
+
+            app.setup_pixi();
          },
 
         /** send winsock request to get session info
@@ -328,6 +345,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/summary/summary_card.js"%}
         {%include "subject/subject_home/test_mode/test_mode.js"%}
         {%include "subject/subject_home/instructions/instructions_card.js"%}
+        {%include "subject/subject_home/the_stage/pixi_setup.js"%}
     
         /** clear form error messages
         */

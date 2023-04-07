@@ -26,6 +26,12 @@
         height: 300px;
         overflow-y:scroll;
     }
+
+    .field {
+        height: 600px;
+        background-color: white; 
+        width: 100%;
+    }
        
 </style>
 
@@ -43,7 +49,14 @@
         </div>
     </div>
 
-<!-- experiment -->
+<!-- the stage -->
+<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
+    <div class="col-md">
+        {%include "subject/subject_home/the_stage/the_stage_card.html"%}                
+    </div>
+</div>
+
+<!-- chat and summary -->
 <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
     <div class="col-md-9">
         {%include "subject/subject_home/chat_card.html"%}                

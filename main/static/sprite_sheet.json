@@ -1,0 +1,35 @@
+﻿{"frames": {
+
+"background_tile_a_1024.png":
+{
+	"frame": {"x":5,"y":5,"w":1024,"h":1024},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":1024},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"background_tile_a_128.png":
+{
+	"frame": {"x":1034,"y":5,"w":128,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
+	"sourceSize": {"w":128,"h":128}
+},
+"background_tile_small.png":
+{
+	"frame": {"x":1167,"y":5,"w":168,"h":105},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":168,"h":105},
+	"sourceSize": {"w":168,"h":105}
+}},
+"meta": {
+	"app": "Adobe Animate",
+	"version": "22.0.0.93",
+	"image": "sprite_sheet.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":2048},
+	"scale": "1"
+}
+}
