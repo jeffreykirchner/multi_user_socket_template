@@ -57,7 +57,9 @@ class Session(models.Model):
     invitation_text = HTMLField(default="", verbose_name="Invitation Text")       #inviataion email subject and text
     invitation_subject = HTMLField(default="", verbose_name="Invitation Subject")
 
-    soft_delete =  models.BooleanField(default=False)                            #hide session if true
+    world_state = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session State")       #world state at this point in session
+
+    soft_delete =  models.BooleanField(default=False)                             #hide session if true
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -124,6 +126,14 @@ class Session(models.Model):
 
         for i in self.session_players.all():
             i.start()
+
+        self.setup_world_state
+
+    def setup_world_state(self):
+        '''
+        setup world state
+        '''
+        self.world_state = {}
  
     def reset_experiment(self):
         '''
@@ -135,6 +145,7 @@ class Session(models.Model):
         self.time_remaining = self.parameter_set.period_length
         self.timer_running = False
         self.current_experiment_phase = ExperimentPhase.RUN
+        self.world_state ={}
         self.save()
 
         for p in self.session_players.all():
@@ -327,6 +338,7 @@ class Session(models.Model):
             "chat_all" : chat,
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
+            "world_state" : self.world_state,
         }
     
     def json_for_subject(self, session_player):
@@ -346,6 +358,8 @@ class Session(models.Model):
 
             "session_players":{i.id : i.json_for_subject(session_player) for i in self.session_players.all()},
             "session_players_order" : list(self.session_players.all().values_list('id', flat=True)),
+
+            "world_state" : self.world_state,
         }
     
     def json_for_timer(self):

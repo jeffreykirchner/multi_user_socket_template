@@ -27,12 +27,6 @@ reset_pixi_app(){
                                         resolution: 1,
                                         view: canvas });
 
-    // app.pixi_app = new PIXI.Application({
-    //     background: '#999',
-    //     resizeTo: window,
-    // });
-    //document.body.appendChild(app.pixi_app.view);
-
     // The stage will handle the move events
     app.pixi_app.stage.eventMode = 'static';
     app.pixi_app.stage.hitArea = app.pixi_app.screen;
@@ -68,7 +62,7 @@ setup_pixi_sheets(textures){
     if(app.pixi_mode=="subject")
     {
         tiling_sprite.eventMode ='static';
-        tiling_sprite.on("pointerup", app.subjectPointerUp);
+        tiling_sprite.on("pointerup", app.subject_pointer_up);
                
         app.pixi_target = new PIXI.Graphics();
         app.pixi_target.lineStyle(3, 0x000000);
@@ -85,50 +79,28 @@ setup_pixi_sheets(textures){
     // staff controls
     // if(app.pixi_mode=="staff"){
 
-    //     app.scroll_button_up = app.addScrollButton({w:50, h:30, x:app.pixi_app.screen.width/2, y:30}, 
+    //     app.scroll_button_up = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:30}, 
     //                                                {scroll_direction:{x:0,y:-app.scroll_speed}}, 
     //                                                "↑↑↑");
-    //     app.scroll_button_down = app.addScrollButton({w:50, h:30, x:app.pixi_app.screen.width/2, y:app.pixi_app.screen.height - 30}, 
+    //     app.scroll_button_down = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:app.pixi_app.screen.height - 30}, 
     //                                                  {scroll_direction:{x:0,y:app.scroll_speed}}, 
     //                                                  "↓↓↓");
 
-    //     app.scroll_button_left = app.addScrollButton({w:30, h:50, x:30, y:app.pixi_app.screen.height/2}, 
+    //     app.scroll_button_left = app.add_scroll_button({w:30, h:50, x:30, y:app.pixi_app.screen.height/2}, 
     //                                                  {scroll_direction:{x:-app.scroll_speed,y:0}}, 
     //                                                  "←\n←\n←");
 
-    //     app.scroll_button_right = app.addScrollButton({w:30, h:50, x:app.pixi_app.screen.width - 30, y:app.pixi_app.screen.height/2}, 
+    //     app.scroll_button_right = app.add_scroll_button({w:30, h:50, x:app.pixi_app.screen.width - 30, y:app.pixi_app.screen.height/2}, 
     //                                                   {scroll_direction:{x:app.scroll_speed,y:0}}, 
     //                                                   "→\n→\n→");
         
     // }
 
     //start game loop
-    app.pixi_app.ticker.add(app.gameLoop);
+    app.pixi_app.ticker.add(app.game_loop);
 },
 
-    // Handler for pointermove
-    moveDrag(event) {
-        sprite.x = event.global.x - offset.x;
-      sprite.y = event.global.y - offset.y;
-    },
-    
-    // Sprite handler to start dragging
-    startDrag(event) {
-        app.stage.cursor = 'pointer';
-        const dragTarget = event.target;
-        dragTarget.toLocal(event.global, null, offset);
-      offset.x *= dragTarget.scale.x;
-      offset.y *= dragTarget.scale.y;
-        // app.stage.on('pointermove', app.moveDrag);
-    },
-    
-    // Sprite handler to stop dragging
-    stopDrag() {
-      app.stage.cursor = null;
-        // app.stage.off('pointermove', app.moveDrag);
-    },
-
-addScrollButton(button_size, name, text){
+add_scroll_button(button_size, name, text){
 
     let g = new PIXI.Graphics();
     g.lineStyle(1, 0x000000);
@@ -143,8 +115,8 @@ addScrollButton(button_size, name, text){
     g.alpha = 0.5;
     g.name = name;
 
-    g.on("pointerover", app.staffScreenScrollButtonOver);
-    g.on("pointerout", app.staffScreenScrollButtonOut);
+    g.on("pointerover", app.staff_screen_scroll_button_over);
+    g.on("pointerout", app.staff_screen_scroll_button_out);
 
     let label = new PIXI.Text(text,{fontFamily : 'Arial',
                                     fontWeight:'bold',
@@ -161,18 +133,18 @@ addScrollButton(button_size, name, text){
     return g
 },
 
-gameLoop(delta){
+game_loop(delta){
     if(app.pixi_mode=="subject")
     {
-        app.movePlayer(delta);
+        app.move_player(delta);
     }
     
     if(app.pixi_mode=="staff")
     {
-         app.scrollStaff(delta);
+         app.scroll_staff(delta);
     }       
 
-    app.updateOffsets(delta);
+    app.update_offsets(delta);
 },
 
 updateZoom(){
@@ -195,7 +167,7 @@ updateZoom(){
     }
 },
 
-movePlayer(delta){
+move_player(delta){
 
     if(app.target_location.x !=  app.current_location.x ||
        app.target_location.y !=  app.current_location.y )
@@ -225,9 +197,9 @@ movePlayer(delta){
 
 },
 
-updateOffsets(delta){
+update_offsets(delta){
     
-    offset = app.getOffset();
+    offset = app.get_offset();
 
     app.background.x = -offset.x;
     app.background.y = -offset.y;
@@ -239,13 +211,13 @@ updateOffsets(delta){
     }
 },
 
-scrollStaff(delta){
+scroll_staff(delta){
 
     app.current_location.x += app.scroll_direction.x;
     app.current_location.y += app.scroll_direction.y;
 },
 
-getOffset(){
+get_offset(){
     return {x:app.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
             y:app.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
 },
@@ -253,7 +225,7 @@ getOffset(){
 /**
  *pointer up on subject screen
  */
-subjectPointerUp(event){
+subject_pointer_up(event){
 
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     app.target_location.x = local_pos.x;
@@ -264,7 +236,7 @@ subjectPointerUp(event){
 /**
  *scroll control for staff
  */
-staffScreenScrollButtonOver(event){
+staff_screen_scroll_button_over(event){
     event.currentTarget.alpha = 1;  
     app.scroll_direction = event.currentTarget.name.scroll_direction;
 },
@@ -272,7 +244,7 @@ staffScreenScrollButtonOver(event){
 /**
  *scroll control for staff
  */
-staffScreenScrollButtonOut(event){
+staff_screen_scroll_button_out(event){
     event.currentTarget.alpha = 0.5;
     app.scroll_direction = {x:0, y:0};
 },
