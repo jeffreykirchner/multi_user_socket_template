@@ -6,7 +6,7 @@
 setup_pixi(){    
     app.reset_pixi_app();
 
-    PIXI.Assets.add('sprite_sheet', '{% static "sprite_sheet.json" %}');
+    PIXI.Assets.add('sprite_sheet', '{% static "gear_1_animated.json" %}');
     PIXI.Assets.add('bg_tex', '{% static "background_tile_low.jpg"%}');
 
     const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex']);
@@ -39,7 +39,9 @@ reset_pixi_app(){
 */
 setup_pixi_sheets(textures){
 
-    app.sprite_sheet = textures.sprite_sheet;
+
+    animated_sprite = new PIXI.AnimatedSprite(textures.sprite_sheet.animations['walk']);
+
     app.background_tile_tex = textures.bg_tex;
 
     app.background = new PIXI.Graphics();
@@ -74,27 +76,32 @@ setup_pixi_sheets(textures){
         app.background.addChild(app.pixi_target)
     }
 
-    
+    animated_sprite.position.set(150, 150);
+    animated_sprite.animationSpeed = -0.75;
+    animated_sprite.anchor.set(0.5)
+    app.background.addChild(animated_sprite);
+    animated_sprite.play();
+
 
     // staff controls
-    // if(app.pixi_mode=="staff"){
+    if(app.pixi_mode=="staff"){
 
-    //     app.scroll_button_up = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:30}, 
-    //                                                {scroll_direction:{x:0,y:-app.scroll_speed}}, 
-    //                                                "↑↑↑");
-    //     app.scroll_button_down = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:app.pixi_app.screen.height - 30}, 
-    //                                                  {scroll_direction:{x:0,y:app.scroll_speed}}, 
-    //                                                  "↓↓↓");
+        app.scroll_button_up = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:30}, 
+                                                   {scroll_direction:{x:0,y:-app.scroll_speed}}, 
+                                                   "↑↑↑");
+        app.scroll_button_down = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:app.pixi_app.screen.height - 30}, 
+                                                     {scroll_direction:{x:0,y:app.scroll_speed}}, 
+                                                     "↓↓↓");
 
-    //     app.scroll_button_left = app.add_scroll_button({w:30, h:50, x:30, y:app.pixi_app.screen.height/2}, 
-    //                                                  {scroll_direction:{x:-app.scroll_speed,y:0}}, 
-    //                                                  "←\n←\n←");
+        app.scroll_button_left = app.add_scroll_button({w:30, h:50, x:30, y:app.pixi_app.screen.height/2}, 
+                                                     {scroll_direction:{x:-app.scroll_speed,y:0}}, 
+                                                     "←\n←\n←");
 
-    //     app.scroll_button_right = app.add_scroll_button({w:30, h:50, x:app.pixi_app.screen.width - 30, y:app.pixi_app.screen.height/2}, 
-    //                                                   {scroll_direction:{x:app.scroll_speed,y:0}}, 
-    //                                                   "→\n→\n→");
+        app.scroll_button_right = app.add_scroll_button({w:30, h:50, x:app.pixi_app.screen.width - 30, y:app.pixi_app.screen.height/2}, 
+                                                      {scroll_direction:{x:app.scroll_speed,y:0}}, 
+                                                      "→\n→\n→");
         
-    // }
+    }
 
     //start game loop
     app.pixi_app.ticker.add(app.game_loop);
@@ -147,7 +154,7 @@ game_loop(delta){
     app.update_offsets(delta);
 },
 
-updateZoom(){
+update_zoom(){
     app.background.scale.set(app.pixi_scale, app.pixi_scale);
     //app.background.x += (app.background.x*app.pixi_scale);
    // app.background.y += (app.background.y*app.pixi_scale);
@@ -169,45 +176,53 @@ updateZoom(){
 
 move_player(delta){
 
-    if(app.target_location.x !=  app.current_location.x ||
-       app.target_location.y !=  app.current_location.y )
-    {
-        
-        let noX = false;
-        let noY = false;
-        let temp_move_speed = (app.move_speed * delta);
+    if(!app.session.world_state) return;
 
-        let temp_angle = Math.atan2(app.target_location.y - app.current_location.y,
-                                    app.target_location.x - app.current_location.x)
+    for(let i in app.session.world_state){
 
-        if(!noY){
-            if(Math.abs(app.target_location.y - app.current_location.y) < temp_move_speed)
-                app.current_location.y = app.target_location.y;
-            else
-                app.current_location.y += temp_move_speed * Math.sin(temp_angle);
-        }
+        let obj = app.session.world_state[i];
 
-        if(!noX){
-            if(Math.abs(app.target_location.x - app.current_location.x) < temp_move_speed)
-                app.current_location.x = app.target_location.x;
-            else
-                app.current_location.x += temp_move_speed * Math.cos(temp_angle);        
+        if(obj.target_location.x !=  obj.current_location.x ||
+            obj.target_location.y !=  obj.current_location.y )
+        {
+            
+            let noX = false;
+            let noY = false;
+            let temp_move_speed = (app.move_speed * delta);
+
+            let temp_angle = Math.atan2(obj.target_location.y - obj.current_location.y,
+                                        obj.target_location.x - obj.current_location.x)
+
+            if(!noY){
+                if(Math.abs(obj.target_location.y - obj.current_location.y) < temp_move_speed)
+                obj.current_location.y = obj.target_location.y;
+                else
+                obj.current_location.y += temp_move_speed * Math.sin(temp_angle);
+            }
+
+            if(!noX){
+                if(Math.abs(obj.target_location.x - obj.current_location.x) < temp_move_speed)
+                    obj.current_location.x = obj.target_location.x;
+                else
+                    obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
+            }
         }
     }
-
 },
 
 update_offsets(delta){
     
+    obj = app.session.world_state[app.session_player.id];
+
     offset = app.get_offset();
 
     app.background.x = -offset.x;
-    app.background.y = -offset.y;
+    app.background.y = -offset.y;   
     
     if(app.pixi_mode=="subject")
     {
-        app.pixi_target.x = app.target_location.x;
-        app.pixi_target.y = app.target_location.y;
+        app.pixi_target.x = obj.target_location.x;
+        app.pixi_target.y = obj.target_location.y;
     }
 },
 
@@ -218,8 +233,10 @@ scroll_staff(delta){
 },
 
 get_offset(){
-    return {x:app.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
-            y:app.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
+    obj = app.session.world_state[app.session_player.id];
+
+    return {x:obj.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
+            y:obj.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
 },
 
 /**
@@ -227,9 +244,11 @@ get_offset(){
  */
 subject_pointer_up(event){
 
+    obj = app.session.world_state[app.session_player.id];
+
     let local_pos = event.data.getLocalPosition(event.currentTarget);
-    app.target_location.x = local_pos.x;
-    app.target_location.y = local_pos.y;
+    obj.target_location.x = local_pos.x;
+    obj.target_location.y = local_pos.y;
     
 },
 

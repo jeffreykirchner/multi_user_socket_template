@@ -159,7 +159,7 @@ def take_start_experiment(session_id, data):
 
         value = "success"
         
-        return {"value" : value, "started" : session.started}
+        return {"value" : value}
 
 def take_reset_experiment(session_id, data):
     '''
