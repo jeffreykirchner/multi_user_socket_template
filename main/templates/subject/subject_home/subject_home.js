@@ -44,6 +44,7 @@ var app = Vue.createApp({
                     // target_location : {x:0,y:0},
                     // current_location : {x:0,y:0},
                     move_speed : 5,
+                    animation_speed : 0.6,
                     scroll_speed : 10,
                     pixi_mode : "subject",
                     pixi_scale : 1,
@@ -179,6 +180,7 @@ var app = Vue.createApp({
             }
 
             app.setup_pixi();
+
          },
 
         /** send winsock request to get session info
@@ -219,14 +221,14 @@ var app = Vue.createApp({
                 Vue.nextTick(() => {
                     app.process_instruction_page();
                     app.instruction_display_scroll();
-                })
+                });
             }
 
             if(!app.first_load_done)
             {
                 Vue.nextTick(() => {
                     app.do_first_load();
-                })
+                });
             }
         },
 

@@ -13,6 +13,7 @@ setup_pixi(){
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
+        app.setup_pixi_subjects();
     });
 },
 
@@ -39,9 +40,7 @@ reset_pixi_app(){
 */
 setup_pixi_sheets(textures){
 
-
-    animated_sprite = new PIXI.AnimatedSprite(textures.sprite_sheet.animations['walk']);
-
+    app.pixi_textures = textures;
     app.background_tile_tex = textures.bg_tex;
 
     app.background = new PIXI.Graphics();
@@ -76,13 +75,6 @@ setup_pixi_sheets(textures){
         app.background.addChild(app.pixi_target)
     }
 
-    animated_sprite.position.set(150, 150);
-    animated_sprite.animationSpeed = -0.75;
-    animated_sprite.anchor.set(0.5)
-    app.background.addChild(animated_sprite);
-    animated_sprite.play();
-
-
     // staff controls
     if(app.pixi_mode=="staff"){
 
@@ -105,6 +97,24 @@ setup_pixi_sheets(textures){
 
     //start game loop
     app.pixi_app.ticker.add(app.game_loop);
+},
+
+/**
+ * setup the pixi components for each subject
+ */
+setup_pixi_subjects(){
+    
+    for(const i in app.session.world_state){
+        let subject = app.session.world_state[i];
+        subject.pixi = {};
+        subject.pixi.sprite_walk = new PIXI.AnimatedSprite(app.pixi_textures.sprite_sheet.animations['walk']);
+
+        subject.pixi.sprite_walk.position.set(subject.current_location.x, subject.current_location.y);
+        subject.pixi.sprite_walk.animationSpeed = app.animation_speed;
+        subject.pixi.sprite_walk.anchor.set(0.5)
+        app.background.addChild(subject.pixi.sprite_walk);
+        // animated_sprite.play();
+    }
 },
 
 add_scroll_button(button_size, name, text){
@@ -205,6 +215,31 @@ move_player(delta){
                     obj.current_location.x = obj.target_location.x;
                 else
                     obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
+            }
+
+            //update the sprite locations
+            for(i in obj.pixi)
+            {
+                obj.pixi[i].position.set(obj.current_location.x, obj.current_location.y);
+
+                if (obj.current_location.x < obj.target_location.x )
+                {
+                    obj.pixi[i].animationSpeed = app.animation_speed;
+                }
+                else
+                {
+                    obj.pixi[i].animationSpeed = -app.animation_speed;
+                }
+               
+                obj.pixi[i].play();
+            }
+        }
+        else
+        {
+            //objects not moving stop animations
+            for(i in obj.pixi)
+            {
+                obj.pixi[i].stop();
             }
         }
     }
