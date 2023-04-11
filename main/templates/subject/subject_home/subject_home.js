@@ -124,6 +124,9 @@ var app = Vue.createApp({
                 case "update_refresh_screens":
                     app.take_refresh_screens(message_data);
                     break;
+                case "update_target_location_update":
+                    app.update_target_location_update(message_data);
+                    break;
                 
             }
 
@@ -348,6 +351,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/test_mode/test_mode.js"%}
         {%include "subject/subject_home/instructions/instructions_card.js"%}
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
+        {%include "subject/subject_home/the_stage/interface.js"%}
     
         /** clear form error messages
         */

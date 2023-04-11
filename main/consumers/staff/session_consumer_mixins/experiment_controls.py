@@ -35,6 +35,8 @@ class ExperimentControlsMixin():
         start experiment on staff
         '''
 
+        self.world_state_local = event['message_data']['world_state']
+
         result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
 
         await self.send_message(message_to_self=result, message_to_group=None,
@@ -159,7 +161,8 @@ def take_start_experiment(session_id, data):
 
         value = "success"
         
-        return {"value" : value}
+        return {"value" : value, 
+                "world_state" : session.world_state}
 
 def take_reset_experiment(session_id, data):
     '''

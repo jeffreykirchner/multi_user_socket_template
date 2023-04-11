@@ -6,10 +6,11 @@
 setup_pixi(){    
     app.reset_pixi_app();
 
-    PIXI.Assets.add('sprite_sheet', '{% static "gear_1_animated.json" %}');
+    PIXI.Assets.add('sprite_sheet', '{% static "gear_3_animated.json" %}');
+    PIXI.Assets.add('sprite_sheet_2', '{% static "sprite_sheet.json" %}');
     PIXI.Assets.add('bg_tex', '{% static "background_tile_low.jpg"%}');
 
-    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex']);
+    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2']);
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
@@ -105,15 +106,30 @@ setup_pixi_sheets(textures){
 setup_pixi_subjects(){
     
     for(const i in app.session.world_state){
+       
+
         let subject = app.session.world_state[i];
         subject.pixi = {};
-        subject.pixi.sprite_walk = new PIXI.AnimatedSprite(app.pixi_textures.sprite_sheet.animations['walk']);
 
-        subject.pixi.sprite_walk.position.set(subject.current_location.x, subject.current_location.y);
-        subject.pixi.sprite_walk.animationSpeed = app.animation_speed;
-        subject.pixi.sprite_walk.anchor.set(0.5)
-        app.background.addChild(subject.pixi.sprite_walk);
-        // animated_sprite.play();
+        let avatar_container = new PIXI.Container();
+        avatar_container.position.set(subject.current_location.x, subject.current_location.y);
+        avatar_container.height = 250;
+        avatar_container.width = 250;
+
+        let gear_sprite = new PIXI.AnimatedSprite(app.pixi_textures.sprite_sheet.animations['walk']);
+        gear_sprite.animationSpeed = app.animation_speed;
+        gear_sprite.anchor.set(0.5)
+        gear_sprite.tint = app.session.session_players[i].parameter_set_player.hex_color;
+
+        let face_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["face_1.png"]);
+        face_sprite.anchor.set(0.5);
+
+        avatar_container.addChild(gear_sprite);
+        avatar_container.addChild(face_sprite);
+
+        subject.pixi.avatar_container = avatar_container;
+
+        app.background.addChild(subject.pixi.avatar_container);
     }
 },
 
@@ -191,6 +207,7 @@ move_player(delta){
     for(let i in app.session.world_state){
 
         let obj = app.session.world_state[i];
+        let avatar_container = obj.pixi.avatar_container;
 
         if(obj.target_location.x !=  obj.current_location.x ||
             obj.target_location.y !=  obj.current_location.y )
@@ -218,29 +235,20 @@ move_player(delta){
             }
 
             //update the sprite locations
-            for(i in obj.pixi)
+            avatar_container.getChildAt(0).play();
+            avatar_container.position.set(obj.current_location.x, obj.current_location.y);
+            if (obj.current_location.x < obj.target_location.x )
             {
-                obj.pixi[i].position.set(obj.current_location.x, obj.current_location.y);
-
-                if (obj.current_location.x < obj.target_location.x )
-                {
-                    obj.pixi[i].animationSpeed = app.animation_speed;
-                }
-                else
-                {
-                    obj.pixi[i].animationSpeed = -app.animation_speed;
-                }
-               
-                obj.pixi[i].play();
+                avatar_container.getChildAt(0).animationSpeed = app.animation_speed;
+            }
+            else
+            {
+                avatar_container.getChildAt(0).animationSpeed = -app.animation_speed;
             }
         }
         else
         {
-            //objects not moving stop animations
-            for(i in obj.pixi)
-            {
-                obj.pixi[i].stop();
-            }
+            avatar_container.getChildAt(0).stop();
         }
     }
 },
@@ -284,6 +292,8 @@ subject_pointer_up(event){
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     obj.target_location.x = local_pos.x;
     obj.target_location.y = local_pos.y;
+
+    app.target_location_update();
     
 },
 

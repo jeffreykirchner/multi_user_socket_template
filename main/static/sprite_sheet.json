@@ -23,12 +23,20 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":168,"h":105},
 	"sourceSize": {"w":168,"h":105}
+},
+"face_1.png":
+{
+	"frame": {"x":1340,"y":5,"w":100,"h":72},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":72},
+	"sourceSize": {"w":100,"h":72}
 }},
 "meta": {
 	"app": "Adobe Animate",
-	"version": "22.0.0.93",
+	"version": "23.0.0.407",
 	"image": "sprite_sheet.png",
-	"format": "RGBA8888",
+	"format": "RGB8",
 	"size": {"w":2048,"h":2048},
 	"scale": "1"
 }

@@ -24,6 +24,8 @@ class GetSessionMixin():
 
         result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)       
 
+        self.world_state_local = result["world_state"]
+
         self.session_id = result["id"]
 
         await self.send_message(message_to_self=result, message_to_group=None,

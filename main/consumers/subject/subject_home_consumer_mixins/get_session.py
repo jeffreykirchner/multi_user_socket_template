@@ -29,7 +29,7 @@ class GetSessionMixin():
             except ObjectDoesNotExist:
                 result = {"session" : None, "session_player" : None}
             else:        
-                result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)
+                result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)                
 
             await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                     message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -38,9 +38,7 @@ class GetSessionMixin():
         '''
         start experiment on subjects
         '''
-
-        #self.world_state_local = event['world_state']
-
+        
         result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 

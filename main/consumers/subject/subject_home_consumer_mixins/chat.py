@@ -26,14 +26,13 @@ class ChatMixin():
         logger = logging.getLogger(__name__) 
         logger.info(f"take chat: Session {self.session_id}, Player {self.session_player_id}, Data {data}")
 
+        result = {}
+
         try:
             recipients = data["recipients"] 
             chat_text = data["text"]
         except KeyError:
-            return {"value" : "fail", "result" : {"message" : "Invalid chat."}}
-
-        result = {}
-        #result["recipients"] = []
+            result = {"value" : "fail", "result" : {"message" : "Invalid chat."}}
 
         session = await Session.objects.prefetch_related('session_players', 'parameter_set').aget(id=self.session_id)
         session_player = await session.session_players.aget(id=self.session_player_id)
@@ -43,22 +42,23 @@ class ChatMixin():
         session_player_chat.session_player = session_player
         session_player_chat.session_period = await session.aget_current_session_period()
 
-        if not session.started:
-            result =  {"value" : "fail", "result" : {"message" : "Session not started."}, }
-        elif session.finished:
-            result = {"value" : "fail", "result" : {"message" : "Session finished."}}
-        elif session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
-            result = {"value" : "fail", "result" : {"message" : "Session not running."}}
-        else :
-            if recipients == "all":
-                session_player_chat.chat_type = ChatTypes.ALL
-            else:
-                if not session.parameter_set.private_chat:
-                    logger.warning(f"take chat: private chat not enabled :{self.session_id} {self.session_player_id} {data}")
-                    result = {"value" : "fail",
-                            "result" : {"message" : "Private chat not allowed."}}
+        if result == {}:
+            if not session.started:
+                result =  {"value" : "fail", "result" : {"message" : "Session not started."}, }
+            elif session.finished:
+                result = {"value" : "fail", "result" : {"message" : "Session finished."}}
+            elif session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
+                result = {"value" : "fail", "result" : {"message" : "Session not running."}}
+            else :
+                if recipients == "all":
+                    session_player_chat.chat_type = ChatTypes.ALL
+                else:
+                    if not session.parameter_set.private_chat:
+                        logger.warning(f"take chat: private chat not enabled :{self.session_id} {self.session_player_id} {data}")
+                        result = {"value" : "fail",
+                                  "result" : {"message" : "Private chat not allowed."}}
 
-                session_player_chat.chat_type = ChatTypes.INDIVIDUAL
+                    session_player_chat.chat_type = ChatTypes.INDIVIDUAL
 
             result["chat_type"] = session_player_chat.chat_type
             result["recipients"] = []

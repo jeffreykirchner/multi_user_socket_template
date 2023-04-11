@@ -6,8 +6,8 @@ import codecs
 # Request a file name from the user
 #files gear_1.json 
 #filename = input('Enter the name of the JSON file: ').trim()
-filename_in = 'gear_1.json'
-filename_out = 'gear_1_animated.json'
+filename_in = 'gear_3.json'
+filename_out = 'gear_3_animated.json'
 
 # Open the JSON file
 with open(Path(__file__).with_name(filename_in), 'r') as f:
