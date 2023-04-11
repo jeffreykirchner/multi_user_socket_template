@@ -44,7 +44,7 @@ var app = Vue.createApp({
                     // target_location : {x:0,y:0},
                     // current_location : {x:0,y:0},
                     move_speed : 5,
-                    animation_speed : 0.6,
+                    animation_speed : 0.5,
                     scroll_speed : 10,
                     pixi_mode : "subject",
                     pixi_scale : 1,

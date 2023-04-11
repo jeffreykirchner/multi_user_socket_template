@@ -24,6 +24,8 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
     player_key = ""                  #SessionPlayer.player_key
     thread_sensitive = False
 
+    world_state_local = {}           #local copy of world state
+
     async def connect(self):
         '''
         inital connection from websocket
