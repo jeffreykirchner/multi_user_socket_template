@@ -9,7 +9,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from main.consumers import SocketConsumerMixin
 from main.consumers import StaffSubjectUpdateMixin
 
-from main.consumers.subject_home_consumer_mixins import *
+from .subject_home_consumer_mixins import *
 
 class SubjectHomeConsumer(SocketConsumerMixin, 
                           StaffSubjectUpdateMixin, 
