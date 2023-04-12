@@ -1,5 +1,6 @@
 
 from main.models import SessionPlayer
+from datetime import datetime, timedelta
 
 class SubjectUpdatesMixin():
     '''
@@ -82,4 +83,13 @@ class SubjectUpdatesMixin():
         '''
         
         event_data = event["staff_data"]
+
+        self.world_state_local["session_players"][str(event_data["session_player_id"])]["target_location"] = event_data["target_location"]
+
+        last_update = datetime.strptime(self.world_state_local["last_update"], "%Y-%m-%d %H:%M:%S.%f")
+
+        if datetime.now() - last_update > timedelta(seconds=1):
+            pass
+        
+        self.world_state_local["last_update"] = str(datetime.now())
 

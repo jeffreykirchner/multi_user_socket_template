@@ -133,8 +133,9 @@ class Session(models.Model):
         '''
         setup world state
         '''
-        self.world_state = {"last_update":datetime.now().timestamp()}
-
+        self.world_state = {"last_update":str(datetime.now()), 
+                            "session_players":{},}
+        
         for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
                                                                                             'parameter_set_player__start_x',
                                                                                             'parameter_set_player__start_y' ):
@@ -143,10 +144,8 @@ class Session(models.Model):
             v['current_location'] = {'x':i['parameter_set_player__start_x'], 'y':i['parameter_set_player__start_y']}
             v['target_location'] = v['current_location']
             
-            self.world_state[i['id']] = v
+            self.world_state["session_players"][str(i['id'])] = v
             
-            
-        
         self.save()
 
     def reset_experiment(self):
