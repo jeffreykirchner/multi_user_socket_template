@@ -133,7 +133,7 @@ class Session(models.Model):
         '''
         setup world state
         '''
-        self.world_state = {}
+        self.world_state = {"last_update":datetime.now()}
 
         for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
                                                                                             'parameter_set_player__start_x',
