@@ -129,9 +129,9 @@ do_test_mode_run()
                 app.do_test_mode_chat();
                 break;
             
-            case 2:
+            case 2:                
+                app.test_mode_move();
                 break;
-            
             case 3:
                 
                 break;
@@ -165,5 +165,23 @@ do_test_mode_chat(){
     app.chat_text = app.random_string(5, 20);
 },
 
+
+/**
+ * test mode move to a location
+ */
+test_mode_move(){
+
+    if(!app.test_mode_location_target)
+    {
+      
+    }
+
+    app.test_mode_location_target = {"x" : app.random_number(0, 5000), "y" : app.random_number(0, 5000)};
+
+    obj = app.session.world_state.session_players[app.session_player.id];
+    obj.target_location = app.test_mode_location_target;
+
+    app.target_location_update();
+},
 
 {%endif%}
