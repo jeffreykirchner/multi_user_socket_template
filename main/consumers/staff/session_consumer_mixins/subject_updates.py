@@ -1,5 +1,9 @@
 
+import logging
+
 from main.models import SessionPlayer
+from main.models import Session
+
 from datetime import datetime, timedelta
 
 class SubjectUpdatesMixin():
@@ -81,15 +85,18 @@ class SubjectUpdatesMixin():
         '''
         update target location from subject screen
         '''
+
+        logger = logging.getLogger(__name__)
         
         event_data = event["staff_data"]
 
         self.world_state_local["session_players"][str(event_data["session_player_id"])]["target_location"] = event_data["target_location"]
 
         last_update = datetime.strptime(self.world_state_local["last_update"], "%Y-%m-%d %H:%M:%S.%f")
+        dt_now = datetime.now()
 
-        if datetime.now() - last_update > timedelta(seconds=1):
-            pass
-        
-        self.world_state_local["last_update"] = str(datetime.now())
+        if dt_now - last_update > timedelta(seconds=1):
+            logger.info("updating world state")
+            self.world_state_local["last_update"] = str(dt_now)
+            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
