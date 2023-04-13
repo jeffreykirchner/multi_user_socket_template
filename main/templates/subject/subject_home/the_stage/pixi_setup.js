@@ -105,10 +105,10 @@ setup_pixi_sheets(textures){
  */
 setup_pixi_subjects(){
     
-    for(const i in app.session.world_state){
+    for(const i in app.session.world_state.session_players){
        
 
-        let subject = app.session.world_state[i];
+        let subject = app.session.world_state.session_players[i];
         subject.pixi = {};
 
         let avatar_container = new PIXI.Container();
@@ -144,7 +144,7 @@ add_scroll_button(button_size, name, text){
     g.lineStyle(1, 0x000000);
     g.x=button_size.x;
     g.y=button_size.y;
-    g.interactive=true;
+    g.eventMode='static';
     g.alpha = 0.5;
     g.name = name;
 
@@ -167,17 +167,18 @@ add_scroll_button(button_size, name, text){
 },
 
 game_loop(delta){
+    
+    app.move_player(delta);
+
     if(app.pixi_mode=="subject")
-    {
-        app.move_player(delta);
+    {   
+        app.update_offsets_player(delta);
     }
     
     if(app.pixi_mode=="staff")
     {
          app.scroll_staff(delta);
     }       
-
-    app.update_offsets(delta);
 },
 
 update_zoom(){
@@ -204,9 +205,9 @@ move_player(delta){
 
     if(!app.session.world_state) return;
 
-    for(let i in app.session.world_state){
+    for(let i in app.session.world_state.session_players){
 
-        let obj = app.session.world_state[i];
+        let obj = app.session.world_state.session_players[i];
         let avatar_container = obj.pixi.avatar_container;
 
         if(obj.target_location.x !=  obj.current_location.x ||
@@ -253,9 +254,9 @@ move_player(delta){
     }
 },
 
-update_offsets(delta){
+update_offsets_player(delta){
     
-    obj = app.session.world_state[app.session_player.id];
+    obj = app.session.world_state.session_players[app.session_player.id];
 
     offset = app.get_offset();
 
@@ -271,12 +272,12 @@ update_offsets(delta){
 
 scroll_staff(delta){
 
-    app.current_location.x += app.scroll_direction.x;
-    app.current_location.y += app.scroll_direction.y;
+    // app.current_location.x += app.scroll_direction.x;
+    // app.current_location.y += app.scroll_direction.y;
 },
 
 get_offset(){
-    obj = app.session.world_state[app.session_player.id];
+    obj = app.session.world_state.session_players[app.session_player.id];
 
     return {x:obj.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
             y:obj.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
@@ -287,14 +288,14 @@ get_offset(){
  */
 subject_pointer_up(event){
 
-    obj = app.session.world_state[app.session_player.id];
+    obj = app.session.world_state.session_players[app.session_player.id];
 
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     obj.target_location.x = local_pos.x;
     obj.target_location.y = local_pos.y;
 
     app.target_location_update();
-    
+
 },
 
 /**

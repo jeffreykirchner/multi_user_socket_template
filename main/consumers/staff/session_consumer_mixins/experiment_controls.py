@@ -35,7 +35,7 @@ class ExperimentControlsMixin():
         start experiment on staff
         '''
 
-        self.world_state_local = event['message_data']['world_state']
+        self.world_state_local = event['group_data']['world_state']
 
         result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
 

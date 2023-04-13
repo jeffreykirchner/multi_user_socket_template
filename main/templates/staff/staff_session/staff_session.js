@@ -39,11 +39,25 @@ var app = Vue.createApp({
 
                     csv_email_list : "",           //csv email list
 
+                    last_world_state_update : null,
+
                     //modals
                     edit_subject_modal : null,
                     edit_session_modal : null,
                     send_message_modal : null,
                     upload_email_modal : null,
+
+                    //pixi
+                    canvas_width  : null,
+                    canvas_height : null,
+                    move_speed : 5,
+                    animation_speed : 0.5,
+                    scroll_speed : 10,
+                    pixi_mode : "staff",
+                    pixi_scale : 1,
+                    stage_width : 10000,
+                    stage_height : 10000,
+                    scroll_direction : {x:0, y:0},
                    
                 }},
     methods: {
@@ -161,6 +175,9 @@ var app = Vue.createApp({
                 case "update_refresh_screens":
                     app.take_refresh_screens(message_data);
                     break;
+                case "update_target_location_update":
+                    app.update_target_location_update(message_data);
+                    break;
 
             }
 
@@ -210,6 +227,8 @@ var app = Vue.createApp({
                     e.stopImmediatePropagation();
                 }
                 });
+            
+            app.setup_pixi();
          },
 
         /** send winsock request to get session info
@@ -328,6 +347,8 @@ var app = Vue.createApp({
         {%include "staff/staff_session/subjects/subjects_card.js"%}
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}
+        {%include "staff/staff_session/interface/interface_card.js"%}
+        {%include "subject/subject_home/the_stage/pixi_setup.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages
