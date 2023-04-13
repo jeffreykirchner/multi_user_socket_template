@@ -34,6 +34,13 @@
         background-color:#ececec;
     }
 
+    .field {
+        height: 800px;
+        background-color: white; 
+        width: 100%;
+        max-width: 1920px;
+    }
+
 </style>
 
 {%endblock head%}
@@ -65,7 +72,7 @@
         </div>        
         <div class="row">
             <div class="col">
-               {%include "staff/staff_session/graph/graph_card.html"%} 
+               {%include "staff/staff_session/interface/interface_card.html"%} 
             </div>            
         </div>            
     </div>
@@ -94,6 +101,11 @@
             </div>                
         </div>
                                            
+    </div>
+    <div class="row justify-content-lg-center mt-4" v-cloak v-if="session">
+        <div class="col">
+            {%include "subject/subject_home/the_stage/the_stage_card.html"%}
+        </div>
     </div>
 </div>
 

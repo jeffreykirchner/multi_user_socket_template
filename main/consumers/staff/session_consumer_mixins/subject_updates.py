@@ -86,7 +86,7 @@ class SubjectUpdatesMixin():
         update target location from subject screen
         '''
 
-        logger = logging.getLogger(__name__)
+        #logger = logging.getLogger(__name__)
         
         event_data = event["staff_data"]
 
@@ -96,7 +96,10 @@ class SubjectUpdatesMixin():
         dt_now = datetime.now()
 
         if dt_now - last_update > timedelta(seconds=1):
-            logger.info("updating world state")
+            # logger.info("updating world state")
             self.world_state_local["last_update"] = str(dt_now)
             await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+        
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 

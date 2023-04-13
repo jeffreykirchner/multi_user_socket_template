@@ -144,7 +144,7 @@ add_scroll_button(button_size, name, text){
     g.lineStyle(1, 0x000000);
     g.x=button_size.x;
     g.y=button_size.y;
-    g.interactive=true;
+    g.eventMode='static';
     g.alpha = 0.5;
     g.name = name;
 
@@ -167,17 +167,18 @@ add_scroll_button(button_size, name, text){
 },
 
 game_loop(delta){
+    
+    app.move_player(delta);
+
     if(app.pixi_mode=="subject")
-    {
-        app.move_player(delta);
+    {   
+        app.update_offsets_player(delta);
     }
     
     if(app.pixi_mode=="staff")
     {
          app.scroll_staff(delta);
     }       
-
-    app.update_offsets(delta);
 },
 
 update_zoom(){
@@ -253,7 +254,7 @@ move_player(delta){
     }
 },
 
-update_offsets(delta){
+update_offsets_player(delta){
     
     obj = app.session.world_state.session_players[app.session_player.id];
 
@@ -271,8 +272,8 @@ update_offsets(delta){
 
 scroll_staff(delta){
 
-    app.current_location.x += app.scroll_direction.x;
-    app.current_location.y += app.scroll_direction.y;
+    // app.current_location.x += app.scroll_direction.x;
+    // app.current_location.y += app.scroll_direction.y;
 },
 
 get_offset(){
