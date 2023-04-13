@@ -145,7 +145,8 @@ do_test_mode_chat(){
 
     if(app.session.parameter_set.private_chat)
     {
-        session_player_local = app.session.session_players[app.random_number(0,  app.session.session_players.length-1)];
+        let session_player_id = app.session.session_players_order[app.random_number(0,  app.session.session_players_order.length-1)]
+        let session_player_local = app.session.session_players[session_player_id];
 
         if(session_player_local.id == app.session_player.id || app.session.current_experiment_phase == "Instructions")
         {
