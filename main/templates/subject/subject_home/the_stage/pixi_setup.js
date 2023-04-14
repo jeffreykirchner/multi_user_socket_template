@@ -110,6 +110,7 @@ setup_pixi_subjects(){
         let subject = app.session.world_state.session_players[i];
         subject.pixi = {};
 
+        //avatar
         let avatar_container = new PIXI.Container();
         avatar_container.position.set(subject.current_location.x, subject.current_location.y);
         avatar_container.height = 250;
@@ -127,8 +128,22 @@ setup_pixi_subjects(){
         avatar_container.addChild(face_sprite);
 
         subject.pixi.avatar_container = avatar_container;
-
         app.background.addChild(subject.pixi.avatar_container);
+
+        //chat
+        let chat_container = new PIXI.Container();
+        chat_container.position.set(subject.current_location.x, subject.current_location.y);
+        //chat_container.visible = true;
+        
+        let chat_bubble_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["chat_bubble.png"]);
+        chat_bubble_sprite.anchor.set(0.5);
+
+        chat_container.addChild(chat_bubble_sprite);
+
+        subject.pixi.chat_container = chat_container;
+
+        app.background.addChild(subject.pixi.chat_container);
+        
     }
 },
 
