@@ -139,11 +139,12 @@ var app = Vue.createApp({
         *    @param message_type {string} type of message sent to server
         *    @param message_text {json} body of message being sent to server
         */
-        send_message(message_type, message_text) {            
-
+        send_message(message_type, message_text, message_target="self")
+        {          
             app.chat_socket.send(JSON.stringify({
                     'message_type': message_type,
                     'message_text': message_text,
+                    'message_target': message_target,
                 }));
         },
 

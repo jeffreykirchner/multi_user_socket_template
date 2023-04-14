@@ -56,12 +56,12 @@ var app = Vue.createApp({
             app.working = false;
         },
 
-        send_message(message_type,message_text) {
-            //send socket message to server
-
+        send_message(message_type, message_text, message_target="self")
+        {          
             app.chat_socket.send(JSON.stringify({
                     'message_type': message_type,
                     'message_text': message_text,
+                    'message_target': message_target,
                 }));
         },
 
