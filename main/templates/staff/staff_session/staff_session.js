@@ -202,17 +202,17 @@ var app = Vue.createApp({
         /**
          * do after session has loaded
          */
-         do_first_load()
-         {
-             app.edit_subject_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_subject_modal'), {keyboard: false});
-             app.edit_session_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_session_modal'), {keyboard: false});;           
-             app.send_message_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('send_message_modal'), {keyboard: false});           
-             app.upload_email_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_email_modal'), {keyboard: false});
- 
-             document.getElementById('edit_subject_modal').addEventListener('hidden.bs.modal', app.hide_edit_subject);
-             document.getElementById('edit_session_modal').addEventListener('hidden.bs.modal', app.hide_edit_session);
-             document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
-             document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
+        do_first_load()
+        {
+            app.edit_subject_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_subject_modal'), {keyboard: false});
+            app.edit_session_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_session_modal'), {keyboard: false});;           
+            app.send_message_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('send_message_modal'), {keyboard: false});           
+            app.upload_email_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_email_modal'), {keyboard: false});
+
+            document.getElementById('edit_subject_modal').addEventListener('hidden.bs.modal', app.hide_edit_subject);
+            document.getElementById('edit_session_modal').addEventListener('hidden.bs.modal', app.hide_edit_session);
+            document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
+            document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
 
             tinyMCE.init({
                 target: document.getElementById('id_invitation_subject'),
@@ -230,7 +230,15 @@ var app = Vue.createApp({
                 });
             
             app.setup_pixi();
-         },
+        },
+
+         /**
+         * after reconnection, load again
+         */
+        do_reload()
+        {
+            app.setup_pixi_subjects();
+        },
 
         /** send winsock request to get session info
         */
@@ -242,6 +250,8 @@ var app = Vue.createApp({
         *    @param message_data {json} session day in json format
         */
         take_get_session(message_data){
+
+            app.destory_setup_pixi_subjects();
             
             app.session = message_data;
 
@@ -258,6 +268,12 @@ var app = Vue.createApp({
             {
                 Vue.nextTick(() => {
                     app.do_first_load();
+                });
+            }
+            else
+            {
+                Vue.nextTick(() => {
+                    app.do_reload();
                 });
             }
             

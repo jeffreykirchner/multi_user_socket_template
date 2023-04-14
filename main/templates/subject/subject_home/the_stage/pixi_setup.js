@@ -105,8 +105,7 @@ setup_pixi_sheets(textures){
  */
 setup_pixi_subjects(){
     
-    for(const i in app.session.world_state.session_players){
-       
+    for(const i in app.session.world_state.session_players){       
 
         let subject = app.session.world_state.session_players[i];
         subject.pixi = {};
@@ -130,6 +129,27 @@ setup_pixi_subjects(){
         subject.pixi.avatar_container = avatar_container;
 
         app.background.addChild(subject.pixi.avatar_container);
+    }
+},
+
+/**
+ * destory pixi subject objects in world state
+ */
+destory_setup_pixi_subjects()
+{
+    if(!app.session) return;
+
+    for(const i in app.session.world_state.session_players){
+
+        let pixi_objects = app.session.world_state.session_players[i].pixi;
+
+        if(pixi_objects)
+        {
+            for(const obj in pixi_objects)
+            {
+                pixi_objects[obj].destroy();
+            }
+        }
     }
 },
 

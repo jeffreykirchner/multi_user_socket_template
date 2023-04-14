@@ -150,9 +150,9 @@ var app = Vue.createApp({
 
         /**
          * do after session has loaded
-         */
-         do_first_load()
-         {           
+        */
+        do_first_load()
+        {           
              app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})           
              document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
 
@@ -185,7 +185,15 @@ var app = Vue.createApp({
 
             app.setup_pixi();
 
-         },
+        },
+
+        /**
+         * after reconnection, load again
+         */
+        do_reload()
+        {
+            app.setup_pixi_subjects();
+        },
 
         /** send winsock request to get session info
         */
@@ -198,6 +206,7 @@ var app = Vue.createApp({
         */
         take_get_session(message_data){
             
+            app.destory_setup_pixi_subjects();
 
             app.session = message_data.session;
             app.session_player = message_data.session_player;
@@ -232,6 +241,12 @@ var app = Vue.createApp({
             {
                 Vue.nextTick(() => {
                     app.do_first_load();
+                });
+            }
+            else
+            {
+                Vue.nextTick(() => {
+                    app.do_reload();
                 });
             }
         },
