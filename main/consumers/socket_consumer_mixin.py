@@ -95,8 +95,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         message_text = text_data_json['message_text']    #data passed to above method
         message_target = text_data_json.get('message_target', None)  #group or individual channel
 
-        # Send message to room group
-
+        # Send message to target
         if not message_target or message_target == "self":
             await self.channel_layer.send(
                 self.channel_name,
