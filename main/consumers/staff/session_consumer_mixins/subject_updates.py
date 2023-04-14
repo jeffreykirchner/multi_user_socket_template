@@ -89,8 +89,9 @@ class SubjectUpdatesMixin():
         logger = logging.getLogger(__name__)
         
         event_data = event["message_text"]
+        player_key = event["player_key"]
 
-        logger.info(f"target_location_update: {event_data}")
+        logger.info(f"target_location_update: event_data {event_data}, event_data {player_key} ")
 
         self.world_state_local["session_players"][str(event_data["session_player_id"])]["target_location"] = event_data["target_location"]
 
