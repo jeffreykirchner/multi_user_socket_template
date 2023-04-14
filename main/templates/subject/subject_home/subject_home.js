@@ -124,7 +124,7 @@ var app = Vue.createApp({
                 case "update_refresh_screens":
                     app.take_refresh_screens(message_data);
                     break;
-                case "target_location_update":
+                case "update_target_location_update":
                     app.take_target_location_update(message_data);
                     break;
                 

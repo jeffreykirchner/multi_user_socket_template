@@ -1,7 +1,7 @@
 target_location_update(){
     app.send_message("target_location_update", 
                     {"target_location" : app.session.world_state.session_players[app.session_player.id].target_location},
-                    "group");                   
+                    "self");                   
 },
 
 take_target_location_update(){
