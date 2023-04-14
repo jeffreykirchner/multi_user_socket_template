@@ -24,8 +24,8 @@ class InterfaceMixin():
             result["target_location"] = target_location
             result["session_player_id"] = self.session_player_id
 
-            await self.send_message(message_to_self=None, message_to_subjects=result, message_to_staff=result, 
-                                    message_type=event['type'], send_to_client=False, send_to_group=True)
+            await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
 
     
     async def update_target_location_update(self, event):

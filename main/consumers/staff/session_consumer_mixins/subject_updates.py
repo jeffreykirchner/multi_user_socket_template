@@ -81,14 +81,16 @@ class SubjectUpdatesMixin():
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
         
-    async def update_target_location_update(self, event):
+    async def target_location_update(self, event):
         '''
         update target location from subject screen
         '''
 
-        #logger = logging.getLogger(__name__)
+        logger = logging.getLogger(__name__)
         
-        event_data = event["staff_data"]
+        event_data = event["message_text"]
+
+        logger.info(f"target_location_update: {event_data}")
 
         self.world_state_local["session_players"][str(event_data["session_player_id"])]["target_location"] = event_data["target_location"]
 

@@ -1,7 +1,7 @@
 /**
  * take update from client for new location target
  */
-update_target_location_update(message_data)
+take_target_location_update(message_data)
 {
     if(message_data.value == "success")
     {

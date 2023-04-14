@@ -111,6 +111,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
                     'type': message_type,
                     'message_text': message_text,
                     'sender_channel_name': self.channel_name,
+                    'player_key': self.player_key,
                 }
             )
 
