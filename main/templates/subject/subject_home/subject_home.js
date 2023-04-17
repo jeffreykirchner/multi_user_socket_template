@@ -223,10 +223,6 @@ var app = Vue.createApp({
             if(app.session.current_experiment_phase != 'Done')
             {
                                 
-                if(app.session.current_experiment_phase != 'Instructions')
-                {
-                    app.update_chat_display();               
-                }
             }
 
             if(app.session.current_experiment_phase == 'Instructions')
@@ -331,8 +327,6 @@ var app = Vue.createApp({
             app.session.session_players = message_data.session_players;
             app.session.session_players_order = message_data.session_players_order;
             app.session_player = message_data.session_player;
-
-            app.update_chat_display();    
 
             if(app.session.current_experiment_phase == 'Names')
             {

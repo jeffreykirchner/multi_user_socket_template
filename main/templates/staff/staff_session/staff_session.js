@@ -277,7 +277,6 @@ var app = Vue.createApp({
                 });
             }
             
-            app.update_chat_display();
             app.update_phase_button_text();    
         },
 
@@ -321,15 +320,6 @@ var app = Vue.createApp({
                 app.session.chat_all.shift();
             
             app.session.chat_all.push(chat);
-            app.update_chat_display();
-        },
-
-        /**
-         * update chat
-         */
-        update_chat_display(){
-            
-            app.chat_list_to_display=app.session.chat_all;
         },
 
         /**

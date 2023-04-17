@@ -1,6 +1,7 @@
 
 import logging
 import json
+from textwrap import TextWrapper
 
 from asgiref.sync import sync_to_async
 
@@ -109,22 +110,23 @@ class ChatMixin():
         message_to_staff = {}
         message_to_staff["chat"] = event_result["chat_for_staff"]
 
-        await self.send_message(message_to_self=message_to_subjects, message_to_subjects=message_to_subjects, message_to_staff=message_to_staff, 
-                                message_type=event['type'], send_to_client=True, send_to_group=True)
+        await self.send_message(message_to_self=None, message_to_subjects=message_to_subjects, message_to_staff=message_to_staff, 
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def update_chat(self, event):
         '''
         send chat to clients, if clients can view it
         '''
         subject_data = event["subject_data"]
-
-        if self.channel_name == event['sender_channel_name']:
-            return
         
         if subject_data['chat_type'] == "Individual" and \
            subject_data['sesson_player_target'] != self.session_player_id and \
            subject_data['chat']['sender_id'] != self.session_player_id:
             return
+        
+        #format text for chat bubbles
+        wrapper = TextWrapper(width=15, max_lines=6)
+        subject_data['chat']['text'] = wrapper.fill(text=subject_data['chat']['text'])
 
         await self.send_message(message_to_self=subject_data, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
