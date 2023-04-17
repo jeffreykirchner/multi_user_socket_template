@@ -34,51 +34,52 @@ take_chat(message_data){
 take_update_chat(message_data){
     
     let chat = message_data.chat;
-    let session_player = app.session_player;
+    app.session.world_state.session_players[chat.sender_id].pixi.show_chat = true;
+    //let session_player = app.session_player;
 
-    if(message_data.chat_type=="All")
-    {
-        if(session_player.chat_all.length >= 100)
-            session_player.chat_all.shift();
+    // if(message_data.chat_type=="All")
+    // {
+    //     if(session_player.chat_all.length >= 100)
+    //         session_player.chat_all.shift();
 
-        session_player.chat_all.push(chat);
-        if(app.chat_recipients != "all")
-        {
-            session_player.new_chat_message = true;
-        }
-    }
-    else
-    {
-        let sesson_player_target =  message_data.sesson_player_target;
-        let session_players = app.session.session_players;
+    //     session_player.chat_all.push(chat);
+    //     if(app.chat_recipients != "all")
+    //     {
+    //         session_player.new_chat_message = true;
+    //     }
+    // }
+    // else
+    // {
+    //     let sesson_player_target =  message_data.sesson_player_target;
+    //     let session_players = app.session.session_players;
 
-        let target = -1;
-        if(sesson_player_target == session_player.id)
-        {
-            target = message_data.chat.sender_id;
-        }
-        else
-        {
-            target = sesson_player_target;
-        }
+    //     let target = -1;
+    //     if(sesson_player_target == session_player.id)
+    //     {
+    //         target = message_data.chat.sender_id;
+    //     }
+    //     else
+    //     {
+    //         target = sesson_player_target;
+    //     }
 
-        session_player = app.session.session_players[target];
+    //     session_player = app.session.session_players[target];
 
-        if(session_player)
-        {
-            if(session_player.chat_individual.length >= 100)
-               session_player.chat_individual.shift();
+    //     if(session_player)
+    //     {
+    //         if(session_player.chat_individual.length >= 100)
+    //            session_player.chat_individual.shift();
 
-            session_player.chat_individual.push(chat);
+    //         session_player.chat_individual.push(chat);
 
-            if(session_player.id != app.chat_recipients)
-            {
-                session_player.new_chat_message = true;
-            }
-        }      
-    }
+    //         if(session_player.id != app.chat_recipients)
+    //         {
+    //             session_player.new_chat_message = true;
+    //         }
+    //     }      
+    // }
 
-    app.update_chat_display();
+    // app.update_chat_display();
 },
 
 /** update who should receive chat

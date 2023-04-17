@@ -115,14 +115,17 @@ setup_pixi_subjects(){
         avatar_container.position.set(subject.current_location.x, subject.current_location.y);
         avatar_container.height = 250;
         avatar_container.width = 250;
+        avatar_container.eventMode = 'static';
 
         let gear_sprite = new PIXI.AnimatedSprite(app.pixi_textures.sprite_sheet.animations['walk']);
         gear_sprite.animationSpeed = app.animation_speed;
         gear_sprite.anchor.set(0.5)
         gear_sprite.tint = app.session.session_players[i].parameter_set_player.hex_color;
+        gear_sprite.eventMode = 'none';
 
         let face_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["face_1.png"]);
         face_sprite.anchor.set(0.5);
+        face_sprite.eventMode = 'none';
 
         avatar_container.addChild(gear_sprite);
         avatar_container.addChild(face_sprite);
@@ -137,10 +140,12 @@ setup_pixi_subjects(){
         
         let chat_bubble_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["chat_bubble.png"]);
         chat_bubble_sprite.anchor.set(0.5);
+        chat_bubble_sprite.eventMode = 'none';
 
         chat_container.addChild(chat_bubble_sprite);
 
         subject.pixi.chat_container = chat_container;
+        subject.pixi.show_chat = false;
 
         app.background.addChild(subject.pixi.chat_container);
         
@@ -240,6 +245,7 @@ move_player(delta){
 
     if(!app.session.world_state) return;
 
+    //move players
     for(let i in app.session.world_state.session_players){
 
         let obj = app.session.world_state.session_players[i];
@@ -286,6 +292,20 @@ move_player(delta){
         {
             avatar_container.getChildAt(0).stop();
         }
+    }
+
+    //update chat boxes
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj = app.session.world_state.session_players[i];
+        let chat_container = obj.pixi.chat_container;
+        let avatar_container = obj.pixi.chat_container;
+        let offset = {x:avatar_container.width * 0.65, y:avatar_container.height * 0.75};
+
+        chat_container.position.set(obj.current_location.x + offset.x,
+                                    obj.current_location.y - offset.y);
+        
+        chat_container.visible = obj.pixi.show_chat;
     }
 },
 
