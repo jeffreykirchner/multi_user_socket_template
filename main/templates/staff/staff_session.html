@@ -70,11 +70,7 @@
                 {%include "staff/staff_session/subjects/subjects_card.html"%} 
             </div>               
         </div>        
-        <div class="row">
-            <div class="col">
-               {%include "staff/staff_session/interface/interface_card.html"%} 
-            </div>            
-        </div>            
+         
     </div>
     <div class="col-md-3">
         <div class="row">
@@ -102,10 +98,11 @@
         </div>
                                            
     </div>
-    <div class="row justify-content-lg-center mt-4" v-cloak v-if="session">
-        <div class="col">
-            {%include "subject/subject_home/the_stage/the_stage_card.html"%}
-        </div>
+</div>
+
+<div class="row justify-content-lg-center mt-4" v-cloak v-if="session">
+    <div class="col">
+        {%include "subject/subject_home/the_stage/the_stage_card.html"%}
     </div>
 </div>
 

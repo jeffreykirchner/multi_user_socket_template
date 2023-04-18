@@ -313,13 +313,10 @@ var app = Vue.createApp({
         */
         take_update_chat(message_data){
             
-            let result = message_data;
-            let chat = result.chat;
-
-            if(app.session.chat_all.length>=100)
-                app.session.chat_all.shift();
-            
-            app.session.chat_all.push(chat);
+            let chat = message_data.chat;
+            app.session.world_state.session_players[chat.sender_id].show_chat = true;    
+            app.session.world_state.session_players[chat.sender_id].chat_time = Date.now();
+            app.session.world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
         },
 
         /**
