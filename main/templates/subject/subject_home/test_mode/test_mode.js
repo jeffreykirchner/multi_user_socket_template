@@ -143,12 +143,8 @@ do_test_mode_run()
  */
 do_test_mode_chat(){
 
-
-    document.getElementById("chat_all_id").click();   
-
     app.chat_text = app.random_string(5, 20);
 },
-
 
 /**
  * test mode move to a location
