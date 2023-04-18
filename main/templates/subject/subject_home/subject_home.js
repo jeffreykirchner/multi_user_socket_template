@@ -24,7 +24,7 @@ var app = Vue.createApp({
 
                     chat_text : "",
                     chat_recipients : "all",
-                    chat_button_label : "Everyone",
+                    chat_button_label : "Chat",
                     chat_list_to_display : [],                //list of chats to display on screen
 
                     end_game_modal_visible : false,
@@ -125,7 +125,7 @@ var app = Vue.createApp({
                     app.take_refresh_screens(message_data);
                     break;
                 case "update_target_location_update":
-                    app.update_target_location_update(message_data);
+                    app.take_target_location_update(message_data);
                     break;
                 
             }
@@ -139,19 +139,20 @@ var app = Vue.createApp({
         *    @param message_type {string} type of message sent to server
         *    @param message_text {json} body of message being sent to server
         */
-        send_message(message_type, message_text) {            
-
+        send_message(message_type, message_text, message_target="self")
+        {          
             app.chat_socket.send(JSON.stringify({
                     'message_type': message_type,
                     'message_text': message_text,
+                    'message_target': message_target,
                 }));
         },
 
         /**
          * do after session has loaded
-         */
-         do_first_load()
-         {           
+        */
+        do_first_load()
+        {           
              app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})           
              document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
 
@@ -184,7 +185,15 @@ var app = Vue.createApp({
 
             app.setup_pixi();
 
-         },
+        },
+
+        /**
+         * after reconnection, load again
+         */
+        do_reload()
+        {
+            app.setup_pixi_subjects();
+        },
 
         /** send winsock request to get session info
         */
@@ -197,6 +206,7 @@ var app = Vue.createApp({
         */
         take_get_session(message_data){
             
+            app.destory_setup_pixi_subjects();
 
             app.session = message_data.session;
             app.session_player = message_data.session_player;
@@ -213,10 +223,6 @@ var app = Vue.createApp({
             if(app.session.current_experiment_phase != 'Done')
             {
                                 
-                if(app.session.current_experiment_phase != 'Instructions')
-                {
-                    app.update_chat_display();               
-                }
             }
 
             if(app.session.current_experiment_phase == 'Instructions')
@@ -231,6 +237,12 @@ var app = Vue.createApp({
             {
                 Vue.nextTick(() => {
                     app.do_first_load();
+                });
+            }
+            else
+            {
+                Vue.nextTick(() => {
+                    app.do_reload();
                 });
             }
         },
@@ -315,8 +327,6 @@ var app = Vue.createApp({
             app.session.session_players = message_data.session_players;
             app.session.session_players_order = message_data.session_players_order;
             app.session_player = message_data.session_player;
-
-            app.update_chat_display();    
 
             if(app.session.current_experiment_phase == 'Names')
             {

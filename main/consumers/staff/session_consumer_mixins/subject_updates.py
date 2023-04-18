@@ -86,9 +86,10 @@ class SubjectUpdatesMixin():
         update target location from subject screen
         '''
 
-        #logger = logging.getLogger(__name__)
+        logger = logging.getLogger(__name__)
         
         event_data = event["staff_data"]
+        
 
         self.world_state_local["session_players"][str(event_data["session_player_id"])]["target_location"] = event_data["target_location"]
 

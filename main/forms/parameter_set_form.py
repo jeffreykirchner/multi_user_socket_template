@@ -23,10 +23,6 @@ class ParameterSetForm(forms.ModelForm):
                                        widget=forms.NumberInput(attrs={"v-model":"parameter_set.period_length",
                                                                        "step":"1",
                                                                        "min":"1"}))
-                                       
-    private_chat = forms.ChoiceField(label='Private Chat',
-                                       choices=((True, 'Yes'), (False,'No' )),
-                                       widget=forms.Select(attrs={"v-model":"parameter_set.private_chat",}))
 
     show_instructions = forms.ChoiceField(label='Show Instructions',
                                        choices=((True, 'Yes'), (False,'No' )),
@@ -65,7 +61,7 @@ class ParameterSetForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSet
-        fields =['period_count', 'period_length', 'private_chat', 'show_instructions', 'instruction_set', 
+        fields =['period_count', 'period_length', 'show_instructions', 'instruction_set', 
                  'survey_required', 'survey_link', 'test_mode', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit']
 
     def clean_survey_link(self):

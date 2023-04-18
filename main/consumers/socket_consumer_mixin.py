@@ -10,6 +10,7 @@ from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 
 from main.models import SessionPlayer
 
@@ -47,14 +48,14 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        result = await sync_to_async(take_handle_dis_connect)(self.player_key, True)
+        result = await sync_to_async(take_handle_dis_connect, thread_sensitive=self.thread_sensitive)(self.player_key, True)
 
         #send updated connection status to all users
         await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_connection_status",
                  "data": result,
-                 'sender_channel_name': self.channel_name,
+                 "sender_channel_name": self.channel_name,
                 },
             )
 
@@ -68,14 +69,14 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         disconnect websockeet
         '''
 
-        result = await sync_to_async(take_handle_dis_connect)(self.player_key, False)
+        result = await sync_to_async(take_handle_dis_connect, thread_sensitive=False)(self.player_key, False)
 
         #send updated connection status to all users
         await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_connection_status",
                  "data": result,
-                 'sender_channel_name': self.channel_name,
+                 "sender_channel_name": self.channel_name,
                 },
             )
        
@@ -90,17 +91,29 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         '''
         text_data_json = json.loads(text_data)
 
-        message_type = text_data_json['message_type']   #name of child method to be called
-        message_text = text_data_json['message_text']   #data passed to above method
+        message_type = text_data_json['message_type']    #name of child method to be called
+        message_text = text_data_json['message_text']    #data passed to above method
+        message_target = text_data_json.get('message_target', None)  #group or individual channel
 
-        # Send message to room group
-        await self.channel_layer.send(
-            self.channel_name,
-            {
-                'type': message_type,
-                'message_text': message_text
-            }
-        )
+        # Send message to target
+        if not message_target or message_target == "self":
+            await self.channel_layer.send(
+                self.channel_name,
+                {
+                    'type': message_type,
+                    'message_text': message_text
+                }
+            )
+        else:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': message_type,
+                    'message_text': message_text,
+                    'sender_channel_name': self.channel_name,
+                    'player_key': self.player_key,
+                }
+            )
 
 def take_handle_dis_connect(connection_uuid, value):
     '''
@@ -110,18 +123,19 @@ def take_handle_dis_connect(connection_uuid, value):
     logger.info(f"take_handle_dis_connect: {connection_uuid} {value}")
 
     try:
-        session_player = SessionPlayer.objects.get(player_key=connection_uuid)
-        session_player.connecting = False
+        with transaction.atomic():
+            session_player = SessionPlayer.objects.select_for_update().get(player_key=connection_uuid)
+            session_player.connecting = False
 
-        if value:
-            session_player.connected_count += 1
-        else:
-            session_player.connected_count -= 1
+            if value:
+                session_player.connected_count += 1
+            else:
+                session_player.connected_count -= 1
 
-        if session_player.connected_count < 0:
-            session_player.connected_count = 0
+            if session_player.connected_count < 0:
+                session_player.connected_count = 0
 
-        session_player.save()
+            session_player.save()
 
         return {"value" : "success",  "result" : {"id" : session_player.id, "player_key" : f'{session_player.player_key}', "connected_count" : session_player.connected_count}}              
 

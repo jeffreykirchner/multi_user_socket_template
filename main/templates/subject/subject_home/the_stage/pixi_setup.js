@@ -105,31 +105,81 @@ setup_pixi_sheets(textures){
  */
 setup_pixi_subjects(){
     
-    for(const i in app.session.world_state.session_players){
-       
+    for(const i in app.session.world_state.session_players){       
 
         let subject = app.session.world_state.session_players[i];
         subject.pixi = {};
 
+        //avatar
         let avatar_container = new PIXI.Container();
         avatar_container.position.set(subject.current_location.x, subject.current_location.y);
         avatar_container.height = 250;
         avatar_container.width = 250;
+        avatar_container.eventMode = 'static';
 
         let gear_sprite = new PIXI.AnimatedSprite(app.pixi_textures.sprite_sheet.animations['walk']);
         gear_sprite.animationSpeed = app.animation_speed;
         gear_sprite.anchor.set(0.5)
         gear_sprite.tint = app.session.session_players[i].parameter_set_player.hex_color;
+        gear_sprite.eventMode = 'none';
 
         let face_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["face_1.png"]);
         face_sprite.anchor.set(0.5);
+        face_sprite.eventMode = 'none';
 
         avatar_container.addChild(gear_sprite);
         avatar_container.addChild(face_sprite);
 
         subject.pixi.avatar_container = avatar_container;
-
         app.background.addChild(subject.pixi.avatar_container);
+
+        //chat
+        let chat_container = new PIXI.Container();
+        chat_container.position.set(subject.current_location.x, subject.current_location.y);
+        //chat_container.visible = true;
+        
+        let chat_bubble_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["chat_bubble.png"]);
+        chat_bubble_sprite.anchor.set(0.5);
+        chat_bubble_sprite.eventMode = 'none';
+
+        let chat_bubble_text = new PIXI.Text('', {
+                fontFamily: 'Arial',
+                fontSize: 18,
+                fill: 0x000000,
+                align: 'left',
+            });
+        chat_bubble_text.eventMode = 'none';    
+
+        chat_container.addChild(chat_bubble_sprite);
+        chat_container.addChild(chat_bubble_text);
+
+        chat_bubble_text.position.set(0, -chat_container.height*.09)
+        chat_bubble_text.anchor.set(0.5);
+
+        subject.pixi.chat_container = chat_container;
+        subject.show_chat = false;
+        subject.chat_time = null;
+
+        app.background.addChild(subject.pixi.chat_container);
+    }
+},
+
+/**
+ * destory pixi subject objects in world state
+ */
+destory_setup_pixi_subjects()
+{
+    if(!app.session) return;
+
+    for(const i in app.session.world_state.session_players){
+
+        let pixi_objects = app.session.world_state.session_players[i].pixi;
+
+        if(pixi_objects)
+        {
+            pixi_objects.avatar_container.destroy();
+            pixi_objects.chat_container.destroy();
+        }
     }
 },
 
@@ -201,10 +251,29 @@ update_zoom(){
     }
 },
 
+get_distance(point1, point2) 
+{
+    // Get the difference between the x-coordinates of the two points.
+    const dx = point2.x - point1.x;
+  
+    // Get the difference between the y-coordinates of the two points.
+    const dy = point2.y - point1.y;
+  
+    // Calculate the square of the distance between the two points.
+    const distanceSquared = dx * dx + dy * dy;
+  
+    // Take the square root of the distance between the two points.
+    const distance = Math.sqrt(distanceSquared);
+  
+    // Return the distance between the two points.
+    return distance;
+},
+
 move_player(delta){
 
     if(!app.session.world_state) return;
 
+    //move players
     for(let i in app.session.world_state.session_players){
 
         let obj = app.session.world_state.session_players[i];
@@ -246,11 +315,78 @@ move_player(delta){
             {
                 avatar_container.getChildAt(0).animationSpeed = -app.animation_speed;
             }
+
+            //hide chat if longer than 10 seconds and moving
+            if(obj.chat_time)
+            {
+                if(Date.now() - obj.chat_time >= 10000)
+                {
+                    obj.show_chat = false;
+                }
+            }           
         }
         else
         {
             avatar_container.getChildAt(0).stop();
         }
+    }
+
+    //find nearest players
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj1 = app.session.world_state.session_players[i];
+        obj1.nearest_player = null;
+        obj1.nearest_player_distance = null;
+
+        for(let j in app.session.world_state.session_players)
+        {
+            let obj2 = app.session.world_state.session_players[j];
+
+            if(i != j)
+            {
+                temp_distance = app.get_distance(obj1.current_location, obj2.current_location);
+
+                if(!obj1.nearest_player)
+                {
+                    obj1.nearest_player = j;
+                    obj1.nearest_player_distance = temp_distance;
+                }
+                else
+                {
+                   if(temp_distance < obj1.nearest_player_distance)
+                   {
+                        obj1.nearest_player = j;
+                        obj1.nearest_player_distance = temp_distance;
+                   }
+                }
+            }
+        }
+    }
+
+    //update chat boxes
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj = app.session.world_state.session_players[i];
+        let chat_container = obj.pixi.chat_container;
+        let avatar_container = obj.pixi.chat_container;
+        let offset = {x:chat_container.width*.7, y:chat_container.height*.4};
+
+        if(app.session.world_state.session_players[obj.nearest_player].current_location.x < obj.current_location.x)
+        {
+            chat_container.position.set(obj.current_location.x + offset.x,
+                                        obj.current_location.y - offset.y);
+            
+            chat_container.getChildAt(0).scale.x = 1;
+        }
+        else
+        {
+            chat_container.position.set(obj.current_location.x - offset.x,
+                                        obj.current_location.y - offset.y);
+
+            chat_container.getChildAt(0).scale.x = -1;
+        }
+
+        chat_container.visible = obj.show_chat;
     }
 },
 
