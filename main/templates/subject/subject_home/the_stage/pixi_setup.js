@@ -315,6 +315,15 @@ move_player(delta){
             {
                 avatar_container.getChildAt(0).animationSpeed = -app.animation_speed;
             }
+
+            //hide chat if longer than 10 seconds and moving
+            if(obj.chat_time)
+            {
+                if(Date.now() - obj.chat_time >= 10000)
+                {
+                    obj.show_chat = false;
+                }
+            }           
         }
         else
         {

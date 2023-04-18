@@ -64,7 +64,7 @@ class ParameterSet(models.Model):
             self.period_count = new_ps.get("period_count")
             self.period_length = new_ps.get("period_length")
 
-            self.private_chat = True if new_ps.get("private_chat") == "True" else False
+            self.private_chat = False
 
             self.show_instructions = True if new_ps.get("show_instructions") == "True" else False
 
@@ -161,7 +161,7 @@ class ParameterSet(models.Model):
 
         self.json_for_session["period_length"] = self.period_length
 
-        self.json_for_session["private_chat"] = "True" if self.private_chat else "False"
+        self.json_for_session["private_chat"] = "False"
         self.json_for_session["show_instructions"] = "True" if self.show_instructions else "False"
         self.json_for_session["instruction_set"] = self.instruction_set.json_min()
 

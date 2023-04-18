@@ -143,24 +143,8 @@ do_test_mode_run()
  */
 do_test_mode_chat(){
 
-    if(app.session.parameter_set.private_chat)
-    {
-        let session_player_id = app.session.session_players_order[app.random_number(0,  app.session.session_players_order.length-1)]
-        let session_player_local = app.session.session_players[session_player_id];
 
-        if(session_player_local.id == app.session_player.id || app.session.current_experiment_phase == "Instructions")
-        {
-            document.getElementById("chat_all_id").click();
-        }
-        else
-        {
-            document.getElementById('chat_invididual_' + session_player_local.id + '_id').click();
-        }        
-    }
-    else
-    {
-        document.getElementById("chat_all_id").click();
-    }
+    document.getElementById("chat_all_id").click();   
 
     app.chat_text = app.random_string(5, 20);
 },

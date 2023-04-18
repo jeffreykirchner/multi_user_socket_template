@@ -51,15 +51,9 @@ class ChatMixin():
             elif session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
                 result = {"value" : "fail", "result" : {"message" : "Session not running."}}
             else :
-                if recipients == "all":
-                    session_player_chat.chat_type = ChatTypes.ALL
-                else:
-                    if not session.parameter_set.private_chat:
-                        logger.warning(f"take chat: private chat not enabled :{self.session_id} {self.session_player_id} {data}")
-                        result = {"value" : "fail",
-                                  "result" : {"message" : "Private chat not allowed."}}
-
-                    session_player_chat.chat_type = ChatTypes.INDIVIDUAL
+                
+                session_player_chat.chat_type = ChatTypes.ALL
+               
 
             result["chat_type"] = session_player_chat.chat_type
             result["recipients"] = []
@@ -69,25 +63,9 @@ class ChatMixin():
 
             await sync_to_async(session_player_chat.save, thread_sensitive=self.thread_sensitive)()
 
-            if recipients == "all":
-                await sync_to_async(session_player_chat.session_player_recipients.add, thread_sensitive=self.thread_sensitive)(*session.session_players.all())
+            await sync_to_async(session_player_chat.session_player_recipients.add, thread_sensitive=self.thread_sensitive)(*session.session_players.all())
 
-                result["recipients"] = [i.id for i in session.session_players.all()]
-            else:
-                sesson_player_target = await SessionPlayer.objects.aget(id=recipients)
-
-                if sesson_player_target in session.session_players.all():
-                    await sync_to_async(session_player_chat.session_player_recipients.add, thread_sensitive=self.thread_sensitive)(sesson_player_target)
-                else:
-                    await sync_to_async(session_player_chat.delete)()
-                    logger.warning(f"take chat: chat at none group member : {self.session_id} {self.session_player_id} {data}")
-                    result = {"value" : "fail", "result" : {"Player not in group."}}
-
-                result["sesson_player_target"] = sesson_player_target.id
-
-                result["recipients"].append(session_player.id)
-                result["recipients"].append(sesson_player_target.id)
-            
+            result["recipients"] = [i.id for i in session.session_players.all()]
             result["chat_for_subject"] = await session_player_chat.ajson_for_subject()
             result["chat_for_staff"] = await session_player_chat.ajson_for_staff()
 

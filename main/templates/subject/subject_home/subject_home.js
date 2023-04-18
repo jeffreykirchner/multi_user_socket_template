@@ -24,7 +24,7 @@ var app = Vue.createApp({
 
                     chat_text : "",
                     chat_recipients : "all",
-                    chat_button_label : "Everyone",
+                    chat_button_label : "Chat",
                     chat_list_to_display : [],                //list of chats to display on screen
 
                     end_game_modal_visible : false,
