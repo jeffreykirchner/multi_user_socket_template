@@ -139,7 +139,7 @@ setup_pixi_subjects(){
         //chat_container.visible = true;
         
         let chat_bubble_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["chat_bubble.png"]);
-        // chat_bubble_sprite.anchor.set(0.5);
+        chat_bubble_sprite.anchor.set(0.5);
         chat_bubble_sprite.eventMode = 'none';
 
         let chat_bubble_text = new PIXI.Text('', {
@@ -153,11 +153,12 @@ setup_pixi_subjects(){
         chat_container.addChild(chat_bubble_sprite);
         chat_container.addChild(chat_bubble_text);
 
-        chat_bubble_text.position.set(chat_container.width * 0.1, chat_container.height * 0.1)
+        chat_bubble_text.position.set(0, -chat_container.height*.09)
+        chat_bubble_text.anchor.set(0.5);
 
         subject.pixi.chat_container = chat_container;
-        subject.pixi.show_chat = false;
-        subject.pixi.chat_side = 'right';
+        subject.show_chat = false;
+        subject.chat_time = null;
 
         app.background.addChild(subject.pixi.chat_container);
     }
@@ -359,7 +360,7 @@ move_player(delta){
         let obj = app.session.world_state.session_players[i];
         let chat_container = obj.pixi.chat_container;
         let avatar_container = obj.pixi.chat_container;
-        let offset = {x:chat_container.width*.25, y:chat_container.height};
+        let offset = {x:chat_container.width*.7, y:chat_container.height*.4};
 
         if(app.session.world_state.session_players[obj.nearest_player].current_location.x < obj.current_location.x)
         {
@@ -376,7 +377,7 @@ move_player(delta){
             chat_container.getChildAt(0).scale.x = -1;
         }
 
-        chat_container.visible = obj.pixi.show_chat;
+        chat_container.visible = obj.show_chat;
     }
 },
 

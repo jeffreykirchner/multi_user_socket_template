@@ -34,7 +34,7 @@ take_chat(message_data){
 take_update_chat(message_data){
     
     let chat = message_data.chat;
-    app.session.world_state.session_players[chat.sender_id].pixi.show_chat = true;    
+    app.session.world_state.session_players[chat.sender_id].show_chat = true;    
     app.session.world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
 },
 
