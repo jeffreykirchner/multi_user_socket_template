@@ -58,7 +58,7 @@ var app = Vue.createApp({
                     stage_width : 10000,
                     stage_height : 10000,
                     scroll_direction : {x:0, y:0},
-                   
+                    current_location : {x:0, y:0},
                 }},
     methods: {
 

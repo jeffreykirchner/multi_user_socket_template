@@ -227,28 +227,29 @@ game_loop(delta){
     
     if(app.pixi_mode=="staff")
     {
-         app.scroll_staff(delta);
+        app.update_offsets_staff(delta);
+        app.scroll_staff(delta);
     }       
 },
 
 update_zoom(){
-    app.background.scale.set(app.pixi_scale, app.pixi_scale);
+    app.background.scale.set(app.pixi_scale);
     //app.background.x += (app.background.x*app.pixi_scale);
    // app.background.y += (app.background.y*app.pixi_scale);
 
-    if(app.pixi_mode=="subject")
-    {
-        app.pixi_target.scale.set(app.pixi_scale, app.pixi_scale);
+    // if(app.pixi_mode=="subject")
+    // {
+    //     app.pixi_target.scale.set(app.pixi_scale, app.pixi_scale);
 
-        // app.pixi_target.x *= app.pixi_scale;
-        // app.pixi_target.y *= app.pixi_scale;
+    //     // app.pixi_target.x *= app.pixi_scale;
+    //     // app.pixi_target.y *= app.pixi_scale;
 
-        // app.current_location.x *= app.pixi_scale;
-        // app.current_location.y *= app.pixi_scale;
+    //     // app.current_location.x *= app.pixi_scale;
+    //     // app.current_location.y *= app.pixi_scale;
 
-        // app.target_location.x *= app.pixi_scale;
-        // app.target_location.y *= app.pixi_scale;
-    }
+    //     // app.target_location.x *= app.pixi_scale;
+    //     // app.target_location.y *= app.pixi_scale;
+    // }
 },
 
 get_distance(point1, point2) 
@@ -390,26 +391,39 @@ move_player(delta){
     }
 },
 
+/**
+ * update the amount of shift needed to center the player
+ */
 update_offsets_player(delta){
     
-    obj = app.session.world_state.session_players[app.session_player.id];
-
     offset = app.get_offset();
 
     app.background.x = -offset.x;
     app.background.y = -offset.y;   
     
-    if(app.pixi_mode=="subject")
-    {
-        app.pixi_target.x = obj.target_location.x;
-        app.pixi_target.y = obj.target_location.y;
-    }
+    obj = app.session.world_state.session_players[app.session_player.id];
+
+    app.pixi_target.x = obj.target_location.x;
+    app.pixi_target.y = obj.target_location.y;
+    
 },
+
+/**
+ * update the amount of shift needed for the staff view
+ */
+update_offsets_staff(delta){
+    
+    offset = app.current_location;
+
+    app.background.x = -offset.x;
+    app.background.y = -offset.y;   
+},
+
 
 scroll_staff(delta){
 
-    // app.current_location.x += app.scroll_direction.x;
-    // app.current_location.y += app.scroll_direction.y;
+    app.current_location.x += app.scroll_direction.x;
+    app.current_location.y += app.scroll_direction.y;
 },
 
 get_offset(){
@@ -431,7 +445,6 @@ subject_pointer_up(event){
     obj.target_location.y = local_pos.y;
 
     app.target_location_update();
-
 },
 
 /**
