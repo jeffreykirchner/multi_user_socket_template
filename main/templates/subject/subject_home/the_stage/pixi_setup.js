@@ -64,7 +64,7 @@ setup_pixi_sheets(textures){
     if(app.pixi_mode=="subject")
     {
         tiling_sprite.eventMode ='static';
-        tiling_sprite.on("pointerup", app.subject_pointer_up);
+        tiling_sprite.on("pointerup", app.subject_pointer_up);        
                
         app.pixi_target = new PIXI.Graphics();
         app.pixi_target.lineStyle(3, 0x000000);
@@ -74,6 +74,10 @@ setup_pixi_sheets(textures){
 
         //app.pixi_target.scale.set(app.pixi_scale, app.pixi_scale);
         app.background.addChild(app.pixi_target)
+    }
+    else
+    {
+        tiling_sprite.on("onwheel", app.staff_onwheel);
     }
 
     // staff controls
@@ -233,7 +237,13 @@ game_loop(delta){
 },
 
 update_zoom(){
+
     app.background.scale.set(app.pixi_scale);
+   
+    // app.current_location.x += ( app.pixi_scale * app.pixi_app.screen.width/2);
+    // app.current_location.y += ( app.pixi_scale * app.pixi_app.screen.height/2);
+
+
     //app.background.x += (app.background.x*app.pixi_scale);
    // app.background.y += (app.background.y*app.pixi_scale);
 
@@ -461,5 +471,13 @@ staff_screen_scroll_button_over(event){
 staff_screen_scroll_button_out(event){
     event.currentTarget.alpha = 0.5;
     app.scroll_direction = {x:0, y:0};
+},
+
+/**
+ * mouse wheel event for staff screen
+ */
+staff_onwheel(event){
+
+   
 },
 
