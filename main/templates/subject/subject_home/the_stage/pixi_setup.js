@@ -44,21 +44,26 @@ setup_pixi_sheets(textures){
     app.pixi_textures = textures;
     app.background_tile_tex = textures.bg_tex;
 
+    app.pixi_container_main = new PIXI.Container();
+    app.pixi_container_main.sortableChildren = true;
+
     app.background = new PIXI.Graphics();
     app.background.beginFill(0xffffff);
     app.background.drawRect(0, 0, app.stage_width, app.stage_height);
     app.background.endFill();
     app.background.eventMode ='static';
 
-    app.pixi_app.stage.addChild(app.background);
+    app.pixi_container_main.addChild(app.background);
 
+    app.pixi_app.stage.addChild(app.pixi_container_main);
+   
     let tiling_sprite = new PIXI.TilingSprite(
         textures.bg_tex,
         app.stage_width,
         app.stage_height,
     );
     tiling_sprite.position.set(0,0);
-    app.background.addChild(tiling_sprite);
+    app.pixi_container_main.addChild(tiling_sprite);
 
     //subject controls
     if(app.pixi_mode=="subject")
@@ -73,7 +78,7 @@ setup_pixi_sheets(textures){
         app.pixi_target.eventMode='static';
 
         //app.pixi_target.scale.set(app.pixi_scale, app.pixi_scale);
-        app.background.addChild(app.pixi_target)
+        app.pixi_container_main.addChild(app.pixi_target)
     }
     else
     {
@@ -109,6 +114,7 @@ setup_pixi_sheets(textures){
  */
 setup_pixi_subjects(){
     
+    let current_z_index = 1000;
     for(const i in app.session.world_state.session_players){       
 
         let subject = app.session.world_state.session_players[i];
@@ -135,7 +141,7 @@ setup_pixi_subjects(){
         avatar_container.addChild(face_sprite);
 
         subject.pixi.avatar_container = avatar_container;
-        app.background.addChild(subject.pixi.avatar_container);
+        app.pixi_container_main.addChild(subject.pixi.avatar_container);
 
         //chat
         let chat_container = new PIXI.Container();
@@ -161,10 +167,19 @@ setup_pixi_subjects(){
         chat_bubble_text.anchor.set(0.5);
 
         subject.pixi.chat_container = chat_container;
+        subject.pixi.chat_container.zIndex = current_z_index++;
+
         subject.show_chat = false;
         subject.chat_time = null;
 
-        app.background.addChild(subject.pixi.chat_container);
+        app.pixi_container_main.addChild(subject.pixi.chat_container);
+    }
+
+    //make local subject the top layer
+    if(app.pixi_mode=="subject")
+    {  
+        app.session.world_state.session_players[app.session_player.id].pixi.avatar_container.zIndex = 999;
+        app.session.world_state.session_players[app.session_player.id].pixi.chat_container.zIndex = current_z_index;
     }
 },
 
@@ -248,7 +263,7 @@ update_zoom(){
     }
 
     app.pixi_scale = app.pixi_scale_range_control;
-    app.background.scale.set(app.pixi_scale);
+    app.pixi_container_main.scale.set(app.pixi_scale);
 },
 
 /**
@@ -403,8 +418,8 @@ update_offsets_player(delta){
     
     offset = app.get_offset();
 
-    app.background.x = -offset.x;
-    app.background.y = -offset.y;   
+    app.pixi_container_main.x = -offset.x;
+    app.pixi_container_main.y = -offset.y;   
     
     obj = app.session.world_state.session_players[app.session_player.id];
 
@@ -419,8 +434,8 @@ update_offsets_staff(delta){
     
     offset = app.get_offset_staff();
 
-    app.background.x = -offset.x;
-    app.background.y = -offset.y;   
+    app.pixi_container_main.x = -offset.x;
+    app.pixi_container_main.y = -offset.y;   
 },
 
 
