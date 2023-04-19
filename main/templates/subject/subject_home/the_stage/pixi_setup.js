@@ -437,7 +437,13 @@ get_offset(){
             y:obj.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
 },
 
-get_offset_staff(){;
+get_offset_staff(){
+
+    if(app.follow_subject != -1)
+    {
+        obj = app.session.world_state.session_players[app.follow_subject];
+        app.current_location = Object.assign({}, obj.current_location);
+    }
 
     return {x:app.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
             y:app.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};

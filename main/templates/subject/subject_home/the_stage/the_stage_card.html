@@ -36,8 +36,8 @@
         </div>
 
         <!-- controls -->
-        <div class="row" v-if="pixi_mode=='staff'">
-            <div class="col">
+        <div class="row" v-if="pixi_mode=='staff' && session">
+            <div class="col-md-9">
                 <label for="zoom_range" 
                        class="form-label">
                     Zoom
@@ -50,6 +50,21 @@
                        v-model="pixi_scale_range_control"
                        v-on:input="update_zoom()"
                        id="zoom_range">
+            </div>
+            <div class="col-md-3">
+                <label for="follow_subject" class="form-label">Follow Subject</label>
+                <select v-model="follow_subject" 
+                        class="form-select" 
+                        aria-label="Follow Subject"
+                        id="follow_subject">
+                    <option :value="-1" :key="-1">None</option>
+                    <option v-for="(p, index) in session.session_players_order" 
+                           :value="session.session_players[p].id" 
+                           :key="index"
+                           :set="temp_p=session.session_players[p]">
+                           Player [[temp_p.parameter_set_player.id_label]]
+                    </option>
+                </select>
             </div>
         </div>
 
