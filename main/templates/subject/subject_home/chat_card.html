@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center mt-2" v-show="session.started && session.parameter_set.private_chat">
+        <div class="row justify-content-center mt-2" v-show="session.started && session.parameter_set.private_chat =='True'">
             <div class="col-md-4 text-center">       
                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group" id="chat_button_group">
                     <input type="radio"
@@ -71,8 +71,8 @@
                     </label>
                     
                     <div v-for="(p, index) in session.session_players_order" 
-                         v-bind:key="p"
-                         :set="temp_p=session.session_players[p]">
+                        v-bind:key="p"
+                        :set="temp_p=session.session_players[p]">
                         
                         <input type="radio"
                             class="btn-check" 
@@ -82,13 +82,13 @@
                             v-if="p != session_player.id"
                             v-on:click="update_chat_recipients(p)">
                         <label class="btn btn-outline-secondary"
-                               v-if="p != session_player.id"
-                               v-bind:for="'chat_invididual_' + p + '_id'">
+                            v-if="p != session_player.id"
+                            v-bind:for="'chat_invididual_' + p + '_id'">
                             [[temp_p.parameter_set_player.id_label]]
                             <span v-if=temp_p.new_chat_message>*</span>
                         </label>
                     </div>
-
+                
                 </div> 
             </div>
         </div>
