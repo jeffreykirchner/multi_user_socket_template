@@ -77,7 +77,7 @@ setup_pixi_sheets(textures){
     }
     else
     {
-        tiling_sprite.on("onwheel", app.staff_onwheel);
+       
     }
 
     // staff controls
@@ -238,30 +238,22 @@ game_loop(delta){
 
 update_zoom(){
 
-    app.background.scale.set(app.pixi_scale);
+    if(app.pixi_scale == app.pixi_scale_range_control) return;
+    
    
-    // app.current_location.x += ( app.pixi_scale * app.pixi_app.screen.width/2);
-    // app.current_location.y += ( app.pixi_scale * app.pixi_app.screen.height/2);
+    let zoom_direction = 1;
+    if(app.pixi_scale_range_control > app.pixi_scale)
+    {
+        zoom_direction = -1;
+    }
 
-
-    //app.background.x += (app.background.x*app.pixi_scale);
-   // app.background.y += (app.background.y*app.pixi_scale);
-
-    // if(app.pixi_mode=="subject")
-    // {
-    //     app.pixi_target.scale.set(app.pixi_scale, app.pixi_scale);
-
-    //     // app.pixi_target.x *= app.pixi_scale;
-    //     // app.pixi_target.y *= app.pixi_scale;
-
-    //     // app.current_location.x *= app.pixi_scale;
-    //     // app.current_location.y *= app.pixi_scale;
-
-    //     // app.target_location.x *= app.pixi_scale;
-    //     // app.target_location.y *= app.pixi_scale;
-    // }
+    app.pixi_scale = app.pixi_scale_range_control;
+    app.background.scale.set(app.pixi_scale);
 },
 
+/**
+ * get distance in pixels between two points
+ */
 get_distance(point1, point2) 
 {
     // Get the difference between the x-coordinates of the two points.
@@ -280,6 +272,9 @@ get_distance(point1, point2)
     return distance;
 },
 
+/**
+ * move players if target does not equal current location
+ */
 move_player(delta){
 
     if(!app.session.world_state) return;
@@ -415,7 +410,6 @@ update_offsets_player(delta){
 
     app.pixi_target.x = obj.target_location.x;
     app.pixi_target.y = obj.target_location.y;
-    
 },
 
 /**
@@ -423,7 +417,7 @@ update_offsets_player(delta){
  */
 update_offsets_staff(delta){
     
-    offset = app.current_location;
+    offset = app.get_offset_staff();
 
     app.background.x = -offset.x;
     app.background.y = -offset.y;   
@@ -441,6 +435,12 @@ get_offset(){
 
     return {x:obj.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
             y:obj.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
+},
+
+get_offset_staff(){;
+
+    return {x:app.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
+            y:app.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
 },
 
 /**
@@ -473,11 +473,4 @@ staff_screen_scroll_button_out(event){
     app.scroll_direction = {x:0, y:0};
 },
 
-/**
- * mouse wheel event for staff screen
- */
-staff_onwheel(event){
-
-   
-},
 

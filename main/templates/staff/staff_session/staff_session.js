@@ -55,6 +55,7 @@ var app = Vue.createApp({
                     scroll_speed : 10,
                     pixi_mode : "staff",
                     pixi_scale : 1,
+                    pixi_scale_range_control : 1,
                     stage_width : 10000,
                     stage_height : 10000,
                     scroll_direction : {x:0, y:0},
