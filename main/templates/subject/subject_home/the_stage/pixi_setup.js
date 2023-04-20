@@ -15,6 +15,8 @@ setup_pixi(){
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
         app.setup_pixi_subjects();
+        app.setup_pixi_minimap();
+        app.setup_subject_status_overlay();
     });
 },
 
@@ -44,27 +46,32 @@ setup_pixi_sheets(textures){
     app.pixi_textures = textures;
     app.background_tile_tex = textures.bg_tex;
 
+    app.pixi_container_main = new PIXI.Container();
+    app.pixi_container_main.sortableChildren = true;
+
     app.background = new PIXI.Graphics();
     app.background.beginFill(0xffffff);
     app.background.drawRect(0, 0, app.stage_width, app.stage_height);
     app.background.endFill();
     app.background.eventMode ='static';
 
-    app.pixi_app.stage.addChild(app.background);
+    app.pixi_container_main.addChild(app.background);
 
+    app.pixi_app.stage.addChild(app.pixi_container_main);
+   
     let tiling_sprite = new PIXI.TilingSprite(
         textures.bg_tex,
         app.stage_width,
         app.stage_height,
     );
     tiling_sprite.position.set(0,0);
-    app.background.addChild(tiling_sprite);
+    app.pixi_container_main.addChild(tiling_sprite);
 
     //subject controls
     if(app.pixi_mode=="subject")
     {
         tiling_sprite.eventMode ='static';
-        tiling_sprite.on("pointerup", app.subject_pointer_up);
+        tiling_sprite.on("pointerup", app.subject_pointer_up);        
                
         app.pixi_target = new PIXI.Graphics();
         app.pixi_target.lineStyle(3, 0x000000);
@@ -73,7 +80,11 @@ setup_pixi_sheets(textures){
         app.pixi_target.eventMode='static';
 
         //app.pixi_target.scale.set(app.pixi_scale, app.pixi_scale);
-        app.background.addChild(app.pixi_target)
+        app.pixi_container_main.addChild(app.pixi_target)
+    }
+    else
+    {
+       
     }
 
     // staff controls
@@ -105,6 +116,7 @@ setup_pixi_sheets(textures){
  */
 setup_pixi_subjects(){
     
+    let current_z_index = 1000;
     for(const i in app.session.world_state.session_players){       
 
         let subject = app.session.world_state.session_players[i];
@@ -127,11 +139,27 @@ setup_pixi_subjects(){
         face_sprite.anchor.set(0.5);
         face_sprite.eventMode = 'none';
 
+        let text_style = {
+            fontFamily: 'Arial',
+            fontSize: 20,
+            fill: 'white',
+            align: 'left',
+            stroke: 'black',
+            strokeThickness: 2,
+        };
+
+        let id_label = new PIXI.Text(app.session.session_players[i].parameter_set_player.id_label, text_style);
+        id_label.eventMode = 'none';
+        id_label.anchor.set(0.5);        
+
         avatar_container.addChild(gear_sprite);
         avatar_container.addChild(face_sprite);
+        avatar_container.addChild(id_label);
+
+        id_label.position.set(0, -avatar_container.height * 0.2);
 
         subject.pixi.avatar_container = avatar_container;
-        app.background.addChild(subject.pixi.avatar_container);
+        app.pixi_container_main.addChild(subject.pixi.avatar_container);
 
         //chat
         let chat_container = new PIXI.Container();
@@ -157,10 +185,19 @@ setup_pixi_subjects(){
         chat_bubble_text.anchor.set(0.5);
 
         subject.pixi.chat_container = chat_container;
+        subject.pixi.chat_container.zIndex = current_z_index++;
+
         subject.show_chat = false;
         subject.chat_time = null;
 
-        app.background.addChild(subject.pixi.chat_container);
+        app.pixi_container_main.addChild(subject.pixi.chat_container);
+    }
+
+    //make local subject the top layer
+    if(app.pixi_mode=="subject")
+    {  
+        app.session.world_state.session_players[app.session_player.id].pixi.avatar_container.zIndex = 999;
+        app.session.world_state.session_players[app.session_player.id].pixi.chat_container.zIndex = current_z_index;
     }
 },
 
@@ -183,6 +220,160 @@ destory_setup_pixi_subjects()
     }
 },
 
+
+/**
+ * setup mini map on subject screen 
+ * */
+setup_pixi_minimap()
+{
+    if(app.pixi_mode!="subject") return;
+
+    if(app.mini_map_container) app.mini_map_container.destroy();
+
+    app.mini_map_scale = Math.min((app.pixi_app.screen.width * 0.2)/app.stage_width,  (app.pixi_app.screen.height * 0.3)/app.stage_height);
+
+    let scale = app.mini_map_scale;
+    let obj = app.session.world_state.session_players[app.session_player.id]
+
+    let mini_map_container = new PIXI.Container();
+    mini_map_container.eventMode = 'none';
+    mini_map_container.zIndex = 9998;
+
+    //mini map background
+    let mini_map_bg = new PIXI.Graphics();
+    
+    mini_map_bg.width = app.stage_width * scale;
+    mini_map_bg.height =  app.stage_height * scale;
+    mini_map_bg.lineStyle(1, 0x000000);
+    mini_map_bg.beginFill(0xBDB76B);
+    mini_map_bg.drawRect(0, 0, app.stage_width * scale, app.stage_height * scale);
+    mini_map_bg.endFill();
+    
+    mini_map_container.addChild(mini_map_bg);
+
+    //mini map view port
+    let mini_map_vp = new PIXI.Graphics();
+    mini_map_vp.width = app.pixi_app.screen.width * scale;
+    mini_map_vp.height = app.pixi_app.screen.height * scale;
+    mini_map_vp.lineStyle({width:2,color:0x000000,alignment:0});
+    mini_map_vp.beginFill(0xFFFFFF,0);
+    mini_map_vp.drawRect(0, 0, app.pixi_app.screen.width * scale, app.pixi_app.screen.height * scale);
+    mini_map_vp.endFill();    
+    mini_map_vp.pivot.set(mini_map_vp.width/2, mini_map_vp.height/2);
+    mini_map_vp.position.set(obj.current_location.x * scale, obj.current_location.y * scale);
+
+    mini_map_container.addChild(mini_map_vp);
+
+    mini_map_container.position.set(20, 20);
+    mini_map_container.alpha = 0.9;
+    app.mini_map_container = mini_map_container;
+
+    app.pixi_app.stage.addChild(app.mini_map_container);
+
+},
+
+/**
+ * setup subject screen status overlay
+ */
+setup_subject_status_overlay()
+{
+    if(!app.session) return;
+    if(app.pixi_mode!="subject") return;
+    if(app.subject_overlay_container) app.subject_overlay_container.destroy();
+
+    let subject_status_overlay_container = new PIXI.Container();
+    subject_status_overlay_container.eventMode = 'none';
+    subject_status_overlay_container.zIndex = 9999
+
+    temp_y = 0;
+
+    let text_style = {
+        fontFamily: 'Arial',
+        fontSize: 28,
+        fill: 'white',
+        align: 'left',
+        stroke: 'black',
+        strokeThickness: 2,
+    };
+
+    //labels
+    //current period
+    let current_period_text = new PIXI.Text('Current Period:', text_style);
+    current_period_text.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(current_period_text);
+    current_period_text.position.set(0, temp_y);
+
+    temp_y += current_period_text.height+5;
+
+    //time remaining
+    let time_remaining_text = new PIXI.Text('Time Remaining:', text_style);
+    time_remaining_text.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(time_remaining_text);
+    time_remaining_text.position.set(0, temp_y);
+
+    temp_y += time_remaining_text.height+5;
+
+    //profit
+    let profit_text = new PIXI.Text('Total Profit (¢):', text_style);
+    profit_text.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(profit_text);
+    profit_text.position.set(0, temp_y);
+
+    //amounts
+    temp_y = 0;
+    //current period 
+    let current_period_label = new PIXI.Text('NN', text_style);
+    current_period_label.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(current_period_label);
+    current_period_label.position.set(time_remaining_text.width+10, temp_y);
+
+    temp_y += current_period_text.height+5;
+
+    //time remaining 
+    let time_remaining_label = new PIXI.Text('00:00', text_style);
+    time_remaining_label.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(time_remaining_label);
+    time_remaining_label.position.set(time_remaining_text.width+10, temp_y);
+
+    temp_y += time_remaining_text.height+5;
+
+    //profit
+    let profit_label = new PIXI.Text('0000', text_style);
+    profit_label.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(profit_label);
+    profit_label.position.set(time_remaining_text.width+10, temp_y);
+
+    app.subject_status_overlay_container = subject_status_overlay_container;
+    app.subject_status_overlay_container.position.set(app.pixi_app.screen.width - subject_status_overlay_container.width-20, 20);
+    
+    app.pixi_app.stage.addChild(app.subject_status_overlay_container);
+
+    app.update_subject_status_overlay();
+},
+
+/**
+ * update subject overlay
+ */
+update_subject_status_overlay(delta)
+{
+    if(!app.subject_status_overlay_container) return;
+    app.subject_status_overlay_container.position.set(app.pixi_app.screen.width - app.subject_status_overlay_container.width-20, 20);
+
+    app.subject_status_overlay_container.getChildAt(3).text = app.session.current_period;
+    app.subject_status_overlay_container.getChildAt(4).text = app.session.time_remaining;
+    app.subject_status_overlay_container.getChildAt(5).text = app.session_player.earnings;
+},
+
+
+/**
+ * add scroll buttons to staff screen
+ */
 add_scroll_button(button_size, name, text){
 
     let g = new PIXI.Graphics();
@@ -216,6 +407,9 @@ add_scroll_button(button_size, name, text){
     return g
 },
 
+/**
+ * game loop for pixi
+ */
 game_loop(delta){
     
     app.move_player(delta);
@@ -223,34 +417,37 @@ game_loop(delta){
     if(app.pixi_mode=="subject")
     {   
         app.update_offsets_player(delta);
+        app.update_mini_map(delta);
     }
     
     if(app.pixi_mode=="staff")
     {
-         app.scroll_staff(delta);
+        app.update_offsets_staff(delta);
+        app.scroll_staff(delta);
     }       
 },
 
+/**
+ * update zoom level on staff screen
+ */
 update_zoom(){
-    app.background.scale.set(app.pixi_scale, app.pixi_scale);
-    //app.background.x += (app.background.x*app.pixi_scale);
-   // app.background.y += (app.background.y*app.pixi_scale);
 
-    if(app.pixi_mode=="subject")
+    if(app.pixi_scale == app.pixi_scale_range_control) return;
+    
+   
+    let zoom_direction = 1;
+    if(app.pixi_scale_range_control > app.pixi_scale)
     {
-        app.pixi_target.scale.set(app.pixi_scale, app.pixi_scale);
-
-        // app.pixi_target.x *= app.pixi_scale;
-        // app.pixi_target.y *= app.pixi_scale;
-
-        // app.current_location.x *= app.pixi_scale;
-        // app.current_location.y *= app.pixi_scale;
-
-        // app.target_location.x *= app.pixi_scale;
-        // app.target_location.y *= app.pixi_scale;
+        zoom_direction = -1;
     }
+
+    app.pixi_scale = app.pixi_scale_range_control;
+    app.pixi_container_main.scale.set(app.pixi_scale);
 },
 
+/**
+ * get distance in pixels between two points
+ */
 get_distance(point1, point2) 
 {
     // Get the difference between the x-coordinates of the two points.
@@ -269,6 +466,9 @@ get_distance(point1, point2)
     return distance;
 },
 
+/**
+ * move players if target does not equal current location
+ */
 move_player(delta){
 
     if(!app.session.world_state) return;
@@ -387,36 +587,71 @@ move_player(delta){
         }
 
         chat_container.visible = obj.show_chat;
-    }
+    }   
 },
 
+/**
+ * update the mini map
+ */
+update_mini_map(delta)
+{
+    let obj = app.session.world_state.session_players[app.session_player.id]
+    let mini_map_vp = app.mini_map_container.getChildAt(1);
+    mini_map_vp.position.set(obj.current_location.x * app.mini_map_scale, 
+                             obj.current_location.y * app.mini_map_scale);
+},
+
+/**
+ * update the amount of shift needed to center the player
+ */
 update_offsets_player(delta){
+    
+    offset = app.get_offset();
+
+    app.pixi_container_main.x = -offset.x;
+    app.pixi_container_main.y = -offset.y;   
     
     obj = app.session.world_state.session_players[app.session_player.id];
 
-    offset = app.get_offset();
-
-    app.background.x = -offset.x;
-    app.background.y = -offset.y;   
-    
-    if(app.pixi_mode=="subject")
-    {
-        app.pixi_target.x = obj.target_location.x;
-        app.pixi_target.y = obj.target_location.y;
-    }
+    app.pixi_target.x = obj.target_location.x;
+    app.pixi_target.y = obj.target_location.y;
 },
+
+/**
+ * update the amount of shift needed for the staff view
+ */
+update_offsets_staff(delta){
+    
+    let offset = app.get_offset_staff();
+
+    app.pixi_container_main.x = -offset.x;
+    app.pixi_container_main.y = -offset.y;   
+},
+
 
 scroll_staff(delta){
 
-    // app.current_location.x += app.scroll_direction.x;
-    // app.current_location.y += app.scroll_direction.y;
+    app.current_location.x += app.scroll_direction.x;
+    app.current_location.y += app.scroll_direction.y;
 },
 
 get_offset(){
-    obj = app.session.world_state.session_players[app.session_player.id];
+    let obj = app.session.world_state.session_players[app.session_player.id];
 
     return {x:obj.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
             y:obj.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
+},
+
+get_offset_staff(){
+
+    if(app.follow_subject != -1)
+    {
+        obj = app.session.world_state.session_players[app.follow_subject];
+        app.current_location = Object.assign({}, obj.current_location);
+    }
+
+    return {x:app.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
+            y:app.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
 },
 
 /**
@@ -424,14 +659,13 @@ get_offset(){
  */
 subject_pointer_up(event){
 
-    obj = app.session.world_state.session_players[app.session_player.id];
+    let obj = app.session.world_state.session_players[app.session_player.id];
 
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     obj.target_location.x = local_pos.x;
     obj.target_location.y = local_pos.y;
 
     app.target_location_update();
-
 },
 
 /**
@@ -449,4 +683,5 @@ staff_screen_scroll_button_out(event){
     event.currentTarget.alpha = 0.5;
     app.scroll_direction = {x:0, y:0};
 },
+
 

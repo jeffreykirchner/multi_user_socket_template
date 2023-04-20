@@ -55,10 +55,12 @@ var app = Vue.createApp({
                     scroll_speed : 10,
                     pixi_mode : "staff",
                     pixi_scale : 1,
+                    pixi_scale_range_control : 1,
                     stage_width : 10000,
                     stage_height : 10000,
                     scroll_direction : {x:0, y:0},
-                   
+                    current_location : {x:0, y:0},
+                    follow_subject : -1,
                 }},
     methods: {
 
@@ -250,7 +252,7 @@ var app = Vue.createApp({
         *    @param message_data {json} session day in json format
         */
         take_get_session(message_data){
-
+            
             app.destory_setup_pixi_subjects();
             
             app.session = message_data;
@@ -313,13 +315,10 @@ var app = Vue.createApp({
         */
         take_update_chat(message_data){
             
-            let result = message_data;
-            let chat = result.chat;
-
-            if(app.session.chat_all.length>=100)
-                app.session.chat_all.shift();
-            
-            app.session.chat_all.push(chat);
+            let chat = message_data.chat;
+            app.session.world_state.session_players[chat.sender_id].show_chat = true;    
+            app.session.world_state.session_players[chat.sender_id].chat_time = Date.now();
+            app.session.world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
         },
 
         /**

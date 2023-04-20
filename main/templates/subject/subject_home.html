@@ -40,9 +40,10 @@
 
 {% block content %}
 
-<!-- modals -->
-
 <div v-if="session">
+    <!-- modals -->
+    {%include "subject/subject_home/summary/end_game_modal.html"%}
+    
     <!-- instructions -->
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
         <div class="col-md">
@@ -50,24 +51,12 @@
         </div>
     </div>
 
-<!-- the stage -->
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
-    <div class="col-md">
-        {%include "subject/subject_home/the_stage/the_stage_card.html"%}                
+    <!-- the stage -->
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
+        <div class="col-md">
+            {%include "subject/subject_home/the_stage/the_stage_card.html"%}                
+        </div>
     </div>
-</div>
-
-<!-- chat and summary -->
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
-    
-    <div class="col-md-3">
-        <div class="row">
-            <div class="col-md">
-                {%include "subject/subject_home/summary_card.html"%}
-            </div>            
-        </div>     
-    </div>
-</div>
 
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
         <div class="col-12 fs-4 fw-bold text-center">

@@ -88,7 +88,7 @@ class ChatMixin():
         message_to_staff = {}
         message_to_staff["chat"] = event_result["chat_for_staff"]
 
-        await self.send_message(message_to_self=None, message_to_subjects=message_to_subjects, message_to_staff=message_to_staff, 
+        await self.send_message(message_to_self=None, message_to_subjects=message_to_subjects, message_to_staff=message_to_subjects, 
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def update_chat(self, event):

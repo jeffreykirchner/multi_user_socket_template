@@ -193,6 +193,7 @@ var app = Vue.createApp({
         do_reload()
         {
             app.setup_pixi_subjects();
+            app.setup_pixi_minimap();
         },
 
         /** send winsock request to get session info
@@ -205,9 +206,8 @@ var app = Vue.createApp({
         *    @param message_data {json} session day in json format
         */
         take_get_session(message_data){
-            
             app.destory_setup_pixi_subjects();
-
+            
             app.session = message_data.session;
             app.session_player = message_data.session_player;
 
@@ -288,6 +288,8 @@ var app = Vue.createApp({
             {
                 app.show_end_game_modal();
             }            
+
+            app.update_subject_status_overlay();
         },
 
         /**
@@ -418,10 +420,17 @@ var app = Vue.createApp({
             return null;
         },
 
+        /**
+         * handle window resize event
+         */
+        handleResize(){
+            app.update_subject_status_overlay();
+        },
+
     },
 
     mounted(){
-        
+        window.addEventListener('resize', this.handleResize);
     },
 
 }).mount('#app');
