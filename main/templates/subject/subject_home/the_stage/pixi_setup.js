@@ -139,8 +139,24 @@ setup_pixi_subjects(){
         face_sprite.anchor.set(0.5);
         face_sprite.eventMode = 'none';
 
+        let text_style = {
+            fontFamily: 'Arial',
+            fontSize: 20,
+            fill: 'white',
+            align: 'left',
+            stroke: 'black',
+            strokeThickness: 2,
+        };
+
+        let id_label = new PIXI.Text(app.session.session_players[i].parameter_set_player.id_label, text_style);
+        id_label.eventMode = 'none';
+        id_label.anchor.set(0.5);        
+
         avatar_container.addChild(gear_sprite);
         avatar_container.addChild(face_sprite);
+        avatar_container.addChild(id_label);
+
+        id_label.position.set(0, -avatar_container.height * 0.2);
 
         subject.pixi.avatar_container = avatar_container;
         app.pixi_container_main.addChild(subject.pixi.avatar_container);
