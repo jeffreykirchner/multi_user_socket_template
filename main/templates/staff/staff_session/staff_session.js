@@ -252,7 +252,7 @@ var app = Vue.createApp({
         *    @param message_data {json} session day in json format
         */
         take_get_session(message_data){
-
+            
             app.destory_setup_pixi_subjects();
             
             app.session = message_data;

@@ -16,6 +16,7 @@ setup_pixi(){
         app.setup_pixi_sheets(textures);
         app.setup_pixi_subjects();
         app.setup_pixi_minimap();
+        app.setup_subject_status_overlay();
     });
 },
 
@@ -185,12 +186,33 @@ setup_pixi_subjects(){
 },
 
 /**
+ * destory pixi subject objects in world state
+ */
+destory_setup_pixi_subjects()
+{
+    if(!app.session) return;
+
+    for(const i in app.session.world_state.session_players){
+
+        let pixi_objects = app.session.world_state.session_players[i].pixi;
+
+        if(pixi_objects)
+        {
+            pixi_objects.avatar_container.destroy();
+            pixi_objects.chat_container.destroy();
+        }
+    }
+},
+
+
+/**
  * setup mini map on subject screen 
  * */
 setup_pixi_minimap()
 {
     if(app.pixi_mode!="subject") return;
 
+    if(app.mini_map_container) app.mini_map_container.destroy();
 
     app.mini_map_scale = Math.min((app.pixi_app.screen.width * 0.2)/app.stage_width,  (app.pixi_app.screen.height * 0.3)/app.stage_height);
 
@@ -199,6 +221,7 @@ setup_pixi_minimap()
 
     let mini_map_container = new PIXI.Container();
     mini_map_container.eventMode = 'none';
+    mini_map_container.zIndex = 9998;
 
     //mini map background
     let mini_map_bg = new PIXI.Graphics();
@@ -226,6 +249,7 @@ setup_pixi_minimap()
     mini_map_container.addChild(mini_map_vp);
 
     mini_map_container.position.set(20, 20);
+    mini_map_container.alpha = 0.9;
     app.mini_map_container = mini_map_container;
 
     app.pixi_app.stage.addChild(app.mini_map_container);
@@ -233,24 +257,66 @@ setup_pixi_minimap()
 },
 
 /**
- * destory pixi subject objects in world state
+ * setup subject screen status overlay
  */
-destory_setup_pixi_subjects()
+setup_subject_status_overlay()
 {
     if(!app.session) return;
+    if(app.pixi_mode!="subject") return;
+    if(app.subject_overlay_container) app.subject_overlay_container.destroy();
 
-    for(const i in app.session.world_state.session_players){
+    let subject_status_overlay_container = new PIXI.Container();
+    subject_status_overlay_container.eventMode = 'none';
+    subject_status_overlay_container.zIndex = 9999
 
-        let pixi_objects = app.session.world_state.session_players[i].pixi;
+    temp_y = 0;
 
-        if(pixi_objects)
-        {
-            pixi_objects.avatar_container.destroy();
-            pixi_objects.chat_container.destroy();
-        }
-    }
+    let text_style = {
+        fontFamily: 'Arial',
+        fontSize: 28,
+        fill: 'white',
+        align: 'left',
+        stroke: 'black',
+        strokeThickness: 2,
+    };
+
+    //current period
+    let current_period_text = new PIXI.Text('Current Period:', text_style);
+    current_period_text.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(current_period_text);
+    current_period_text.position.set(0, temp_y);
+
+    temp_y += current_period_text.height+5;
+
+    //time remaining
+    let time_remaining_text = new PIXI.Text('Time Remaining:', text_style);
+    time_remaining_text.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(time_remaining_text);
+    time_remaining_text.position.set(0, temp_y);
+
+    temp_y += time_remaining_text.height+5;
+
+    //profit
+    let profit_text = new PIXI.Text('Total Profit (¢):', text_style);
+    profit_text.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(profit_text);
+    profit_text.position.set(0, temp_y);
+
+    temp_y += time_remaining_text.height+5;
+
+
+    app.subject_status_overlay_container = subject_status_overlay_container;
+    app.subject_status_overlay_container.position.set(app.pixi_app.screen.width - subject_status_overlay_container.width-20, 20);
+    
+    app.pixi_app.stage.addChild(app.subject_status_overlay_container);
 },
 
+/**
+ * add scroll buttons to staff screen
+ */
 add_scroll_button(button_size, name, text){
 
     let g = new PIXI.Graphics();
@@ -284,6 +350,9 @@ add_scroll_button(button_size, name, text){
     return g
 },
 
+/**
+ * game loop for pixi
+ */
 game_loop(delta){
     
     app.move_player(delta);
@@ -291,6 +360,7 @@ game_loop(delta){
     if(app.pixi_mode=="subject")
     {   
         app.update_offsets_player(delta);
+        app.update_mini_map(delta);
     }
     
     if(app.pixi_mode=="staff")
@@ -300,6 +370,9 @@ game_loop(delta){
     }       
 },
 
+/**
+ * update zoom level on staff screen
+ */
 update_zoom(){
 
     if(app.pixi_scale == app.pixi_scale_range_control) return;
@@ -457,9 +530,14 @@ move_player(delta){
         }
 
         chat_container.visible = obj.show_chat;
-    }
+    }   
+},
 
-    //update mini map
+/**
+ * update the mini map
+ */
+update_mini_map(delta)
+{
     let obj = app.session.world_state.session_players[app.session_player.id]
     let mini_map_vp = app.mini_map_container.getChildAt(1);
     mini_map_vp.position.set(obj.current_location.x * app.mini_map_scale, 
