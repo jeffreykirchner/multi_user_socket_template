@@ -288,6 +288,8 @@ var app = Vue.createApp({
             {
                 app.show_end_game_modal();
             }            
+
+            app.update_subject_status_overlay();
         },
 
         /**
@@ -418,10 +420,17 @@ var app = Vue.createApp({
             return null;
         },
 
+        /**
+         * handle window resize event
+         */
+        handleResize(){
+            app.update_subject_status_overlay();
+        },
+
     },
 
     mounted(){
-        
+        window.addEventListener('resize', this.handleResize);
     },
 
 }).mount('#app');

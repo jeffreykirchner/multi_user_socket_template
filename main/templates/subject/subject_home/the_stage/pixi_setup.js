@@ -280,6 +280,7 @@ setup_subject_status_overlay()
         strokeThickness: 2,
     };
 
+    //labels
     //current period
     let current_period_text = new PIXI.Text('Current Period:', text_style);
     current_period_text.eventMode = 'none';   
@@ -305,14 +306,54 @@ setup_subject_status_overlay()
     subject_status_overlay_container.addChild(profit_text);
     profit_text.position.set(0, temp_y);
 
+    //amounts
+    temp_y = 0;
+    //current period 
+    let current_period_label = new PIXI.Text('NN', text_style);
+    current_period_label.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(current_period_label);
+    current_period_label.position.set(time_remaining_text.width+10, temp_y);
+
+    temp_y += current_period_text.height+5;
+
+    //time remaining 
+    let time_remaining_label = new PIXI.Text('00:00', text_style);
+    time_remaining_label.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(time_remaining_label);
+    time_remaining_label.position.set(time_remaining_text.width+10, temp_y);
+
     temp_y += time_remaining_text.height+5;
 
+    //profit
+    let profit_label = new PIXI.Text('0000', text_style);
+    profit_label.eventMode = 'none';   
+
+    subject_status_overlay_container.addChild(profit_label);
+    profit_label.position.set(time_remaining_text.width+10, temp_y);
 
     app.subject_status_overlay_container = subject_status_overlay_container;
     app.subject_status_overlay_container.position.set(app.pixi_app.screen.width - subject_status_overlay_container.width-20, 20);
     
     app.pixi_app.stage.addChild(app.subject_status_overlay_container);
+
+    app.update_subject_status_overlay();
 },
+
+/**
+ * update subject overlay
+ */
+update_subject_status_overlay(delta)
+{
+    if(!app.subject_status_overlay_container) return;
+    app.subject_status_overlay_container.position.set(app.pixi_app.screen.width - app.subject_status_overlay_container.width-20, 20);
+
+    app.subject_status_overlay_container.getChildAt(3).text = app.session.current_period;
+    app.subject_status_overlay_container.getChildAt(4).text = app.session.time_remaining;
+    app.subject_status_overlay_container.getChildAt(5).text = app.session_player.earnings;
+},
+
 
 /**
  * add scroll buttons to staff screen
