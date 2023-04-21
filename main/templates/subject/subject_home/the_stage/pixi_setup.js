@@ -14,6 +14,7 @@ setup_pixi(){
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
+        app.setup_pixi_tokens_for_current_period();
         app.setup_pixi_subjects();
         app.setup_pixi_minimap();
         app.setup_subject_status_overlay();
@@ -21,6 +22,9 @@ setup_pixi(){
 },
 
 reset_pixi_app(){    
+
+    app.stage_width = app.session.parameter_set.world_width;
+    app.stage_height = app.session.parameter_set.world_height;
 
     let canvas = document.getElementById('sd_graph_id');
 
@@ -218,6 +222,38 @@ destory_setup_pixi_subjects()
             pixi_objects.chat_container.destroy();
         }
     }
+},
+
+/**
+ * setup the pixi components for each token
+ */
+setup_pixi_tokens_for_current_period()
+{
+   app.destroy_pixi_tokens_for_all_periods();
+
+   const current_period_id = app.session.session_periods_order[app.session.current_period];
+
+   for(const i in app.session.world_state.tokens[current_period_id]){
+        let token_container = new PIXI.Container();
+        let token_graphic = new PIXI.Graphics();
+
+        token_graphic.addChild(token_graphic);
+        token_graphic.lineStyle(1, 0x000000);
+        token_graphic.beginFill(0x00FFFF);
+        token_graphic.drawRect(0, 0, 20, 20);
+        token_graphic.endFill();
+
+        token_container.addChild(token_graphic);
+        token_container.pivot.set(app.pixi_container_main.width/2, app.pixi_container_main.height/2);
+
+        app.pixi_container_main.addChild(token_container);
+       
+   }
+},
+
+destroy_pixi_tokens_for_all_periods()
+{
+
 },
 
 

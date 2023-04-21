@@ -37,10 +37,6 @@ class SessionPeriod(models.Model):
         '''
         json object of model
         '''
-        #current_best_bid = self.get_current_best_bid()
-        #current_best_offer = self.get_current_best_offer()
-
-        #current_trade = self.get_current_trade()
 
         return{
             "id" : self.id,

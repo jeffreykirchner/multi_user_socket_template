@@ -12,6 +12,7 @@ import uuid
 import csv
 import io
 import json
+import random
 
 from django.conf import settings
 
@@ -134,8 +135,10 @@ class Session(models.Model):
         setup world state
         '''
         self.world_state = {"last_update":str(datetime.now()), 
-                            "session_players":{},}
+                            "session_players":{},
+                            "tokens":{},}
         
+        #session players
         for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
                                                                                             'parameter_set_player__start_x',
                                                                                             'parameter_set_player__start_y' ):
@@ -145,7 +148,22 @@ class Session(models.Model):
             v['target_location'] = v['current_location']
             
             self.world_state["session_players"][str(i['id'])] = v
+        
+        #tokens
+        tokens = {}
+        for i in self.session_periods.all():
+            tokens[str(i)] = {}
+
+            for j in range(self.parameter_set.tokens_per_period):
+                token = {"x":random.randint(25, self.parameter_set.world_width-25),
+                         "y":random.randint(25, self.parameter_set.world_height-25),
+                         "status":"available",}
+                
+                tokens[str(i)][str(j)] = token
             
+
+        self.world_state["tokens"] = tokens
+
         self.save()
 
     def reset_experiment(self):
@@ -371,6 +389,9 @@ class Session(models.Model):
 
             "session_players":{i.id : i.json_for_subject(session_player) for i in self.session_players.all()},
             "session_players_order" : list(self.session_players.all().values_list('id', flat=True)),
+
+            "session_periods":{i.id : i.json() for i in self.session_periods.all()},
+            "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
 
             "world_state" : self.world_state,
         }

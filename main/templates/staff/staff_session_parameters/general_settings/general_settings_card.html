@@ -68,7 +68,31 @@
             <div class="col text-start">
                 <span v-if="parameter_set.test_mode=='True'">Yes</span><span v-else>No</span>                
             </div>  
-        </div>        
+        </div>   
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.tokens_per_period.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.tokens_per_period]]                          
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.world_width.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.world_width]]                 
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.world_height.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.world_height]]                          
+            </div>  
+        </div> 
         <div class="row justify-content-center">
             <div class="col-md text-center mb-2 mt-2">
                 <button class="btn btn-outline-primary"

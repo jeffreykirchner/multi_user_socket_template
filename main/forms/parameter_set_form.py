@@ -55,6 +55,25 @@ class ParameterSetForm(forms.ModelForm):
                                                                     "step":"1",
                                                                     "min":"1"}))
 
+    tokens_per_period = forms.IntegerField(label='Tokens per Period',
+                                    min_value=1,
+                                    widget=forms.NumberInput(attrs={"v-model":"parameter_set.tokens_per_period",
+                                                                    "step":"1",
+                                                                    "min":"0"}))
+
+    world_width = forms.IntegerField(label='World Width (pixels)',
+                                    min_value=1,
+                                    widget=forms.NumberInput(attrs={"v-model":"parameter_set.world_width",
+                                                                    "step":"1",
+                                                                    "min":"1000"}))
+    
+    world_height = forms.IntegerField(label='World Height (pixels)',
+                                    min_value=1,
+                                    widget=forms.NumberInput(attrs={"v-model":"parameter_set.world_height",
+                                                                    "step":"1",
+                                                                    "min":"1000"}))
+                                                                
+
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"parameter_set.test_mode",}))
@@ -62,7 +81,8 @@ class ParameterSetForm(forms.ModelForm):
     class Meta:
         model=ParameterSet
         fields =['period_count', 'period_length', 'show_instructions', 'instruction_set', 
-                 'survey_required', 'survey_link', 'test_mode', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit']
+                 'survey_required', 'survey_link', 'test_mode', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
+                 'tokens_per_period', 'world_width', 'world_height']
 
     def clean_survey_link(self):
         
