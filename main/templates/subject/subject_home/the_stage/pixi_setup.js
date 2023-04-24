@@ -18,6 +18,7 @@ setup_pixi(){
         app.setup_pixi_subjects();
         app.setup_pixi_minimap();
         app.setup_subject_status_overlay();
+        app.update_zoom();
     });
 },
 
@@ -231,29 +232,42 @@ setup_pixi_tokens_for_current_period()
 {
    app.destroy_pixi_tokens_for_all_periods();
 
-   const current_period_id = app.session.session_periods_order[app.session.current_period];
+   const current_period_id = app.session.session_periods_order[app.session.current_period-1];
 
    for(const i in app.session.world_state.tokens[current_period_id]){
+
+        let token =  app.session.world_state.tokens[current_period_id][i];
         let token_container = new PIXI.Container();
         let token_graphic = new PIXI.Graphics();
 
         token_graphic.addChild(token_graphic);
         token_graphic.lineStyle(1, 0x000000);
-        token_graphic.beginFill(0x00FFFF);
+        token_graphic.beginFill(0xFFFFFF);
         token_graphic.drawRect(0, 0, 20, 20);
         token_graphic.endFill();
 
         token_container.addChild(token_graphic);
-        token_container.pivot.set(app.pixi_container_main.width/2, app.pixi_container_main.height/2);
+        token_container.pivot.set(token_container.width/2, token_container.height/2);
+        token_container.position.set(token.x, token.y);
 
-        app.pixi_container_main.addChild(token_container);
+        token.token_container = token_container;
+        app.pixi_container_main.addChild(token.token_container);
        
    }
 },
 
 destroy_pixi_tokens_for_all_periods()
 {
+    for(const i in app.session.session_periods_order){
 
+        let period_id = app.session.session_periods_order[i];
+
+        for(const j in app.session.world_state.tokens[period_id]){
+
+            let token =  app.session.world_state.tokens[period_id][j];
+            if(token.token_container) token.token_container.destroy();
+        }
+    }
 },
 
 
@@ -468,6 +482,7 @@ game_loop(delta){
  */
 update_zoom(){
 
+    if(app.pixi_mode == "subject") return;
     if(app.pixi_scale == app.pixi_scale_range_control) return;
     
    

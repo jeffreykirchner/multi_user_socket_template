@@ -254,7 +254,7 @@ var app = Vue.createApp({
         take_get_session(message_data){
             
             app.destory_setup_pixi_subjects();
-            
+
             app.session = message_data;
 
             if(app.session.started)
