@@ -90,7 +90,6 @@ class SubjectUpdatesMixin():
         
         event_data = event["staff_data"]
         
-
         self.world_state_local["session_players"][str(event_data["session_player_id"])]["target_location"] = event_data["target_location"]
 
         last_update = datetime.strptime(self.world_state_local["last_update"], "%Y-%m-%d %H:%M:%S.%f")
@@ -103,4 +102,45 @@ class SubjectUpdatesMixin():
         
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def collect_token(self, event):
+        '''
+        subject collects token
+        '''
+        logger = logging.getLogger(__name__)
+        
+        message_text = event["message_text"]
+        token_id = message_text["token_id"]
+        period_id = message_text["period_id"]
+        result = await SessionPlayer.objects.values('id').aget(player_key=event["player_key"])
+        player_id = result['id']
+
+        result = await Session.objects.values('world_state').aget(id=self.session_id)
+        stored_world_state = result['world_state']
+        
+        token = stored_world_state['tokens'][str(period_id)][str(token_id)]
+
+        if token['status'] != 'available':
+            logger.warning(f'collect_token: {message_text}, token {token} not available')
+            return
+        
+        self.world_state_local['tokens'][str(period_id)][str(token_id)]['status'] = player_id
+        
+        await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+
+        result = {"token_id" : token_id, "period_id" : period_id, "player_id" : player_id}
+
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
+
+
+    async def update_collect_token(self, event):
+        '''
+        subject collects token update
+        '''
+        event_data = event["group_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+        
 

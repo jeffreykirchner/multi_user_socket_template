@@ -246,7 +246,15 @@ setup_pixi_tokens_for_current_period()
         token_graphic.animationSpeed = app.animation_speed;
         token_graphic.anchor.set(0.5)
         token_graphic.eventMode = 'none';
-        token_graphic.play();
+
+        if(token.status=="available")
+        {
+            token_graphic.play();
+        }
+        else
+        {
+            token_graphic.alpha = 0.25;
+        }
 
         token_container.addChild(token_graphic);
         token_container.pivot.set(token_container.width/2, token_container.height/2);
