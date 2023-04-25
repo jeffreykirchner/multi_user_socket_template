@@ -41,3 +41,18 @@ class InterfaceMixin():
 
         await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def collect_token(self, event):
+        '''
+        subject collects token
+        '''
+        pass
+
+    async def collect_token_update(self, event):
+        '''
+        subject collects token
+        '''
+        pass
+
+
+        
