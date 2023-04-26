@@ -87,8 +87,8 @@ var app = Vue.createApp({
             console.log(data);
             {%endif%}
 
-            message_type = data.message.message_type;
-            message_data = data.message.message_data;
+            let message_type = data.message.message_type;
+            let message_data = data.message.message_data;
 
             switch(message_type) {                
                 case "get_session":
@@ -126,6 +126,9 @@ var app = Vue.createApp({
                     break;
                 case "update_target_location_update":
                     app.take_target_location_update(message_data);
+                    break;
+                case "update_collect_token":
+                    app.take_update_collect_token(message_data);
                     break;
                 
             }
@@ -192,6 +195,7 @@ var app = Vue.createApp({
          */
         do_reload()
         {
+            app.setup_pixi_tokens_for_current_period();
             app.setup_pixi_subjects();
             app.setup_pixi_minimap();
         },
@@ -206,6 +210,7 @@ var app = Vue.createApp({
         *    @param message_data {json} session day in json format
         */
         take_get_session(message_data){
+            app.destroy_pixi_tokens_for_all_periods();
             app.destory_setup_pixi_subjects();
             
             app.session = message_data.session;

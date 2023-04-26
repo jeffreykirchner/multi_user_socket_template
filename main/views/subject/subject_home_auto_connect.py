@@ -3,7 +3,6 @@ auto log subject in view
 '''
 
 from django.db import transaction
-
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect

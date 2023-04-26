@@ -9,18 +9,24 @@ setup_pixi(){
     PIXI.Assets.add('sprite_sheet', '{% static "gear_3_animated.json" %}');
     PIXI.Assets.add('sprite_sheet_2', '{% static "sprite_sheet.json" %}');
     PIXI.Assets.add('bg_tex', '{% static "background_tile_low.jpg"%}');
+    PIXI.Assets.add('cherry_token', '{% static "cherry_1_animated.json"%}');
 
-    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2']);
+    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 'cherry_token']);
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
+        app.setup_pixi_tokens_for_current_period();
         app.setup_pixi_subjects();
         app.setup_pixi_minimap();
         app.setup_subject_status_overlay();
+        app.update_zoom();
     });
 },
 
 reset_pixi_app(){    
+
+    app.stage_width = app.session.parameter_set.world_width;
+    app.stage_height = app.session.parameter_set.world_height;
 
     let canvas = document.getElementById('sd_graph_id');
 
@@ -37,6 +43,8 @@ reset_pixi_app(){
 
     app.canvas_width = canvas.width;
     app.canvas_height = canvas.height;
+
+    app.last_collision_check = Date.now();
 },
 
 /** load pixi sprite sheets
@@ -220,6 +228,63 @@ destory_setup_pixi_subjects()
     }
 },
 
+/**
+ * setup the pixi components for each token
+ */
+setup_pixi_tokens_for_current_period()
+{
+   app.destroy_pixi_tokens_for_all_periods();
+
+   const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+
+   for(const i in app.session.world_state.tokens[current_period_id]){
+
+        let token =  app.session.world_state.tokens[current_period_id][i];
+        let token_container = new PIXI.Container();
+
+        let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
+        token_graphic.animationSpeed = app.animation_speed;
+        token_graphic.anchor.set(0.5)
+        token_graphic.eventMode = 'none';
+
+        if(token.status=="available")
+        {
+            token_graphic.play();
+        }
+        else
+        {
+            token_graphic.alpha = 0.25;
+        }
+
+        token_container.addChild(token_graphic);
+        token_container.pivot.set(token_container.width/2, token_container.height/2);
+        token_container.position.set(token.current_location.x, token.current_location.y);
+
+        token.token_container = token_container;
+        app.pixi_container_main.addChild(token.token_container);
+       
+   }
+},
+
+/**
+ * destory pixi tokens in world state
+ */
+destroy_pixi_tokens_for_all_periods()
+{
+    if(!app.session) return;
+
+    for(const i in app.session.session_periods_order){
+
+        let period_id = app.session.session_periods_order[i];
+
+        for(const j in app.session.world_state.tokens[period_id]){
+
+            let token =  app.session.world_state.tokens[period_id][j];
+            if(token.token_container) token.token_container.destroy();
+        }
+    }
+},
+
 
 /**
  * setup mini map on subject screen 
@@ -264,10 +329,31 @@ setup_pixi_minimap()
 
     mini_map_container.addChild(mini_map_vp);
 
+    //mini map tokens
+    const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+
+    for(const i in app.session.world_state.tokens[current_period_id]){       
+
+        let token =  app.session.world_state.tokens[current_period_id][i];
+
+        if(token.status != "available") continue;
+
+        let token_graphic = new PIXI.Graphics();
+
+        token_graphic.beginFill(0xFFFFFF);
+        token_graphic.drawRect(0, 0, 2, 2);
+        token_graphic.endFill();
+        token_graphic.pivot.set(token_graphic.width/2, token_graphic.height/2);
+        token_graphic.position.set(token.current_location.x * scale, token.current_location.y * scale);
+
+        token.token_graphic = token_graphic;
+
+        mini_map_container.addChild(token_graphic);
+    }
+
     mini_map_container.position.set(20, 20);
     mini_map_container.alpha = 0.9;
     app.mini_map_container = mini_map_container;
-
     app.pixi_app.stage.addChild(app.mini_map_container);
 
 },
@@ -418,6 +504,7 @@ game_loop(delta){
     {   
         app.update_offsets_player(delta);
         app.update_mini_map(delta);
+        app.check_for_collisions();
     }
     
     if(app.pixi_mode=="staff")
@@ -432,6 +519,7 @@ game_loop(delta){
  */
 update_zoom(){
 
+    if(app.pixi_mode == "subject") return;
     if(app.pixi_scale == app.pixi_scale_range_control) return;
     
    
@@ -615,6 +703,40 @@ update_offsets_player(delta){
 
     app.pixi_target.x = obj.target_location.x;
     app.pixi_target.y = obj.target_location.y;
+},
+
+/**
+ * check for collisions between local player and other objects
+ */
+check_for_collisions(delta){
+
+    if(Date.now() - app.last_collision_check < 250) return;
+    app.last_collision_check = Date.now();
+
+    const obj = app.session.world_state.session_players[app.session_player.id];
+
+    //check for collisions with tokens
+    const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+    for(const i in app.session.world_state.tokens[current_period_id]){       
+
+        let token = app.session.world_state.tokens[current_period_id][i];
+
+        if(app.get_distance(obj.current_location, token.current_location) <= obj.pixi.avatar_container.width/2 &&
+           token.status == "available")
+        {
+            token.token_container.getChildAt(0).stop();
+            token.token_container.getChildAt(0).alpha = 0.25;
+            token.status = "waiting";
+
+            app.send_message("collect_token", 
+                             {"token_id" : i, "period_id" : current_period_id},
+                             "group");
+
+            break;
+        }
+        
+    }
+
 },
 
 /**

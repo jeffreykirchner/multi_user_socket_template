@@ -1,5 +1,8 @@
 
+import logging
+
 from main.models import Session
+from main.models import SessionPlayer
 
 class InterfaceMixin():
     '''
