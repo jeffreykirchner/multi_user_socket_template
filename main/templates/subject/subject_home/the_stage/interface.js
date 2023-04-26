@@ -17,4 +17,10 @@ take_target_location_update(message_data){
 
 take_update_collect_token(message_data){
 
+    let token = app.session.world_state.tokens[message_data.period_id][message_data.token_id];
+
+    token.token_container.getChildAt(0).stop();
+    token.token_container.getChildAt(0).alpha = 0.25;
+    token.status = message_data.player_id;
+
 },

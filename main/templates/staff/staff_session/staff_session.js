@@ -180,6 +180,9 @@ var app = Vue.createApp({
                 case "update_target_location_update":
                     app.take_target_location_update(message_data);
                     break;
+                case "update_collect_token":
+                    app.take_update_collect_token(message_data);
+                    break;
 
             }
 

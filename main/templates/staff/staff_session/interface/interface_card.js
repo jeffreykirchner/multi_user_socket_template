@@ -36,3 +36,14 @@ send_world_state_update(){
     app.last_world_state_update = Date.now();
     app.send_message("world_state_update", {"world_state" : temp_world_state});       
 },
+
+
+take_update_collect_token(message_data){
+
+    let token = app.session.world_state.tokens[message_data.period_id][message_data.token_id];
+
+    token.token_container.getChildAt(0).stop();
+    token.token_container.getChildAt(0).alpha = 0.25;
+    token.status = message_data.player_id;
+
+},
