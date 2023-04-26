@@ -37,8 +37,8 @@ var app = Vue.createApp({
            console.log(data);
            {%endif%}
 
-           message_type = data.message.message_type;
-           message_data = data.message.message_data;
+           let message_type = data.message.message_type;
+           let message_data = data.message.message_data;
 
             switch(message_type) {
                 case "create_session":
