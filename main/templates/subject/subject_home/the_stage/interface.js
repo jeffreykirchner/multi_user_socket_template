@@ -4,7 +4,7 @@ target_location_update(){
                     "self");                   
 },
 
-take_target_location_update(){
+take_target_location_update(message_data){
     if(message_data.value == "success")
     {
         app.session.world_state.session_players[message_data.session_player_id].target_location = message_data.target_location;                 
@@ -13,4 +13,8 @@ take_target_location_update(){
     {
         
     }
+},
+
+take_update_collect_token(message_data){
+
 },
