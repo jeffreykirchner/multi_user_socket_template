@@ -21,6 +21,9 @@ take_update_collect_token(message_data){
 
     token.token_container.getChildAt(0).stop();
     token.token_container.getChildAt(0).alpha = 0.25;
+    token.token_graphic.visible = false;
+
     token.status = message_data.player_id;
+
 
 },

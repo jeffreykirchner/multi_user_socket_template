@@ -195,6 +195,7 @@ var app = Vue.createApp({
          */
         do_reload()
         {
+            app.setup_pixi_tokens_for_current_period();
             app.setup_pixi_subjects();
             app.setup_pixi_minimap();
         },
@@ -209,6 +210,7 @@ var app = Vue.createApp({
         *    @param message_data {json} session day in json format
         */
         take_get_session(message_data){
+            app.destroy_pixi_tokens_for_all_periods();
             app.destory_setup_pixi_subjects();
             
             app.session = message_data.session;

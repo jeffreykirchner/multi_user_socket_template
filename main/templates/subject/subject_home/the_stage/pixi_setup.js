@@ -266,8 +266,13 @@ setup_pixi_tokens_for_current_period()
    }
 },
 
+/**
+ * destory pixi tokens in world state
+ */
 destroy_pixi_tokens_for_all_periods()
 {
+    if(!app.session) return;
+
     for(const i in app.session.session_periods_order){
 
         let period_id = app.session.session_periods_order[i];
@@ -340,6 +345,8 @@ setup_pixi_minimap()
         token_graphic.endFill();
         token_graphic.pivot.set(token_graphic.width/2, token_graphic.height/2);
         token_graphic.position.set(token.current_location.x * scale, token.current_location.y * scale);
+
+        token.token_graphic = token_graphic;
 
         mini_map_container.addChild(token_graphic);
     }

@@ -1,6 +1,11 @@
 
 import logging
 
+from asgiref.sync import sync_to_async
+
+from django.db import transaction
+from django.db.models.fields.json import KT
+
 from main.models import SessionPlayer
 from main.models import Session
 
@@ -115,18 +120,30 @@ class SubjectUpdatesMixin():
         result = await SessionPlayer.objects.values('id').aget(player_key=event["player_key"])
         player_id = result['id']
 
-        result = await Session.objects.values('world_state').aget(id=self.session_id)
-        stored_world_state = result['world_state']
-        
-        token = stored_world_state['tokens'][str(period_id)][str(token_id)]
-
-        if token['status'] != 'available':
-            logger.warning(f'collect_token: {message_text}, token {token} not available')
+        if not await sync_to_async(sync_collect_token)(self.session_id, period_id, token_id, player_id):
+            logger.warning(f'collect_token: {message_text}, token {token_id} not available')
             return
         
         self.world_state_local['tokens'][str(period_id)][str(token_id)]['status'] = player_id
-        
+
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+        
+        # stored_world_state = result['world_state']
+        
+        # token = stored_world_state['tokens'][str(period_id)][str(token_id)]
+
+        # if token['status'] != 'available':
+        #     logger.warning(f'collect_token: {message_text}, token {token} not available')
+        #     return
+        
+        # variable_column = 'name'
+        # search_type = 'contains'
+        # filter = variable_column + '__' + search_type
+        # info=members.filter(**{ filter:  })
+        
+        # await Session.objects.filter(id=self.session_id)
+        #                      .filter(world_state__tokens__1__1__status="available")
+        #             .aupdate(world_state=self.world_state_local)
 
         result = {"token_id" : token_id, "period_id" : period_id, "player_id" : player_id}
 
@@ -142,5 +159,30 @@ class SubjectUpdatesMixin():
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+
+#sync companion functions
+def sync_collect_token(session_id, period_id, token_id, player_id):
+    '''
+    syncronous collect token
+    '''
+
+    # world_state_filter=f"world_state__tokens__{period_id}__{token_id}__status"
+    
+    with transaction.atomic():
+    
+        session = Session.objects.select_for_update().get(id=session_id)
+
+        if session.world_state['tokens'][str(period_id)][str(token_id)]['status'] != 'available':
+            return False
+
+        session.world_state['tokens'][str(period_id)][str(token_id)]['status'] = 'waiting'
+        session.save()
+
+    return True
+                                      
+    
+
+                                
         
 
