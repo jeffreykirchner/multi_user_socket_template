@@ -46,4 +46,7 @@ take_update_collect_token(message_data){
     token.token_container.getChildAt(0).alpha = 0.25;
     token.status = message_data.player_id;
 
+    let session_player = app.session.world_state.session_players[message_data.player_id];
+    session_player.inventory[message_data.period_id] = message_data.inventory;
+    session_player.pixi.avatar_container.getChildAt(4).text = message_data.inventory;
 },
