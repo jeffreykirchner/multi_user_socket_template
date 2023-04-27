@@ -236,7 +236,6 @@ var app = Vue.createApp({
         take_update_time(message_data){
             let result = message_data.result;
             let status = message_data.value;
-            let notice_list = message_data.notice_list;
 
             if(status == "fail") return;
 
