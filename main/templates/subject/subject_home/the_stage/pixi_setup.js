@@ -123,6 +123,9 @@ setup_pixi_sheets(textures){
  * setup the pixi components for each subject
  */
 setup_pixi_subjects(){
+
+    if(!app.session) return;
+    if(!app.session.started) return;
     
     let current_z_index = 1000;
     let current_period_id = app.session.session_periods_order[app.session.current_period-1];
@@ -250,11 +253,14 @@ destory_setup_pixi_subjects()
  */
 setup_pixi_tokens_for_current_period()
 {
-   app.destroy_pixi_tokens_for_all_periods();
+    if(!app.session) return;
+    if(!app.session.started) return;
 
-   const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+    app.destroy_pixi_tokens_for_all_periods();
 
-   for(const i in app.session.world_state.tokens[current_period_id]){
+    const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+
+    for(const i in app.session.world_state.tokens[current_period_id]){
 
         let token =  app.session.world_state.tokens[current_period_id][i];
         let token_container = new PIXI.Container();
@@ -308,6 +314,8 @@ destroy_pixi_tokens_for_all_periods()
  * */
 setup_pixi_minimap()
 {
+    if(!app.session) return;
+    if(!app.session.started) return;
     if(app.pixi_mode!="subject") return;
 
     if(app.mini_map_container) app.mini_map_container.destroy();
@@ -517,7 +525,7 @@ game_loop(delta){
     
     app.move_player(delta);
 
-    if(app.pixi_mode=="subject")
+    if(app.pixi_mode=="subject" && app.session.started)
     {   
         app.update_offsets_player(delta);
         app.update_mini_map(delta);

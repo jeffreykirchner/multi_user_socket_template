@@ -242,6 +242,7 @@ var app = Vue.createApp({
          */
         do_reload()
         {
+            app.setup_pixi_tokens_for_current_period();
             app.setup_pixi_subjects();
         },
 
