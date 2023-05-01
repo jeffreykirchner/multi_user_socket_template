@@ -106,7 +106,7 @@ def take_start_timer(session_id, data):
     action = data["action"]
 
     with transaction.atomic():
-        session = Session.objects.get(id=session_id)
+        session = Session.objects.select_for_update().get(id=session_id)
 
         if session.timer_running and action=="start":
             

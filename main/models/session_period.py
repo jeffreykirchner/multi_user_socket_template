@@ -31,8 +31,16 @@ class SessionPeriod(models.Model):
         verbose_name = 'Session Period'
         verbose_name_plural = 'Session Periods'
         ordering = ['period_number']
+    
+    def store_earnings(self):
+        '''
+        convert collected tokens into cash earnings
+        '''
 
-    #return json object of class
+        for i in self.session.session_players.all():
+            i.earnings += self.session.world_state["session_players"][str(i.id)]["inventory"][str(self.id)]
+            i.save()
+
     def json(self):
         '''
         json object of model

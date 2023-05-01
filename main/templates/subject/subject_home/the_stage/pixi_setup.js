@@ -123,8 +123,12 @@ setup_pixi_sheets(textures){
  * setup the pixi components for each subject
  */
 setup_pixi_subjects(){
+
+    if(!app.session) return;
+    if(!app.session.started) return;
     
     let current_z_index = 1000;
+    let current_period_id = app.session.session_periods_order[app.session.current_period-1];
     for(const i in app.session.world_state.session_players){       
 
         let subject = app.session.world_state.session_players[i];
@@ -158,13 +162,29 @@ setup_pixi_subjects(){
 
         let id_label = new PIXI.Text(app.session.session_players[i].parameter_set_player.id_label, text_style);
         id_label.eventMode = 'none';
-        id_label.anchor.set(0.5);        
+        id_label.anchor.set(0.5);
+        
+        let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
+        token_graphic.animationSpeed = app.animation_speed;
+        token_graphic.anchor.set(1, 0.5)
+        token_graphic.eventMode = 'none';
+        token_graphic.scale.set(0.3);
+        token_graphic.alpha = 0.7;
+
+        let inventory_label = new PIXI.Text(subject.inventory[current_period_id], text_style);
+        inventory_label.eventMode = 'none';
+        inventory_label.anchor.set(0, 0.5);
 
         avatar_container.addChild(gear_sprite);
         avatar_container.addChild(face_sprite);
         avatar_container.addChild(id_label);
+        avatar_container.addChild(token_graphic);
+        avatar_container.addChild(inventory_label);
 
+        face_sprite.position.set(0, -avatar_container.height * 0.03);
         id_label.position.set(0, -avatar_container.height * 0.2);
+        token_graphic.position.set(-2, +avatar_container.height * 0.18);
+        inventory_label.position.set(2, +avatar_container.height * 0.18);
 
         subject.pixi.avatar_container = avatar_container;
         app.pixi_container_main.addChild(subject.pixi.avatar_container);
@@ -233,11 +253,14 @@ destory_setup_pixi_subjects()
  */
 setup_pixi_tokens_for_current_period()
 {
-   app.destroy_pixi_tokens_for_all_periods();
+    if(!app.session) return;
+    if(!app.session.started) return;
 
-   const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+    app.destroy_pixi_tokens_for_all_periods();
 
-   for(const i in app.session.world_state.tokens[current_period_id]){
+    const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+
+    for(const i in app.session.world_state.tokens[current_period_id]){
 
         let token =  app.session.world_state.tokens[current_period_id][i];
         let token_container = new PIXI.Container();
@@ -291,6 +314,8 @@ destroy_pixi_tokens_for_all_periods()
  * */
 setup_pixi_minimap()
 {
+    if(!app.session) return;
+    if(!app.session.started) return;
     if(app.pixi_mode!="subject") return;
 
     if(app.mini_map_container) app.mini_map_container.destroy();
@@ -500,7 +525,7 @@ game_loop(delta){
     
     app.move_player(delta);
 
-    if(app.pixi_mode=="subject")
+    if(app.pixi_mode=="subject" && app.session.started)
     {   
         app.update_offsets_player(delta);
         app.update_mini_map(delta);
@@ -724,8 +749,8 @@ check_for_collisions(delta){
         if(app.get_distance(obj.current_location, token.current_location) <= obj.pixi.avatar_container.width/2 &&
            token.status == "available")
         {
-            token.token_container.getChildAt(0).stop();
-            token.token_container.getChildAt(0).alpha = 0.25;
+            // token.token_container.getChildAt(0).stop();
+            // token.token_container.getChildAt(0).alpha = 0.25;
             token.status = "waiting";
 
             app.send_message("collect_token", 
@@ -766,7 +791,7 @@ get_offset(){
 
 get_offset_staff(){
 
-    if(app.follow_subject != -1)
+    if(app.follow_subject != -1 && app.session.started)
     {
         obj = app.session.world_state.session_players[app.follow_subject];
         app.current_location = Object.assign({}, obj.current_location);

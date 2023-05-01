@@ -274,9 +274,15 @@ var app = Vue.createApp({
         take_update_time(message_data){
             let result = message_data.result;
             let status = message_data.value;
-            let notice_list = message_data.notice_list;
 
             if(status == "fail") return;
+
+            let period_change = false;
+
+            if (app.session.current_period != result.current_period)
+            {
+                period_change = true;
+            }
 
             app.session.started = result.started;
             app.session.current_period = result.current_period;
@@ -295,6 +301,13 @@ var app = Vue.createApp({
             }            
 
             app.update_subject_status_overlay();
+
+            if(period_change)
+            {
+                app.setup_pixi_tokens_for_current_period();
+                app.setup_pixi_minimap();
+                app.update_player_inventory();
+            }
         },
 
         /**

@@ -125,27 +125,15 @@ class SubjectUpdatesMixin():
             return
         
         self.world_state_local['tokens'][str(period_id)][str(token_id)]['status'] = player_id
+        self.world_state_local['session_players'][str(player_id)]['inventory'][str(period_id)]+=1
+
+        inventory = self.world_state_local['session_players'][str(player_id)]['inventory'][str(period_id)]
 
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
-        
-        # stored_world_state = result['world_state']
-        
-        # token = stored_world_state['tokens'][str(period_id)][str(token_id)]
 
-        # if token['status'] != 'available':
-        #     logger.warning(f'collect_token: {message_text}, token {token} not available')
-        #     return
-        
-        # variable_column = 'name'
-        # search_type = 'contains'
-        # filter = variable_column + '__' + search_type
-        # info=members.filter(**{ filter:  })
-        
-        # await Session.objects.filter(id=self.session_id)
-        #                      .filter(world_state__tokens__1__1__status="available")
-        #             .aupdate(world_state=self.world_state_local)
+        result = {"token_id" : token_id, "period_id" : period_id, "player_id" : player_id, "inventory" : inventory}
 
-        result = {"token_id" : token_id, "period_id" : period_id, "player_id" : player_id}
+        logger.warning(f'collect_token: {message_text}, token {token_id}')
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
