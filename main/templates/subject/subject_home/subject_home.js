@@ -277,11 +277,11 @@ var app = Vue.createApp({
 
             if(status == "fail") return;
 
-            let period_chage = false;
+            let period_change = false;
 
             if (app.session.current_period != result.current_period)
             {
-                period_chage = true;
+                period_change = true;
             }
 
             app.session.started = result.started;
@@ -302,10 +302,11 @@ var app = Vue.createApp({
 
             app.update_subject_status_overlay();
 
-            if(period_chage)
+            if(period_change)
             {
                 app.setup_pixi_tokens_for_current_period();
                 app.setup_pixi_minimap();
+                app.update_player_inventory();
             }
         },
 

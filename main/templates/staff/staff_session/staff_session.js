@@ -335,6 +335,13 @@ var app = Vue.createApp({
 
             if(status == "fail") return;
 
+            let period_change = false;
+
+            if (app.session.current_period != result.current_period)
+            {
+                period_change = true;
+            }
+
             app.session.started = result.started;
             app.session.current_period = result.current_period;
             app.session.time_remaining = result.time_remaining;
@@ -345,6 +352,12 @@ var app = Vue.createApp({
             app.take_update_earnings(message_data);
 
             app.update_phase_button_text();
+
+            if(period_change)
+            {
+                app.setup_pixi_tokens_for_current_period();
+                app.update_player_inventory();
+            }
         },
        
         //do nothing on when enter pressed for post

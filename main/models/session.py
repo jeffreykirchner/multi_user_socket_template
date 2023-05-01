@@ -250,6 +250,8 @@ class Session(models.Model):
            self.current_experiment_phase != ExperimentPhase.NAMES:
 
             if self.time_remaining == 0:
+                self.get_current_session_period().store_earnings()
+
                 self.current_period += 1
                 self.time_remaining = self.parameter_set.period_length
             else:                                     

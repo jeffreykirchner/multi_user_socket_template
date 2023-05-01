@@ -749,8 +749,8 @@ check_for_collisions(delta){
         if(app.get_distance(obj.current_location, token.current_location) <= obj.pixi.avatar_container.width/2 &&
            token.status == "available")
         {
-            token.token_container.getChildAt(0).stop();
-            token.token_container.getChildAt(0).alpha = 0.25;
+            // token.token_container.getChildAt(0).stop();
+            // token.token_container.getChildAt(0).alpha = 0.25;
             token.status = "waiting";
 
             app.send_message("collect_token", 
@@ -791,7 +791,7 @@ get_offset(){
 
 get_offset_staff(){
 
-    if(app.follow_subject != -1)
+    if(app.follow_subject != -1 && app.session.started)
     {
         obj = app.session.world_state.session_players[app.follow_subject];
         app.current_location = Object.assign({}, obj.current_location);

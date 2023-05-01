@@ -133,6 +133,8 @@ class SubjectUpdatesMixin():
 
         result = {"token_id" : token_id, "period_id" : period_id, "player_id" : player_id, "inventory" : inventory}
 
+        logger.warning(f'collect_token: {message_text}, token {token_id}')
+
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
 

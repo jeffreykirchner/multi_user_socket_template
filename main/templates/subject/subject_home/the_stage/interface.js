@@ -30,3 +30,15 @@ take_update_collect_token(message_data){
     session_player.inventory[message_data.period_id] = message_data.inventory;
     session_player.pixi.avatar_container.getChildAt(4).text = message_data.inventory;
 },
+
+update_player_inventory(){
+
+    let period_id = app.session.session_periods_order[app.session.current_period];
+
+    for(const i in app.session.session_players_order)
+    {
+        const player_id = app.session.session_players_order[i];
+        let session_player = app.session.world_state.session_players[player_id];
+        session_player.pixi.avatar_container.getChildAt(4).text = app.session.world_state.session_players[player_id].inventory[period_id];
+    }
+},
