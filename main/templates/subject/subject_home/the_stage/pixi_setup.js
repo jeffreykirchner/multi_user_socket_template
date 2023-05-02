@@ -735,29 +735,39 @@ update_offsets_player(delta){
  */
 check_for_collisions(delta){
 
-    if(Date.now() - app.last_collision_check < 250) return;
+    if(Date.now() - app.last_collision_check < 333) return;
     app.last_collision_check = Date.now();
 
     const obj = app.session.world_state.session_players[app.session_player.id];
+    let collision_found = false;
 
     //check for collisions with tokens
     const current_period_id = app.session.session_periods_order[app.session.current_period-1];
     for(const i in app.session.world_state.tokens[current_period_id]){       
 
         let token = app.session.world_state.tokens[current_period_id][i];
+        let distance = app.get_distance(obj.current_location, token.current_location);
 
-        if(app.get_distance(obj.current_location, token.current_location) <= obj.pixi.avatar_container.width/2 &&
-           token.status == "available")
+        if(distance <= obj.pixi.avatar_container.width/2 &&
+           token.status == "available" && 
+           !collision_found)
         {
             // token.token_container.getChildAt(0).stop();
             // token.token_container.getChildAt(0).alpha = 0.25;
             token.status = "waiting";
+            collision_found = true;
 
             app.send_message("collect_token", 
                              {"token_id" : i, "period_id" : current_period_id},
                              "group");
-
-            break;
+        }
+        else if(distance>2000)
+        {
+            token.token_container.visible=false;
+        }
+        else
+        {
+            token.token_container.visible=true;
         }
         
     }
