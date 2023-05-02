@@ -21,6 +21,8 @@ setup_pixi(){
         app.setup_subject_status_overlay();
         app.update_zoom();
     });
+
+    app.pixi_text_emitter = [];
 },
 
 reset_pixi_app(){    
@@ -542,6 +544,7 @@ add_scroll_button(button_size, name, text){
 game_loop(delta){
     
     app.move_player(delta);
+    app.move_text_emitters(delta);
 
     if(app.pixi_mode=="subject" && app.session.started)
     {   
@@ -863,4 +866,76 @@ staff_screen_scroll_button_out(event){
     app.scroll_direction = {x:0, y:0};
 },
 
+/**
+ * add text emitters to the screen
+ */
+add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size){
+
+    let emitter_container = new PIXI.Container();
+    emitter_container.position.set(start_x, start_y);
+    emitter_container.anchor.set(0.5);
+    emitter_container.eventMode = 'none';
+
+    let text = new PIXI.Text(text, {
+            fontFamily: 'Arial',
+            fontSize: font_size,
+            fill: font_color,
+            align: 'left',
+        });
+
+    text.anchor.set(0.5);
+
+    emitter_container.addChild(text);
+
+    let emitter = {current_location : {x:start_x, y:start_y},
+                   target_location : {x:end_x, y:end_y},
+                   emitter_container:emitter_container,
+                };
+    
+    app.pixi_text_emitter.push(emitter);
+},
+
+/**
+ * move text emitters
+ */
+move_text_emitters(delta){
+
+    var len = app.pixi_text_emitter.length;
+    let speed = 0.1 * delta;
+
+    for(i = 0; i < len;  i++){
+
+        let emitter = app.pixi_text_emitter[i];
+        
+        if(emitter.x == emitter.target_x && emitter.y == emitter.target_y)
+        {
+            emitter.emitter_container.destroy();
+            emitter.pop(); 
+        }
+        else
+        {
+            // let noX = false;
+            // let noY = false;
+            // let temp_move_speed = (app.move_speed * delta);
+
+            // let temp_angle = Math.atan2(obj.target_location.y - obj.current_location.y,
+            //                             obj.target_location.x - obj.current_location.x)
+
+            // if(!noY){
+            //     if(Math.abs(obj.target_location.y - obj.current_location.y) < temp_move_speed)
+            //     obj.current_location.y = obj.target_location.y;
+            //     else
+            //     obj.current_location.y += temp_move_speed * Math.sin(temp_angle);
+            // }
+
+            // if(!noX){
+            //     if(Math.abs(obj.target_location.x - obj.current_location.x) < temp_move_speed)
+            //         obj.current_location.x = obj.target_location.x;
+            //     else
+            //         obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
+            // }
+        }
+       
+    }
+},
 
