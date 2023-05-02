@@ -45,6 +45,9 @@ reset_pixi_app(){
     app.canvas_height = canvas.height;
 
     app.last_collision_check = Date.now();
+    //app.pixi_app.ticker.maxFPS = 30;
+    //app.pixi_app.ticker.targetFPMS = 0.12;
+    //app.pixi_app.ticker.minFPS = 40;
 },
 
 /** load pixi sprite sheets
@@ -64,7 +67,6 @@ setup_pixi_sheets(textures){
     app.background.eventMode ='static';
 
     app.pixi_container_main.addChild(app.background);
-
     app.pixi_app.stage.addChild(app.pixi_container_main);
    
     let tiling_sprite = new PIXI.TilingSprite(
@@ -114,6 +116,22 @@ setup_pixi_sheets(textures){
                                                       "→\n→\n→");
         
     }
+
+    {%if DEBUG%}
+    //fps counter
+    let text_style = {
+        fontFamily: 'Arial',
+        fontSize: 14,
+        fill: 'black',
+        align: 'left',
+    };
+    let fps_label = new PIXI.Text("0 fps", text_style);
+    fps_label.eventMode = 'none';
+
+    app.pixi_fps_label = fps_label;
+    app.pixi_fps_label.position.set(10, app.canvas_height-25);
+    app.pixi_app.stage.addChild(app.pixi_fps_label);   
+    {%endif%}
 
     //start game loop
     app.pixi_app.ticker.add(app.game_loop);
@@ -536,7 +554,11 @@ game_loop(delta){
     {
         app.update_offsets_staff(delta);
         app.scroll_staff(delta);
-    }       
+    }  
+    
+    {%if DEBUG%}
+    app.pixi_fps_label.text = Math.round(app.pixi_app.ticker.FPS) + " FPS";
+    {%endif%}
 },
 
 /**
