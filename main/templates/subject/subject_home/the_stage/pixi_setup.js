@@ -760,7 +760,7 @@ update_offsets_player(delta){
  */
 check_for_collisions(delta){
 
-    if(Date.now() - app.last_collision_check < 333) return;
+    if(Date.now() - app.last_collision_check < 100) return;
     app.last_collision_check = Date.now();
 
     const obj = app.session.world_state.session_players[app.session_player.id];
@@ -869,12 +869,13 @@ staff_screen_scroll_button_out(event){
 /**
  * add text emitters to the screen
  */
-add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size){
+add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, emitter_image){
 
     let emitter_container = new PIXI.Container();
     emitter_container.position.set(start_x, start_y);
     emitter_container.pivot.set(0.5);
     emitter_container.eventMode = 'none';
+    emitter_container.zIndex = 2000;
 
     let emitter_text = new PIXI.Text(text, {
             fontFamily: 'Arial',
@@ -886,6 +887,12 @@ add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size){
     emitter_text.anchor.set(0.5);
 
     emitter_container.addChild(emitter_text);
+
+    if(emitter_image){
+        emitter_image.anchor.set(0, 0.5);
+        emitter_container.addChild(emitter_image);
+        emitter_image.position.set(emitter_text.width/2+5, 0);
+    }
 
     let emitter = {current_location : {x:start_x, y:start_y},
                    target_location : {x:end_x, y:end_y},
@@ -901,44 +908,56 @@ add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size){
  */
 move_text_emitters(delta){
 
-    return;
+    let completed = [];
 
-    var len = app.pixi_text_emitter.length;
-    let speed = 0.1 * delta;
-
-    for(i = 0; i < len;  i++){
+    //move the emitters
+    for(let i = 0; i <  app.pixi_text_emitter.length;  i++){
 
         let emitter = app.pixi_text_emitter[i];
         
-        if(emitter.x == emitter.target_x && emitter.y == emitter.target_y)
+        if(emitter.current_location.x == emitter.target_location.x && 
+           emitter.current_location.y == emitter.target_location.y)
         {
-            emitter.emitter_container.destroy();
-            emitter.pop(); 
+            completed.push(i);
         }
         else
         {
-            // let noX = false;
-            // let noY = false;
-            // let temp_move_speed = (app.move_speed * delta);
+            app.move_object(delta, emitter, app.move_speed / 4);
+            emitter.emitter_container.position.set(emitter.current_location.x, emitter.current_location.y);
+        }       
+    }
 
-            // let temp_angle = Math.atan2(obj.target_location.y - obj.current_location.y,
-            //                             obj.target_location.x - obj.current_location.x)
+    //remove the completed emitters
+    for(let i=completed.length-1; i>=0; i--){
+        app.pixi_text_emitter[completed[i]].emitter_container.destroy();
 
-            // if(!noY){
-            //     if(Math.abs(obj.target_location.y - obj.current_location.y) < temp_move_speed)
-            //     obj.current_location.y = obj.target_location.y;
-            //     else
-            //     obj.current_location.y += temp_move_speed * Math.sin(temp_angle);
-            // }
+        app.pixi_text_emitter.splice(completed[i], completed[i]); 
+    }
+},
 
-            // if(!noX){
-            //     if(Math.abs(obj.target_location.x - obj.current_location.x) < temp_move_speed)
-            //         obj.current_location.x = obj.target_location.x;
-            //     else
-            //         obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
-            // }
-        }
-       
+/**
+ * move the object towards its target location
+ */
+move_object(delta, obj, move_speed){
+    let noX = false;
+    let noY = false;
+    let temp_move_speed = (move_speed * delta);
+
+    let temp_angle = Math.atan2(obj.target_location.y - obj.current_location.y,
+                                obj.target_location.x - obj.current_location.x)
+
+    if(!noY){
+        if(Math.abs(obj.target_location.y - obj.current_location.y) < temp_move_speed)
+            obj.current_location.y = obj.target_location.y;
+        else
+            obj.current_location.y += temp_move_speed * Math.sin(temp_angle);
+    }
+
+    if(!noX){
+        if(Math.abs(obj.target_location.x - obj.current_location.x) < temp_move_speed)
+            obj.current_location.x = obj.target_location.x;
+        else
+            obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
     }
 },
 
