@@ -873,19 +873,19 @@ add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size){
 
     let emitter_container = new PIXI.Container();
     emitter_container.position.set(start_x, start_y);
-    emitter_container.anchor.set(0.5);
+    emitter_container.pivot.set(0.5);
     emitter_container.eventMode = 'none';
 
-    let text = new PIXI.Text(text, {
+    let emitter_text = new PIXI.Text(text, {
             fontFamily: 'Arial',
             fontSize: font_size,
             fill: font_color,
             align: 'left',
         });
 
-    text.anchor.set(0.5);
+    emitter_text.anchor.set(0.5);
 
-    emitter_container.addChild(text);
+    emitter_container.addChild(emitter_text);
 
     let emitter = {current_location : {x:start_x, y:start_y},
                    target_location : {x:end_x, y:end_y},
@@ -893,12 +893,15 @@ add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size){
                 };
     
     app.pixi_text_emitter.push(emitter);
+    app.pixi_container_main.addChild(emitter_container);
 },
 
 /**
  * move text emitters
  */
 move_text_emitters(delta){
+
+    return;
 
     var len = app.pixi_text_emitter.length;
     let speed = 0.1 * delta;

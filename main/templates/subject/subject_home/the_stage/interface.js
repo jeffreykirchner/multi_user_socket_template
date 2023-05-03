@@ -29,6 +29,14 @@ take_update_collect_token(message_data){
 
     session_player.inventory[message_data.period_id] = message_data.inventory;
     session_player.pixi.avatar_container.getChildAt(4).text = message_data.inventory;
+
+    app.add_text_emitters("+1", 
+                          session_player.current_location.x, 
+                          session_player.current_location.y,
+                          session_player.current_location.x,
+                          session_player.current_location.y-50,
+                          0xFFFFFF,
+                          36 )
 },
 
 update_player_inventory(){
