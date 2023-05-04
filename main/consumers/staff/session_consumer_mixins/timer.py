@@ -63,7 +63,7 @@ class TimerMixin():
             logger.info(f"continue_timer timer off")
             return
 
-        result = await sync_to_async(take_do_period_timer)(self.session_id)
+        result = await sync_to_async(take_do_period_timer, thread_sensitive=False)(self.session_id)
 
         if result["value"] == "success":
 
