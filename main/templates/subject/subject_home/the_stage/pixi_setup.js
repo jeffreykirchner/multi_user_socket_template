@@ -61,14 +61,15 @@ setup_pixi_sheets(textures){
 
     app.pixi_container_main = new PIXI.Container();
     app.pixi_container_main.sortableChildren = true;
+    app.pixi_container_main.eventMode = 'passive';
 
-    app.background = new PIXI.Graphics();
-    app.background.beginFill(0xffffff);
-    app.background.drawRect(0, 0, app.stage_width, app.stage_height);
-    app.background.endFill();
-    app.background.eventMode ='static';
+    // app.background = new PIXI.Graphics();
+    // app.background.beginFill(0xffffff);
+    // app.background.drawRect(0, 0, app.stage_width, app.stage_height);
+    // app.background.endFill();
+    // app.background.eventMode ='static';
 
-    app.pixi_container_main.addChild(app.background);
+    // app.pixi_container_main.addChild(app.background);
     app.pixi_app.stage.addChild(app.pixi_container_main);
    
     let tiling_sprite = new PIXI.TilingSprite(
@@ -103,7 +104,7 @@ setup_pixi_sheets(textures){
     if(app.pixi_mode=="staff"){
 
         app.scroll_button_up = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:30}, 
-                                                   {scroll_direction:{x:0,y:-app.scroll_speed}}, 
+                                                     {scroll_direction:{x:0,y:-app.scroll_speed}}, 
                                                    "↑↑↑");
         app.scroll_button_down = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:app.pixi_app.screen.height - 30}, 
                                                      {scroll_direction:{x:0,y:app.scroll_speed}}, 
@@ -159,17 +160,19 @@ setup_pixi_subjects(){
         avatar_container.position.set(subject.current_location.x, subject.current_location.y);
         avatar_container.height = 250;
         avatar_container.width = 250;
-        avatar_container.eventMode = 'static';
+        avatar_container.eventMode = 'passive';
+        avatar_container.name = {player_id : i};
+        // avatar_container.on("pointerup", app.subject_avatar_click);
 
         let gear_sprite = new PIXI.AnimatedSprite(app.pixi_textures.sprite_sheet.animations['walk']);
         gear_sprite.animationSpeed = app.animation_speed;
         gear_sprite.anchor.set(0.5)
         gear_sprite.tint = app.session.session_players[i].parameter_set_player.hex_color;
-        gear_sprite.eventMode = 'none';
+        gear_sprite.eventMode = 'passive';    
 
         let face_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["face_1.png"]);
         face_sprite.anchor.set(0.5);
-        face_sprite.eventMode = 'none';
+        face_sprite.eventMode = 'passive';
 
         let text_style = {
             fontFamily: 'Arial',
@@ -181,18 +184,18 @@ setup_pixi_subjects(){
         };
 
         let id_label = new PIXI.Text(app.session.session_players[i].parameter_set_player.id_label, text_style);
-        id_label.eventMode = 'none';
+        id_label.eventMode = 'passive';
         id_label.anchor.set(0.5);
         
         let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
         token_graphic.animationSpeed = app.animation_speed;
         token_graphic.anchor.set(1, 0.5)
-        token_graphic.eventMode = 'none';
+        token_graphic.eventMode = 'passive';
         token_graphic.scale.set(0.3);
         token_graphic.alpha = 0.7;
 
         let inventory_label = new PIXI.Text(subject.inventory[current_period_id], text_style);
-        inventory_label.eventMode = 'none';
+        inventory_label.eventMode = 'passive';
         inventory_label.anchor.set(0, 0.5);
 
         avatar_container.addChild(gear_sprite);
@@ -239,6 +242,20 @@ setup_pixi_subjects(){
         subject.chat_time = null;
 
         app.pixi_container_main.addChild(subject.pixi.chat_container);
+
+        //tractor beam
+        subject.pixi.tractor_beam = [];
+
+        for(let i=0; i<25; i++)
+        {
+            let tractor_beam_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["particle2.png"]);
+            tractor_beam_sprite.anchor.set(0.5);
+            tractor_beam_sprite.eventMode = 'passive';
+            tractor_beam_sprite.visible = false;
+            tractor_beam_sprite.zIndex = 1500;
+            subject.pixi.tractor_beam.push(tractor_beam_sprite);
+            app.pixi_container_main.addChild(tractor_beam_sprite);
+        }
     }
 
     //make local subject the top layer
@@ -288,7 +305,7 @@ setup_pixi_tokens_for_current_period()
         let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
         token_graphic.animationSpeed = app.animation_speed;
         token_graphic.anchor.set(0.5)
-        token_graphic.eventMode = 'none';
+        token_graphic.eventMode = 'passive';
 
         if(token.status=="available")
         {
@@ -505,8 +522,8 @@ update_subject_status_overlay(delta)
 /**
  * add scroll buttons to staff screen
  */
-add_scroll_button(button_size, name, text){
-
+add_scroll_button(button_size, name, text)
+{
     let g = new PIXI.Graphics();
     g.lineStyle(1, 0x000000);
     g.beginFill(0xffffff);
@@ -541,8 +558,8 @@ add_scroll_button(button_size, name, text){
 /**
  * game loop for pixi
  */
-game_loop(delta){
-    
+game_loop(delta)
+{
     app.move_player(delta);
     app.move_text_emitters(delta);
 
@@ -607,8 +624,8 @@ get_distance(point1, point2)
 /**
  * move players if target does not equal current location
  */
-move_player(delta){
-
+move_player(delta)
+{
     if(!app.session.world_state) return;
 
     //move players
@@ -810,13 +827,18 @@ update_offsets_staff(delta){
     app.pixi_container_main.y = -offset.y;   
 },
 
-
+/**
+ * manaully scroll staff screen
+ */
 scroll_staff(delta){
 
     app.current_location.x += app.scroll_direction.x;
     app.current_location.y += app.scroll_direction.y;
 },
 
+/**
+ * subject screen offset from the origin
+ */
 get_offset(){
     let obj = app.session.world_state.session_players[app.session_player.id];
 
@@ -824,6 +846,9 @@ get_offset(){
             y:obj.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
 },
 
+/**
+ * staff screen offset from origin
+ */
 get_offset_staff(){
 
     if(app.follow_subject != -1 && app.session.started)
@@ -841,13 +866,32 @@ get_offset_staff(){
  */
 subject_pointer_up(event){
 
-    let obj = app.session.world_state.session_players[app.session_player.id];
-
     let local_pos = event.data.getLocalPosition(event.currentTarget);
-    obj.target_location.x = local_pos.x;
-    obj.target_location.y = local_pos.y;
 
-    app.target_location_update();
+    if(event.button == 0)
+    {
+
+        let obj = app.session.world_state.session_players[app.session_player.id];
+
+        
+        obj.target_location.x = local_pos.x;
+        obj.target_location.y = local_pos.y;
+
+        app.target_location_update();
+    }
+    else if(event.button == 2)
+    {
+        for(i in app.session.world_state.session_players)
+        {
+            let obj = app.session.world_state.session_players[i];
+
+            if(app.get_distance(obj.current_location, local_pos) < 75)
+            {
+                app.subject_avatar_click(i);              
+                break;
+            }
+        }
+    }
 },
 
 /**
@@ -864,6 +908,71 @@ staff_screen_scroll_button_over(event){
 staff_screen_scroll_button_out(event){
     event.currentTarget.alpha = 0.5;
     app.scroll_direction = {x:0, y:0};
+},
+
+/**
+ * subject avatar click
+ */
+subject_avatar_click(player_id){
+
+    if(player_id == app.session_player.id) return;
+
+    app.setup_tractor_beam(app.session_player.id, player_id);
+    
+    console.log("subject avatar click", player_id);
+},
+
+setup_tractor_beam(source_id, target_id)
+{
+
+    // double dY = myY - targetY;
+    // double dX = myX - targetX;
+    // double tempAngle = Math.Atan2(dY, dX);
+    // double tempSlope = (myY - targetY) / (myX - targetX);
+
+    // if (myX - targetX == 0) tempSlope = 0.999999999999;
+
+    // double tempYIntercept = myY - tempSlope * myX;
+
+    // Rectangle rectTractor;
+    // double tractorCircles = 15;
+    // double tempScale = 1 / tractorCircles * 0.75;
+
+    // double xIncrement = Math.Sqrt(Math.Pow(myX - targetX, 2) + Math.Pow(myY - targetY, 2)) / tractorCircles;
+
+    // for (int i = 1; i <= tractorCircles; i++)
+    // {
+    //     rectTractor = new Rectangle((int)((myX - Math.Cos(tempAngle) * xIncrement * i) - (XNA.tractorBeamTex.Width * tempScale * i) / 2),
+
+    //                                     (int)((myY - Math.Sin(tempAngle) * xIncrement * i) - (XNA.tractorBeamTex.Height * tempScale * i) / 2),
+    //                                     (int)(XNA.tractorBeamTex.Width * tempScale * i),
+    //                                     (int)(XNA.tractorBeamTex.Height * tempScale * i));
+
+    //     Color tempC = Color.White;
+    //     if (Common.gameT2 % 20 >= 10)
+    //     {
+    //         if (i % 2 != 0)
+    //         {
+    //             tempC = myColor;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (i % 2 == 0)
+    //         {
+    //             tempC = myColor;
+    //         }
+    //     }
+
+    //     Common.FrmServer.drawScaledTexture(XNA.tractorBeamTex,
+    //                                     rectTractor.X,
+    //                                     rectTractor.Y,
+    //                                     tempV,
+    //                                     tempC,
+    //                                     new Vector2(0),
+    //                                     tempScale * i
+    //                                     );
+    // }
 },
 
 /**
