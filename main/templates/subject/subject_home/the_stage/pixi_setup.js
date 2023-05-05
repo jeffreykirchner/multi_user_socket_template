@@ -63,13 +63,6 @@ setup_pixi_sheets(textures){
     app.pixi_container_main.sortableChildren = true;
     app.pixi_container_main.eventMode = 'passive';
 
-    // app.background = new PIXI.Graphics();
-    // app.background.beginFill(0xffffff);
-    // app.background.drawRect(0, 0, app.stage_width, app.stage_height);
-    // app.background.endFill();
-    // app.background.eventMode ='static';
-
-    // app.pixi_container_main.addChild(app.background);
     app.pixi_app.stage.addChild(app.pixi_container_main);
    
     let tiling_sprite = new PIXI.TilingSprite(
@@ -150,8 +143,8 @@ setup_pixi_subjects(){
     
     let current_z_index = 1000;
     let current_period_id = app.session.session_periods_order[app.session.current_period-1];
-    for(const i in app.session.world_state.session_players){       
-
+    for(const i in app.session.world_state.session_players)
+    {      
         let subject = app.session.world_state.session_players[i];
         subject.pixi = {};
 
@@ -245,8 +238,9 @@ setup_pixi_subjects(){
 
         //tractor beam
         subject.pixi.tractor_beam = [];
+        subject.tractor_beam_target = null;
 
-        for(let i=0; i<25; i++)
+        for(let i=0; i<15; i++)
         {
             let tractor_beam_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["particle2.png"]);
             tractor_beam_sprite.anchor.set(0.5);
@@ -743,6 +737,15 @@ move_player(delta)
 
         chat_container.visible = obj.show_chat;
     }   
+
+    //update tractor beams
+    for(let i in app.session.world_state.session_players)
+    {
+        if(app.session.world_state.session_players[i].tractor_beam_target)
+        {
+            app.setup_tractor_beam(i, app.session.world_state.session_players[i].tractor_beam_target);
+        }
+    }
 },
 
 /**
@@ -917,62 +920,72 @@ subject_avatar_click(player_id){
 
     if(player_id == app.session_player.id) return;
 
-    app.setup_tractor_beam(app.session_player.id, player_id);
-    
+    app.session.world_state.world_state.tractor_beam_target = player_id;
+
     console.log("subject avatar click", player_id);
 },
 
 setup_tractor_beam(source_id, target_id)
 {
+    let source_player = app.session.world_state.session_players[source_id];
+    let target_player = app.session.world_state.session_players[target_id];
 
-    // double dY = myY - targetY;
-    // double dX = myX - targetX;
-    // double tempAngle = Math.Atan2(dY, dX);
-    // double tempSlope = (myY - targetY) / (myX - targetX);
+    let dY = source_player.current_location.y - target_player.current_location.y;
+    let dX = source_player.current_location.x - target_player.current_location.x;
 
-    // if (myX - targetX == 0) tempSlope = 0.999999999999;
+    let myX = source_player.current_location.x;
+    let myY = source_player.current_location.y;
+    let targetX = target_player.current_location.x;
+    let targetY = target_player.current_location.y;
+    
+    let tempAngle = Math.atan2(dY, dX);
+    let tempSlope = (myY - targetY) / (myX - targetX);
 
-    // double tempYIntercept = myY - tempSlope * myX;
+    if (myX - targetX == 0) tempSlope = 0.999999999999;
+
+    let tempYIntercept = myY - tempSlope * myX;
 
     // Rectangle rectTractor;
-    // double tractorCircles = 15;
-    // double tempScale = 1 / tractorCircles * 0.75;
+    let tractorCircles = source_player.pixi.tractor_beam.length;
+    let tempScale = 1 / tractorCircles;
 
-    // double xIncrement = Math.Sqrt(Math.Pow(myX - targetX, 2) + Math.Pow(myY - targetY, 2)) / tractorCircles;
+    let xIncrement = Math.sqrt(Math.pow(myX - targetX, 2) + Math.pow(myY - targetY, 2)) / tractorCircles;
 
-    // for (int i = 1; i <= tractorCircles; i++)
-    // {
-    //     rectTractor = new Rectangle((int)((myX - Math.Cos(tempAngle) * xIncrement * i) - (XNA.tractorBeamTex.Width * tempScale * i) / 2),
+    for (let i=0; i<tractorCircles; i++)
+    {
+        let temp_x = (myX - Math.cos(tempAngle) * xIncrement * i);
+        let temp_y = (myY - Math.sin(tempAngle) * xIncrement * i);
 
-    //                                     (int)((myY - Math.Sin(tempAngle) * xIncrement * i) - (XNA.tractorBeamTex.Height * tempScale * i) / 2),
-    //                                     (int)(XNA.tractorBeamTex.Width * tempScale * i),
-    //                                     (int)(XNA.tractorBeamTex.Height * tempScale * i));
+        tb_sprite = source_player.pixi.tractor_beam[i];
+        tb_sprite.position.set(temp_x, temp_y)
+        tb_sprite.scale.set(tempScale * i * 2);
+        tb_sprite.visible = true;
+        
+        if (i%2 == 0)
+        {
+            tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+        }
+        else
+        {
+            tb_sprite.tint = 0xFFFFFF;
+        }
+        // Color tempC = Color.White;
+        // if (Common.gameT2 % 20 >= 10)
+        // {
+        //     if (i % 2 != 0)
+        //     {
+        //         tempC = myColor;
+        //     }
+        // }
+        // else
+        // {
+        //     if (i % 2 == 0)
+        //     {
+        //         tempC = myColor;
+        //     }
+        // }
 
-    //     Color tempC = Color.White;
-    //     if (Common.gameT2 % 20 >= 10)
-    //     {
-    //         if (i % 2 != 0)
-    //         {
-    //             tempC = myColor;
-    //         }
-    //     }
-    //     else
-    //     {
-    //         if (i % 2 == 0)
-    //         {
-    //             tempC = myColor;
-    //         }
-    //     }
-
-    //     Common.FrmServer.drawScaledTexture(XNA.tractorBeamTex,
-    //                                     rectTractor.X,
-    //                                     rectTractor.Y,
-    //                                     tempV,
-    //                                     tempC,
-    //                                     new Vector2(0),
-    //                                     tempScale * i
-    //                                     );
-    // }
+    }
 },
 
 /**
