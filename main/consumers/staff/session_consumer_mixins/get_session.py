@@ -25,6 +25,12 @@ class GetSessionMixin():
         result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)       
 
         self.world_state_local = result["world_state"]
+        self.session_players_local = {}
+
+
+        for p in result["session_players"]:
+            session_player = result["session_players"][p]
+            self.session_players_local[str(session_player["player_key"])] = {"id" : p}
 
         self.session_id = result["id"]
 

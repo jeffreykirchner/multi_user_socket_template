@@ -741,9 +741,10 @@ move_player(delta)
     //update tractor beams
     for(let i in app.session.world_state.session_players)
     {
-        if(app.session.world_state.session_players[i].tractor_beam_target)
+        let player = app.session.world_state.session_players[i];
+        if(player.tractor_beam_target)
         {
-            app.setup_tractor_beam(i, app.session.world_state.session_players[i].tractor_beam_target);
+            app.setup_tractor_beam(i, player.tractor_beam_target);
         }
     }
 },
@@ -916,13 +917,16 @@ staff_screen_scroll_button_out(event){
 /**
  * subject avatar click
  */
-subject_avatar_click(player_id){
+subject_avatar_click(target_player_id){
 
-    if(player_id == app.session_player.id) return;
+    if(target_player_id == app.session_player.id) return;
 
-    app.session.world_state.world_state.tractor_beam_target = player_id;
+    // app.session.world_state.tractor_beam_target = player_id;
 
-    console.log("subject avatar click", player_id);
+    //console.log("subject avatar click", player_id);
+    app.send_message("tractor_beam", 
+                     {"target_player_id" : target_player_id},
+                     "group");
 },
 
 setup_tractor_beam(source_id, target_id)

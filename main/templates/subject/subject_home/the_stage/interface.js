@@ -1,9 +1,15 @@
+/**
+ * send movement update to server
+ */
 target_location_update(){
     app.send_message("target_location_update", 
                     {"target_location" : app.session.world_state.session_players[app.session_player.id].target_location},
                     "self");                   
 },
 
+/**
+ * take update from server about new location target for a player
+ */
 take_target_location_update(message_data){
     if(message_data.value == "success")
     {
@@ -15,6 +21,9 @@ take_target_location_update(message_data){
     }
 },
 
+/**
+ * take and update from the server about a collected token
+ */
 take_update_collect_token(message_data){
 
     if(message_data.period_id != app.session.session_periods_order[app.session.current_period-1]) return;
@@ -53,6 +62,9 @@ take_update_collect_token(message_data){
                           token_graphic)
 },
 
+/**
+ * update the inventory of the player
+ */
 update_player_inventory(){
 
     let period_id = app.session.session_periods_order[app.session.current_period];
@@ -63,4 +75,15 @@ update_player_inventory(){
         let session_player = app.session.world_state.session_players[player_id];
         session_player.pixi.avatar_container.getChildAt(4).text = app.session.world_state.session_players[player_id].inventory[period_id];
     }
+},
+
+take_update_tractor_beam(message_data){
+    let player_id = message_data.player_id;
+    let target_player_id = message_data.target_player_id;
+
+    app.session.world_state.session_players[player_id].tractor_beam_target = target_player_id;
+},
+
+take_update_transfer_tokens(message_data){
+
 },

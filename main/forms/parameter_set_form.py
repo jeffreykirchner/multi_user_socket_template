@@ -60,6 +60,18 @@ class ParameterSetForm(forms.ModelForm):
                                     widget=forms.NumberInput(attrs={"v-model":"parameter_set.tokens_per_period",
                                                                     "step":"1",
                                                                     "min":"0"}))
+    
+    interaction_length = forms.IntegerField(label='Interaction Length (seconds)',
+                                            min_value=1,
+                                            widget=forms.NumberInput(attrs={"v-model":"parameter_set.interaction_length",
+                                                                            "step":"1",
+                                                                            "min":"1"}))
+    
+    cool_down_length = forms.IntegerField(label='Cool Down Length (seconds)',
+                                          min_value=1,
+                                          widget=forms.NumberInput(attrs={"v-model":"parameter_set.cool_down_length",
+                                                                          "step":"1",
+                                                                          "min":"1"}))
 
     world_width = forms.IntegerField(label='World Width (pixels)',
                                     min_value=1,
@@ -82,7 +94,7 @@ class ParameterSetForm(forms.ModelForm):
         model=ParameterSet
         fields =['period_count', 'period_length', 'show_instructions', 'instruction_set', 
                  'survey_required', 'survey_link', 'test_mode', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
-                 'tokens_per_period', 'world_width', 'world_height']
+                 'tokens_per_period', 'interaction_length', 'cool_down_length', 'world_width', 'world_height']
 
     def clean_survey_link(self):
         

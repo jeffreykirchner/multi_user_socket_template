@@ -56,6 +56,38 @@ class InterfaceMixin():
 
         await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def tractor_beam(self, event):
+        '''
+        subject activates tractor beam, handled by staff consumer
+        '''
+        pass
+
+    async def update_tractor_beam(self, event):
+        '''
+        subject activates tractor beam update
+        '''
+
+        event_data = event["group_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+    async def transfer_tokens(self, event):
+        '''
+        subject transfers tokens, handled by staff consumer
+        '''
+        pass
+
+    async def update_transfer_tokens(self, event):
+        '''
+        subject transfers tokens update
+        '''
+
+        event_data = event["group_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
 
         

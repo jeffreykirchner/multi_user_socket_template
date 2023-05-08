@@ -84,3 +84,11 @@ update_player_inventory(){
         session_player.pixi.avatar_container.getChildAt(4).text = app.session.world_state.session_players[player_id].inventory[period_id];
     }
 },
+
+take_update_tractor_beam(message_data){
+
+},
+
+take_update_transfer_tokens(message_data){
+
+},

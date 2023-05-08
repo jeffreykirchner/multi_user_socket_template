@@ -35,7 +35,7 @@ send_update_parameter_set(){
     }
 
     app.send_message("update_parameter_set", {"session_id" : app.session.id,
-                                            "form_data" : form_data});
+                                              "form_data" : form_data});
 },
 
 /** handle result of updating parameter set

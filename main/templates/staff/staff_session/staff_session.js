@@ -183,7 +183,12 @@ var app = Vue.createApp({
                 case "update_collect_token":
                     app.take_update_collect_token(message_data);
                     break;
-
+                case "update_tractor_beam":
+                    app.take_update_tractor_beam(message_data);
+                    break;
+                case "update_transfer_token":
+                    app.take_update_transfer_tokens(message_data);
+                    break;
             }
 
             app.first_load_done = true;

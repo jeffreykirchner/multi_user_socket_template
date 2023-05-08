@@ -117,8 +117,7 @@ class SubjectUpdatesMixin():
         message_text = event["message_text"]
         token_id = message_text["token_id"]
         period_id = message_text["period_id"]
-        result = await SessionPlayer.objects.values('id').aget(player_key=event["player_key"])
-        player_id = result['id']
+        player_id = self.session_players_local[event["player_key"]]["id"]
 
         if not await sync_to_async(sync_collect_token)(self.session_id, period_id, token_id, player_id):
             logger.warning(f'collect_token: {message_text}, token {token_id} not available')
@@ -144,6 +143,71 @@ class SubjectUpdatesMixin():
         subject collects token update
         '''
         event_data = event["group_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def tractor_beam(self, event):
+        '''
+        subject activates tractor beam
+        '''
+
+        player_id = self.session_players_local[event["player_key"]]["id"]
+        target_player_id = event["message_text"]["target_player_id"]
+
+        # # check if players are frozen
+        # if self.world_state_local['session_players'][str(player_id)]['frozen'] or \
+        #    self.world_state_local['session_players'][str(target_player_id)]['frozen']:
+        #     return
+
+        # #check if either player has tractor beam enabled
+        # if self.world_state_local['session_players'][str(player_id)]['tractor_beam_target'] or \
+        #    self.world_state_local['session_players'][str(target_player_id)]['tractor_beam_target']:
+        #     return
+        
+        self.world_state_local['session_players'][str(player_id)]['frozen'] = True
+        self.world_state_local['session_players'][str(target_player_id)]['frozen'] = True
+
+        self.world_state_local['session_players'][str(player_id)]['tractor_beam_target'] = target_player_id
+
+        await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+
+        result = {"player_id" : player_id, "target_player_id" : target_player_id}
+        
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
+
+    async def update_tractor_beam(self, event):
+        '''
+        subject activates tractor beam update
+        '''
+
+        event_data = event["group_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+    async def transfer_tokens(self, event):
+        '''
+        subject transfers tokens
+        '''
+        player_id = result['id']
+
+        result = {}
+        
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
+
+    async def update_transfer_tokens(self, event):
+        '''
+        subject transfers tokens update
+        '''
+
+        event_data = event["group_data"]
+
+
+
+        await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
