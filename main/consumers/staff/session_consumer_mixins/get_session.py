@@ -27,12 +27,12 @@ class GetSessionMixin():
         self.world_state_local = result["world_state"]
         self.session_players_local = {}
 
-
         for p in result["session_players"]:
             session_player = result["session_players"][p]
             self.session_players_local[str(session_player["player_key"])] = {"id" : p}
 
         self.session_id = result["id"]
+        self.parameter_set_local = result["parameter_set"]
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

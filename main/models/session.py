@@ -152,6 +152,7 @@ class Session(models.Model):
             v['tractor_beam_target'] = None
             v['frozen'] = False
             v['cool_down'] = 0
+            v['interaction'] = 0
             
             self.world_state["session_players"][str(i['id'])] = v
         

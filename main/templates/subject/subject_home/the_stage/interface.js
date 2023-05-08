@@ -82,6 +82,11 @@ take_update_tractor_beam(message_data){
     let target_player_id = message_data.target_player_id;
 
     app.session.world_state.session_players[player_id].tractor_beam_target = target_player_id;
+
+    app.session.world_state.session_players[player_id].frozen = true
+    app.session.world_state.session_players[target_player_id].frozen = true
+
+    app.session.world_state.session_players[player_id].interaction = app.session.parameter_set.interaction_length;
 },
 
 take_update_transfer_tokens(message_data){

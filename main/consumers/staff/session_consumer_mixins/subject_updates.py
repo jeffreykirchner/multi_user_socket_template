@@ -155,20 +155,21 @@ class SubjectUpdatesMixin():
         player_id = self.session_players_local[event["player_key"]]["id"]
         target_player_id = event["message_text"]["target_player_id"]
 
-        # # check if players are frozen
-        # if self.world_state_local['session_players'][str(player_id)]['frozen'] or \
-        #    self.world_state_local['session_players'][str(target_player_id)]['frozen']:
-        #     return
+        # check if players are frozen
+        if self.world_state_local['session_players'][str(player_id)]['frozen'] or \
+           self.world_state_local['session_players'][str(target_player_id)]['frozen']:
+            return
 
-        # #check if either player has tractor beam enabled
-        # if self.world_state_local['session_players'][str(player_id)]['tractor_beam_target'] or \
-        #    self.world_state_local['session_players'][str(target_player_id)]['tractor_beam_target']:
-        #     return
+        #check if either player has tractor beam enabled
+        if self.world_state_local['session_players'][str(player_id)]['tractor_beam_target'] or \
+           self.world_state_local['session_players'][str(target_player_id)]['tractor_beam_target']:
+            return
         
         self.world_state_local['session_players'][str(player_id)]['frozen'] = True
         self.world_state_local['session_players'][str(target_player_id)]['frozen'] = True
 
         self.world_state_local['session_players'][str(player_id)]['tractor_beam_target'] = target_player_id
+        self.world_state_local['session_players'][str(player_id)]['interaction'] = self.parameter_set_local['interaction_length']
 
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 

@@ -67,6 +67,31 @@ class TimerMixin():
 
         if result["value"] == "success":
 
+            session_player_status = {}
+
+            #decrement waiting and iteration time
+            for p in self.world_state_local["session_players"]:
+                session_player = self.world_state_local["session_players"][p]
+
+                if session_player["interaction"]>0:
+                    session_player["interaction"] -= 1
+                
+                if session_player["interaction"] == 0:
+                    session_player["frozen"] = False
+                    session_player["tractor_beam_target"] = None
+
+                if session_player["cool_down"]>0:
+                    session_player["cool_down"] -= 1
+
+                session_player_status[p] = {"interaction": session_player["interaction"], 
+                                            "frozen": session_player["frozen"], 
+                                            "cool_down": session_player["cool_down"],
+                                            "tractor_beam_target" : session_player["tractor_beam_target"]}                
+            
+            result["session_player_status"] = session_player_status
+
+            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+
             await self.send_message(message_to_self=False, message_to_group=result,
                                     message_type="time", send_to_client=False, send_to_group=True)
 

@@ -191,16 +191,23 @@ setup_pixi_subjects(){
         inventory_label.eventMode = 'passive';
         inventory_label.anchor.set(0, 0.5);
 
+        let status_label = new PIXI.Text("Working ... 10", text_style);
+        status_label.eventMode = 'passive';
+        status_label.anchor.set(0.5);
+        status_label.visible = false;
+
         avatar_container.addChild(gear_sprite);
         avatar_container.addChild(face_sprite);
         avatar_container.addChild(id_label);
         avatar_container.addChild(token_graphic);
         avatar_container.addChild(inventory_label);
+        avatar_container.addChild(status_label);
 
         face_sprite.position.set(0, -avatar_container.height * 0.03);
         id_label.position.set(0, -avatar_container.height * 0.2);
         token_graphic.position.set(-2, +avatar_container.height * 0.18);
         inventory_label.position.set(2, +avatar_container.height * 0.18);
+        status_label.position.set(0, -avatar_container.height/2 + 30);
 
         subject.pixi.avatar_container = avatar_container;
         app.pixi_container_main.addChild(subject.pixi.avatar_container);
@@ -678,6 +685,17 @@ move_player(delta)
         {
             avatar_container.getChildAt(0).stop();
         }
+
+        //update status
+        if(obj.interaction > 0)
+        {
+            avatar_container.getChildAt(5).text = "Working ... " + obj.interaction;
+            avatar_container.getChildAt(5).visible = true;
+        }
+        else
+        {
+            avatar_container.getChildAt(5).visible = false;
+        }
     }
 
     //find nearest players
@@ -738,13 +756,21 @@ move_player(delta)
         chat_container.visible = obj.show_chat;
     }   
 
-    //update tractor beams
+    //update tractor beams and status
     for(let i in app.session.world_state.session_players)
     {
         let player = app.session.world_state.session_players[i];
         if(player.tractor_beam_target)
         {
             app.setup_tractor_beam(i, player.tractor_beam_target);
+        }
+        else
+        {
+            for (let i=0; i< player.pixi.tractor_beam.length; i++)
+            {
+                tb_sprite = player.pixi.tractor_beam[i];
+                tb_sprite.visible = false;
+            }
         }
     }
 },
