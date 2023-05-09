@@ -73,15 +73,18 @@ class TimerMixin():
             for p in self.world_state_local["session_players"]:
                 session_player = self.world_state_local["session_players"][p]
 
-                if session_player["interaction"]>0:
+                if session_player["cool_down"] > 0:
+                    session_player["cool_down"] -= 1
+
+                if session_player["interaction"] > 0:
                     session_player["interaction"] -= 1
+
+                    if session_player["interaction"] == 0:
+                       session_player["cool_down"] = self.parameter_set_local["cool_down_length"]
                 
                 if session_player["interaction"] == 0:
                     session_player["frozen"] = False
                     session_player["tractor_beam_target"] = None
-
-                if session_player["cool_down"]>0:
-                    session_player["cool_down"] -= 1
 
                 session_player_status[p] = {"interaction": session_player["interaction"], 
                                             "frozen": session_player["frozen"], 

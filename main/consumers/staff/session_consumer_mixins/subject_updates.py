@@ -155,14 +155,19 @@ class SubjectUpdatesMixin():
         player_id = self.session_players_local[event["player_key"]]["id"]
         target_player_id = event["message_text"]["target_player_id"]
 
+        source_player = self.world_state_local['session_players'][str(player_id)]
+        target_player = self.world_state_local['session_players'][str(target_player_id)]
+
         # check if players are frozen
-        if self.world_state_local['session_players'][str(player_id)]['frozen'] or \
-           self.world_state_local['session_players'][str(target_player_id)]['frozen']:
+        if source_player['frozen'] or target_player['frozen']:
             return
 
         #check if either player has tractor beam enabled
-        if self.world_state_local['session_players'][str(player_id)]['tractor_beam_target'] or \
-           self.world_state_local['session_players'][str(target_player_id)]['tractor_beam_target']:
+        if source_player['tractor_beam_target'] or target_player['tractor_beam_target']:
+            return
+        
+        #check if player is already interacting or cooling down.
+        if source_player['interaction'] > 0 or source_player['cool_down'] > 0:
             return
         
         self.world_state_local['session_players'][str(player_id)]['frozen'] = True

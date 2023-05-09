@@ -692,6 +692,11 @@ move_player(delta)
             avatar_container.getChildAt(5).text = "Working ... " + obj.interaction;
             avatar_container.getChildAt(5).visible = true;
         }
+        else if(obj.cool_down > 0)
+        {
+            avatar_container.getChildAt(5).text = "Cooling ... " + obj.cool_down;
+            avatar_container.getChildAt(5).visible = true;
+        }
         else
         {
             avatar_container.getChildAt(5).visible = false;
