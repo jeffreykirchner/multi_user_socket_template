@@ -53,7 +53,7 @@ class TimerMixin():
         continue to next second of the experiment
         '''
         logger = logging.getLogger(__name__)
-        logger.info(f"continue_timer start")
+        # logger.info(f"continue_timer start")
 
         if not self.timer_running:
             logger.info(f"continue_timer timer off")
@@ -112,7 +112,7 @@ class TimerMixin():
                                     }
                                 ))
         
-        logger.info(f"continue_timer end")
+        # logger.info(f"continue_timer end")
 
     async def update_time(self, event):
         '''
@@ -163,6 +163,6 @@ def take_do_period_timer(session_id):
     else:
         return_json = session.do_period_timer()
 
-    logger.info(f"take_do_period_timer: {return_json}")
+    # logger.info(f"take_do_period_timer: {return_json}")
 
     return return_json

@@ -95,7 +95,12 @@ class SubjectUpdatesMixin():
         
         event_data = event["staff_data"]
         
-        self.world_state_local["session_players"][str(event_data["session_player_id"])]["target_location"] = event_data["target_location"]
+        session_player = self.world_state_local["session_players"][str(event_data["session_player_id"])]
+
+        if session_player["frozen"]:
+            return
+
+        session_player["target_location"] = event_data["target_location"]
 
         last_update = datetime.strptime(self.world_state_local["last_update"], "%Y-%m-%d %H:%M:%S.%f")
         dt_now = datetime.now()
@@ -132,7 +137,7 @@ class SubjectUpdatesMixin():
 
         result = {"token_id" : token_id, "period_id" : period_id, "player_id" : player_id, "inventory" : inventory}
 
-        logger.warning(f'collect_token: {message_text}, token {token_id}')
+        #logger.warning(f'collect_token: {message_text}, token {token_id}')
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
@@ -170,11 +175,13 @@ class SubjectUpdatesMixin():
         if source_player['interaction'] > 0 or source_player['cool_down'] > 0:
             return
         
-        self.world_state_local['session_players'][str(player_id)]['frozen'] = True
-        self.world_state_local['session_players'][str(target_player_id)]['frozen'] = True
+        source_player['frozen'] = True
+        target_player['frozen'] = True
 
-        self.world_state_local['session_players'][str(player_id)]['tractor_beam_target'] = target_player_id
-        self.world_state_local['session_players'][str(player_id)]['interaction'] = self.parameter_set_local['interaction_length']
+        source_player['tractor_beam_target'] = target_player_id
+        source_player['interaction'] = self.parameter_set_local['interaction_length']
+
+        target_player['interaction'] = self.parameter_set_local['interaction_length']
 
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 

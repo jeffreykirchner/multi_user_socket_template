@@ -689,7 +689,7 @@ move_player(delta)
         //update status
         if(obj.interaction > 0)
         {
-            avatar_container.getChildAt(5).text = "Working ... " + obj.interaction;
+            avatar_container.getChildAt(5).text = "Interaction ... " + obj.interaction;
             avatar_container.getChildAt(5).visible = true;
         }
         else if(obj.cool_down > 0)
