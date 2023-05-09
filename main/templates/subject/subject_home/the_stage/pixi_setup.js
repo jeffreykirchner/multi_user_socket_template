@@ -21,6 +21,9 @@ setup_pixi(){
         app.setup_subject_status_overlay();
         app.update_zoom();
     });
+
+    app.pixi_text_emitter = [];
+    app.pixi_tick_tock = {value:"tick", time:Date.now()};
 },
 
 reset_pixi_app(){    
@@ -45,6 +48,9 @@ reset_pixi_app(){
     app.canvas_height = canvas.height;
 
     app.last_collision_check = Date.now();
+    //app.pixi_app.ticker.maxFPS = 30;
+    //app.pixi_app.ticker.targetFPMS = 0.12;
+    //app.pixi_app.ticker.minFPS = 40;
 },
 
 /** load pixi sprite sheets
@@ -56,14 +62,7 @@ setup_pixi_sheets(textures){
 
     app.pixi_container_main = new PIXI.Container();
     app.pixi_container_main.sortableChildren = true;
-
-    app.background = new PIXI.Graphics();
-    app.background.beginFill(0xffffff);
-    app.background.drawRect(0, 0, app.stage_width, app.stage_height);
-    app.background.endFill();
-    app.background.eventMode ='static';
-
-    app.pixi_container_main.addChild(app.background);
+    app.pixi_container_main.eventMode = 'passive';
 
     app.pixi_app.stage.addChild(app.pixi_container_main);
    
@@ -99,7 +98,7 @@ setup_pixi_sheets(textures){
     if(app.pixi_mode=="staff"){
 
         app.scroll_button_up = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:30}, 
-                                                   {scroll_direction:{x:0,y:-app.scroll_speed}}, 
+                                                     {scroll_direction:{x:0,y:-app.scroll_speed}}, 
                                                    "↑↑↑");
         app.scroll_button_down = app.add_scroll_button({w:50, h:30, x:app.pixi_app.screen.width/2, y:app.pixi_app.screen.height - 30}, 
                                                      {scroll_direction:{x:0,y:app.scroll_speed}}, 
@@ -115,6 +114,22 @@ setup_pixi_sheets(textures){
         
     }
 
+    {%if DEBUG%}
+    //fps counter
+    let text_style = {
+        fontFamily: 'Arial',
+        fontSize: 14,
+        fill: 'black',
+        align: 'left',
+    };
+    let fps_label = new PIXI.Text("0 fps", text_style);
+    fps_label.eventMode = 'none';
+
+    app.pixi_fps_label = fps_label;
+    app.pixi_fps_label.position.set(10, app.canvas_height-25);
+    app.pixi_app.stage.addChild(app.pixi_fps_label);   
+    {%endif%}
+
     //start game loop
     app.pixi_app.ticker.add(app.game_loop);
 },
@@ -129,8 +144,8 @@ setup_pixi_subjects(){
     
     let current_z_index = 1000;
     let current_period_id = app.session.session_periods_order[app.session.current_period-1];
-    for(const i in app.session.world_state.session_players){       
-
+    for(const i in app.session.world_state.session_players)
+    {      
         let subject = app.session.world_state.session_players[i];
         subject.pixi = {};
 
@@ -139,17 +154,19 @@ setup_pixi_subjects(){
         avatar_container.position.set(subject.current_location.x, subject.current_location.y);
         avatar_container.height = 250;
         avatar_container.width = 250;
-        avatar_container.eventMode = 'static';
+        avatar_container.eventMode = 'passive';
+        avatar_container.name = {player_id : i};
+        // avatar_container.on("pointerup", app.subject_avatar_click);
 
         let gear_sprite = new PIXI.AnimatedSprite(app.pixi_textures.sprite_sheet.animations['walk']);
         gear_sprite.animationSpeed = app.animation_speed;
         gear_sprite.anchor.set(0.5)
         gear_sprite.tint = app.session.session_players[i].parameter_set_player.hex_color;
-        gear_sprite.eventMode = 'none';
+        gear_sprite.eventMode = 'passive';    
 
         let face_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["face_1.png"]);
         face_sprite.anchor.set(0.5);
-        face_sprite.eventMode = 'none';
+        face_sprite.eventMode = 'passive';
 
         let text_style = {
             fontFamily: 'Arial',
@@ -161,30 +178,37 @@ setup_pixi_subjects(){
         };
 
         let id_label = new PIXI.Text(app.session.session_players[i].parameter_set_player.id_label, text_style);
-        id_label.eventMode = 'none';
+        id_label.eventMode = 'passive';
         id_label.anchor.set(0.5);
         
         let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
         token_graphic.animationSpeed = app.animation_speed;
         token_graphic.anchor.set(1, 0.5)
-        token_graphic.eventMode = 'none';
+        token_graphic.eventMode = 'passive';
         token_graphic.scale.set(0.3);
         token_graphic.alpha = 0.7;
 
         let inventory_label = new PIXI.Text(subject.inventory[current_period_id], text_style);
-        inventory_label.eventMode = 'none';
+        inventory_label.eventMode = 'passive';
         inventory_label.anchor.set(0, 0.5);
+
+        let status_label = new PIXI.Text("Working ... 10", text_style);
+        status_label.eventMode = 'passive';
+        status_label.anchor.set(0.5);
+        status_label.visible = false;
 
         avatar_container.addChild(gear_sprite);
         avatar_container.addChild(face_sprite);
         avatar_container.addChild(id_label);
         avatar_container.addChild(token_graphic);
         avatar_container.addChild(inventory_label);
+        avatar_container.addChild(status_label);
 
         face_sprite.position.set(0, -avatar_container.height * 0.03);
         id_label.position.set(0, -avatar_container.height * 0.2);
         token_graphic.position.set(-2, +avatar_container.height * 0.18);
         inventory_label.position.set(2, +avatar_container.height * 0.18);
+        status_label.position.set(0, -avatar_container.height/2 + 30);
 
         subject.pixi.avatar_container = avatar_container;
         app.pixi_container_main.addChild(subject.pixi.avatar_container);
@@ -219,6 +243,21 @@ setup_pixi_subjects(){
         subject.chat_time = null;
 
         app.pixi_container_main.addChild(subject.pixi.chat_container);
+
+        //tractor beam
+        subject.pixi.tractor_beam = [];
+        subject.tractor_beam_target = null;
+
+        for(let i=0; i<15; i++)
+        {
+            let tractor_beam_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["particle2.png"]);
+            tractor_beam_sprite.anchor.set(0.5);
+            tractor_beam_sprite.eventMode = 'passive';
+            tractor_beam_sprite.visible = false;
+            tractor_beam_sprite.zIndex = 1500;
+            subject.pixi.tractor_beam.push(tractor_beam_sprite);
+            app.pixi_container_main.addChild(tractor_beam_sprite);
+        }
     }
 
     //make local subject the top layer
@@ -268,7 +307,7 @@ setup_pixi_tokens_for_current_period()
         let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
         token_graphic.animationSpeed = app.animation_speed;
         token_graphic.anchor.set(0.5)
-        token_graphic.eventMode = 'none';
+        token_graphic.eventMode = 'passive';
 
         if(token.status=="available")
         {
@@ -485,8 +524,8 @@ update_subject_status_overlay(delta)
 /**
  * add scroll buttons to staff screen
  */
-add_scroll_button(button_size, name, text){
-
+add_scroll_button(button_size, name, text)
+{
     let g = new PIXI.Graphics();
     g.lineStyle(1, 0x000000);
     g.beginFill(0xffffff);
@@ -521,9 +560,10 @@ add_scroll_button(button_size, name, text){
 /**
  * game loop for pixi
  */
-game_loop(delta){
-    
+game_loop(delta)
+{
     app.move_player(delta);
+    app.move_text_emitters(delta);
 
     if(app.pixi_mode=="subject" && app.session.started)
     {   
@@ -536,7 +576,21 @@ game_loop(delta){
     {
         app.update_offsets_staff(delta);
         app.scroll_staff(delta);
-    }       
+    }  
+    
+    {%if DEBUG%}
+    app.pixi_fps_label.text = Math.round(app.pixi_app.ticker.FPS) + " FPS";
+    {%endif%}
+
+    //tick tock
+    if(Date.now() - app.pixi_tick_tock.time >= 200)
+    {
+        app.pixi_tick_tock.time = Date.now();
+        if(app.pixi_tick_tock.value == "tick") 
+            app.pixi_tick_tock.value = "tock";
+        else
+            app.pixi_tick_tock.value = "tick";
+    }
 },
 
 /**
@@ -582,8 +636,8 @@ get_distance(point1, point2)
 /**
  * move players if target does not equal current location
  */
-move_player(delta){
-
+move_player(delta)
+{
     if(!app.session.world_state) return;
 
     //move players
@@ -641,6 +695,22 @@ move_player(delta){
         else
         {
             avatar_container.getChildAt(0).stop();
+        }
+
+        //update status
+        if(obj.interaction > 0)
+        {
+            avatar_container.getChildAt(5).text = "Interaction ... " + obj.interaction;
+            avatar_container.getChildAt(5).visible = true;
+        }
+        else if(obj.cool_down > 0)
+        {
+            avatar_container.getChildAt(5).text = "Cooling ... " + obj.cool_down;
+            avatar_container.getChildAt(5).visible = true;
+        }
+        else
+        {
+            avatar_container.getChildAt(5).visible = false;
         }
     }
 
@@ -701,6 +771,24 @@ move_player(delta){
 
         chat_container.visible = obj.show_chat;
     }   
+
+    //update tractor beams and status
+    for(let i in app.session.world_state.session_players)
+    {
+        let player = app.session.world_state.session_players[i];
+        if(player.tractor_beam_target)
+        {
+            app.setup_tractor_beam(i, player.tractor_beam_target);
+        }
+        else
+        {
+            for (let i=0; i< player.pixi.tractor_beam.length; i++)
+            {
+                tb_sprite = player.pixi.tractor_beam[i];
+                tb_sprite.visible = false;
+            }
+        }
+    }
 },
 
 /**
@@ -735,29 +823,39 @@ update_offsets_player(delta){
  */
 check_for_collisions(delta){
 
-    if(Date.now() - app.last_collision_check < 250) return;
+    if(Date.now() - app.last_collision_check < 100) return;
     app.last_collision_check = Date.now();
 
     const obj = app.session.world_state.session_players[app.session_player.id];
+    let collision_found = false;
 
     //check for collisions with tokens
     const current_period_id = app.session.session_periods_order[app.session.current_period-1];
     for(const i in app.session.world_state.tokens[current_period_id]){       
 
         let token = app.session.world_state.tokens[current_period_id][i];
+        let distance = app.get_distance(obj.current_location, token.current_location);
 
-        if(app.get_distance(obj.current_location, token.current_location) <= obj.pixi.avatar_container.width/2 &&
-           token.status == "available")
+        if(distance <= obj.pixi.avatar_container.width/2 &&
+           token.status == "available" && 
+           !collision_found)
         {
             // token.token_container.getChildAt(0).stop();
             // token.token_container.getChildAt(0).alpha = 0.25;
             token.status = "waiting";
+            collision_found = true;
 
             app.send_message("collect_token", 
                              {"token_id" : i, "period_id" : current_period_id},
                              "group");
-
-            break;
+        }
+        else if(distance>2000)
+        {
+            token.token_container.visible=false;
+        }
+        else
+        {
+            token.token_container.visible=true;
         }
         
     }
@@ -775,13 +873,18 @@ update_offsets_staff(delta){
     app.pixi_container_main.y = -offset.y;   
 },
 
-
+/**
+ * manaully scroll staff screen
+ */
 scroll_staff(delta){
 
     app.current_location.x += app.scroll_direction.x;
     app.current_location.y += app.scroll_direction.y;
 },
 
+/**
+ * subject screen offset from the origin
+ */
 get_offset(){
     let obj = app.session.world_state.session_players[app.session_player.id];
 
@@ -789,6 +892,9 @@ get_offset(){
             y:obj.current_location.y * app.pixi_scale - app.pixi_app.screen.height/2};
 },
 
+/**
+ * staff screen offset from origin
+ */
 get_offset_staff(){
 
     if(app.follow_subject != -1 && app.session.started)
@@ -806,13 +912,69 @@ get_offset_staff(){
  */
 subject_pointer_up(event){
 
+    let local_pos = event.data.getLocalPosition(event.currentTarget);
     let obj = app.session.world_state.session_players[app.session_player.id];
 
-    let local_pos = event.data.getLocalPosition(event.currentTarget);
-    obj.target_location.x = local_pos.x;
-    obj.target_location.y = local_pos.y;
+    if(event.button == 0)
+    {
 
-    app.target_location_update();
+        if(obj.frozen)
+        {
+            app.add_text_emitters("No movement while interacting.", 
+                            obj.current_location.x, 
+                            obj.current_location.y,
+                            obj.current_location.x,
+                            obj.current_location.y-100,
+                            0xFFFFFF,
+                            28,
+                            null);
+            return;
+        }
+        
+        obj.target_location.x = local_pos.x;
+        obj.target_location.y = local_pos.y;
+
+        app.target_location_update();
+    }
+    else if(event.button == 2)
+    {
+        if(obj.frozen)
+        {
+            app.add_text_emitters("No actions while interacting.", 
+                            obj.current_location.x, 
+                            obj.current_location.y,
+                            obj.current_location.x,
+                            obj.current_location.y-100,
+                            0xFFFFFF,
+                            28,
+                            null);
+            return;
+        }
+
+        if(obj.cool_down > 0)
+        {
+            app.add_text_emitters("No actions cooling down.", 
+                            obj.current_location.x, 
+                            obj.current_location.y,
+                            obj.current_location.x,
+                            obj.current_location.y-100,
+                            0xFFFFFF,
+                            28,
+                            null);
+            return;
+        }
+        
+        for(i in app.session.world_state.session_players)
+        {
+            let obj = app.session.world_state.session_players[i];
+
+            if(app.get_distance(obj.current_location, local_pos) < 75)
+            {
+                app.subject_avatar_click(i);              
+                break;
+            }
+        }
+    }
 },
 
 /**
@@ -831,4 +993,191 @@ staff_screen_scroll_button_out(event){
     app.scroll_direction = {x:0, y:0};
 },
 
+/**
+ * subject avatar click
+ */
+subject_avatar_click(target_player_id){
+
+    if(target_player_id == app.session_player.id) return;
+
+    // app.session.world_state.tractor_beam_target = player_id;
+
+    //console.log("subject avatar click", player_id);
+    app.send_message("tractor_beam", 
+                     {"target_player_id" : target_player_id},
+                     "group");
+},
+
+setup_tractor_beam(source_id, target_id)
+{
+    let source_player = app.session.world_state.session_players[source_id];
+    let target_player = app.session.world_state.session_players[target_id];
+
+    let dY = source_player.current_location.y - target_player.current_location.y;
+    let dX = source_player.current_location.x - target_player.current_location.x;
+
+    let myX = source_player.current_location.x;
+    let myY = source_player.current_location.y;
+    let targetX = target_player.current_location.x;
+    let targetY = target_player.current_location.y;
+    
+    let tempAngle = Math.atan2(dY, dX);
+    let tempSlope = (myY - targetY) / (myX - targetX);
+
+    if (myX - targetX == 0) tempSlope = 0.999999999999;
+
+    let tempYIntercept = myY - tempSlope * myX;
+
+    // Rectangle rectTractor;
+    let tractorCircles = source_player.pixi.tractor_beam.length;
+    let tempScale = 1 / tractorCircles;
+
+    let xIncrement = Math.sqrt(Math.pow(myX - targetX, 2) + Math.pow(myY - targetY, 2)) / tractorCircles;
+
+    for (let i=0; i<tractorCircles; i++)
+    {
+        let temp_x = (myX - Math.cos(tempAngle) * xIncrement * i);
+        let temp_y = (myY - Math.sin(tempAngle) * xIncrement * i);
+
+        tb_sprite = source_player.pixi.tractor_beam[i];
+        tb_sprite.position.set(temp_x, temp_y)
+        tb_sprite.scale.set(tempScale * i * 2);
+        tb_sprite.visible = true;
+        
+        if (app.pixi_tick_tock.value == 'tick')
+        {
+            if (i%2 == 0)
+            {
+                tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+            }
+            else
+            {
+                tb_sprite.tint = 0xFFFFFF;
+            }
+        }
+        else
+        {
+            if (i%2 == 0)
+            {
+               tb_sprite.tint = 0xFFFFFF;
+            }
+            else
+            {
+                tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+            }
+        }
+        
+        // Color tempC = Color.White;
+        // if (Common.gameT2 % 20 >= 10)
+        // {
+        //     if (i % 2 != 0)
+        //     {
+        //         tempC = myColor;
+        //     }
+        // }
+        // else
+        // {
+        //     if (i % 2 == 0)
+        //     {
+        //         tempC = myColor;
+        //     }
+        // }
+
+    }
+},
+
+/**
+ * add text emitters to the screen
+ */
+add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, emitter_image){
+
+    let emitter_container = new PIXI.Container();
+    emitter_container.position.set(start_x, start_y);
+    emitter_container.pivot.set(0.5);
+    emitter_container.eventMode = 'none';
+    emitter_container.zIndex = 2000;
+
+    let emitter_text = new PIXI.Text(text, {
+            fontFamily: 'Arial',
+            fontSize: font_size,
+            fill: font_color,
+            align: 'left',
+        });
+
+    emitter_text.anchor.set(0.5);
+
+    emitter_container.addChild(emitter_text);
+
+    if(emitter_image){
+        emitter_image.anchor.set(0, 0.5);
+        emitter_container.addChild(emitter_image);
+        emitter_image.position.set(emitter_text.width/2+5, 0);
+    }
+
+    let emitter = {current_location : {x:start_x, y:start_y},
+                   target_location : {x:end_x, y:end_y},
+                   emitter_container:emitter_container,
+                };
+    
+    app.pixi_text_emitter.push(emitter);
+    app.pixi_container_main.addChild(emitter_container);
+},
+
+/**
+ * move text emitters
+ */
+move_text_emitters(delta){
+
+    let completed = [];
+
+    //move the emitters
+    for(let i = 0; i <  app.pixi_text_emitter.length;  i++){
+
+        let emitter = app.pixi_text_emitter[i];
+        
+        if(emitter.current_location.x == emitter.target_location.x && 
+           emitter.current_location.y == emitter.target_location.y)
+        {
+            completed.push(i);
+        }
+        else
+        {
+            app.move_object(delta, emitter, app.move_speed / 4);
+            emitter.emitter_container.position.set(emitter.current_location.x, emitter.current_location.y);
+        }       
+    }
+
+    //remove the completed emitters
+    for(let i=completed.length-1; i>=0; i--){
+        app.pixi_text_emitter[completed[i]].emitter_container.destroy();
+
+        app.pixi_text_emitter.splice(completed[i], completed[i]); 
+    }
+},
+
+/**
+ * move the object towards its target location
+ */
+move_object(delta, obj, move_speed){
+    let noX = false;
+    let noY = false;
+    let temp_move_speed = (move_speed * delta);
+
+    let temp_angle = Math.atan2(obj.target_location.y - obj.current_location.y,
+                                obj.target_location.x - obj.current_location.x)
+
+    if(!noY){
+        if(Math.abs(obj.target_location.y - obj.current_location.y) < temp_move_speed)
+            obj.current_location.y = obj.target_location.y;
+        else
+            obj.current_location.y += temp_move_speed * Math.sin(temp_angle);
+    }
+
+    if(!noX){
+        if(Math.abs(obj.target_location.x - obj.current_location.x) < temp_move_speed)
+            obj.current_location.x = obj.target_location.x;
+        else
+            obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
+    }
+},
 

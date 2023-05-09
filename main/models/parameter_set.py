@@ -26,8 +26,8 @@ class ParameterSet(models.Model):
     period_count = models.IntegerField(verbose_name='Number of periods', default=20)                          #number of periods in the experiment
     period_length = models.IntegerField(verbose_name='Period Length, Production', default=60           )      #period length in seconds
     
-    private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                          #if true subjects can privately chat one on one
-    show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                #if true show instructions
+    private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                             #if true subjects can privately chat one on one
+    show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                   #if true show instructions
 
     survey_required = models.BooleanField(default=False, verbose_name="Survey Required")                      #if true show the survey below
     survey_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Survey Link', blank=True, null=True)
@@ -38,6 +38,9 @@ class ParameterSet(models.Model):
     tokens_per_period = models.IntegerField(verbose_name='Number of tokens each period', default=100)         #number of tokens each period
     world_width = models.IntegerField(verbose_name='Width of world in pixels', default=10000)                 #world width in pixels
     world_height = models.IntegerField(verbose_name='Height of world in pixels', default=10000)               #world height in pixels
+
+    interaction_length = models.IntegerField(verbose_name='Interaction Length', default=10)                   #interaction length in seconds
+    cool_down_length = models.IntegerField(verbose_name='Cool Down Length', default=10)                       #cool down length in seconds
 
     reconnection_limit = models.IntegerField(verbose_name='Age Warning', default=25)       #age cut that issues a warning for invalid age range
 
@@ -81,6 +84,9 @@ class ParameterSet(models.Model):
             self.tokens_per_period = new_ps.get("tokens_per_period", 100)
             self.world_width = new_ps.get("world_width", 1000)
             self.world_height = new_ps.get("world_height", 1000)
+
+            self.interaction_length = new_ps.get("interaction_length", 10)
+            self.cool_down_length = new_ps.get("cool_down_length", 10)
 
             self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
@@ -162,7 +168,6 @@ class ParameterSet(models.Model):
         '''
         update json model
         '''
-
         self.json_for_session["id"] = self.id
                 
         self.json_for_session["period_count"] = self.period_count
@@ -182,6 +187,9 @@ class ParameterSet(models.Model):
         self.json_for_session["tokens_per_period"] = self.tokens_per_period
         self.json_for_session["world_width"] = self.world_width
         self.json_for_session["world_height"] = self.world_height
+
+        self.json_for_session["interaction_length"] = self.interaction_length
+        self.json_for_session["cool_down_length"] = self.cool_down_length
 
         self.json_for_session["reconnection_limit"] = self.reconnection_limit
 

@@ -183,7 +183,12 @@ var app = Vue.createApp({
                 case "update_collect_token":
                     app.take_update_collect_token(message_data);
                     break;
-
+                case "update_tractor_beam":
+                    app.take_update_tractor_beam(message_data);
+                    break;
+                case "update_transfer_token":
+                    app.take_update_transfer_tokens(message_data);
+                    break;
             }
 
             app.first_load_done = true;
@@ -257,6 +262,7 @@ var app = Vue.createApp({
         */
         take_get_session(message_data){
             
+            app.destroy_pixi_tokens_for_all_periods();
             app.destory_setup_pixi_subjects();
 
             app.session = message_data;
@@ -348,15 +354,22 @@ var app = Vue.createApp({
             app.session.timer_running = result.timer_running;
             app.session.finished = result.finished;
             app.session.current_experiment_phase = result.current_experiment_phase;
-
-            app.take_update_earnings(message_data);
-
             app.update_phase_button_text();
 
             if(period_change)
             {
                 app.setup_pixi_tokens_for_current_period();
                 app.update_player_inventory();
+                app.take_update_earnings(message_data);
+            }
+
+            for(p in message_data.session_player_status)
+            {
+                session_player = message_data.session_player_status[p];
+                app.session.world_state.session_players[p].interaction = session_player.interaction;
+                app.session.world_state.session_players[p].frozen = session_player.frozen;
+                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
+                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
         },
        

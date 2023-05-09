@@ -130,6 +130,12 @@ var app = Vue.createApp({
                 case "update_collect_token":
                     app.take_update_collect_token(message_data);
                     break;
+                case "update_tractor_beam":
+                    app.take_update_tractor_beam(message_data);
+                    break;
+                case "update_transfer_tokens":
+                    app.take_update_transfer_tokens(message_data);
+                    break;
                 
             }
 
@@ -278,10 +284,12 @@ var app = Vue.createApp({
             if(status == "fail") return;
 
             let period_change = false;
+            let period_earnings = 0;
 
             if (app.session.current_period != result.current_period)
             {
                 period_change = true;
+                period_earnings = result.session_player_earnings.earnings - app.session_player.earnings;
             }
 
             app.session.started = result.started;
@@ -304,9 +312,29 @@ var app = Vue.createApp({
 
             if(period_change)
             {
+                session_player = app.session.world_state.session_players[app.session_player.id];
+
                 app.setup_pixi_tokens_for_current_period();
                 app.setup_pixi_minimap();
                 app.update_player_inventory();
+
+                app.add_text_emitters("+" + period_earnings + "¢", 
+                          session_player.current_location.x, 
+                          session_player.current_location.y,
+                          session_player.current_location.x,
+                          session_player.current_location.y-100,
+                          0xFFFFFF,
+                          28,
+                          null)
+            }
+
+            for(p in message_data.session_player_status)
+            {
+                session_player = message_data.session_player_status[p];
+                app.session.world_state.session_players[p].interaction = session_player.interaction;
+                app.session.world_state.session_players[p].frozen = session_player.frozen;
+                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
+                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
         },
 

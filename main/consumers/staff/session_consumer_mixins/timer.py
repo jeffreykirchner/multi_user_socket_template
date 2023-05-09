@@ -53,7 +53,7 @@ class TimerMixin():
         continue to next second of the experiment
         '''
         logger = logging.getLogger(__name__)
-        logger.info(f"continue_timer start")
+        # logger.info(f"continue_timer start")
 
         if not self.timer_running:
             logger.info(f"continue_timer timer off")
@@ -63,9 +63,37 @@ class TimerMixin():
             logger.info(f"continue_timer timer off")
             return
 
-        result = await sync_to_async(take_do_period_timer)(self.session_id)
+        result = await sync_to_async(take_do_period_timer, thread_sensitive=False)(self.session_id)
 
         if result["value"] == "success":
+
+            session_player_status = {}
+
+            #decrement waiting and iteration time
+            for p in self.world_state_local["session_players"]:
+                session_player = self.world_state_local["session_players"][p]
+
+                if session_player["cool_down"] > 0:
+                    session_player["cool_down"] -= 1
+
+                if session_player["interaction"] > 0:
+                    session_player["interaction"] -= 1
+
+                    if session_player["interaction"] == 0:
+                       session_player["cool_down"] = self.parameter_set_local["cool_down_length"]
+                
+                if session_player["interaction"] == 0:
+                    session_player["frozen"] = False
+                    session_player["tractor_beam_target"] = None
+
+                session_player_status[p] = {"interaction": session_player["interaction"], 
+                                            "frozen": session_player["frozen"], 
+                                            "cool_down": session_player["cool_down"],
+                                            "tractor_beam_target" : session_player["tractor_beam_target"]}                
+            
+            result["session_player_status"] = session_player_status
+
+            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
             await self.send_message(message_to_self=False, message_to_group=result,
                                     message_type="time", send_to_client=False, send_to_group=True)
@@ -84,7 +112,7 @@ class TimerMixin():
                                     }
                                 ))
         
-        logger.info(f"continue_timer end")
+        # logger.info(f"continue_timer end")
 
     async def update_time(self, event):
         '''
@@ -135,6 +163,6 @@ def take_do_period_timer(session_id):
     else:
         return_json = session.do_period_timer()
 
-    logger.info(f"take_do_period_timer: {return_json}")
+    # logger.info(f"take_do_period_timer: {return_json}")
 
     return return_json
