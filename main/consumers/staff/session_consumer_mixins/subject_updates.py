@@ -85,22 +85,28 @@ class SubjectUpdatesMixin():
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
-        
-    async def update_target_location_update(self, event):
+
+    async def target_location_update(self, event):
         '''
         update target location from subject screen
         '''
-
         logger = logging.getLogger(__name__)
         
-        event_data = event["staff_data"]
-        
-        session_player = self.world_state_local["session_players"][str(event_data["session_player_id"])]
+        event_data =  event["message_text"]
 
-        if session_player["frozen"]:
+        try:
+            target_location = event_data["target_location"]            
+        except KeyError:
+            return
+            # result = {"value" : "fail", "result" : {"message" : "Invalid location."}}
+        
+        player_id = self.session_players_local[event["player_key"]]["id"]
+        session_player = self.world_state_local["session_players"][str(player_id)]
+
+        if session_player["frozen"] or session_player["tractor_beam_target"]:
             return
 
-        session_player["target_location"] = event_data["target_location"]
+        session_player["target_location"] = target_location
 
         last_update = datetime.strptime(self.world_state_local["last_update"], "%Y-%m-%d %H:%M:%S.%f")
         dt_now = datetime.now()
@@ -110,8 +116,22 @@ class SubjectUpdatesMixin():
             self.world_state_local["last_update"] = str(dt_now)
             await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
         
+        result = {"value" : "success", "target_location" : target_location, "session_player_id" : player_id}
+        
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
+
+    async def update_target_location_update(self, event):
+        '''
+        update target location from subject screen
+        '''
+
+        event_data = event["group_data"]
+
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+
+        
     
     async def collect_token(self, event):
         '''

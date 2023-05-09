@@ -23,6 +23,7 @@ setup_pixi(){
     });
 
     app.pixi_text_emitter = [];
+    app.pixi_tick_tock = {value:"tick", time:Date.now()};
 },
 
 reset_pixi_app(){    
@@ -580,6 +581,16 @@ game_loop(delta)
     {%if DEBUG%}
     app.pixi_fps_label.text = Math.round(app.pixi_app.ticker.FPS) + " FPS";
     {%endif%}
+
+    //tick tock
+    if(Date.now() - app.pixi_tick_tock.time >= 200)
+    {
+        app.pixi_tick_tock.time = Date.now();
+        if(app.pixi_tick_tock.value == "tick") 
+            app.pixi_tick_tock.value = "tock";
+        else
+            app.pixi_tick_tock.value = "tick";
+    }
 },
 
 /**
@@ -902,12 +913,23 @@ get_offset_staff(){
 subject_pointer_up(event){
 
     let local_pos = event.data.getLocalPosition(event.currentTarget);
+    let obj = app.session.world_state.session_players[app.session_player.id];
 
     if(event.button == 0)
     {
 
-        let obj = app.session.world_state.session_players[app.session_player.id];
-
+        if(obj.frozen)
+        {
+            app.add_text_emitters("No movement while interacting.", 
+                            obj.current_location.x, 
+                            obj.current_location.y,
+                            obj.current_location.x,
+                            obj.current_location.y-100,
+                            0xFFFFFF,
+                            28,
+                            null);
+            return;
+        }
         
         obj.target_location.x = local_pos.x;
         obj.target_location.y = local_pos.y;
@@ -916,6 +938,32 @@ subject_pointer_up(event){
     }
     else if(event.button == 2)
     {
+        if(obj.frozen)
+        {
+            app.add_text_emitters("No actions while interacting.", 
+                            obj.current_location.x, 
+                            obj.current_location.y,
+                            obj.current_location.x,
+                            obj.current_location.y-100,
+                            0xFFFFFF,
+                            28,
+                            null);
+            return;
+        }
+
+        if(obj.cool_down > 0)
+        {
+            app.add_text_emitters("No actions cooling down.", 
+                            obj.current_location.x, 
+                            obj.current_location.y,
+                            obj.current_location.x,
+                            obj.current_location.y-100,
+                            0xFFFFFF,
+                            28,
+                            null);
+            return;
+        }
+        
         for(i in app.session.world_state.session_players)
         {
             let obj = app.session.world_state.session_players[i];
@@ -996,14 +1044,29 @@ setup_tractor_beam(source_id, target_id)
         tb_sprite.scale.set(tempScale * i * 2);
         tb_sprite.visible = true;
         
-        if (i%2 == 0)
+        if (app.pixi_tick_tock.value == 'tick')
         {
-            tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+            if (i%2 == 0)
+            {
+                tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+            }
+            else
+            {
+                tb_sprite.tint = 0xFFFFFF;
+            }
         }
         else
         {
-            tb_sprite.tint = 0xFFFFFF;
+            if (i%2 == 0)
+            {
+               tb_sprite.tint = 0xFFFFFF;
+            }
+            else
+            {
+                tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+            }
         }
+        
         // Color tempC = Color.White;
         // if (Common.gameT2 % 20 >= 10)
         // {

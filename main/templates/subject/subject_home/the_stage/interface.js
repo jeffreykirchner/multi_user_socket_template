@@ -2,9 +2,12 @@
  * send movement update to server
  */
 target_location_update(){
+
+    let session_player = app.session.world_state.session_players[app.session_player.id];
+
     app.send_message("target_location_update", 
-                    {"target_location" : app.session.world_state.session_players[app.session_player.id].target_location},
-                    "self");                   
+                    {"target_location" : session_player.target_location},
+                    "group");                   
 },
 
 /**
@@ -87,6 +90,7 @@ take_update_tractor_beam(message_data){
     app.session.world_state.session_players[target_player_id].frozen = true
 
     app.session.world_state.session_players[player_id].interaction = app.session.parameter_set.interaction_length;
+    app.session.world_state.session_players[target_player_id].interaction = app.session.parameter_set.interaction_length;
 },
 
 take_update_transfer_tokens(message_data){
