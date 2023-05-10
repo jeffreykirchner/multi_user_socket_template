@@ -43,6 +43,7 @@
 <div v-if="session">
     <!-- modals -->
     {%include "subject/subject_home/summary/end_game_modal.html"%}
+    {%include "subject/subject_home/the_stage/interaction_modal.html"%}
     
     <!-- instructions -->
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">

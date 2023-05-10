@@ -20,7 +20,7 @@ var app = Vue.createApp({
                     session_player : null, 
                     session : null,
 
-                    end_game_form_ids: {{end_game_form_ids|safe}},
+                    form_ids: {{form_ids|safe}},
 
                     chat_text : "",
                     chat_recipients : "all",
@@ -34,6 +34,7 @@ var app = Vue.createApp({
 
                     // modals
                     end_game_modal : null,
+                    interaction_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
                     //pixi
@@ -136,10 +137,12 @@ var app = Vue.createApp({
                 case "update_tractor_beam":
                     app.take_update_tractor_beam(message_data);
                     break;
-                case "update_transfer_tokens":
-                    app.take_update_transfer_tokens(message_data);
+                case "update_interaction":
+                    app.take_update_interaction(message_data);
                     break;
-                
+                case "update_cancel_interaction":
+                    app.take_update_cancel_interaction(message_data);
+                    break;
             }
 
             app.first_load_done = true;
@@ -165,8 +168,11 @@ var app = Vue.createApp({
         */
         do_first_load()
         {           
-             app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})           
+             app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})   
+             app.interaction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_modal'), {keyboard: false})          
+
              document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
+             document.getElementById('interaction_modal').addEventListener('hidden.bs.modal', app.hide_interaction_modal);
 
              {%if session.parameter_set.test_mode%} setTimeout(app.do_test_mode, app.random_number(1000 , 1500)); {%endif%}
 
@@ -418,13 +424,7 @@ var app = Vue.createApp({
         */
         clear_main_form_errors(){
             
-            for(let item in app.session)
-            {
-                let e = document.getElementById("id_errors_" + item);
-                if(e) e.remove();
-            }
-
-            s = app.end_game_form_ids;
+            let s = app.form_ids;
             for(let i in s)
             {
                 let e = document.getElementById("id_errors_" + s[i]);

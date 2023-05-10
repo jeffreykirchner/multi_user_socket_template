@@ -596,8 +596,8 @@ game_loop(delta)
 /**
  * update zoom level on staff screen
  */
-update_zoom(){
-
+update_zoom()
+{
     if(app.pixi_mode == "subject") return;
     if(app.pixi_scale == app.pixi_scale_range_control) return;
     
@@ -805,8 +805,8 @@ update_mini_map(delta)
 /**
  * update the amount of shift needed to center the player
  */
-update_offsets_player(delta){
-    
+update_offsets_player(delta)
+{
     offset = app.get_offset();
 
     app.pixi_container_main.x = -offset.x;
@@ -821,8 +821,8 @@ update_offsets_player(delta){
 /**
  * check for collisions between local player and other objects
  */
-check_for_collisions(delta){
-
+check_for_collisions(delta)
+{
     if(Date.now() - app.last_collision_check < 100) return;
     app.last_collision_check = Date.now();
 
@@ -865,8 +865,8 @@ check_for_collisions(delta){
 /**
  * update the amount of shift needed for the staff view
  */
-update_offsets_staff(delta){
-    
+update_offsets_staff(delta)
+{
     let offset = app.get_offset_staff();
 
     app.pixi_container_main.x = -offset.x;
@@ -876,8 +876,8 @@ update_offsets_staff(delta){
 /**
  * manaully scroll staff screen
  */
-scroll_staff(delta){
-
+scroll_staff(delta)
+{
     app.current_location.x += app.scroll_direction.x;
     app.current_location.y += app.scroll_direction.y;
 },
@@ -885,7 +885,8 @@ scroll_staff(delta){
 /**
  * subject screen offset from the origin
  */
-get_offset(){
+get_offset()
+{
     let obj = app.session.world_state.session_players[app.session_player.id];
 
     return {x:obj.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
@@ -895,8 +896,8 @@ get_offset(){
 /**
  * staff screen offset from origin
  */
-get_offset_staff(){
-
+get_offset_staff()
+{
     if(app.follow_subject != -1 && app.session.started)
     {
         obj = app.session.world_state.session_players[app.follow_subject];
@@ -910,8 +911,8 @@ get_offset_staff(){
 /**
  *pointer up on subject screen
  */
-subject_pointer_up(event){
-
+subject_pointer_up(event)
+{
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     let obj = app.session.world_state.session_players[app.session_player.id];
 
@@ -980,7 +981,8 @@ subject_pointer_up(event){
 /**
  *scroll control for staff
  */
-staff_screen_scroll_button_over(event){
+staff_screen_scroll_button_over(event)
+{
     event.currentTarget.alpha = 1;  
     app.scroll_direction = event.currentTarget.name.scroll_direction;
 },
@@ -988,24 +990,10 @@ staff_screen_scroll_button_over(event){
 /**
  *scroll control for staff
  */
-staff_screen_scroll_button_out(event){
+staff_screen_scroll_button_out(event)
+{
     event.currentTarget.alpha = 0.5;
     app.scroll_direction = {x:0, y:0};
-},
-
-/**
- * subject avatar click
- */
-subject_avatar_click(target_player_id){
-
-    if(target_player_id == app.session_player.id) return;
-
-    // app.session.world_state.tractor_beam_target = player_id;
-
-    //console.log("subject avatar click", player_id);
-    app.send_message("tractor_beam", 
-                     {"target_player_id" : target_player_id},
-                     "group");
 },
 
 setup_tractor_beam(source_id, target_id)
@@ -1089,8 +1077,8 @@ setup_tractor_beam(source_id, target_id)
 /**
  * add text emitters to the screen
  */
-add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, emitter_image){
-
+add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, emitter_image)
+{
     let emitter_container = new PIXI.Container();
     emitter_container.position.set(start_x, start_y);
     emitter_container.pivot.set(0.5);
@@ -1126,8 +1114,8 @@ add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, e
 /**
  * move text emitters
  */
-move_text_emitters(delta){
-
+move_text_emitters(delta)
+{
     let completed = [];
 
     //move the emitters
@@ -1158,7 +1146,8 @@ move_text_emitters(delta){
 /**
  * move the object towards its target location
  */
-move_object(delta, obj, move_speed){
+move_object(delta, obj, move_speed)
+{
     let noX = false;
     let noY = false;
     let temp_move_speed = (move_speed * delta);

@@ -1,7 +1,8 @@
 /**
  * send movement update to server
  */
-target_location_update(){
+target_location_update()
+{
 
     let session_player = app.session.world_state.session_players[app.session_player.id];
 
@@ -13,7 +14,8 @@ target_location_update(){
 /**
  * take update from server about new location target for a player
  */
-take_target_location_update(message_data){
+take_target_location_update(message_data)
+{
     if(message_data.value == "success")
     {
         app.session.world_state.session_players[message_data.session_player_id].target_location = message_data.target_location;                 
@@ -27,8 +29,8 @@ take_target_location_update(message_data){
 /**
  * take and update from the server about a collected token
  */
-take_update_collect_token(message_data){
-
+take_update_collect_token(message_data)
+{
     if(message_data.period_id != app.session.session_periods_order[app.session.current_period-1]) return;
 
     let token = app.session.world_state.tokens[message_data.period_id][message_data.token_id];
@@ -68,7 +70,8 @@ take_update_collect_token(message_data){
 /**
  * update the inventory of the player
  */
-update_player_inventory(){
+update_player_inventory()
+{
 
     let period_id = app.session.session_periods_order[app.session.current_period];
 
@@ -80,7 +83,26 @@ update_player_inventory(){
     }
 },
 
-take_update_tractor_beam(message_data){
+/**
+ * subject avatar click
+ */
+subject_avatar_click(target_player_id)
+{
+    if(target_player_id == app.session_player.id) return;
+
+    // app.session.world_state.tractor_beam_target = player_id;
+
+    //console.log("subject avatar click", player_id);
+    app.send_message("tractor_beam", 
+                     {"target_player_id" : target_player_id},
+                     "group");
+},
+
+/**
+ * result of subject activating tractor beam
+ */
+take_update_tractor_beam(message_data)
+{
     let player_id = message_data.player_id;
     let target_player_id = message_data.target_player_id;
 
@@ -91,8 +113,94 @@ take_update_tractor_beam(message_data){
 
     app.session.world_state.session_players[player_id].interaction = app.session.parameter_set.interaction_length;
     app.session.world_state.session_players[target_player_id].interaction = app.session.parameter_set.interaction_length;
+
+    if(player_id == app.session_player.id)
+    {
+        app.interaction_modal.toggle();
+    }
 },
 
-take_update_transfer_tokens(message_data){
+/**
+ * send interaction to server
+ */
+send_interaction()
+{
+    app.clear_main_form_errors();
 
+    let errors = {};
+
+    if(!app.interaction_form.direction || app.interaction_form.direction == "")
+    {
+        errors["direction"] = ["Choose a direction"];
+    }
+
+    if(!app.interaction_form.amount || app.interaction_form.amount < 1)
+    {
+        errors["amount"] = ["Invalid amount"];
+    }
+
+    if(Object.keys(errors).length > 0)
+    {
+        app.display_errors(errors);
+        return;
+    }
+
+    app.send_message("interaction", 
+                    {"interaction" : app.interaction_form},
+                     "group"); 
 },
+
+
+/**
+ * take update from server about interactions
+ */
+take_update_interaction(message_data)
+{
+    if(message_data.source_player_id == app.session_player.id)
+    {
+        app.interaction_modal.hide();
+    }
+},
+
+/** hide choice grid modal modal
+*/
+hide_interaction_modal(){
+    
+},
+
+/**
+ * cancel interaction in progress
+ */
+cancel_interaction()
+{
+    session_player = app.session.world_state.session_players[app.session_player.id];
+
+    if(session_player.interaction == 0)
+    {
+        app.interaction_modal.hide();
+        return;
+    }
+
+    app.send_message("cancel_interaction", 
+                    {},
+                     "group"); 
+},
+
+take_update_cancel_interaction(message_data)
+{
+    let source_player_id = message_data.source_player_id;
+    let target_player_id = message_data.target_player_id;
+
+    app.session.world_state.session_players[source_player_id].tractor_beam_target = null;
+
+    app.session.world_state.session_players[source_player_id].frozen = false
+    app.session.world_state.session_players[target_player_id].frozen = false
+
+    app.session.world_state.session_players[source_player_id].interaction = 0;
+    app.session.world_state.session_players[target_player_id].interaction = 0;
+
+    if(source_player_id == app.session_player.id)
+    {
+        app.interaction_modal.hide();
+    }
+}, 

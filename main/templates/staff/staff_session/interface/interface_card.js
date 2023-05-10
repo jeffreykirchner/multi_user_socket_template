@@ -17,7 +17,8 @@ take_target_location_update(message_data)
 /**
  * send an update to the server to store the current world state
  */
-send_world_state_update(){
+send_world_state_update()
+{
     if(app.last_world_state_update == null) 
     {
         app.last_world_state_update = Date.now();
@@ -38,7 +39,8 @@ send_world_state_update(){
 },
 
 
-take_update_collect_token(message_data){
+take_update_collect_token(message_data)
+{
 
     if(message_data.period_id != app.session.session_periods_order[app.session.current_period-1]) return;
 
@@ -76,7 +78,8 @@ take_update_collect_token(message_data){
                           token_graphic)
 },
 
-update_player_inventory(){
+update_player_inventory()
+{
 
     let period_id = app.session.session_periods_order[app.session.current_period];
 
@@ -88,7 +91,8 @@ update_player_inventory(){
     }
 },
 
-take_update_tractor_beam(message_data){
+take_update_tractor_beam(message_data)
+{
     let player_id = message_data.player_id;
     let target_player_id = message_data.target_player_id;
 
@@ -101,6 +105,22 @@ take_update_tractor_beam(message_data){
     app.session.world_state.session_players[target_player_id].interaction = app.session.parameter_set.interaction_length;
 },
 
-take_update_transfer_tokens(message_data){
+take_update_interaction(message_data)
+{
 
 },
+
+take_update_cancel_interaction(message_data)
+{
+    let source_player_id = message_data.source_player_id;
+    let target_player_id = message_data.target_player_id;
+
+    app.session.world_state.session_players[source_player_id].tractor_beam_target = null;
+
+    app.session.world_state.session_players[source_player_id].frozen = false
+    app.session.world_state.session_players[target_player_id].frozen = false
+
+    app.session.world_state.session_players[source_player_id].interaction = 0;
+    app.session.world_state.session_players[target_player_id].interaction = 0;
+}, 
+

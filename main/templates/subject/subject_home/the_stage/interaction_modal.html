@@ -1,11 +1,11 @@
 {% load crispy_forms_tags %}
 <!--interaction Modal -->
 <div class="modal fade " 
-     id="end_game_modal" 
+     id="interaction_modal" 
      data-bs-backdrop="static" 
      data-bs-keyboard="false" 
      tabindex="-1" 
-     aria-labelledby="end_game_modal" 
+     aria-labelledby="interaction_modal" 
      aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -29,12 +29,18 @@
             
             </div>
             <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-primary mr-2"
+                        v-on:click = "cancel_interaction()"
+                        title="Cancel Interaction"                       
+                        v-bind:disabled="reconnecting || working">
+                    Cancel <i class="fas fa-ban"></i>
+                </button>
                 
-
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "send_name()"
-                        title="Submit"                       
+                        v-on:click = "send_interaction()"
+                        title="Submit Interaction"                       
                         v-bind:disabled="reconnecting || working">
                     Submit <i class="fas fa-sign-in-alt"></i>
                 </button>
@@ -42,4 +48,4 @@
             </div>
         </div>
     </div>
-</div>{% load crispy_forms_tags %}
+</div>
