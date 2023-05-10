@@ -1,0 +1,44 @@
+{% load crispy_forms_tags %}
+<!--Edit Period Modal -->
+<div class="modal fade " 
+     id="end_game_modal" 
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false" 
+     tabindex="-1" 
+     aria-labelledby="end_game_modal" 
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header fw-bold">
+                The experiment is complete.
+            </div>
+            <div class="modal-body">
+                
+                <div>
+                    <form id="endGameForm" v-on:submit.prevent="onSubmit">
+                        {% for i in interaction_form %}
+                        <div class="row">
+                            <div class = "col col-md-10 offset-md-1">  
+                                {{ i|as_crispy_field }}         
+                            </div>            
+                        </div> 
+                        {% endfor %}
+                    </form>
+                </div>               
+            
+            </div>
+            <div class="modal-footer">
+                
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "sendName()"
+                        title="Submit Name"                       
+                        v-bind:disabled="reconnecting || working">
+                    Submit <i class="fas fa-sign-in-alt"></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>

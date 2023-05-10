@@ -8,10 +8,10 @@ class InteractionForm(forms.Form):
     '''
     interaction form
     '''
-    direction =  forms.CharField(label='Transfer Direction',
-                                widget=forms.TextInput(attrs={"v-model":"interaction_form.direction",
-                                }))
+    direction =  forms.ChoiceField(label='Transfer Direction',
+                                   choices=(('give', 'You to them'), ('take','Them to you' )),
+                                   widget=forms.Select(attrs={"v-model":"interaction_form.direction",}))
 
-    amount =  forms.CharField(label='Amount to Transfer', 
-                              widget=forms.TextInput(attrs={"v-model":"interaction_form.amount",
-                                }))
+    amount =  forms.IntegerField(label='Amount to Transfer',
+                                  min_value=1,
+                                  widget=forms.NumberInput(attrs={"min":"1", "v-model":"interaction_form.amount"}))
