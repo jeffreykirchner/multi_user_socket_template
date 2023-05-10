@@ -1,4 +1,4 @@
-sendName(){
+send_name(){
 
     app.working = true;
     app.send_message("name", {"form_data" : {name : app.session_player.name, student_id : app.session_player.student_id}});
