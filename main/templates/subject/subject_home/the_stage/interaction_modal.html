@@ -1,5 +1,5 @@
 {% load crispy_forms_tags %}
-<!--Edit Period Modal -->
+<!--interaction Modal -->
 <div class="modal fade " 
      id="end_game_modal" 
      data-bs-backdrop="static" 
@@ -11,7 +11,7 @@
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header fw-bold">
-                The experiment is complete.
+                Interaction
             </div>
             <div class="modal-body">
                 
@@ -30,10 +30,11 @@
             </div>
             <div class="modal-footer">
                 
+
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "sendName()"
-                        title="Submit Name"                       
+                        v-on:click = "send_name()"
+                        title="Submit"                       
                         v-bind:disabled="reconnecting || working">
                     Submit <i class="fas fa-sign-in-alt"></i>
                 </button>
@@ -41,4 +42,4 @@
             </div>
         </div>
     </div>
-</div>
+</div>{% load crispy_forms_tags %}
