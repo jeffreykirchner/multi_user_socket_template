@@ -319,6 +319,7 @@ var app = Vue.createApp({
 
             app.update_subject_status_overlay();
 
+            //period has changed display earnings
             if(period_change)
             {
                 session_player = app.session.world_state.session_players[app.session_player.id];
@@ -337,6 +338,7 @@ var app = Vue.createApp({
                           null)
             }
 
+            //update player states
             for(p in message_data.session_player_status)
             {
                 session_player = message_data.session_player_status[p];
@@ -344,6 +346,12 @@ var app = Vue.createApp({
                 app.session.world_state.session_players[p].frozen = session_player.frozen;
                 app.session.world_state.session_players[p].cool_down = session_player.cool_down;
                 app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
+            }
+
+            //hide interaction modal if interaction is over
+            if(app.session.world_state.session_players[app.session_player.id].interaction == 0)
+            {
+                app.interaction_modal.hide();
             }
         },
 

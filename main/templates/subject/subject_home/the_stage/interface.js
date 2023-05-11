@@ -73,7 +73,7 @@ take_update_collect_token(message_data)
 update_player_inventory()
 {
 
-    let period_id = app.session.session_periods_order[app.session.current_period];
+    let period_id = app.session.session_periods_order[app.session.current_period-1];
 
     for(const i in app.session.session_players_order)
     {
@@ -116,6 +116,7 @@ take_update_tractor_beam(message_data)
 
     if(player_id == app.session_player.id)
     {
+        app.clear_main_form_errors();
         app.interaction_form.direction = null;
         app.interaction_form.amount = null;
         app.interaction_modal.toggle();
@@ -147,6 +148,8 @@ send_interaction()
         return;
     }
 
+    app.working = true;
+
     app.send_message("interaction", 
                     {"interaction" : app.interaction_form},
                      "group"); 
@@ -158,9 +161,86 @@ send_interaction()
  */
 take_update_interaction(message_data)
 {
-    if(message_data.source_player_id == app.session_player.id)
+    if(message_data.value == "fail")
     {
-        app.interaction_modal.hide();
+        if(message_data.source_player_id == app.session_player.id)
+        {
+            let errors = {};
+            errors["direction"] = [message_data.error_message];
+            app.display_errors(errors);
+            app.working = false;            
+        }
+    }
+    else
+    {
+        let currnent_period_id = app.session.session_periods_order[app.session.current_period-1];
+
+        let source_player_id = message_data.source_player_id;
+        let target_player_id = message_data.target_player_id;
+
+        let source_player = app.session.world_state.session_players[source_player_id];
+        let target_player = app.session.world_state.session_players[target_player_id];
+
+        let period = message_data.period;
+
+        //update status
+        source_player.tractor_beam_target = null;
+
+        source_player.frozen = false
+        target_player.frozen = false
+    
+        source_player.interaction = 0;
+        target_player.interaction = 0;
+
+        source_player.cool_down = 0;
+        target_player.interaction = 0;
+
+        //update inventory
+        source_player.inventory[period] = message_data.source_player_inventory;
+        target_player.inventory[period] = message_data.target_player_inventory;
+        
+        source_player.pixi.avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
+        target_player.pixi.avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
+
+        //add text emitters
+        let token_graphic_1 = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
+        token_graphic_1.animationSpeed = app.animation_speed;
+        token_graphic_1.anchor.set(1, 0.5)
+        token_graphic_1.eventMode = 'none';
+        token_graphic_1.scale.set(0.4);
+        token_graphic_1.alpha = 0.7;
+
+        app.add_text_emitters(message_data.source_player_change, 
+                            source_player.current_location.x, 
+                            source_player.current_location.y,
+                            source_player.current_location.x,
+                            source_player.current_location.y-100,
+                            0xFFFFFF,
+                            28,
+                            token_graphic_1)
+        
+                                    //add text emitters
+        let token_graphic_2 = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
+        token_graphic_2.animationSpeed = app.animation_speed;
+        token_graphic_2.anchor.set(1, 0.5)
+        token_graphic_2.eventMode = 'none';
+        token_graphic_2.scale.set(0.4);
+        token_graphic_2.alpha = 0.7;
+
+        app.add_text_emitters(message_data.target_player_change, 
+                            target_player.current_location.x, 
+                            target_player.current_location.y,
+                            target_player.current_location.x,
+                            target_player.current_location.y-100,
+                            0xFFFFFF,
+                            28,
+                            token_graphic_2)
+
+        if(message_data.source_player_id == app.session_player.id)
+        {
+            app.working = false;
+            app.interaction_modal.hide();
+        }
     }
 },
 
@@ -178,11 +258,12 @@ cancel_interaction()
     session_player = app.session.world_state.session_players[app.session_player.id];
 
     if(session_player.interaction == 0)
-    {
+    {        
         app.interaction_modal.hide();
         return;
     }
 
+    app.working = true;
     app.send_message("cancel_interaction", 
                     {},
                      "group"); 
@@ -193,16 +274,20 @@ take_update_cancel_interaction(message_data)
     let source_player_id = message_data.source_player_id;
     let target_player_id = message_data.target_player_id;
 
-    app.session.world_state.session_players[source_player_id].tractor_beam_target = null;
+    let source_player = app.session.world_state.session_players[source_player_id];
+    let target_player = app.session.world_state.session_players[target_player_id];
 
-    app.session.world_state.session_players[source_player_id].frozen = false
-    app.session.world_state.session_players[target_player_id].frozen = false
+    source_player.tractor_beam_target = null;
 
-    app.session.world_state.session_players[source_player_id].interaction = 0;
-    app.session.world_state.session_players[target_player_id].interaction = 0;
+    source_player.frozen = false
+    target_player.frozen = false
+
+    source_player.interaction = 0;
+    target_player.interaction = 0;
 
     if(source_player_id == app.session_player.id)
     {
+        app.working = false;
         app.interaction_modal.hide();
     }
 }, 

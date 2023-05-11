@@ -81,7 +81,7 @@ take_update_collect_token(message_data)
 update_player_inventory()
 {
 
-    let period_id = app.session.session_periods_order[app.session.current_period];
+    let period_id = app.session.session_periods_order[app.session.current_period-1];
 
     for(const i in app.session.session_players_order)
     {
