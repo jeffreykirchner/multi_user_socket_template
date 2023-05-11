@@ -24,6 +24,7 @@ setup_pixi(){
 
     app.pixi_text_emitter = [];
     app.pixi_tick_tock = {value:"tick", time:Date.now()};
+    app.pixi_transfer_beams = [];
 },
 
 reset_pixi_app(){    
@@ -347,7 +348,6 @@ destroy_pixi_tokens_for_all_periods()
     }
 },
 
-
 /**
  * setup mini map on subject screen 
  * */
@@ -520,7 +520,6 @@ update_subject_status_overlay(delta)
     app.subject_status_overlay_container.getChildAt(5).text = app.session_player.earnings;
 },
 
-
 /**
  * add scroll buttons to staff screen
  */
@@ -564,6 +563,7 @@ game_loop(delta)
 {
     app.move_player(delta);
     app.move_text_emitters(delta);
+    app.animate_transfer_beams(delta);
 
     if(app.pixi_mode=="subject" && app.session.started)
     {   
@@ -648,28 +648,9 @@ move_player(delta)
 
         if(obj.target_location.x !=  obj.current_location.x ||
             obj.target_location.y !=  obj.current_location.y )
-        {
-            
-            let noX = false;
-            let noY = false;
-            let temp_move_speed = (app.move_speed * delta);
-
-            let temp_angle = Math.atan2(obj.target_location.y - obj.current_location.y,
-                                        obj.target_location.x - obj.current_location.x)
-
-            if(!noY){
-                if(Math.abs(obj.target_location.y - obj.current_location.y) < temp_move_speed)
-                obj.current_location.y = obj.target_location.y;
-                else
-                obj.current_location.y += temp_move_speed * Math.sin(temp_angle);
-            }
-
-            if(!noX){
-                if(Math.abs(obj.target_location.x - obj.current_location.x) < temp_move_speed)
-                    obj.current_location.x = obj.target_location.x;
-                else
-                    obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
-            }
+        {           
+            //move player towards target
+            app.move_object(delta, obj, app.move_speed);
 
             //update the sprite locations
             avatar_container.getChildAt(0).play();
@@ -996,6 +977,9 @@ staff_screen_scroll_button_out(event)
     app.scroll_direction = {x:0, y:0};
 },
 
+/**
+ * update tractor beam between two players
+ */
 setup_tractor_beam(source_id, target_id)
 {
     let source_player = app.session.world_state.session_players[source_id];
@@ -1144,6 +1128,32 @@ move_text_emitters(delta)
 },
 
 /**
+ * create transfer beam between two points
+ */
+add_transfer_beam(source_location, target_location, beam_texture)
+{
+
+    transer_beam = {source_location:source_location, target_location:target_location, beam_images:[]}    
+
+    app.pixi_transfer_beams.push(transer_beam);
+},
+
+/**
+ * animate the transfer beam
+ */
+animate_transfer_beams(delta)
+{
+
+    let completed = [];
+
+    //move the beams
+    for(let i = 0; i <  app.pixi_transfer_beams.length;  i++)
+    {
+
+    }
+},
+
+/**
  * move the object towards its target location
  */
 move_object(delta, obj, move_speed)
@@ -1169,4 +1179,3 @@ move_object(delta, obj, move_speed)
             obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
     }
 },
-
