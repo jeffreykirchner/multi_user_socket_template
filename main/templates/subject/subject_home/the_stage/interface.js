@@ -116,6 +116,8 @@ take_update_tractor_beam(message_data)
 
     if(player_id == app.session_player.id)
     {
+        app.interaction_form.direction = null;
+        app.interaction_form.amount = null;
         app.interaction_modal.toggle();
     }
 },

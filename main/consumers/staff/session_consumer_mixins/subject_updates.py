@@ -226,6 +226,27 @@ class SubjectUpdatesMixin():
         '''
         player_id = self.session_players_local[event["player_key"]]["id"]
 
+        source_player = self.world_state_local['session_players'][str(player_id)]
+
+        if source_player['interaction'] == 0:
+            return
+        
+        target_player_id = source_player['tractor_beam_target']
+        target_player = self.world_state_local['session_players'][str(target_player_id)]
+
+
+        #clear status
+        source_player['interaction'] = 0
+        target_player['interaction'] = 0
+
+        source_player['frozen'] = False
+        target_player['frozen'] = False
+
+        source_player["cool_down"] = self.parameter_set_local["cool_down_length"]
+        target_player["cool_down"] = self.parameter_set_local["cool_down_length"]
+
+        source_player['tractor_beam_target'] = None
+
         result = {"source_player_id": player_id, "value" : "success"}
         
         await self.send_message(message_to_self=None, message_to_group=result,
@@ -283,7 +304,7 @@ class SubjectUpdatesMixin():
 #sync companion functions
 def sync_collect_token(session_id, period_id, token_id, player_id):
     '''
-    syncronous collect token
+    syncronous collect token transaction
     '''
 
     # world_state_filter=f"world_state__tokens__{period_id}__{token_id}__status"
@@ -296,6 +317,37 @@ def sync_collect_token(session_id, period_id, token_id, player_id):
             return False
 
         session.world_state['tokens'][str(period_id)][str(token_id)]['status'] = 'waiting'
+        session.save()
+
+    return True
+
+def sync_interaction(session_id, source_player_id, target_player_id, direction, amount):
+    '''
+    syncronous interaction transaction
+    '''
+
+    # world_state_filter=f"world_state__tokens__{period_id}__{token_id}__status"
+    
+    with transaction.atomic():
+    
+        session = Session.objects.select_for_update().get(id=session_id)
+
+        source_player = session.world_state['session_players'][str(source_player_id)]
+        target_player = session.world_state['session_players'][str(target_player_id)]
+
+        if direction == 'take':
+            if target_player["inventory"] < amount:
+                return False
+            else:
+                target_player["inventory"] -= amount
+                source_player["inventory"] += amount
+        else:
+            if source_player["inventory"] < amount:
+                return False
+            else:
+                source_player["inventory"] -= amount
+                target_player["inventory"] += amount
+                
         session.save()
 
     return True
