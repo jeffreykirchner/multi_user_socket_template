@@ -1,40 +1,24 @@
 ﻿{"frames": {
 
-"background_tile_a_1024.png":
-{
-	"frame": {"x":5,"y":5,"w":1024,"h":1024},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":1024},
-	"sourceSize": {"w":1024,"h":1024}
-},
-"background_tile_a_128.png":
-{
-	"frame": {"x":1034,"y":5,"w":128,"h":128},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
-	"sourceSize": {"w":128,"h":128}
-},
-"background_tile_small.png":
-{
-	"frame": {"x":1167,"y":5,"w":168,"h":105},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":168,"h":105},
-	"sourceSize": {"w":168,"h":105}
-},
 "chat_bubble.png":
 {
-	"frame": {"x":1340,"y":5,"w":200,"h":170},
+	"frame": {"x":0,"y":0,"w":200,"h":170},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":200,"h":170},
 	"sourceSize": {"w":200,"h":170}
 },
+"cherry_small.png":
+{
+	"frame": {"x":205,"y":0,"w":100,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":120},
+	"sourceSize": {"w":100,"h":120}
+},
 "face_1.png":
 {
-	"frame": {"x":1545,"y":5,"w":100,"h":72},
+	"frame": {"x":310,"y":0,"w":100,"h":72},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":72},
@@ -42,7 +26,7 @@
 },
 "particle2.png":
 {
-	"frame": {"x":1650,"y":5,"w":100,"h":100},
+	"frame": {"x":0,"y":175,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -50,10 +34,10 @@
 }},
 "meta": {
 	"app": "Adobe Animate",
-	"version": "23.0.1.70",
+	"version": "23.0.2.103",
 	"image": "sprite_sheet.png",
 	"format": "RGB8",
-	"size": {"w":2048,"h":2048},
+	"size": {"w":512,"h":512},
 	"scale": "1"
 }
 }
