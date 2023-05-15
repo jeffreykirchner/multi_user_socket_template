@@ -92,7 +92,8 @@ subject_avatar_click(target_player_id)
 
     app.add_transfer_beam(app.session.world_state.session_players[app.session_player.id].current_location, 
                           app.session.world_state.session_players[target_player_id].current_location,
-                          app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"])
+                          app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
+                          "-1", "+1")
 
     // app.session.world_state.tractor_beam_target = player_id;
 
@@ -205,40 +206,6 @@ take_update_interaction(message_data)
         
         source_player.pixi.avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
         target_player.pixi.avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
-
-        //add text emitters
-        let token_graphic_1 = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
-        token_graphic_1.animationSpeed = app.animation_speed;
-        token_graphic_1.anchor.set(1, 0.5)
-        token_graphic_1.eventMode = 'none';
-        token_graphic_1.scale.set(0.4);
-        token_graphic_1.alpha = 0.7;
-
-        app.add_text_emitters(message_data.source_player_change, 
-                            source_player.current_location.x, 
-                            source_player.current_location.y,
-                            source_player.current_location.x,
-                            source_player.current_location.y-100,
-                            0xFFFFFF,
-                            28,
-                            token_graphic_1)
-        
-                                    //add text emitters
-        let token_graphic_2 = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
-        token_graphic_2.animationSpeed = app.animation_speed;
-        token_graphic_2.anchor.set(1, 0.5)
-        token_graphic_2.eventMode = 'none';
-        token_graphic_2.scale.set(0.4);
-        token_graphic_2.alpha = 0.7;
-
-        app.add_text_emitters(message_data.target_player_change, 
-                            target_player.current_location.x, 
-                            target_player.current_location.y,
-                            target_player.current_location.x,
-                            target_player.current_location.y-100,
-                            0xFFFFFF,
-                            28,
-                            token_graphic_2)
 
         if(message_data.source_player_id == app.session_player.id)
         {
