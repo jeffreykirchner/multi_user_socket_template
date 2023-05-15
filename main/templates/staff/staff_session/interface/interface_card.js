@@ -135,8 +135,8 @@ take_update_interaction(message_data)
         source_player.interaction = 0;
         target_player.interaction = 0;
 
-        source_player.cool_down = 0;
-        target_player.interaction = 0;
+        source_player.cool_down = app.session.parameter_set.cool_down_length;
+        target_player.cool_down = app.session.parameter_set.cool_down_length;
 
         //update inventory
         source_player.inventory[period] = message_data.source_player_inventory;
@@ -146,7 +146,7 @@ take_update_interaction(message_data)
         target_player.pixi.avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
 
         //add text emitters
-        let token_graphic_1 = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
+        let token_graphic_1 = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
         token_graphic_1.animationSpeed = app.animation_speed;
         token_graphic_1.anchor.set(1, 0.5)
         token_graphic_1.eventMode = 'none';
@@ -163,7 +163,7 @@ take_update_interaction(message_data)
                             token_graphic_1)
         
                                     //add text emitters
-        let token_graphic_2 = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
+        let token_graphic_2 = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
         token_graphic_2.animationSpeed = app.animation_speed;
         token_graphic_2.anchor.set(1, 0.5)
         token_graphic_2.eventMode = 'none';

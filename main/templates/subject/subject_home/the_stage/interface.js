@@ -90,12 +90,16 @@ subject_avatar_click(target_player_id)
 {
     if(target_player_id == app.session_player.id) return;
 
+    app.add_transfer_beam(app.session.world_state.session_players[app.session_player.id].current_location, 
+                          app.session.world_state.session_players[target_player_id].current_location,
+                          app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"])
+
     // app.session.world_state.tractor_beam_target = player_id;
 
     //console.log("subject avatar click", player_id);
-    app.send_message("tractor_beam", 
-                     {"target_player_id" : target_player_id},
-                     "group");
+    // app.send_message("tractor_beam", 
+    //                  {"target_player_id" : target_player_id},
+    //                  "group");
 },
 
 /**
@@ -192,8 +196,8 @@ take_update_interaction(message_data)
         source_player.interaction = 0;
         target_player.interaction = 0;
 
-        source_player.cool_down = 0;
-        target_player.interaction = 0;
+        source_player.cool_down = app.session.parameter_set.cool_down_length;
+        target_player.cool_down = app.session.parameter_set.cool_down_length;
 
         //update inventory
         source_player.inventory[period] = message_data.source_player_inventory;
