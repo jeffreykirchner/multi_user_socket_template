@@ -1,0 +1,51 @@
+{% load crispy_forms_tags %}
+<!--interaction Modal -->
+<div class="modal fade " 
+     id="interaction_modal" 
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false" 
+     tabindex="-1" 
+     aria-labelledby="interaction_modal" 
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header fw-bold">
+                Interaction
+            </div>
+            <div class="modal-body">
+                
+                <div>
+                    <form id="endGameForm" v-on:submit.prevent="onSubmit">
+                        {% for i in interaction_form %}
+                        <div class="row">
+                            <div class = "col col-md-10 offset-md-1">  
+                                {{ i|as_crispy_field }}         
+                            </div>            
+                        </div> 
+                        {% endfor %}
+                    </form>
+                </div>               
+            
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-primary mr-2"
+                        v-on:click = "cancel_interaction()"
+                        title="Cancel Interaction"                       
+                        v-bind:disabled="reconnecting || working">
+                    Cancel <i class="fas fa-ban"></i>
+                </button>
+                
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "send_interaction()"
+                        title="Submit Interaction"                       
+                        v-bind:disabled="reconnecting || working">
+                    Submit <i class="fas fa-sign-in-alt"></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -17,7 +17,8 @@ take_target_location_update(message_data)
 /**
  * send an update to the server to store the current world state
  */
-send_world_state_update(){
+send_world_state_update()
+{
     if(app.last_world_state_update == null) 
     {
         app.last_world_state_update = Date.now();
@@ -38,7 +39,8 @@ send_world_state_update(){
 },
 
 
-take_update_collect_token(message_data){
+take_update_collect_token(message_data)
+{
 
     if(message_data.period_id != app.session.session_periods_order[app.session.current_period-1]) return;
 
@@ -76,9 +78,10 @@ take_update_collect_token(message_data){
                           token_graphic)
 },
 
-update_player_inventory(){
+update_player_inventory()
+{
 
-    let period_id = app.session.session_periods_order[app.session.current_period];
+    let period_id = app.session.session_periods_order[app.session.current_period-1];
 
     for(const i in app.session.session_players_order)
     {
@@ -88,7 +91,8 @@ update_player_inventory(){
     }
 },
 
-take_update_tractor_beam(message_data){
+take_update_tractor_beam(message_data)
+{
     let player_id = message_data.player_id;
     let target_player_id = message_data.target_player_id;
 
@@ -101,6 +105,78 @@ take_update_tractor_beam(message_data){
     app.session.world_state.session_players[target_player_id].interaction = app.session.parameter_set.interaction_length;
 },
 
-take_update_transfer_tokens(message_data){
+/**
+ * take update from server about interactions
+ */
+take_update_interaction(message_data)
+{
+    if(message_data.value == "fail")
+    {
+        
+    }
+    else
+    {
+        let currnent_period_id = app.session.session_periods_order[app.session.current_period-1];
 
+        let source_player_id = message_data.source_player_id;
+        let target_player_id = message_data.target_player_id;
+
+        let source_player = app.session.world_state.session_players[source_player_id];
+        let target_player = app.session.world_state.session_players[target_player_id];
+
+        let period = message_data.period;
+
+        //update status
+        source_player.tractor_beam_target = null;
+
+        source_player.frozen = false
+        target_player.frozen = false
+    
+        source_player.interaction = 0;
+        target_player.interaction = 0;
+
+        source_player.cool_down = app.session.parameter_set.cool_down_length;
+        target_player.cool_down = app.session.parameter_set.cool_down_length;
+
+        //update inventory
+        source_player.inventory[period] = message_data.source_player_inventory;
+        target_player.inventory[period] = message_data.target_player_inventory;
+        
+        source_player.pixi.avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
+        target_player.pixi.avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
+
+        //add transfer beam
+        if(message_data.direction == "give")
+        {
+            app.add_transfer_beam(source_player.current_location, 
+                                 target_player.current_location,
+                                 app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
+                                 message_data.source_player_change,
+                                 message_data.target_player_change);
+        }
+        else
+        {
+            app.add_transfer_beam(target_player.current_location, 
+                                  source_player.current_location,
+                                  app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
+                                  message_data.target_player_change,
+                                  message_data.source_player_change);
+        }
+
+    }
 },
+
+take_update_cancel_interaction(message_data)
+{
+    let source_player_id = message_data.source_player_id;
+    let target_player_id = message_data.target_player_id;
+
+    app.session.world_state.session_players[source_player_id].tractor_beam_target = null;
+
+    app.session.world_state.session_players[source_player_id].frozen = false
+    app.session.world_state.session_players[target_player_id].frozen = false
+
+    app.session.world_state.session_players[source_player_id].interaction = 0;
+    app.session.world_state.session_players[target_player_id].interaction = 0;
+}, 
+

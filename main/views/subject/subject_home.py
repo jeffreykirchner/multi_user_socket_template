@@ -17,6 +17,7 @@ from main.models import SessionPlayer
 from main.models import Parameters
 
 from main.forms import EndGameForm
+from main.forms import InteractionForm
 
 class SubjectHomeView(View):
     '''
@@ -35,9 +36,12 @@ class SubjectHomeView(View):
         except ObjectDoesNotExist:
             raise Http404("Subject not found.")
         
-        end_game_form_ids=[]
+        form_ids=[]
         for i in EndGameForm():
-            end_game_form_ids.append(i.html_name)
+           form_ids.append(i.html_name)
+
+        for i in InteractionForm():
+           form_ids.append(i.html_name)
 
         # sprite_sheet_css = generate_css_sprite_sheet('main/static/avatars.json', static('avatars.png'))
 
@@ -49,7 +53,8 @@ class SubjectHomeView(View):
                                "player_key" :  session_player.player_key,
                                "id" : session.id,
                                "end_game_form" : EndGameForm(),
-                               "end_game_form_ids" : end_game_form_ids,
+                               "interaction_form" : InteractionForm(),
+                               "form_ids" : form_ids,
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'session-{session.id}',
                                "instruction_pages" : json.dumps(session_player.get_instruction_set(), cls=DjangoJSONEncoder),

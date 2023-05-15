@@ -1,5 +1,5 @@
 {% load crispy_forms_tags %}
-<!--Edit Period Modal -->
+<!--End Game Modal -->
 <div class="modal fade " 
      id="end_game_modal" 
      data-bs-backdrop="static" 
@@ -41,7 +41,7 @@
                 
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "sendName()"
+                        v-on:click = "send_name()"
                         title="Submit Name"
                         v-if="!session_player.name_submitted && session.parameter_set.prolific_mode == 'False'"
                         v-bind:disabled="reconnecting || working">

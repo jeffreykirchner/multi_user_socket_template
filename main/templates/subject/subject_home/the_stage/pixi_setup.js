@@ -22,8 +22,11 @@ setup_pixi(){
         app.update_zoom();
     });
 
-    app.pixi_text_emitter = [];
+    app.pixi_text_emitter = {};
+    app.pixi_text_emitter_key = 0;
     app.pixi_tick_tock = {value:"tick", time:Date.now()};
+    app.pixi_transfer_beams = {};
+    app.pixi_transfer_beams_key = 0;
 },
 
 reset_pixi_app(){    
@@ -48,9 +51,6 @@ reset_pixi_app(){
     app.canvas_height = canvas.height;
 
     app.last_collision_check = Date.now();
-    //app.pixi_app.ticker.maxFPS = 30;
-    //app.pixi_app.ticker.targetFPMS = 0.12;
-    //app.pixi_app.ticker.minFPS = 40;
 },
 
 /** load pixi sprite sheets
@@ -181,8 +181,7 @@ setup_pixi_subjects(){
         id_label.eventMode = 'passive';
         id_label.anchor.set(0.5);
         
-        let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
-        token_graphic.animationSpeed = app.animation_speed;
+        let token_graphic = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
         token_graphic.anchor.set(1, 0.5)
         token_graphic.eventMode = 'passive';
         token_graphic.scale.set(0.3);
@@ -346,7 +345,6 @@ destroy_pixi_tokens_for_all_periods()
         }
     }
 },
-
 
 /**
  * setup mini map on subject screen 
@@ -520,7 +518,6 @@ update_subject_status_overlay(delta)
     app.subject_status_overlay_container.getChildAt(5).text = app.session_player.earnings;
 },
 
-
 /**
  * add scroll buttons to staff screen
  */
@@ -564,6 +561,7 @@ game_loop(delta)
 {
     app.move_player(delta);
     app.move_text_emitters(delta);
+    app.animate_transfer_beams(delta);
 
     if(app.pixi_mode=="subject" && app.session.started)
     {   
@@ -596,8 +594,8 @@ game_loop(delta)
 /**
  * update zoom level on staff screen
  */
-update_zoom(){
-
+update_zoom()
+{
     if(app.pixi_mode == "subject") return;
     if(app.pixi_scale == app.pixi_scale_range_control) return;
     
@@ -648,28 +646,9 @@ move_player(delta)
 
         if(obj.target_location.x !=  obj.current_location.x ||
             obj.target_location.y !=  obj.current_location.y )
-        {
-            
-            let noX = false;
-            let noY = false;
-            let temp_move_speed = (app.move_speed * delta);
-
-            let temp_angle = Math.atan2(obj.target_location.y - obj.current_location.y,
-                                        obj.target_location.x - obj.current_location.x)
-
-            if(!noY){
-                if(Math.abs(obj.target_location.y - obj.current_location.y) < temp_move_speed)
-                obj.current_location.y = obj.target_location.y;
-                else
-                obj.current_location.y += temp_move_speed * Math.sin(temp_angle);
-            }
-
-            if(!noX){
-                if(Math.abs(obj.target_location.x - obj.current_location.x) < temp_move_speed)
-                    obj.current_location.x = obj.target_location.x;
-                else
-                    obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
-            }
+        {           
+            //move player towards target
+            app.move_object(delta, obj, app.move_speed);
 
             //update the sprite locations
             avatar_container.getChildAt(0).play();
@@ -805,8 +784,8 @@ update_mini_map(delta)
 /**
  * update the amount of shift needed to center the player
  */
-update_offsets_player(delta){
-    
+update_offsets_player(delta)
+{
     offset = app.get_offset();
 
     app.pixi_container_main.x = -offset.x;
@@ -821,8 +800,8 @@ update_offsets_player(delta){
 /**
  * check for collisions between local player and other objects
  */
-check_for_collisions(delta){
-
+check_for_collisions(delta)
+{
     if(Date.now() - app.last_collision_check < 100) return;
     app.last_collision_check = Date.now();
 
@@ -865,8 +844,8 @@ check_for_collisions(delta){
 /**
  * update the amount of shift needed for the staff view
  */
-update_offsets_staff(delta){
-    
+update_offsets_staff(delta)
+{
     let offset = app.get_offset_staff();
 
     app.pixi_container_main.x = -offset.x;
@@ -876,8 +855,8 @@ update_offsets_staff(delta){
 /**
  * manaully scroll staff screen
  */
-scroll_staff(delta){
-
+scroll_staff(delta)
+{
     app.current_location.x += app.scroll_direction.x;
     app.current_location.y += app.scroll_direction.y;
 },
@@ -885,7 +864,8 @@ scroll_staff(delta){
 /**
  * subject screen offset from the origin
  */
-get_offset(){
+get_offset()
+{
     let obj = app.session.world_state.session_players[app.session_player.id];
 
     return {x:obj.current_location.x * app.pixi_scale - app.pixi_app.screen.width/2,
@@ -895,8 +875,8 @@ get_offset(){
 /**
  * staff screen offset from origin
  */
-get_offset_staff(){
-
+get_offset_staff()
+{
     if(app.follow_subject != -1 && app.session.started)
     {
         obj = app.session.world_state.session_players[app.follow_subject];
@@ -910,8 +890,8 @@ get_offset_staff(){
 /**
  *pointer up on subject screen
  */
-subject_pointer_up(event){
-
+subject_pointer_up(event)
+{
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     let obj = app.session.world_state.session_players[app.session_player.id];
 
@@ -980,7 +960,8 @@ subject_pointer_up(event){
 /**
  *scroll control for staff
  */
-staff_screen_scroll_button_over(event){
+staff_screen_scroll_button_over(event)
+{
     event.currentTarget.alpha = 1;  
     app.scroll_direction = event.currentTarget.name.scroll_direction;
 },
@@ -988,26 +969,15 @@ staff_screen_scroll_button_over(event){
 /**
  *scroll control for staff
  */
-staff_screen_scroll_button_out(event){
+staff_screen_scroll_button_out(event)
+{
     event.currentTarget.alpha = 0.5;
     app.scroll_direction = {x:0, y:0};
 },
 
 /**
- * subject avatar click
+ * update tractor beam between two players
  */
-subject_avatar_click(target_player_id){
-
-    if(target_player_id == app.session_player.id) return;
-
-    // app.session.world_state.tractor_beam_target = player_id;
-
-    //console.log("subject avatar click", player_id);
-    app.send_message("tractor_beam", 
-                     {"target_player_id" : target_player_id},
-                     "group");
-},
-
 setup_tractor_beam(source_id, target_id)
 {
     let source_player = app.session.world_state.session_players[source_id];
@@ -1066,22 +1036,6 @@ setup_tractor_beam(source_id, target_id)
                 tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
             }
         }
-        
-        // Color tempC = Color.White;
-        // if (Common.gameT2 % 20 >= 10)
-        // {
-        //     if (i % 2 != 0)
-        //     {
-        //         tempC = myColor;
-        //     }
-        // }
-        // else
-        // {
-        //     if (i % 2 == 0)
-        //     {
-        //         tempC = myColor;
-        //     }
-        // }
 
     }
 },
@@ -1089,8 +1043,8 @@ setup_tractor_beam(source_id, target_id)
 /**
  * add text emitters to the screen
  */
-add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, emitter_image){
-
+add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, emitter_image)
+{
     let emitter_container = new PIXI.Container();
     emitter_container.position.set(start_x, start_y);
     emitter_container.pivot.set(0.5);
@@ -1119,19 +1073,19 @@ add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, e
                    emitter_container:emitter_container,
                 };
     
-    app.pixi_text_emitter.push(emitter);
+    app.pixi_text_emitter[app.pixi_text_emitter_key++]=emitter;
     app.pixi_container_main.addChild(emitter_container);
 },
 
 /**
  * move text emitters
  */
-move_text_emitters(delta){
-
+move_text_emitters(delta)
+{
     let completed = [];
 
     //move the emitters
-    for(let i = 0; i <  app.pixi_text_emitter.length;  i++){
+    for(i in app.pixi_text_emitter){
 
         let emitter = app.pixi_text_emitter[i];
         
@@ -1151,14 +1105,172 @@ move_text_emitters(delta){
     for(let i=completed.length-1; i>=0; i--){
         app.pixi_text_emitter[completed[i]].emitter_container.destroy();
 
-        app.pixi_text_emitter.splice(completed[i], completed[i]); 
+        delete app.pixi_text_emitter[completed[i]]; 
+    }
+},
+
+/**
+ * create transfer beam between two points
+ */
+add_transfer_beam(source_location, target_location, beam_texture, source_amount, target_amount)
+{
+
+    let transfer_beam = {source_location:source_location, 
+                         target_location:target_location, 
+                         source_amount:source_amount,
+                         target_amount:target_amount,
+                         beam_texture:beam_texture,
+                         beam_images:[]}    
+
+    let dY = target_location.y - source_location.y;
+    let dX = target_location.x - source_location.x;
+
+    let myX = target_location.x;
+    let myY = target_location.y;
+    let targetX = source_location.x;
+    let targetY = source_location.y;
+    
+    let tempAngle = Math.atan2(dY, dX);
+    let tempSlope = (myY - targetY) / (myX - targetX);
+
+    if (myX - targetX == 0) tempSlope = 0.999999999999;
+
+    let tempYIntercept = myY - tempSlope * myX;
+
+    // Rectangle rectTractor;
+    let tractorCircles = 15;
+    let scaleIncrement = 1 / tractorCircles;
+
+    let xIncrement = Math.sqrt(Math.pow(myX - targetX, 2) + Math.pow(myY - targetY, 2)) / tractorCircles;
+    let tempScale = 0;
+    
+    for (let i=0; i<tractorCircles; i++)
+    {
+        let temp_x = (myX - Math.cos(tempAngle) * xIncrement * i);
+        let temp_y = (myY - Math.sin(tempAngle) * xIncrement * i);
+
+        let token_graphic = PIXI.Sprite.from(beam_texture); //app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]
+        token_graphic.anchor.set(0.5);
+        token_graphic.eventMode = 'passive';
+        token_graphic.scale.set(tempScale);
+        token_graphic.position.set(temp_x, temp_y);
+        token_graphic.zIndex = 10000;
+        token_graphic.alpha = 0.5;
+        
+        transfer_beam.beam_images.push({token_graphic:token_graphic, scale:tempScale, direction:"up"});       
+
+        app.pixi_container_main.addChild(token_graphic);
+
+        tempScale += scaleIncrement;
+    }
+
+    app.pixi_transfer_beams[app.pixi_transfer_beams_key++] = transfer_beam;
+},
+
+/**
+ * animate the transfer beam
+ */
+animate_transfer_beams(delta)
+{
+    let completed = [];
+    let speed = 0.05;
+
+    //move the beams
+    for(i in app.pixi_transfer_beams)
+    {   
+
+        let beam_images =  app.pixi_transfer_beams[i].beam_images;
+        let active = false;
+        for(let j=0; j<beam_images.length; j++)
+        {
+            let beam_image = beam_images[j];
+            if(beam_image.direction == "up")
+            {
+                if(beam_image.scale >= 1.0)
+                {
+                    beam_image.direction = "down";
+                }
+                else
+                {
+                    beam_image.scale += speed;
+                }
+            }
+            else if(beam_image.direction == "down")
+            {
+                if(beam_image.scale <= 0)
+                {
+                    beam_image.token_graphic.destroy();
+                    beam_image.direction = "done";
+                }
+                else
+                {
+                    beam_image.scale -= speed;
+                }
+            }
+
+            if(beam_image.direction != "done")
+            {
+                beam_image.token_graphic.scale.set(beam_image.scale);
+                active = true;
+            }            
+        }
+ 
+        if(!active) completed.push(i);
+    }
+
+    //remove the completed beams and show text emitters
+    for(let i=0; i<completed.length; i++){      
+        
+        let beam_texture = app.pixi_transfer_beams[completed[i]].beam_texture;
+        let source_location = app.pixi_transfer_beams[completed[i]].source_location;
+        let target_location = app.pixi_transfer_beams[completed[i]].target_location;
+        let source_amount = app.pixi_transfer_beams[completed[i]].source_amount;
+        let target_amount = app.pixi_transfer_beams[completed[i]].target_amount;
+
+        //add text emitters
+        let token_graphic_1 = PIXI.Sprite.from(beam_texture);
+        token_graphic_1.animationSpeed = app.animation_speed;
+        token_graphic_1.anchor.set(1, 0.5)
+        token_graphic_1.eventMode = 'none';
+        token_graphic_1.scale.set(0.4);
+        token_graphic_1.alpha = 0.7;
+
+        app.add_text_emitters(source_amount, 
+                              source_location.x, 
+                              source_location.y,
+                              source_location.x,
+                              source_location.y-100,
+                              0xFFFFFF,
+                              28,
+                              token_graphic_1)
+        
+                                    //add text emitters
+        let token_graphic_2 = PIXI.Sprite.from(beam_texture);
+        token_graphic_2.animationSpeed = app.animation_speed;
+        token_graphic_2.anchor.set(1, 0.5)
+        token_graphic_2.eventMode = 'none';
+        token_graphic_2.scale.set(0.4);
+        token_graphic_2.alpha = 0.7;
+
+        app.add_text_emitters(target_amount, 
+                              target_location.x, 
+                              target_location.y,
+                              target_location.x,
+                              target_location.y-100,
+                              0xFFFFFF,
+                              28,
+                              token_graphic_2)
+        
+        //remove beams
+        delete app.pixi_transfer_beams[completed[i]]; 
     }
 },
 
 /**
  * move the object towards its target location
  */
-move_object(delta, obj, move_speed){
+move_object(delta, obj, move_speed)
+{
     let noX = false;
     let noY = false;
     let temp_move_speed = (move_speed * delta);
@@ -1180,4 +1292,3 @@ move_object(delta, obj, move_speed){
             obj.current_location.x += temp_move_speed * Math.cos(temp_angle);        
     }
 },
-

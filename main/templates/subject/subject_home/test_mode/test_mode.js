@@ -37,7 +37,7 @@ do_test_mode(){
                 app.session_player.name = app.random_string(5, 20);
                 app.session_player.student_id =  app.random_number(1000, 10000);
 
-                app.sendName();
+                app.send_name();
             })
         }
 

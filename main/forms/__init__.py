@@ -18,3 +18,4 @@ from .instruction_set_form_admin import InstructionSetFormAdmin
 from .instruction_form_admin import InstructionFormAdmin
 
 from .end_game_form import EndGameForm
+from .interaction_form import InteractionForm

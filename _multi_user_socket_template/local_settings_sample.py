@@ -35,7 +35,9 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [("rediss://:password=@host_name:6380/0")],
+            #'hosts': [('rediss://:password=@host_name:6380/0')], #remote server
+            'hosts': [('localhost', 6379)], #local server
+            'prefix' : 'multi_user_socket_template',
         },
     },
 }
@@ -87,6 +89,7 @@ LOGGING = {
     },
 }
 
+#ESI auth service
 ESI_AUTH_URL = 'https://esi-auth-dev.azurewebsites.net'
 ESI_AUTH_ACCOUNT_URL = 'https://esi-auth-dev.azurewebsites.net/account/'
 ESI_AUTH_PASSWORD_RESET_URL = 'https://esi-auth-dev.azurewebsites.net/password-reset/'
