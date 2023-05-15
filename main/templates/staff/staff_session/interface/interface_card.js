@@ -145,39 +145,23 @@ take_update_interaction(message_data)
         source_player.pixi.avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
         target_player.pixi.avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
 
-        //add text emitters
-        let token_graphic_1 = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
-        token_graphic_1.animationSpeed = app.animation_speed;
-        token_graphic_1.anchor.set(1, 0.5)
-        token_graphic_1.eventMode = 'none';
-        token_graphic_1.scale.set(0.4);
-        token_graphic_1.alpha = 0.7;
-
-        app.add_text_emitters(message_data.source_player_change, 
-                            source_player.current_location.x, 
-                            source_player.current_location.y,
-                            source_player.current_location.x,
-                            source_player.current_location.y-100,
-                            0xFFFFFF,
-                            28,
-                            token_graphic_1)
-        
-                                    //add text emitters
-        let token_graphic_2 = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
-        token_graphic_2.animationSpeed = app.animation_speed;
-        token_graphic_2.anchor.set(1, 0.5)
-        token_graphic_2.eventMode = 'none';
-        token_graphic_2.scale.set(0.4);
-        token_graphic_2.alpha = 0.7;
-
-        app.add_text_emitters(message_data.target_player_change, 
-                            target_player.current_location.x, 
-                            target_player.current_location.y,
-                            target_player.current_location.x,
-                            target_player.current_location.y-100,
-                            0xFFFFFF,
-                            28,
-                            token_graphic_2)
+        //add transfer beam
+        if(message_data.direction == "give")
+        {
+            app.add_transfer_beam(source_player.current_location, 
+                                 target_player.current_location,
+                                 app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
+                                 message_data.source_player_change,
+                                 message_data.target_player_change);
+        }
+        else
+        {
+            app.add_transfer_beam(target_player.current_location, 
+                                  source_player.current_location,
+                                  app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
+                                  message_data.target_player_change,
+                                  message_data.source_player_change);
+        }
 
     }
 },

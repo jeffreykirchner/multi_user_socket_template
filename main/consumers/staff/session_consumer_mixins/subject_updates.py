@@ -382,6 +382,7 @@ def sync_interaction(session_id, source_player_id, target_player_id, direction, 
     result["target_player_inventory"] = target_player["inventory"][current_period_id]
 
     result["period"] = current_period_id
+    result["direction"] = direction
 
     return result
                                       

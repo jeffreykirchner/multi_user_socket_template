@@ -90,17 +90,11 @@ subject_avatar_click(target_player_id)
 {
     if(target_player_id == app.session_player.id) return;
 
-    app.add_transfer_beam(app.session.world_state.session_players[app.session_player.id].current_location, 
-                          app.session.world_state.session_players[target_player_id].current_location,
-                          app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
-                          "-1", "+1")
+    // console.log("subject avatar click", target_player_id);
 
-    // app.session.world_state.tractor_beam_target = player_id;
-
-    //console.log("subject avatar click", player_id);
-    // app.send_message("tractor_beam", 
-    //                  {"target_player_id" : target_player_id},
-    //                  "group");
+    app.send_message("tractor_beam", 
+                     {"target_player_id" : target_player_id},
+                     "group");
 },
 
 /**
@@ -206,6 +200,24 @@ take_update_interaction(message_data)
         
         source_player.pixi.avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
         target_player.pixi.avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
+
+         //add transfer beam
+         if(message_data.direction == "give")
+         {
+             app.add_transfer_beam(source_player.current_location, 
+                                  target_player.current_location,
+                                  app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
+                                  message_data.source_player_change,
+                                  message_data.target_player_change);
+         }
+         else
+         {
+             app.add_transfer_beam(target_player.current_location, 
+                                   source_player.current_location,
+                                   app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
+                                   message_data.target_player_change,
+                                   message_data.source_player_change);
+         }
 
         if(message_data.source_player_id == app.session_player.id)
         {

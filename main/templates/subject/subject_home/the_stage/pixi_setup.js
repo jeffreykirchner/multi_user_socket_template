@@ -22,7 +22,8 @@ setup_pixi(){
         app.update_zoom();
     });
 
-    app.pixi_text_emitter = [];
+    app.pixi_text_emitter = {};
+    app.pixi_text_emitter_key = 0;
     app.pixi_tick_tock = {value:"tick", time:Date.now()};
     app.pixi_transfer_beams = {};
     app.pixi_transfer_beams_key = 0;
@@ -1035,22 +1036,6 @@ setup_tractor_beam(source_id, target_id)
                 tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
             }
         }
-        
-        // Color tempC = Color.White;
-        // if (Common.gameT2 % 20 >= 10)
-        // {
-        //     if (i % 2 != 0)
-        //     {
-        //         tempC = myColor;
-        //     }
-        // }
-        // else
-        // {
-        //     if (i % 2 == 0)
-        //     {
-        //         tempC = myColor;
-        //     }
-        // }
 
     }
 },
@@ -1088,7 +1073,7 @@ add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, e
                    emitter_container:emitter_container,
                 };
     
-    app.pixi_text_emitter.push(emitter);
+    app.pixi_text_emitter[app.pixi_text_emitter_key++]=emitter;
     app.pixi_container_main.addChild(emitter_container);
 },
 
@@ -1100,7 +1085,7 @@ move_text_emitters(delta)
     let completed = [];
 
     //move the emitters
-    for(let i = 0; i <  app.pixi_text_emitter.length;  i++){
+    for(i in app.pixi_text_emitter){
 
         let emitter = app.pixi_text_emitter[i];
         
@@ -1120,7 +1105,7 @@ move_text_emitters(delta)
     for(let i=completed.length-1; i>=0; i--){
         app.pixi_text_emitter[completed[i]].emitter_container.destroy();
 
-        app.pixi_text_emitter.splice(completed[i], completed[i]); 
+        delete app.pixi_text_emitter[completed[i]]; 
     }
 },
 
@@ -1153,7 +1138,7 @@ add_transfer_beam(source_location, target_location, beam_texture, source_amount,
     let tempYIntercept = myY - tempSlope * myX;
 
     // Rectangle rectTractor;
-    let tractorCircles = 25;
+    let tractorCircles = 15;
     let scaleIncrement = 1 / tractorCircles;
 
     let xIncrement = Math.sqrt(Math.pow(myX - targetX, 2) + Math.pow(myY - targetY, 2)) / tractorCircles;
