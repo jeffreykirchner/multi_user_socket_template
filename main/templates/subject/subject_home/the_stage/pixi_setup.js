@@ -829,11 +829,11 @@ check_for_collisions(delta)
         }
         else if(distance>2000)
         {
-            // token.token_container.visible=false;
+            token.token_container.visible=false;
         }
         else
         {
-            // token.token_container.visible=true;
+            token.token_container.visible=true;
         }
         
     }

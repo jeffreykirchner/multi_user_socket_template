@@ -341,13 +341,13 @@ var app = Vue.createApp({
             if(period_change)
             {
                 Vue.nextTick(() => {
-                    session_player = world_state.session_players[app.session_player.id];
+                    let current_location = world_state.session_players[app.session_player.id].current_location;
 
                     app.add_text_emitters("+" + period_earnings + "¢", 
-                            session_player.current_location.x, 
-                            session_player.current_location.y,
-                            session_player.current_location.x,
-                            session_player.current_location.y-100,
+                            current_location.x, 
+                            current_location.y,
+                            current_location.x,
+                            current_location.y-100,
                             0xFFFFFF,
                             28,
                             null)

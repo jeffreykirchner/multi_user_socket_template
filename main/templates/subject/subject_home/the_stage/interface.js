@@ -46,22 +46,22 @@ take_update_collect_token(message_data)
     token.status = message_data.player_id;
 
     let session_player = world_state.session_players[message_data.player_id];
+    let current_location =  world_state.session_players[message_data.player_id].current_location;
 
     session_player.inventory[message_data.period_id] = message_data.inventory;
     session_player.pixi.avatar_container.getChildAt(4).text = message_data.inventory;
 
-    let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
-    token_graphic.animationSpeed = app.animation_speed;
+    let token_graphic = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
     token_graphic.anchor.set(1, 0.5)
     token_graphic.eventMode = 'none';
     token_graphic.scale.set(0.4);
     token_graphic.alpha = 0.7;
 
     app.add_text_emitters("+1", 
-                          session_player.current_location.x, 
-                          session_player.current_location.y,
-                          session_player.current_location.x,
-                          session_player.current_location.y-100,
+                          current_location.x, 
+                          current_location.y,
+                          current_location.x,
+                          current_location.y-100,
                           0xFFFFFF,
                           28,
                           token_graphic)
@@ -78,8 +78,7 @@ update_player_inventory()
     for(const i in app.session.session_players_order)
     {
         const player_id = app.session.session_players_order[i];
-        let session_player = world_state.session_players[player_id];
-        session_player.pixi.avatar_container.getChildAt(4).text = world_state.session_players[player_id].inventory[period_id];
+        world_state.session_players[player_id].pixi.avatar_container.getChildAt(4).text = world_state.session_players[player_id].inventory[period_id];
     }
 },
 
