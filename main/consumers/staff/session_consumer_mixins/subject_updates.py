@@ -111,10 +111,10 @@ class SubjectUpdatesMixin():
         last_update = datetime.strptime(self.world_state_local["last_update"], "%Y-%m-%d %H:%M:%S.%f")
         dt_now = datetime.now()
 
-        if dt_now - last_update > timedelta(seconds=1):
-            # logger.info("updating world state")
-            self.world_state_local["last_update"] = str(dt_now)
-            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+        # if dt_now - last_update > timedelta(seconds=1):
+        #     # logger.info("updating world state")
+        #     self.world_state_local["last_update"] = str(dt_now)
+        #     await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
         
         result = {"value" : "success", "target_location" : target_location, "session_player_id" : player_id}
         
@@ -142,8 +142,11 @@ class SubjectUpdatesMixin():
         period_id = message_text["period_id"]
         player_id = self.session_players_local[event["player_key"]]["id"]
 
-        if not await sync_to_async(sync_collect_token)(self.session_id, period_id, token_id, player_id):
-            logger.warning(f'collect_token: {message_text}, token {token_id} not available')
+        # if not await sync_to_async(sync_collect_token)(self.session_id, period_id, token_id, player_id):
+        #     logger.warning(f'collect_token: {message_text}, token {token_id} not available')
+        #     return
+        
+        if self.world_state_local['tokens'][str(period_id)][str(token_id)]['status'] != 'available':
             return
         
         self.world_state_local['tokens'][str(period_id)][str(token_id)]['status'] = player_id
