@@ -4,6 +4,19 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
+//global variables
+var world_state = {};
+var subject_status_overlay_container = null;
+var pixi_app = null;                           //pixi app   
+var pixi_container_main = null;                //main container for pixi
+var pixi_target = null;                        //target sprite for your avatar
+var pixi_text_emitter = {};                    //text emitter json
+var pixi_text_emitter_key = 0;
+var pixi_transfer_beams = {};                  //transfer beam json
+var pixi_transfer_beams_key = 0;
+var pixi_fps_label = null;                     //fps label
+var mini_map_container = null;                 //mini map container
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
@@ -231,6 +244,8 @@ var app = Vue.createApp({
             app.session = message_data.session;
             app.session_player = message_data.session_player;
 
+            world_state = app.session.world_state;
+
             if(app.session.started)
             {
                
@@ -317,19 +332,22 @@ var app = Vue.createApp({
                 app.show_end_game_modal();
             }            
 
-            app.update_subject_status_overlay();
+            Vue.nextTick(() => {
+                app.update_subject_status_overlay();
+            });
+
 
             //period has changed display earnings
             if(period_change)
             {
                 Vue.nextTick(() => {
-                    session_player = app.session.world_state.session_players[app.session_player.id];
+                    let current_location = world_state.session_players[app.session_player.id].current_location;
 
                     app.add_text_emitters("+" + period_earnings + "¢", 
-                            session_player.current_location.x, 
-                            session_player.current_location.y,
-                            session_player.current_location.x,
-                            session_player.current_location.y-100,
+                            current_location.x, 
+                            current_location.y,
+                            current_location.x,
+                            current_location.y-100,
                             0xFFFFFF,
                             28,
                             null)
@@ -344,14 +362,14 @@ var app = Vue.createApp({
             for(p in message_data.session_player_status)
             {
                 session_player = message_data.session_player_status[p];
-                app.session.world_state.session_players[p].interaction = session_player.interaction;
-                app.session.world_state.session_players[p].frozen = session_player.frozen;
-                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
-                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
+                world_state.session_players[p].interaction = session_player.interaction;
+                world_state.session_players[p].frozen = session_player.frozen;
+                world_state.session_players[p].cool_down = session_player.cool_down;
+                world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
 
             //hide interaction modal if interaction is over
-            if(app.session.world_state.session_players[app.session_player.id].interaction == 0)
+            if(world_state.session_players[app.session_player.id].interaction == 0)
             {
                 app.interaction_modal.hide();
             }

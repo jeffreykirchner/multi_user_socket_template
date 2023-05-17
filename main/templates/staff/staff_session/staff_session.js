@@ -4,6 +4,16 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
+var world_state = {};
+var pixi_app = null;
+var pixi_container_main = null;
+var pixi_text_emitter = {};
+var pixi_text_emitter_key = 0;
+var pixi_transfer_beams = {};
+var pixi_transfer_beams_key = 0;
+var pixi_fps_label = null;                     //fps label
+
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
@@ -270,6 +280,8 @@ var app = Vue.createApp({
 
             app.session = message_data;
 
+            world_state =  app.session.world_state;
+
             if(app.session.started)
             {
                 
@@ -329,9 +341,9 @@ var app = Vue.createApp({
         take_update_chat(message_data){
             
             let chat = message_data.chat;
-            app.session.world_state.session_players[chat.sender_id].show_chat = true;    
-            app.session.world_state.session_players[chat.sender_id].chat_time = Date.now();
-            app.session.world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
+            world_state.session_players[chat.sender_id].show_chat = true;    
+            world_state.session_players[chat.sender_id].chat_time = Date.now();
+            world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
         },
 
         /**
@@ -369,10 +381,10 @@ var app = Vue.createApp({
             for(p in message_data.session_player_status)
             {
                 session_player = message_data.session_player_status[p];
-                app.session.world_state.session_players[p].interaction = session_player.interaction;
-                app.session.world_state.session_players[p].frozen = session_player.frozen;
-                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
-                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
+                world_state.session_players[p].interaction = session_player.interaction;
+                world_state.session_players[p].frozen = session_player.frozen;
+                world_state.session_players[p].cool_down = session_player.cool_down;
+                world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
 
             app.send_world_state_update();
