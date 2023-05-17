@@ -322,20 +322,22 @@ var app = Vue.createApp({
             //period has changed display earnings
             if(period_change)
             {
-                session_player = app.session.world_state.session_players[app.session_player.id];
+                Vue.nextTick(() => {
+                    session_player = app.session.world_state.session_players[app.session_player.id];
 
-                app.setup_pixi_tokens_for_current_period();
-                app.setup_pixi_minimap();
-                app.update_player_inventory();
+                    app.add_text_emitters("+" + period_earnings + "¢", 
+                            session_player.current_location.x, 
+                            session_player.current_location.y,
+                            session_player.current_location.x,
+                            session_player.current_location.y-100,
+                            0xFFFFFF,
+                            28,
+                            null)
 
-                app.add_text_emitters("+" + period_earnings + "¢", 
-                          session_player.current_location.x, 
-                          session_player.current_location.y,
-                          session_player.current_location.x,
-                          session_player.current_location.y-100,
-                          0xFFFFFF,
-                          28,
-                          null)
+                    app.setup_pixi_tokens_for_current_period();
+                    app.setup_pixi_minimap();
+                    app.update_player_inventory();
+                });               
             }
 
             //update player states

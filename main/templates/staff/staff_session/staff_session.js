@@ -374,6 +374,8 @@ var app = Vue.createApp({
                 app.session.world_state.session_players[p].cool_down = session_player.cool_down;
                 app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
+
+            app.send_world_state_update();
         },
        
         //do nothing on when enter pressed for post

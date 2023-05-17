@@ -38,7 +38,7 @@ take_update_collect_token(message_data)
     try{
         token.token_container.getChildAt(0).stop();
         token.token_container.getChildAt(0).alpha = 0.25;
-        token.token_graphic.visible = false;
+        // token.token_graphic.visible = false;
     } catch (error) {
 
     }
