@@ -6,7 +6,7 @@ take_target_location_update(message_data)
     if(message_data.value == "success")
     {
         app.session.world_state.session_players[message_data.session_player_id].target_location = message_data.target_location;        
-        app.send_world_state_update()         
+        app.send_world_state_update();         
     } 
     else
     {
@@ -49,7 +49,7 @@ take_update_collect_token(message_data)
     try{
         token.token_container.getChildAt(0).stop();
         token.token_container.getChildAt(0).alpha = 0.25;
-        token.token_graphic.visible = false;
+        // token.token_graphic.visible = false;
     } catch (error) {
 
     }
