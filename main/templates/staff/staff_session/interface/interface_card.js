@@ -57,7 +57,7 @@ take_update_collect_token(message_data)
     token.status = message_data.player_id;
 
     let session_player = world_state.session_players[message_data.player_id];
-    let current_location =  world_state.session_players[message_data.player_id].session_player.current_location;
+    let current_location =  world_state.session_players[message_data.player_id].current_location;
 
     session_player.inventory[message_data.period_id] = message_data.inventory;
     session_player.pixi.avatar_container.getChildAt(4).text = message_data.inventory;
