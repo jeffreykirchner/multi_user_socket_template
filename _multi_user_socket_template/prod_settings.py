@@ -33,6 +33,7 @@ CHANNEL_LAYERS = {
         'CONFIG': {
             'hosts': [(os.environ['REDIS'])],
             'prefix' : 'multi_user_socket_template',
+            'capacity': 1500,
         },
     },
 }
