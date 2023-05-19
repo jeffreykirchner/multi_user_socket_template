@@ -13,7 +13,6 @@ var pixi_transfer_beams = {};
 var pixi_transfer_beams_key = 0;
 var pixi_fps_label = null;                     //fps label
 
-
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
@@ -52,6 +51,8 @@ var app = Vue.createApp({
                     last_world_state_update : null,
 
                     timer_running : false,
+                    current_period : 0,
+                    time_remaining : 0,
 
                     //modals
                     edit_subject_modal : null,
@@ -369,7 +370,11 @@ var app = Vue.createApp({
             world_state.current_period = message_data.current_period;
             world_state.time_remaining = message_data.time_remaining;
             world_state.timer_running = message_data.timer_running;
+
+            app.current_period = message_data.current_period;
+            app.time_remaining = message_data.time_remaining;
             app.timer_running = message_data.timer_running;
+           
             // app.session.finished = result.finished;
             world_state.current_experiment_phase = message_data.current_experiment_phase;
 

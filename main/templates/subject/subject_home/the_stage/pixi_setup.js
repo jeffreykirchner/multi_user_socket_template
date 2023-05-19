@@ -143,7 +143,7 @@ setup_pixi_subjects(){
     if(!app.session.started) return;
     
     let current_z_index = 1000;
-    let current_period_id = app.session.session_periods_order[app.session.current_period-1];
+    let current_period_id = app.session.session_periods_order[world_state.current_period-1];
     for(const i in world_state.session_players)
     {      
         let subject = world_state.session_players[i];
@@ -296,7 +296,7 @@ setup_pixi_tokens_for_current_period()
 
     app.destroy_pixi_tokens_for_all_periods();
 
-    const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+    const current_period_id = app.session.session_periods_order[world_state.current_period-1];
 
     for(const i in world_state.tokens[current_period_id]){
 
@@ -392,7 +392,7 @@ setup_pixi_minimap()
     mini_map_container.addChild(mini_map_vp);
 
     //mini map tokens
-    const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+    const current_period_id = app.session.session_periods_order[world_state.current_period-1];
 
     for(const i in world_state.tokens[current_period_id]){       
 
@@ -512,8 +512,8 @@ update_subject_status_overlay(delta)
     if(!subject_status_overlay_container) return;
     subject_status_overlay_container.position.set(pixi_app.screen.width - subject_status_overlay_container.width-20, 20);
 
-    subject_status_overlay_container.getChildAt(3).text = app.session.current_period;
-    subject_status_overlay_container.getChildAt(4).text = app.session.time_remaining;
+    subject_status_overlay_container.getChildAt(3).text = world_state.current_period;
+    subject_status_overlay_container.getChildAt(4).text = world_state.time_remaining;
     subject_status_overlay_container.getChildAt(5).text = app.session_player.earnings;
 },
 
@@ -808,7 +808,7 @@ check_for_collisions(delta)
     let collision_found = false;
 
     //check for collisions with tokens
-    const current_period_id = app.session.session_periods_order[app.session.current_period-1];
+    const current_period_id = app.session.session_periods_order[world_state.current_period-1];
     for(const i in world_state.tokens[current_period_id]){       
 
         let token = world_state.tokens[current_period_id][i];

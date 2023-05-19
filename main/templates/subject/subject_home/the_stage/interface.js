@@ -31,7 +31,7 @@ take_target_location_update(message_data)
  */
 take_update_collect_token(message_data)
 {
-    if(message_data.period_id != app.session.session_periods_order[app.session.current_period-1]) return;
+    if(message_data.period_id != app.session.session_periods_order[world_state.current_period-1]) return;
 
     let token = world_state.tokens[message_data.period_id][message_data.token_id];
 
@@ -73,7 +73,7 @@ take_update_collect_token(message_data)
 update_player_inventory()
 {
 
-    let period_id = app.session.session_periods_order[app.session.current_period-1];
+    let period_id = app.session.session_periods_order[world_state.current_period-1];
 
     for(const i in app.session.session_players_order)
     {
@@ -171,7 +171,7 @@ take_update_interaction(message_data)
     }
     else
     {
-        let currnent_period_id = app.session.session_periods_order[app.session.current_period-1];
+        let currnent_period_id = app.session.session_periods_order[world_state.current_period-1];
 
         let source_player_id = message_data.source_player_id;
         let target_player_id = message_data.target_player_id;

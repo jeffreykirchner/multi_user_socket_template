@@ -33,16 +33,6 @@ class TimerMixin():
         self.world_state_local["timer_running"] = self.timer_running
         Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
-        # result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
-
-        # #Send reply to sending channel
-        # if self.timer_running == True:
-        #     await self.send_message(message_to_self=result, message_to_group=None,
-        #                             message_type=event['type'], send_to_client=True, send_to_group=False)
-        
-        # await self.send_message(message_to_self=False, message_to_group=result,
-        #                         message_type="time", send_to_client=False, send_to_group=True)
-
         if self.timer_running:
             #start continue timer
             await self.channel_layer.send(
@@ -53,9 +43,12 @@ class TimerMixin():
                 }
             )
         else:
-            logger.warning(f"start_timer fail: {result}")
+            #stop timer
+            result = {"timer_running" : False}
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         
-        logger.info(f"start_timer complete {event}")
+        # logger.info(f"start_timer complete {event}")
 
     async def continue_timer(self, event):
         '''
@@ -68,11 +61,6 @@ class TimerMixin():
             logger.info(f"continue_timer timer off")
             return
 
-        if not self.timer_running:
-            logger.info(f"continue_timer timer off")
-            return
-
-        #result = await sync_to_async(take_do_period_timer, thread_sensitive=False)(self.session_id)     
         stop_timer = False
 
         #check session over
@@ -101,7 +89,7 @@ class TimerMixin():
 
         session_player_status = {}
 
-        #decrement waiting and iteration time
+        #decrement waiting and interaction time
         for p in self.world_state_local["session_players"]:
             session_player = self.world_state_local["session_players"][p]
 

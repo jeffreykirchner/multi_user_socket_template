@@ -302,7 +302,7 @@ var app = Vue.createApp({
         * update time and start status
         */
         take_update_time(message_data){
-            let result = message_data.result;
+          
             let status = message_data.value;
 
             if(status == "fail") return;
@@ -310,21 +310,23 @@ var app = Vue.createApp({
             let period_change = false;
             let period_earnings = 0;
 
-            if (app.session.current_period != result.current_period)
+            if (world_state.current_period != message_data.current_period)
             {
                 period_change = true;
-                period_earnings = result.session_player_earnings.earnings - app.session_player.earnings;
+                period_earnings = message_data.session_player_earnings.earnings - app.session_player.earnings;
             }
 
-            app.session.started = result.started;
-            app.session.current_period = result.current_period;
-            app.session.time_remaining = result.time_remaining;
-            app.session.timer_running = result.timer_running;
-            app.session.finished = result.finished;
-            app.session.current_experiment_phase = result.current_experiment_phase;
+            app.session.started = message_data.started;
+
+            world_state.current_period = message_data.current_period;
+            world_state.time_remaining = message_data.time_remaining;
+            world_state.timer_running = message_data.timer_running;
+
+            app.session.finished = message_data.finished;
+            world_state.current_experiment_phase = message_data.current_experiment_phase;
 
             //update subject earnings
-            app.session_player.earnings = result.session_player_earnings.earnings;
+            app.session_player.earnings = message_data.session_player_earnings.earnings;
 
             //collect names
             if(app.session.current_experiment_phase == 'Names')

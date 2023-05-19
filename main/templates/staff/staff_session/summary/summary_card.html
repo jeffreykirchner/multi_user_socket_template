@@ -22,12 +22,7 @@
                 Current Period:
             </div>
             <div class="col text-start ps-1">
-                <span v-if="session.world_state.hasOwnProperty('current_period')">
-                    [[session.world_state.current_period]] of [[session.parameter_set.period_count]]
-                </span>       
-                <span v-else>
-                    ---
-                </span>        
+                [[current_period]] of [[session.parameter_set.period_count]]      
             </div>
         </div>  
         <div class="row">
@@ -39,12 +34,7 @@
                     Complete
                 </span>
                 <span v-else>
-                    <span v-if="session.world_state.hasOwnProperty('current_period')">
-                        [[session.time_remaining]]
-                    </span>
-                    <span v-else>
-                        ---
-                    </span>     
+                    [[time_remaining]]    
                 </span>               
             </div>
         </div>
