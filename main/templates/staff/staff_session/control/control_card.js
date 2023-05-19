@@ -107,7 +107,7 @@ start_timer(){
 
     let action = "";
 
-    if(app.session.timer_running)
+    if(world_state.timer_running)
     {
         action = "stop";
     }

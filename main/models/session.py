@@ -136,6 +136,10 @@ class Session(models.Model):
         '''
         self.world_state = {"last_update":str(datetime.now()), 
                             "session_players":{},
+                            "current_period":1,
+                            "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
+                            "time_remaining":self.parameter_set.period_length,
+                            "timer_running":False,
                             "tokens":{},}
         
         inventory = {str(i):0 for i in list(self.session_periods.all().values_list('id', flat=True))}

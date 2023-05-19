@@ -7,6 +7,8 @@ from django.db import transaction
 
 from main.models import Session
 
+from main.globals import ExperimentPhase
+
 class TimerMixin():
     '''
     timer mixin for staff session consumer
@@ -20,21 +22,28 @@ class TimerMixin():
         logger.info(f"start_timer {event}")
 
         if event["message_text"]["action"] == "start":
+            if self.timer_running:
+                logger.warning(f"start_timer: already started")
+                return
+            
             self.timer_running = True
         else:
             self.timer_running = False
 
-        result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
+        self.world_state_local["timer_running"] = self.timer_running
+        Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+
+        # result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
 
         # #Send reply to sending channel
-        if self.timer_running == True:
-            await self.send_message(message_to_self=result, message_to_group=None,
-                                    message_type=event['type'], send_to_client=True, send_to_group=False)
+        # if self.timer_running == True:
+        #     await self.send_message(message_to_self=result, message_to_group=None,
+        #                             message_type=event['type'], send_to_client=True, send_to_group=False)
         
-        await self.send_message(message_to_self=False, message_to_group=result,
-                                message_type="time", send_to_client=False, send_to_group=True)
+        # await self.send_message(message_to_self=False, message_to_group=result,
+        #                         message_type="time", send_to_client=False, send_to_group=True)
 
-        if result["value"] == "success" and event["message_text"]["action"] == "start":
+        if self.timer_running:
             #start continue timer
             await self.channel_layer.send(
                 self.channel_name,
@@ -63,54 +72,77 @@ class TimerMixin():
             logger.info(f"continue_timer timer off")
             return
 
-        result = await sync_to_async(take_do_period_timer, thread_sensitive=False)(self.session_id)
+        #result = await sync_to_async(take_do_period_timer, thread_sensitive=False)(self.session_id)     
+        stop_timer = False
 
-        if result["value"] == "success":
+        #check session over
+        if self.world_state_local["time_remaining"] == 0 and \
+           self.world_state_local["current_period"] >= self.parameter_set_local["period_count"]:
 
-            session_player_status = {}
+            self.world_state_local["current_experiment_phase"] = ExperimentPhase.NAMES
+            stop_timer = True
+           
+        if self.world_state_local["current_experiment_phase"] != ExperimentPhase.NAMES:
 
-            #decrement waiting and iteration time
-            for p in self.world_state_local["session_players"]:
-                session_player = self.world_state_local["session_players"][p]
+            if self.world_state_local["time_remaining"] == 0:
+                # self.get_current_session_period().store_earnings()
 
-                if session_player["cool_down"] > 0:
-                    session_player["cool_down"] -= 1
+                self.world_state_local["current_period"] += 1
+                self.world_state_local["time_remaining"] = self.parameter_set_local["period_length"]
+            else:                                     
+                self.world_state_local["time_remaining"] -= 1
 
-                if session_player["interaction"] > 0:
-                    session_player["interaction"] -= 1
+        result = {"stop_timer" : stop_timer, 
+                  "value" : "success",
+                  "time_remaining" : self.world_state_local["time_remaining"],
+                  "current_period" : self.world_state_local["current_period"],
+                  "timer_running" : self.world_state_local["timer_running"],
+                  "current_experiment_phase" : self.world_state_local["current_experiment_phase"]}
 
-                    if session_player["interaction"] == 0:
-                       session_player["cool_down"] = self.parameter_set_local["cool_down_length"]
-                
+        session_player_status = {}
+
+        #decrement waiting and iteration time
+        for p in self.world_state_local["session_players"]:
+            session_player = self.world_state_local["session_players"][p]
+
+            if session_player["cool_down"] > 0:
+                session_player["cool_down"] -= 1
+
+            if session_player["interaction"] > 0:
+                session_player["interaction"] -= 1
+
                 if session_player["interaction"] == 0:
-                    session_player["frozen"] = False
-                    session_player["tractor_beam_target"] = None
-
-                session_player_status[p] = {"interaction": session_player["interaction"], 
-                                            "frozen": session_player["frozen"], 
-                                            "cool_down": session_player["cool_down"],
-                                            "tractor_beam_target" : session_player["tractor_beam_target"]}                
+                    session_player["cool_down"] = self.parameter_set_local["cool_down_length"]
             
-            result["session_player_status"] = session_player_status
+            if session_player["interaction"] == 0:
+                session_player["frozen"] = False
+                session_player["tractor_beam_target"] = None
 
-            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+            session_player_status[p] = {"interaction": session_player["interaction"], 
+                                        "frozen": session_player["frozen"], 
+                                        "cool_down": session_player["cool_down"],
+                                        "tractor_beam_target" : session_player["tractor_beam_target"]}                
+        
+        result["session_player_status"] = session_player_status
 
-            await self.send_message(message_to_self=False, message_to_group=result,
-                                    message_type="time", send_to_client=False, send_to_group=True)
+        await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
-            #if session is not over continue
-            if not result["stop_timer"]:
+        await self.send_message(message_to_self=False, message_to_group=result,
+                                message_type="time", send_to_client=False, send_to_group=True)
 
-                loop = asyncio.get_event_loop()
+        #if session is not over continue
+        if not result["stop_timer"]:
 
-                loop.call_later(1, asyncio.create_task, 
-                                self.channel_layer.send(
-                                    self.channel_name,
-                                    {
-                                        'type': "continue_timer",
-                                        'message_text': {},
-                                    }
-                                ))
+            loop = asyncio.get_event_loop()
+
+            loop.call_later(1, asyncio.create_task, 
+                            self.channel_layer.send(
+                                self.channel_name,
+                                {
+                                    'type': "continue_timer",
+                                    'message_text': {},
+                                }
+                            ))
         
         # logger.info(f"continue_timer end")
 

@@ -51,6 +51,8 @@ var app = Vue.createApp({
 
                     last_world_state_update : null,
 
+                    timer_running : false,
+
                     //modals
                     edit_subject_modal : null,
                     edit_session_modal : null,
@@ -351,24 +353,26 @@ var app = Vue.createApp({
          */
         take_update_time(message_data){
 
-            let result = message_data.result;
+           
             let status = message_data.value;
 
             if(status == "fail") return;
 
             let period_change = false;
 
-            if (app.session.current_period != result.current_period)
+            if (world_state.current_period != message_data.current_period)
             {
                 period_change = true;
             }
 
-            app.session.started = result.started;
-            app.session.current_period = result.current_period;
-            app.session.time_remaining = result.time_remaining;
-            app.session.timer_running = result.timer_running;
-            app.session.finished = result.finished;
-            app.session.current_experiment_phase = result.current_experiment_phase;
+            // app.session.started = result.started;
+            world_state.current_period = message_data.current_period;
+            world_state.time_remaining = message_data.time_remaining;
+            world_state.timer_running = message_data.timer_running;
+            app.timer_running = message_data.timer_running;
+            // app.session.finished = result.finished;
+            world_state.current_experiment_phase = message_data.current_experiment_phase;
+
             app.update_phase_button_text();
 
             if(period_change)
