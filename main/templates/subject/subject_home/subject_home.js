@@ -321,10 +321,12 @@ var app = Vue.createApp({
             world_state.current_period = message_data.current_period;
             world_state.time_remaining = message_data.time_remaining;
             world_state.timer_running = message_data.timer_running;
-
-            app.session.finished = message_data.finished;
+            world_state.started = message_data.started;
+            world_state.finished = message_data.finished;
             world_state.current_experiment_phase = message_data.current_experiment_phase;
 
+            app.session.finished = message_data.finished;
+           
             //update subject earnings
             app.session_player.earnings = message_data.session_player_earnings.earnings;
 

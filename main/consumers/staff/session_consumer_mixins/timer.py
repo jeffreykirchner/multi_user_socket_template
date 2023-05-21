@@ -63,6 +63,8 @@ class TimerMixin():
 
         stop_timer = False
 
+        result = {}
+
         #check session over
         if self.world_state_local["time_remaining"] == 0 and \
            self.world_state_local["current_period"] >= self.parameter_set_local["period_count"]:
@@ -85,6 +87,8 @@ class TimerMixin():
                   "time_remaining" : self.world_state_local["time_remaining"],
                   "current_period" : self.world_state_local["current_period"],
                   "timer_running" : self.world_state_local["timer_running"],
+                  "started" : self.world_state_local["started"],
+                  "finished" : self.world_state_local["finished"],
                   "current_experiment_phase" : self.world_state_local["current_experiment_phase"]}
 
         session_player_status = {}

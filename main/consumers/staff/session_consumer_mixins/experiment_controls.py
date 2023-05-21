@@ -95,6 +95,8 @@ class ExperimentControlsMixin():
         '''
         result = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
 
+        self.world_state_local["finished"] = result["finished"]
+
         #Send message to staff page
         if result["value"] == "fail":
             await self.send_message(message_to_self=result, message_to_group=None,

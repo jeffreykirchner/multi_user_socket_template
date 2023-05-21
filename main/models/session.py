@@ -140,6 +140,8 @@ class Session(models.Model):
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
                             "time_remaining":self.parameter_set.period_length,
                             "timer_running":False,
+                            "started":self.started,
+                            "finished":self.finished,
                             "tokens":{},}
         
         inventory = {str(i):0 for i in list(self.session_periods.all().values_list('id', flat=True))}
