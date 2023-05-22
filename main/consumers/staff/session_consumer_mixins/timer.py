@@ -63,11 +63,15 @@ class TimerMixin():
 
         stop_timer = False
 
-        result = {}
+        result = {"earnings":{}}
 
         #check session over
         if self.world_state_local["time_remaining"] == 0 and \
            self.world_state_local["current_period"] >= self.parameter_set_local["period_count"]:
+            
+            session = await Session.objects.aget(id=self.session_id)
+            current_session_period = await session.session_periods.aget(period_number=self.world_state_local["current_period"])
+            result["earnings"] = await current_session_period.store_earnings(self.world_state_local)
 
             self.world_state_local["current_experiment_phase"] = ExperimentPhase.NAMES
             stop_timer = True
@@ -75,21 +79,23 @@ class TimerMixin():
         if self.world_state_local["current_experiment_phase"] != ExperimentPhase.NAMES:
 
             if self.world_state_local["time_remaining"] == 0:
-                # self.get_current_session_period().store_earnings()
+                session = await Session.objects.aget(id=self.session_id)
+                current_session_period = await session.session_periods.aget(period_number=self.world_state_local["current_period"])
+                result["earnings"] = await current_session_period.store_earnings(self.world_state_local)
 
                 self.world_state_local["current_period"] += 1
                 self.world_state_local["time_remaining"] = self.parameter_set_local["period_length"]
             else:                                     
                 self.world_state_local["time_remaining"] -= 1
 
-        result = {"stop_timer" : stop_timer, 
-                  "value" : "success",
-                  "time_remaining" : self.world_state_local["time_remaining"],
-                  "current_period" : self.world_state_local["current_period"],
-                  "timer_running" : self.world_state_local["timer_running"],
-                  "started" : self.world_state_local["started"],
-                  "finished" : self.world_state_local["finished"],
-                  "current_experiment_phase" : self.world_state_local["current_experiment_phase"]}
+        result["value"] = "success"
+        result["stop_timer"] = stop_timer
+        result["time_remaining"] = self.world_state_local["time_remaining"]
+        result["current_period"] = self.world_state_local["current_period"]
+        result["timer_running"] = self.world_state_local["timer_running"]
+        result["started"] = self.world_state_local["started"]
+        result["finished"] = self.world_state_local["finished"]
+        result["current_experiment_phase"] = self.world_state_local["current_experiment_phase"]
 
         session_player_status = {}
 

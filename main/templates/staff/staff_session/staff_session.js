@@ -386,7 +386,7 @@ var app = Vue.createApp({
             {
                 app.setup_pixi_tokens_for_current_period();
                 app.update_player_inventory();
-                app.take_update_earnings(message_data);
+                app.take_update_earnings(message_data.earnings);
             }
 
             for(p in message_data.session_player_status)

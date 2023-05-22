@@ -313,7 +313,8 @@ var app = Vue.createApp({
             if (world_state.current_period != message_data.current_period)
             {
                 period_change = true;
-                period_earnings = message_data.session_player_earnings.earnings - app.session_player.earnings;
+                period_earnings = message_data.earnings[app.session_player.id].period_earnings;
+                app.session_player.earnings = message_data.earnings[app.session_player.id].total_earnings;
             }
 
             app.session.started = message_data.started;
@@ -326,10 +327,7 @@ var app = Vue.createApp({
             world_state.current_experiment_phase = message_data.current_experiment_phase;
 
             app.session.finished = message_data.finished;
-           
-            //update subject earnings
-            app.session_player.earnings = message_data.session_player_earnings.earnings;
-
+        
             //collect names
             if(app.session.current_experiment_phase == 'Names')
             {

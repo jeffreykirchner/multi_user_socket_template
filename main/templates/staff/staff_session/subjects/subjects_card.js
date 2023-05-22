@@ -84,23 +84,13 @@ take_finished_instructions(message_data){
   * update subject earnings
   *  @param message_data {json} session day in json format
   */
- take_update_earnings(message_data){
+ take_update_earnings(earnings){
 
-    if(message_data.value == "success")
+    for(i in earnings)
     {
-        let session_player_earnings = message_data.result.session_player_earnings;
-        let session_players = app.session.session_players;
-
-        for(let i=0; i<session_player_earnings.length; i++)
-        {
-            session_player = app.session.session_players[session_player_earnings[i].id];
-
-            if(session_player)
-            {
-                session_player.earnings = session_player_earnings[i].earnings;
-            }
-        }
+        app.session.session_players[i].earnings = earnings[i].total_earnings;
     }
+    
  },
 
 
