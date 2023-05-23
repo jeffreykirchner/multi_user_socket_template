@@ -298,6 +298,8 @@ setup_pixi_tokens_for_current_period()
 
     const current_period_id = app.session.session_periods_order[world_state.current_period-1];
 
+    pix_tokens[current_period_id] = {};
+
     for(const i in world_state.tokens[current_period_id]){
 
         let token =  world_state.tokens[current_period_id][i];
@@ -321,8 +323,8 @@ setup_pixi_tokens_for_current_period()
         token_container.pivot.set(token_container.width/2, token_container.height/2);
         token_container.position.set(token.current_location.x, token.current_location.y);
 
-        token.token_container = token_container;
-        pixi_container_main.addChild(token.token_container);
+        pix_tokens[current_period_id][i] = token_container;
+        pixi_container_main.addChild(pix_tokens[current_period_id][i]);
        
    }
 },
@@ -340,7 +342,7 @@ destroy_pixi_tokens_for_all_periods()
 
         for(const j in world_state.tokens[period_id]){
 
-            let token =  world_state.tokens[period_id][j];
+            let token =  pix_tokens[period_id][i];
             if(token.token_container) token.token_container.destroy();
         }
     }

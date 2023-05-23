@@ -13,6 +13,7 @@ var pixi_transfer_beams = {};
 var pixi_transfer_beams_key = 0;
 var pixi_fps_label = null;                     //fps label
 var pixi_avatars = {};                         //avatars
+var pixi_tokens = {};                          //tokens
 
 //vue app
 var app = Vue.createApp({
