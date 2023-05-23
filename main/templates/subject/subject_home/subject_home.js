@@ -16,6 +16,7 @@ var pixi_transfer_beams = {};                  //transfer beam json
 var pixi_transfer_beams_key = 0;
 var pixi_fps_label = null;                     //fps label
 var mini_map_container = null;                 //mini map container
+var pixi_avatars = {}; 
 
 //vue app
 var app = Vue.createApp({
@@ -314,7 +315,7 @@ var app = Vue.createApp({
             {
                 period_change = true;
                 period_earnings = message_data.earnings[app.session_player.id].period_earnings;
-                app.session_player.earnings = message_data.earnings[app.session_player.id].total_earnings;
+                world_state.session_players[app.session_player.id].earnings = message_data.earnings[app.session_player.id].total_earnings;
             }
 
             app.session.started = message_data.started;

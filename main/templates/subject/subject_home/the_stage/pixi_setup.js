@@ -147,7 +147,7 @@ setup_pixi_subjects(){
     for(const i in world_state.session_players)
     {      
         let subject = world_state.session_players[i];
-        subject.pixi = {};
+        pixi_avatars[i] = {};
 
         //avatar
         let avatar_container = new PIXI.Container();
@@ -209,8 +209,8 @@ setup_pixi_subjects(){
         inventory_label.position.set(2, +avatar_container.height * 0.18);
         status_label.position.set(0, -avatar_container.height/2 + 30);
 
-        subject.pixi.avatar_container = avatar_container;
-        pixi_container_main.addChild(subject.pixi.avatar_container);
+        pixi_avatars[i].avatar_container = avatar_container;
+        pixi_container_main.addChild(pixi_avatars[i].avatar_container);
 
         //chat
         let chat_container = new PIXI.Container();
@@ -235,26 +235,26 @@ setup_pixi_subjects(){
         chat_bubble_text.position.set(0, -chat_container.height*.09)
         chat_bubble_text.anchor.set(0.5);
 
-        subject.pixi.chat_container = chat_container;
-        subject.pixi.chat_container.zIndex = current_z_index++;
+        pixi_avatars[i].chat_container = chat_container;
+        pixi_avatars[i].chat_container.zIndex = current_z_index++;
 
         subject.show_chat = false;
         subject.chat_time = null;
 
-        pixi_container_main.addChild(subject.pixi.chat_container);
+        pixi_container_main.addChild(pixi_avatars[i].chat_container);
 
         //tractor beam
-        subject.pixi.tractor_beam = [];
+        pixi_avatars[i].tractor_beam = [];
         subject.tractor_beam_target = null;
 
-        for(let i=0; i<15; i++)
+        for(let j=0; j<15; j++)
         {
             let tractor_beam_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["particle2.png"]);
             tractor_beam_sprite.anchor.set(0.5);
             tractor_beam_sprite.eventMode = 'passive';
             tractor_beam_sprite.visible = false;
             tractor_beam_sprite.zIndex = 1500;
-            subject.pixi.tractor_beam.push(tractor_beam_sprite);
+            pixi_avatars[i].tractor_beam.push(tractor_beam_sprite);
             pixi_container_main.addChild(tractor_beam_sprite);
         }
     }
@@ -262,8 +262,8 @@ setup_pixi_subjects(){
     //make local subject the top layer
     if(app.pixi_mode=="subject")
     {  
-        world_state.session_players[app.session_player.id].pixi.avatar_container.zIndex = 999;
-        world_state.session_players[app.session_player.id].pixi.chat_container.zIndex = current_z_index;
+        pixi_avatars[app.session_player.id].avatar_container.zIndex = 999;
+        pixi_avatars[app.session_player.id].chat_container.zIndex = current_z_index;
     }
 },
 
@@ -514,7 +514,7 @@ update_subject_status_overlay(delta)
 
     subject_status_overlay_container.getChildAt(3).text = world_state.current_period;
     subject_status_overlay_container.getChildAt(4).text = world_state.time_remaining;
-    subject_status_overlay_container.getChildAt(5).text = app.session_player.earnings;
+    subject_status_overlay_container.getChildAt(5).text = world_state.session_players[app.session_player.id].earnings;
 },
 
 /**
@@ -641,7 +641,7 @@ move_player(delta)
     for(let i in world_state.session_players){
 
         let obj = world_state.session_players[i];
-        let avatar_container = obj.pixi.avatar_container;
+        let avatar_container = pixi_avatars[i].avatar_container;
 
         if(obj.target_location.x !=  obj.current_location.x ||
             obj.target_location.y !=  obj.current_location.y )
@@ -728,8 +728,8 @@ move_player(delta)
     for(let i in world_state.session_players)
     {
         let obj = world_state.session_players[i];
-        let chat_container = obj.pixi.chat_container;
-        let avatar_container = obj.pixi.chat_container;
+        let chat_container = pixi_avatars[i].chat_container;
+        // let avatar_container = obj.pixi.chat_container;
         let offset = {x:chat_container.width*.7, y:chat_container.height*.4};
 
         if(world_state.session_players[obj.nearest_player].current_location.x < obj.current_location.x)
@@ -754,15 +754,16 @@ move_player(delta)
     for(let i in world_state.session_players)
     {
         let player = world_state.session_players[i];
+
         if(player.tractor_beam_target)
         {
             app.setup_tractor_beam(i, player.tractor_beam_target);
         }
         else
         {
-            for (let i=0; i< player.pixi.tractor_beam.length; i++)
+            for (let j=0; j< pixi_avatars[i].tractor_beam.length; j++)
             {
-                tb_sprite = player.pixi.tractor_beam[i];
+                tb_sprite = pixi_avatars[i].tractor_beam[j];
                 tb_sprite.visible = false;
             }
         }
@@ -814,7 +815,7 @@ check_for_collisions(delta)
         let token = world_state.tokens[current_period_id][i];
         let distance = app.get_distance(obj.current_location, token.current_location);
 
-        if(distance <= obj.pixi.avatar_container.width/2 &&
+        if(distance <= pixi_avatars[app.session_player.id].avatar_container.width/2 &&
            token.status == "available" && 
            !collision_found)
         {

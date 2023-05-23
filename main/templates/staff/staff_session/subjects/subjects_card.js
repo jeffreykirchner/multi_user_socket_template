@@ -88,7 +88,7 @@ take_finished_instructions(message_data){
 
     for(i in earnings)
     {
-        app.session.session_players[i].earnings = earnings[i].total_earnings;
+        world_state.session_players[i].earnings = earnings[i].total_earnings;
     }
     
  },

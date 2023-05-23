@@ -79,9 +79,18 @@ class TimerMixin():
         if self.world_state_local["current_experiment_phase"] != ExperimentPhase.NAMES:
 
             if self.world_state_local["time_remaining"] == 0:
-                session = await Session.objects.aget(id=self.session_id)
-                current_session_period = await session.session_periods.aget(period_number=self.world_state_local["current_period"])
-                result["earnings"] = await current_session_period.store_earnings(self.world_state_local)
+                # session = await Session.objects.aget(id=self.session_id)
+                # current_session_period = await session.session_periods.aget(period_number=self.world_state_local["current_period"])
+                # result["earnings"] = await current_session_period.store_earnings(self.world_state_local)
+
+                current_period_id = str(self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1])
+
+                for i in self.world_state_local["session_players"]:
+                    self.world_state_local["session_players"][i]["earnings"] += self.world_state_local["session_players"][i]["inventory"][current_period_id]
+
+                    result["earnings"][i] = {}
+                    result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]
+                    result["earnings"][i]["period_earnings"] = self.world_state_local["session_players"][i]["inventory"][current_period_id]
 
                 self.world_state_local["current_period"] += 1
                 self.world_state_local["time_remaining"] = self.parameter_set_local["period_length"]
