@@ -35,7 +35,7 @@ send_world_state_update()
     }
 
     app.last_world_state_update = Date.now();
-    app.send_message("app.session.world_state_update", {"app.session.world_state" : temp_world_state});       
+    app.send_message("world_state_update", {"world_state" : temp_world_state});       
 },
 
 
