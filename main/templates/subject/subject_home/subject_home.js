@@ -246,8 +246,6 @@ var app = Vue.createApp({
             app.session = message_data.session;
             app.session_player = message_data.session_player;
 
-            world_state = app.session.world_state;
-
             if(app.session.started)
             {
                
@@ -312,21 +310,21 @@ var app = Vue.createApp({
             let period_change = false;
             let period_earnings = 0;
 
-            if (world_state.current_period != message_data.current_period)
+            if (app.session.world_state.current_period != message_data.current_period)
             {
                 period_change = true;
                 period_earnings = message_data.earnings[app.session_player.id].period_earnings;
-                world_state.session_players[app.session_player.id].earnings = message_data.earnings[app.session_player.id].total_earnings;
+                app.session.world_state.session_players[app.session_player.id].earnings = message_data.earnings[app.session_player.id].total_earnings;
             }
 
             app.session.started = message_data.started;
 
-            world_state.current_period = message_data.current_period;
-            world_state.time_remaining = message_data.time_remaining;
-            world_state.timer_running = message_data.timer_running;
-            world_state.started = message_data.started;
-            world_state.finished = message_data.finished;
-            world_state.current_experiment_phase = message_data.current_experiment_phase;
+            app.session.app.session.world_state.current_period = message_data.current_period;
+            app.session.world_state.time_remaining = message_data.time_remaining;
+            app.session.world_state.timer_running = message_data.timer_running;
+            app.session.world_state.started = message_data.started;
+            app.session.world_state.finished = message_data.finished;
+            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
 
             app.session.finished = message_data.finished;
         
@@ -345,7 +343,7 @@ var app = Vue.createApp({
             if(period_change)
             {
                 Vue.nextTick(() => {
-                    let current_location = world_state.session_players[app.session_player.id].current_location;
+                    let current_location = app.session.world_state.session_players[app.session_player.id].current_location;
 
                     app.add_text_emitters("+" + period_earnings + "¢", 
                             current_location.x, 
@@ -366,14 +364,14 @@ var app = Vue.createApp({
             for(p in message_data.session_player_status)
             {
                 session_player = message_data.session_player_status[p];
-                world_state.session_players[p].interaction = session_player.interaction;
-                world_state.session_players[p].frozen = session_player.frozen;
-                world_state.session_players[p].cool_down = session_player.cool_down;
-                world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
+                app.session.world_state.session_players[p].interaction = session_player.interaction;
+                app.session.world_state.session_players[p].frozen = session_player.frozen;
+                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
+                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
 
             //hide interaction modal if interaction is over
-            if(world_state.session_players[app.session_player.id].interaction == 0)
+            if(app.session.world_state.session_players[app.session_player.id].interaction == 0)
             {
                 app.interaction_modal.hide();
             }

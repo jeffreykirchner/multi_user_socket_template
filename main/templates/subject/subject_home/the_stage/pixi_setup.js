@@ -143,10 +143,10 @@ setup_pixi_subjects(){
     if(!app.session.started) return;
     
     let current_z_index = 1000;
-    let current_period_id = app.session.session_periods_order[world_state.current_period-1];
-    for(const i in world_state.session_players)
+    let current_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
+    for(const i in app.session.world_state.session_players)
     {      
-        let subject = world_state.session_players[i];
+        let subject = app.session.world_state.session_players[i];
         pixi_avatars[i] = {};
 
         //avatar
@@ -274,9 +274,9 @@ destory_setup_pixi_subjects()
 {
     if(!app.session) return;
 
-    for(const i in world_state.session_players){
+    for(const i in app.session.world_state.session_players){
 
-        let pixi_objects = world_state.session_players[i].pixi;
+        let pixi_objects = app.session.world_state.session_players[i].pixi;
 
         if(pixi_objects)
         {
@@ -296,13 +296,13 @@ setup_pixi_tokens_for_current_period()
 
     app.destroy_pixi_tokens_for_all_periods();
 
-    const current_period_id = app.session.session_periods_order[world_state.current_period-1];
+    const current_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
 
     pixi_tokens[current_period_id] = {};
 
-    for(const i in world_state.tokens[current_period_id]){
+    for(const i in app.session.world_state.tokens[current_period_id]){
 
-        let token =  world_state.tokens[current_period_id][i];
+        let token =  app.session.world_state.tokens[current_period_id][i];
         let token_container = new PIXI.Container();
 
         let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
@@ -342,7 +342,7 @@ destroy_pixi_tokens_for_all_periods()
 
         let period_id = app.session.session_periods_order[i];
 
-        for(const j in world_state.tokens[period_id]){
+        for(const j in app.session.world_state.tokens[period_id]){
 
             if (period_id in pixi_tokens)
             {
@@ -366,7 +366,7 @@ setup_pixi_minimap()
     app.mini_map_scale = Math.min((pixi_app.screen.width * 0.2)/app.stage_width,  (pixi_app.screen.height * 0.3)/app.stage_height);
 
     let scale = app.mini_map_scale;
-    let obj = world_state.session_players[app.session_player.id]
+    let obj = app.session.world_state.session_players[app.session_player.id]
 
     mini_map_container = new PIXI.Container();
     mini_map_container.eventMode = 'none';
@@ -398,11 +398,11 @@ setup_pixi_minimap()
     mini_map_container.addChild(mini_map_vp);
 
     //mini map tokens
-    const current_period_id = app.session.session_periods_order[world_state.current_period-1];
+    const current_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
 
-    for(const i in world_state.tokens[current_period_id]){       
+    for(const i in app.session.world_state.tokens[current_period_id]){       
 
-        let token =  world_state.tokens[current_period_id][i];
+        let token =  app.session.world_state.tokens[current_period_id][i];
 
         if(token.status != "available") continue;
 
@@ -517,9 +517,9 @@ update_subject_status_overlay(delta)
     if(!subject_status_overlay_container) return;
     subject_status_overlay_container.position.set(pixi_app.screen.width - subject_status_overlay_container.width-20, 20);
 
-    subject_status_overlay_container.getChildAt(3).text = world_state.current_period;
-    subject_status_overlay_container.getChildAt(4).text = world_state.time_remaining;
-    subject_status_overlay_container.getChildAt(5).text = world_state.session_players[app.session_player.id].earnings;
+    subject_status_overlay_container.getChildAt(3).text = app.session.world_state.current_period;
+    subject_status_overlay_container.getChildAt(4).text = app.session.world_state.time_remaining;
+    subject_status_overlay_container.getChildAt(5).text = app.session.world_state.session_players[app.session_player.id].earnings;
 },
 
 /**
@@ -640,12 +640,12 @@ get_distance(point1, point2)
  */
 move_player(delta)
 {
-    if(!world_state) return;
+    if(!app.session.world_state) return;
 
     //move players
-    for(let i in world_state.session_players){
+    for(let i in app.session.world_state.session_players){
 
-        let obj = world_state.session_players[i];
+        let obj = app.session.world_state.session_players[i];
         let avatar_container = pixi_avatars[i].avatar_container;
 
         if(obj.target_location.x !=  obj.current_location.x ||
@@ -698,15 +698,15 @@ move_player(delta)
     }
 
     //find nearest players
-    for(let i in world_state.session_players)
+    for(let i in app.session.world_state.session_players)
     {
-        let obj1 = world_state.session_players[i];
+        let obj1 = app.session.world_state.session_players[i];
         obj1.nearest_player = null;
         obj1.nearest_player_distance = null;
 
-        for(let j in world_state.session_players)
+        for(let j in app.session.world_state.session_players)
         {
-            let obj2 = world_state.session_players[j];
+            let obj2 = app.session.world_state.session_players[j];
 
             if(i != j)
             {
@@ -730,14 +730,14 @@ move_player(delta)
     }
 
     //update chat boxes
-    for(let i in world_state.session_players)
+    for(let i in app.session.world_state.session_players)
     {
-        let obj = world_state.session_players[i];
+        let obj = app.session.world_state.session_players[i];
         let chat_container = pixi_avatars[i].chat_container;
         // let avatar_container = obj.pixi.chat_container;
         let offset = {x:chat_container.width*.7, y:chat_container.height*.4};
 
-        if(world_state.session_players[obj.nearest_player].current_location.x < obj.current_location.x)
+        if(app.session.world_state.session_players[obj.nearest_player].current_location.x < obj.current_location.x)
         {
             chat_container.position.set(obj.current_location.x + offset.x,
                                         obj.current_location.y - offset.y);
@@ -756,9 +756,9 @@ move_player(delta)
     }   
 
     //update tractor beams and status
-    for(let i in world_state.session_players)
+    for(let i in app.session.world_state.session_players)
     {
-        let player = world_state.session_players[i];
+        let player = app.session.world_state.session_players[i];
 
         if(player.tractor_beam_target)
         {
@@ -780,7 +780,7 @@ move_player(delta)
  */
 update_mini_map(delta)
 {
-    let obj = world_state.session_players[app.session_player.id]
+    let obj = app.session.world_state.session_players[app.session_player.id]
     let mini_map_vp = mini_map_container.getChildAt(1);
     mini_map_vp.position.set(obj.current_location.x * app.mini_map_scale, 
                              obj.current_location.y * app.mini_map_scale);
@@ -796,7 +796,7 @@ update_offsets_player(delta)
     pixi_container_main.x = -offset.x;
     pixi_container_main.y = -offset.y;   
     
-    obj = world_state.session_players[app.session_player.id];
+    obj = app.session.world_state.session_players[app.session_player.id];
 
     pixi_target.x = obj.target_location.x;
     pixi_target.y = obj.target_location.y;
@@ -810,14 +810,14 @@ check_for_collisions(delta)
     if(Date.now() - app.last_collision_check < 100) return;
     app.last_collision_check = Date.now();
 
-    const obj = world_state.session_players[app.session_player.id];
+    const obj = app.session.world_state.session_players[app.session_player.id];
     let collision_found = false;
 
     //check for collisions with tokens
-    const current_period_id = app.session.session_periods_order[world_state.current_period-1];
-    for(const i in world_state.tokens[current_period_id]){       
+    const current_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
+    for(const i in app.session.world_state.tokens[current_period_id]){       
 
-        let token = world_state.tokens[current_period_id][i];
+        let token = app.session.world_state.tokens[current_period_id][i];
         let distance = app.get_distance(obj.current_location, token.current_location);
 
         if(distance <= pixi_avatars[app.session_player.id].avatar_container.width/2 &&
@@ -871,7 +871,7 @@ scroll_staff(delta)
  */
 get_offset()
 {
-    let obj = world_state.session_players[app.session_player.id];
+    let obj = app.session.world_state.session_players[app.session_player.id];
 
     return {x:obj.current_location.x * app.pixi_scale - pixi_app.screen.width/2,
             y:obj.current_location.y * app.pixi_scale - pixi_app.screen.height/2};
@@ -884,7 +884,7 @@ get_offset_staff()
 {
     if(app.follow_subject != -1 && app.session.started)
     {
-        obj = world_state.session_players[app.follow_subject];
+        obj = app.session.world_state.session_players[app.follow_subject];
         app.current_location = Object.assign({}, obj.current_location);
     }
 
@@ -898,7 +898,7 @@ get_offset_staff()
 subject_pointer_up(event)
 {
     let local_pos = event.data.getLocalPosition(event.currentTarget);
-    let obj = world_state.session_players[app.session_player.id];
+    let obj = app.session.world_state.session_players[app.session_player.id];
 
     if(event.button == 0)
     {
@@ -949,9 +949,9 @@ subject_pointer_up(event)
             return;
         }
         
-        for(i in world_state.session_players)
+        for(i in app.session.world_state.session_players)
         {
-            let obj = world_state.session_players[i];
+            let obj = app.session.world_state.session_players[i];
 
             if(app.get_distance(obj.current_location, local_pos) < 75)
             {
@@ -985,8 +985,8 @@ staff_screen_scroll_button_out(event)
  */
 setup_tractor_beam(source_id, target_id)
 {
-    let source_player = world_state.session_players[source_id];
-    let target_player = world_state.session_players[target_id];
+    let source_player = app.session.world_state.session_players[source_id];
+    let target_player = app.session.world_state.session_players[target_id];
 
     let dY = source_player.current_location.y - target_player.current_location.y;
     let dX = source_player.current_location.x - target_player.current_location.x;

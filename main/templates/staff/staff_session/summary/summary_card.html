@@ -22,7 +22,7 @@
                 Current Period:
             </div>
             <div class="col text-start ps-1">
-                [[current_period]] of [[session.parameter_set.period_count]]      
+                [[session.world_state.current_period]] of [[session.parameter_set.period_count]]      
             </div>
         </div>  
         <div class="row">
@@ -34,7 +34,7 @@
                     Complete
                 </span>
                 <span v-else>
-                    [[time_remaining]]    
+                    [[session.world_state.time_remaining]]    
                 </span>               
             </div>
         </div>
