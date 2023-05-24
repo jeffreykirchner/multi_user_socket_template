@@ -47,8 +47,8 @@ take_update_collect_token(message_data)
     let token = world_state.tokens[message_data.period_id][message_data.token_id];
 
     try{
-        token.token_container.getChildAt(0).stop();
-        token.token_container.getChildAt(0).alpha = 0.25;
+        pixi_tokens[message_data.period_id][message_data.token_id].token_container.getChildAt(0).stop();
+        pixi_tokens[message_data.period_id][message_data.token_id].token_container.getChildAt(0).alpha = 0.25;
         // token.token_graphic.visible = false;
     } catch (error) {
 
@@ -86,8 +86,7 @@ update_player_inventory()
     for(const i in app.session.session_players_order)
     {
         const player_id = app.session.session_players_order[i];
-        let session_player = world_state.session_players[player_id];
-        session_player.pixi.avatar_container.getChildAt(4).text = world_state.session_players[player_id].inventory[period_id];
+        pixi_avatars[player_id].avatar_container.getChildAt(4).text = world_state.session_players[player_id].inventory[period_id];
     }
 },
 

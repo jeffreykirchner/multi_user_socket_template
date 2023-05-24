@@ -5,7 +5,7 @@ axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 //global variables
-var world_state = {};
+//var world_state = {};
 var subject_status_overlay_container = null;
 var pixi_app = null;                           //pixi app   
 var pixi_container_main = null;                //main container for pixi

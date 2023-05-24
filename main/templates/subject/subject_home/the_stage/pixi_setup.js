@@ -298,7 +298,7 @@ setup_pixi_tokens_for_current_period()
 
     const current_period_id = app.session.session_periods_order[world_state.current_period-1];
 
-    pix_tokens[current_period_id] = {};
+    pixi_tokens[current_period_id] = {};
 
     for(const i in world_state.tokens[current_period_id]){
 
@@ -323,8 +323,10 @@ setup_pixi_tokens_for_current_period()
         token_container.pivot.set(token_container.width/2, token_container.height/2);
         token_container.position.set(token.current_location.x, token.current_location.y);
 
-        pix_tokens[current_period_id][i] = token_container;
-        pixi_container_main.addChild(pix_tokens[current_period_id][i]);
+        let v = {"token_container":token_container};
+
+        pixi_tokens[current_period_id][i] = v;
+        pixi_container_main.addChild(pixi_tokens[current_period_id][i].token_container);
        
    }
 },
@@ -342,8 +344,10 @@ destroy_pixi_tokens_for_all_periods()
 
         for(const j in world_state.tokens[period_id]){
 
-            let token =  pix_tokens[period_id][i];
-            if(token.token_container) token.token_container.destroy();
+            if (period_id in pixi_tokens)
+            {
+                pixi_tokens[period_id][j].token_container.destroy();
+            }
         }
     }
 },
@@ -410,9 +414,8 @@ setup_pixi_minimap()
         token_graphic.pivot.set(token_graphic.width/2, token_graphic.height/2);
         token_graphic.position.set(token.current_location.x * scale, token.current_location.y * scale);
 
-        token.token_graphic = token_graphic;
-
-        mini_map_container.addChild(token_graphic);
+        pixi_tokens[current_period_id][i].mini_map_graphic = token_graphic;
+        mini_map_container.addChild(pixi_tokens[current_period_id][i].mini_map_graphic);
     }
 
     mini_map_container.position.set(20, 20);
@@ -832,11 +835,11 @@ check_for_collisions(delta)
         }
         else if(distance>2000)
         {
-            token.token_container.visible=false;
+            token.visible=false;
         }
         else
         {
-            token.token_container.visible=true;
+            token.visible=true;
         }
         
     }
