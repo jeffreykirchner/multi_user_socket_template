@@ -319,7 +319,7 @@ var app = Vue.createApp({
 
             app.session.started = message_data.started;
 
-            app.session.app.session.world_state.current_period = message_data.current_period;
+            app.session.world_state.current_period = message_data.current_period;
             app.session.world_state.time_remaining = message_data.time_remaining;
             app.session.world_state.timer_running = message_data.timer_running;
             app.session.world_state.started = message_data.started;

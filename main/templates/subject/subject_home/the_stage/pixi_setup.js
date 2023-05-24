@@ -514,6 +514,8 @@ setup_subject_status_overlay()
  */
 update_subject_status_overlay(delta)
 {
+    if(!app.session.world_state.hasOwnProperty('started')) return;
+
     if(!subject_status_overlay_container) return;
     subject_status_overlay_container.position.set(pixi_app.screen.width - subject_status_overlay_container.width-20, 20);
 
@@ -897,6 +899,7 @@ get_offset_staff()
  */
 subject_pointer_up(event)
 {
+    if(!app.session.world_state.hasOwnProperty('started')) return;
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     let obj = app.session.world_state.session_players[app.session_player.id];
 

@@ -97,6 +97,7 @@ class TimerMixin():
             else:                                     
                 self.world_state_local["time_remaining"] -= 1
 
+        #session status
         result["value"] = "success"
         result["stop_timer"] = stop_timer
         result["time_remaining"] = self.world_state_local["time_remaining"]
@@ -105,6 +106,11 @@ class TimerMixin():
         result["started"] = self.world_state_local["started"]
         result["finished"] = self.world_state_local["finished"]
         result["current_experiment_phase"] = self.world_state_local["current_experiment_phase"]
+
+        #current locations
+        result["current_locations"] = {}
+        for i in self.world_state_local["session_players"]:
+            result["current_locations"][i] = self.world_state_local["session_players"][i]["current_location"]
 
         session_player_status = {}
 
