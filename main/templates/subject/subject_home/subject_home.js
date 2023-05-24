@@ -5,7 +5,7 @@ axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 //global variables
-var world_state = {};
+//var world_state = {};
 var subject_status_overlay_container = null;
 var pixi_app = null;                           //pixi app   
 var pixi_container_main = null;                //main container for pixi
@@ -16,6 +16,8 @@ var pixi_transfer_beams = {};                  //transfer beam json
 var pixi_transfer_beams_key = 0;
 var pixi_fps_label = null;                     //fps label
 var mini_map_container = null;                 //mini map container
+var pixi_avatars = {};                         //avatars
+var pixi_tokens = {};                          //tokens
 
 //vue app
 var app = Vue.createApp({
@@ -244,8 +246,6 @@ var app = Vue.createApp({
             app.session = message_data.session;
             app.session_player = message_data.session_player;
 
-            world_state = app.session.world_state;
-
             if(app.session.started)
             {
                
@@ -302,7 +302,7 @@ var app = Vue.createApp({
         * update time and start status
         */
         take_update_time(message_data){
-            let result = message_data.result;
+          
             let status = message_data.value;
 
             if(status == "fail") return;
@@ -310,22 +310,24 @@ var app = Vue.createApp({
             let period_change = false;
             let period_earnings = 0;
 
-            if (app.session.current_period != result.current_period)
+            if (app.session.world_state.current_period != message_data.current_period)
             {
                 period_change = true;
-                period_earnings = result.session_player_earnings.earnings - app.session_player.earnings;
+                period_earnings = message_data.earnings[app.session_player.id].period_earnings;
+                app.session.world_state.session_players[app.session_player.id].earnings = message_data.earnings[app.session_player.id].total_earnings;
             }
 
-            app.session.started = result.started;
-            app.session.current_period = result.current_period;
-            app.session.time_remaining = result.time_remaining;
-            app.session.timer_running = result.timer_running;
-            app.session.finished = result.finished;
-            app.session.current_experiment_phase = result.current_experiment_phase;
+            app.session.started = message_data.started;
 
-            //update subject earnings
-            app.session_player.earnings = result.session_player_earnings.earnings;
+            app.session.app.session.world_state.current_period = message_data.current_period;
+            app.session.world_state.time_remaining = message_data.time_remaining;
+            app.session.world_state.timer_running = message_data.timer_running;
+            app.session.world_state.started = message_data.started;
+            app.session.world_state.finished = message_data.finished;
+            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
 
+            app.session.finished = message_data.finished;
+        
             //collect names
             if(app.session.current_experiment_phase == 'Names')
             {
@@ -341,7 +343,7 @@ var app = Vue.createApp({
             if(period_change)
             {
                 Vue.nextTick(() => {
-                    let current_location = world_state.session_players[app.session_player.id].current_location;
+                    let current_location = app.session.world_state.session_players[app.session_player.id].current_location;
 
                     app.add_text_emitters("+" + period_earnings + "¢", 
                             current_location.x, 
@@ -362,14 +364,14 @@ var app = Vue.createApp({
             for(p in message_data.session_player_status)
             {
                 session_player = message_data.session_player_status[p];
-                world_state.session_players[p].interaction = session_player.interaction;
-                world_state.session_players[p].frozen = session_player.frozen;
-                world_state.session_players[p].cool_down = session_player.cool_down;
-                world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
+                app.session.world_state.session_players[p].interaction = session_player.interaction;
+                app.session.world_state.session_players[p].frozen = session_player.frozen;
+                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
+                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
 
             //hide interaction modal if interaction is over
-            if(world_state.session_players[app.session_player.id].interaction == 0)
+            if(app.session.world_state.session_players[app.session_player.id].interaction == 0)
             {
                 app.interaction_modal.hide();
             }

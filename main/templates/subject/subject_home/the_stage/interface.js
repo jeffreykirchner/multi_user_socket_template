@@ -4,7 +4,7 @@
 target_location_update()
 {
 
-    let session_player = world_state.session_players[app.session_player.id];
+    let session_player = app.session.world_state.session_players[app.session_player.id];
 
     app.send_message("target_location_update", 
                     {"target_location" : session_player.target_location},
@@ -18,7 +18,7 @@ take_target_location_update(message_data)
 {
     if(message_data.value == "success")
     {
-        world_state.session_players[message_data.session_player_id].target_location = message_data.target_location;                 
+        app.session.world_state.session_players[message_data.session_player_id].target_location = message_data.target_location;                 
     } 
     else
     {
@@ -31,25 +31,25 @@ take_target_location_update(message_data)
  */
 take_update_collect_token(message_data)
 {
-    if(message_data.period_id != app.session.session_periods_order[app.session.current_period-1]) return;
+    if(message_data.period_id != app.session.session_periods_order[app.session.world_state.current_period-1]) return;
 
-    let token = world_state.tokens[message_data.period_id][message_data.token_id];
+    let token = app.session.world_state.tokens[message_data.period_id][message_data.token_id];
 
     try{
-        token.token_container.getChildAt(0).stop();
-        token.token_container.getChildAt(0).alpha = 0.25;
-        token.token_graphic.visible = false;
+        pixi_tokens[message_data.period_id][message_data.token_id].token_container.getChildAt(0).stop();
+        pixi_tokens[message_data.period_id][message_data.token_id].token_container.getChildAt(0).alpha = 0.25;
+        pixi_tokens[message_data.period_id][message_data.token_id].mini_map_graphic.visible = false;
     } catch (error) {
 
     }
 
     token.status = message_data.player_id;
 
-    let session_player = world_state.session_players[message_data.player_id];
-    let current_location =  world_state.session_players[message_data.player_id].current_location;
+    let session_player = app.session.world_state.session_players[message_data.player_id];
+    let current_location =  app.session.world_state.session_players[message_data.player_id].current_location;
 
     session_player.inventory[message_data.period_id] = message_data.inventory;
-    session_player.pixi.avatar_container.getChildAt(4).text = message_data.inventory;
+    pixi_avatars[message_data.player_id].avatar_container.getChildAt(4).text = message_data.inventory;
 
     let token_graphic = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
     token_graphic.anchor.set(1, 0.5)
@@ -73,12 +73,12 @@ take_update_collect_token(message_data)
 update_player_inventory()
 {
 
-    let period_id = app.session.session_periods_order[app.session.current_period-1];
+    let period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
 
     for(const i in app.session.session_players_order)
     {
         const player_id = app.session.session_players_order[i];
-        world_state.session_players[player_id].pixi.avatar_container.getChildAt(4).text = world_state.session_players[player_id].inventory[period_id];
+        pixi_avatars[player_id].avatar_container.getChildAt(4).text = app.session.world_state.session_players[player_id].inventory[period_id];
     }
 },
 
@@ -104,13 +104,13 @@ take_update_tractor_beam(message_data)
     let player_id = message_data.player_id;
     let target_player_id = message_data.target_player_id;
 
-    world_state.session_players[player_id].tractor_beam_target = target_player_id;
+    app.session.world_state.session_players[player_id].tractor_beam_target = target_player_id;
 
-    world_state.session_players[player_id].frozen = true
-    world_state.session_players[target_player_id].frozen = true
+    app.session.world_state.session_players[player_id].frozen = true
+    app.session.world_state.session_players[target_player_id].frozen = true
 
-    world_state.session_players[player_id].interaction = app.session.parameter_set.interaction_length;
-    world_state.session_players[target_player_id].interaction = app.session.parameter_set.interaction_length;
+    app.session.world_state.session_players[player_id].interaction = app.session.parameter_set.interaction_length;
+    app.session.world_state.session_players[target_player_id].interaction = app.session.parameter_set.interaction_length;
 
     if(player_id == app.session_player.id)
     {
@@ -171,13 +171,13 @@ take_update_interaction(message_data)
     }
     else
     {
-        let currnent_period_id = app.session.session_periods_order[app.session.current_period-1];
+        let currnent_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
 
         let source_player_id = message_data.source_player_id;
         let target_player_id = message_data.target_player_id;
 
-        let source_player = world_state.session_players[source_player_id];
-        let target_player = world_state.session_players[target_player_id];
+        let source_player = app.session.world_state.session_players[source_player_id];
+        let target_player = app.session.world_state.session_players[target_player_id];
 
         let period = message_data.period;
 
@@ -237,7 +237,7 @@ hide_interaction_modal(){
  */
 cancel_interaction()
 {
-    session_player = world_state.session_players[app.session_player.id];
+    session_player = app.session.world_state.session_players[app.session_player.id];
 
     if(session_player.interaction == 0)
     {        
@@ -256,8 +256,8 @@ take_update_cancel_interaction(message_data)
     let source_player_id = message_data.source_player_id;
     let target_player_id = message_data.target_player_id;
 
-    let source_player = world_state.session_players[source_player_id];
-    let target_player = world_state.session_players[target_player_id];
+    let source_player = app.session.world_state.session_players[source_player_id];
+    let target_player = app.session.world_state.session_players[target_player_id];
 
     source_player.tractor_beam_target = null;
 

@@ -4,7 +4,7 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-var world_state = {};
+//var app.session.world_state = {};
 var pixi_app = null;
 var pixi_container_main = null;
 var pixi_text_emitter = {};
@@ -12,7 +12,8 @@ var pixi_text_emitter_key = 0;
 var pixi_transfer_beams = {};
 var pixi_transfer_beams_key = 0;
 var pixi_fps_label = null;                     //fps label
-
+var pixi_avatars = {};                         //avatars
+var pixi_tokens = {};                          //tokens
 
 //vue app
 var app = Vue.createApp({
@@ -50,6 +51,10 @@ var app = Vue.createApp({
                     csv_email_list : "",           //csv email list
 
                     last_world_state_update : null,
+
+                    timer_running : false,
+                    current_period : 0,
+                    time_remaining : 0,
 
                     //modals
                     edit_subject_modal : null,
@@ -280,7 +285,7 @@ var app = Vue.createApp({
 
             app.session = message_data;
 
-            world_state =  app.session.world_state;
+            app.session.world_state =  app.session.world_state;
 
             if(app.session.started)
             {
@@ -341,9 +346,9 @@ var app = Vue.createApp({
         take_update_chat(message_data){
             
             let chat = message_data.chat;
-            world_state.session_players[chat.sender_id].show_chat = true;    
-            world_state.session_players[chat.sender_id].chat_time = Date.now();
-            world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
+            app.session.world_state.session_players[chat.sender_id].show_chat = true;    
+            app.session.world_state.session_players[chat.sender_id].chat_time = Date.now();
+            app.session.world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
         },
 
         /**
@@ -351,40 +356,48 @@ var app = Vue.createApp({
          */
         take_update_time(message_data){
 
-            let result = message_data.result;
+           
             let status = message_data.value;
 
             if(status == "fail") return;
 
             let period_change = false;
 
-            if (app.session.current_period != result.current_period)
+            if (app.session.world_state.current_period != message_data.current_period)
             {
                 period_change = true;
             }
 
-            app.session.started = result.started;
-            app.session.current_period = result.current_period;
-            app.session.time_remaining = result.time_remaining;
-            app.session.timer_running = result.timer_running;
-            app.session.finished = result.finished;
-            app.session.current_experiment_phase = result.current_experiment_phase;
+            // app.session.started = result.started;
+            app.session.world_state.current_period = message_data.current_period;
+            app.session.world_state.time_remaining = message_data.time_remaining;
+            app.session.world_state.timer_running = message_data.timer_running;
+            app.session.world_state.started = message_data.started;
+            app.session.world_state.finished = message_data.finished;
+
+            app.current_period = message_data.current_period;
+            app.time_remaining = message_data.time_remaining;
+            app.timer_running = message_data.timer_running;
+           
+            // app.session.finished = result.finished;
+            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+
             app.update_phase_button_text();
 
             if(period_change)
             {
                 app.setup_pixi_tokens_for_current_period();
                 app.update_player_inventory();
-                app.take_update_earnings(message_data);
+                app.take_update_earnings(message_data.earnings);
             }
 
             for(p in message_data.session_player_status)
             {
                 session_player = message_data.session_player_status[p];
-                world_state.session_players[p].interaction = session_player.interaction;
-                world_state.session_players[p].frozen = session_player.frozen;
-                world_state.session_players[p].cool_down = session_player.cool_down;
-                world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
+                app.session.world_state.session_players[p].interaction = session_player.interaction;
+                app.session.world_state.session_players[p].frozen = session_player.frozen;
+                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
+                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
 
             app.send_world_state_update();
