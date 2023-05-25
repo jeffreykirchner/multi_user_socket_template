@@ -95,8 +95,10 @@ class SubjectUpdatesMixin():
         event_data =  event["message_text"]
 
         try:
-            target_location = event_data["target_location"]            
+            target_location = event_data["target_location"]    
+            current_location = event_data["current_location"]
         except KeyError:
+            logger.info(f"target_location_update: invalid location, {event['message_text']}")
             return
             # result = {"value" : "fail", "result" : {"message" : "Invalid location."}}
         
@@ -107,16 +109,20 @@ class SubjectUpdatesMixin():
             return
 
         session_player["target_location"] = target_location
+        session_player["current_location"] = current_location
 
         last_update = datetime.strptime(self.world_state_local["last_update"], "%Y-%m-%d %H:%M:%S.%f")
         dt_now = datetime.now()
 
-        # if dt_now - last_update > timedelta(seconds=1):
-        #     # logger.info("updating world state")
-        #     self.world_state_local["last_update"] = str(dt_now)
-        #     await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+        if dt_now - last_update > timedelta(seconds=1):
+            # logger.info("updating world state")
+            self.world_state_local["last_update"] = str(dt_now)
+            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
         
-        result = {"value" : "success", "target_location" : target_location, "session_player_id" : player_id}
+        result = {"value" : "success", 
+                  "target_location" : target_location, 
+                  "current_location" : current_location,
+                  "session_player_id" : player_id}
         
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)

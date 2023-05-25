@@ -7,7 +7,8 @@ target_location_update()
     let session_player = app.session.world_state.session_players[app.session_player.id];
 
     app.send_message("target_location_update", 
-                    {"target_location" : session_player.target_location},
+                    {"target_location" : session_player.target_location, 
+                     "current_location" : session_player.current_location},
                     "group");                   
 },
 

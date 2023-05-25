@@ -370,6 +370,20 @@ var app = Vue.createApp({
                 app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
 
+            //update player location
+            for(p in message_data.current_locations)
+            {
+                if(p != app.session_player.id)
+                {
+                    let server_location = message_data.current_locations[p];
+
+                    if(app.get_distance(server_location, app.session.world_state.session_players[p].current_location) > 1000)
+                    {
+                        app.session.world_state.session_players[p].current_location = server_location;
+                    }
+                }
+            }
+
             //hide interaction modal if interaction is over
             if(app.session.world_state.session_players[app.session_player.id].interaction == 0)
             {

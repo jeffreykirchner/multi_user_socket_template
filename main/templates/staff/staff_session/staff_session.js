@@ -384,6 +384,7 @@ var app = Vue.createApp({
 
             app.update_phase_button_text();
 
+            //update player earnings and inventory if period has changed
             if(period_change)
             {
                 app.setup_pixi_tokens_for_current_period();
@@ -391,6 +392,7 @@ var app = Vue.createApp({
                 app.take_update_earnings(message_data.earnings);
             }
 
+            //update player status
             for(p in message_data.session_player_status)
             {
                 session_player = message_data.session_player_status[p];
@@ -400,7 +402,19 @@ var app = Vue.createApp({
                 app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
 
-            app.send_world_state_update();
+            //update player location
+            for(p in message_data.current_locations)
+            {
+                let server_location = message_data.current_locations[p];
+
+                if(app.get_distance(server_location, app.session.world_state.session_players[p].current_location) > 1000)
+                {
+                    app.session.world_state.session_players[p].current_location = server_location;
+                }
+            }
+
+            //update player location on server side
+            //app.send_world_state_update();
         },
        
         //do nothing on when enter pressed for post

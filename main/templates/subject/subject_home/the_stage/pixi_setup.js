@@ -276,7 +276,7 @@ destory_setup_pixi_subjects()
 
     for(const i in app.session.world_state.session_players){
 
-        let pixi_objects = app.session.world_state.session_players[i].pixi;
+        let pixi_objects = pixi_avatars[i];
 
         if(pixi_objects)
         {

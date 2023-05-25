@@ -6,7 +6,7 @@ take_target_location_update(message_data)
     if(message_data.value == "success")
     {
         app.session.world_state.session_players[message_data.session_player_id].target_location = message_data.target_location;        
-        app.send_world_state_update();         
+        // app.send_world_state_update();         
     } 
     else
     {
