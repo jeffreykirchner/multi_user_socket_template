@@ -156,6 +156,7 @@ setup_pixi_subjects(){
         avatar_container.width = 250;
         avatar_container.eventMode = 'passive';
         avatar_container.name = {player_id : i};
+        avatar_container.zIndex=200;
         // avatar_container.on("pointerup", app.subject_avatar_click);
 
         let gear_sprite = new PIXI.AnimatedSprite(app.pixi_textures.sprite_sheet.animations['walk']);
@@ -321,6 +322,8 @@ setup_pixi_tokens_for_current_period()
 
         let token =  app.session.world_state.tokens[current_period_id][i];
         let token_container = new PIXI.Container();
+
+        token_container.zIndex = 100;
 
         let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
         token_graphic.animationSpeed = app.animation_speed;
