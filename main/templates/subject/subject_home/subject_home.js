@@ -53,12 +53,8 @@ var app = Vue.createApp({
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
                     //pixi
-                    //pixi_app : null,
                     canvas_width  : null,
                     canvas_height : null,
-                    //tilingSprite : null,
-                    // target_location : {x:0,y:0},
-                    // current_location : {x:0,y:0},
                     move_speed : 5,
                     animation_speed : 0.5,
                     scroll_speed : 10,
@@ -67,6 +63,7 @@ var app = Vue.createApp({
                     stage_width : 10000,
                     stage_height : 10000,
                     scroll_direction : {x:0, y:0},
+                    draw_bounding_boxes: true,
 
                     //forms
                     interaction_form : {direction:null, amount:null},

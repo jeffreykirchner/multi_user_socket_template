@@ -76,6 +76,7 @@ var app = Vue.createApp({
                     scroll_direction : {x:0, y:0},
                     current_location : {x:0, y:0},
                     follow_subject : -1,
+                    draw_bounding_boxes: true,
                 }},
     methods: {
 

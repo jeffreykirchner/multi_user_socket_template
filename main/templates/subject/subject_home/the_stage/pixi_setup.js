@@ -209,6 +209,23 @@ setup_pixi_subjects(){
         inventory_label.position.set(2, +avatar_container.height * 0.18);
         status_label.position.set(0, -avatar_container.height/2 + 30);
 
+        //bounding box outline
+        if(app.draw_bounding_boxes)
+        {
+            let bounding_box = new PIXI.Graphics();
+        
+            bounding_box.width = avatar_container.width;
+            bounding_box.height = avatar_container.height;
+            bounding_box.lineStyle(1, 0x000000);
+            //bounding_box.beginFill(0xBDB76B);
+            bounding_box.drawRect(0, 0, avatar_container.width, avatar_container.height);
+            bounding_box.endFill();
+            bounding_box.pivot.set(bounding_box.width/2, bounding_box.height/2);
+            bounding_box.position.set(0, 0);
+
+            avatar_container.addChild(bounding_box);
+        }
+
         pixi_avatars[i].avatar_container = avatar_container;
         pixi_container_main.addChild(pixi_avatars[i].avatar_container);
 
@@ -320,8 +337,23 @@ setup_pixi_tokens_for_current_period()
         }
 
         token_container.addChild(token_graphic);
-        token_container.pivot.set(token_container.width/2, token_container.height/2);
+        // token_container.pivot.set(token_container.width/2, token_container.height/2);
         token_container.position.set(token.current_location.x, token.current_location.y);
+
+        //bounding box outline
+        if(app.draw_bounding_boxes)
+        {
+            let bounding_box = new PIXI.Graphics();
+
+            bounding_box.width = token_container.width;
+            bounding_box.height = token_container.height;
+            bounding_box.lineStyle(1, 0x000000);
+            bounding_box.drawRect(0, 0, token_container.width, token_container.height);
+            bounding_box.endFill();
+            bounding_box.pivot.set(bounding_box.width/2, bounding_box.height/2);
+            bounding_box.position.set(0, 0);
+            token_container.addChild(bounding_box);
+        }
 
         let v = {"token_container":token_container};
 
