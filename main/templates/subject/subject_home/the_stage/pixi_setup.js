@@ -464,7 +464,7 @@ setup_subject_status_overlay()
 {
     if(!app.session) return;
     if(app.pixi_mode!="subject") return;
-    if(app.subject_overlay_container) app.subject_overlay_container.destroy();
+    if(subject_status_overlay_container) subject_status_overlay_container.destroy();
 
     subject_status_overlay_container = new PIXI.Container();
     subject_status_overlay_container.eventMode = 'none';
@@ -549,7 +549,7 @@ update_subject_status_overlay(delta)
     if(!app.session.world_state.hasOwnProperty('started')) return;
 
     if(!subject_status_overlay_container) return;
-    subject_status_overlay_container.position.set(pixi_app.screen.width - subject_status_overlay_container.width-20, 20);
+    // subject_status_overlay_container.position.set(pixi_app.screen.width - subject_status_overlay_container.width-20, 20);
 
     subject_status_overlay_container.getChildAt(3).text = app.session.world_state.current_period;
     subject_status_overlay_container.getChildAt(4).text = app.session.world_state.time_remaining;

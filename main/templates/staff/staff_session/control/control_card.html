@@ -43,9 +43,9 @@
                 <button type="button"                        
                         v-on:click = "start_timer()"
                         title="Start/Stop period timer"
-                        v-bind:class="[(timer_running) ? 'btn-outline-warning' : 'btn-outline-success' , 'btn']"
+                        v-bind:class="[(session.world_state.timer_running) ? 'btn-outline-warning' : 'btn-outline-success' , 'btn']"
                         v-bind:disabled="reconnecting || working || session.started===false || session.finished || session.current_experiment_phase!='Run'">
-                    <span v-if="timer_running">Stop Timmer <i class="far fa-clock"></i></span>
+                    <span v-if="session.world_state.timer_running">Stop Timmer <i class="far fa-clock"></i></span>
                     <span v-else>Start Timmer <i class="far fa-clock"></i></span>
                 </button>
             </div>

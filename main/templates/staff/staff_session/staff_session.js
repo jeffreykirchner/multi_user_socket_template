@@ -52,10 +52,6 @@ var app = Vue.createApp({
 
                     last_world_state_update : null,
 
-                    timer_running : false,
-                    current_period : 0,
-                    time_remaining : 0,
-
                     //modals
                     edit_subject_modal : null,
                     edit_session_modal : null,
