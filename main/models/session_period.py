@@ -32,14 +32,27 @@ class SessionPeriod(models.Model):
         verbose_name_plural = 'Session Periods'
         ordering = ['period_number']
     
-    def store_earnings(self):
+    async def store_earnings(self, world_state_local):
         '''
         convert collected tokens into cash earnings
         '''
+        result = {}
 
-        for i in self.session.session_players.all():
-            i.earnings += self.session.world_state["session_players"][str(i.id)]["inventory"][str(self.id)]
-            i.save()
+        objs = self.session.session_players.all()
+        
+        async for i in objs:
+            sid = str(i.id)
+            speriod_id = str(self.id)
+
+            i.earnings += world_state_local["session_players"][sid]["inventory"][speriod_id]
+            
+            result[sid] = {}
+            result[sid]["total_earnings"] = i.earnings
+            result[sid]["period_earnings"] = world_state_local["session_players"][sid]["inventory"][speriod_id]
+        
+        r = main.models.SessionPlayer.objects.abulk_update(objs, ['earnings'])
+
+        return result
 
     def json(self):
         '''

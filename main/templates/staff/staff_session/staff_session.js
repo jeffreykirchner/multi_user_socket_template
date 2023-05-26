@@ -4,7 +4,7 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-var world_state = {};
+//var app.session.world_state = {};
 var pixi_app = null;
 var pixi_container_main = null;
 var pixi_text_emitter = {};
@@ -12,7 +12,8 @@ var pixi_text_emitter_key = 0;
 var pixi_transfer_beams = {};
 var pixi_transfer_beams_key = 0;
 var pixi_fps_label = null;                     //fps label
-
+var pixi_avatars = {};                         //avatars
+var pixi_tokens = {};                          //tokens
 
 //vue app
 var app = Vue.createApp({
@@ -71,6 +72,7 @@ var app = Vue.createApp({
                     scroll_direction : {x:0, y:0},
                     current_location : {x:0, y:0},
                     follow_subject : -1,
+                    draw_bounding_boxes: false,
                 }},
     methods: {
 
@@ -280,7 +282,7 @@ var app = Vue.createApp({
 
             app.session = message_data;
 
-            world_state =  app.session.world_state;
+            app.session.world_state =  app.session.world_state;
 
             if(app.session.started)
             {
@@ -340,10 +342,9 @@ var app = Vue.createApp({
         */
         take_update_chat(message_data){
             
-            let chat = message_data.chat;
-            world_state.session_players[chat.sender_id].show_chat = true;    
-            world_state.session_players[chat.sender_id].chat_time = Date.now();
-            world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
+            app.session.world_state.session_players[message_data.sender_id].show_chat = true;    
+            app.session.world_state.session_players[message_data.sender_id].chat_time = Date.now();
+            pixi_avatars[message_data.sender_id].chat_container.getChildAt(1).text =  message_data.text;
         },
 
         /**
@@ -351,43 +352,65 @@ var app = Vue.createApp({
          */
         take_update_time(message_data){
 
-            let result = message_data.result;
+           
             let status = message_data.value;
 
             if(status == "fail") return;
 
             let period_change = false;
 
-            if (app.session.current_period != result.current_period)
+            if (app.session.world_state.current_period != message_data.current_period)
             {
                 period_change = true;
             }
 
-            app.session.started = result.started;
-            app.session.current_period = result.current_period;
-            app.session.time_remaining = result.time_remaining;
-            app.session.timer_running = result.timer_running;
-            app.session.finished = result.finished;
-            app.session.current_experiment_phase = result.current_experiment_phase;
+            // app.session.started = result.started;
+            app.session.world_state.current_period = message_data.current_period;
+            app.session.world_state.time_remaining = message_data.time_remaining;
+            app.session.world_state.timer_running = message_data.timer_running;
+            app.session.world_state.started = message_data.started;
+            app.session.world_state.finished = message_data.finished;
+
+            app.current_period = message_data.current_period;
+            app.time_remaining = message_data.time_remaining;
+            app.timer_running = message_data.timer_running;
+           
+            // app.session.finished = result.finished;
+            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+
             app.update_phase_button_text();
 
+            //update player earnings and inventory if period has changed
             if(period_change)
             {
                 app.setup_pixi_tokens_for_current_period();
                 app.update_player_inventory();
-                app.take_update_earnings(message_data);
+                app.take_update_earnings(message_data.earnings);
             }
 
+            //update player status
             for(p in message_data.session_player_status)
             {
                 session_player = message_data.session_player_status[p];
-                world_state.session_players[p].interaction = session_player.interaction;
-                world_state.session_players[p].frozen = session_player.frozen;
-                world_state.session_players[p].cool_down = session_player.cool_down;
-                world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
+                app.session.world_state.session_players[p].interaction = session_player.interaction;
+                app.session.world_state.session_players[p].frozen = session_player.frozen;
+                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
+                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
             }
 
-            app.send_world_state_update();
+            //update player location
+            for(p in message_data.current_locations)
+            {
+                let server_location = message_data.current_locations[p];
+
+                if(app.get_distance(server_location, app.session.world_state.session_players[p].current_location) > 1000)
+                {
+                    app.session.world_state.session_players[p].current_location = server_location;
+                }
+            }
+
+            //update player location on server side
+            //app.send_world_state_update();
         },
        
         //do nothing on when enter pressed for post

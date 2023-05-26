@@ -13,7 +13,7 @@ from .parameter_set_player import ParameterSetPlayer
 
 from .session import Session
 from .session_period import SessionPeriod
+from .session_event import SessionEvent
 from .session_player import SessionPlayer
-from .session_player_chat import SessionPlayerChat
 from .session_player_period import SessionPlayerPeriod
 

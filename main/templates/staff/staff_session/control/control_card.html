@@ -38,14 +38,14 @@
         </div>
 
         <!-- start timer -->
-        <div class="row" v-show="session.started  && session.current_experiment_phase=='Run' && !session.finished">
+        <div class="row" v-if="session.started  && session.current_experiment_phase=='Run' && !session.finished">
             <div class="col-md text-center">
                 <button type="button"                        
                         v-on:click = "start_timer()"
                         title="Start/Stop period timer"
-                        v-bind:class="[(session.timer_running) ? 'btn-outline-warning' : 'btn-outline-success' , 'btn']"
+                        v-bind:class="[(session.world_state.timer_running) ? 'btn-outline-warning' : 'btn-outline-success' , 'btn']"
                         v-bind:disabled="reconnecting || working || session.started===false || session.finished || session.current_experiment_phase!='Run'">
-                    <span v-if="session.timer_running">Stop Timmer <i class="far fa-clock"></i></span>
+                    <span v-if="session.world_state.timer_running">Stop Timmer <i class="far fa-clock"></i></span>
                     <span v-else>Start Timmer <i class="far fa-clock"></i></span>
                 </button>
             </div>

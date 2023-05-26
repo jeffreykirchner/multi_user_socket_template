@@ -10,7 +10,7 @@
             </div>
             <div class="col text-start ps-1">
                 <span v-if="session.started">
-                    [[session.current_experiment_phase]]
+                    [[session.world_state.current_experiment_phase]]
                 </span>  
                 <span v-else>
                     Not Started
@@ -22,7 +22,12 @@
                 Current Period:
             </div>
             <div class="col text-start ps-1">
-                [[session.current_period]] of [[session.parameter_set.period_count]]
+                <span v-if="session.world_state.hasOwnProperty('started')">
+                    [[session.world_state.current_period]] of [[session.parameter_set.period_count]]    
+                </span>
+                <span v-else>
+                   ---
+                </span>
             </div>
         </div>  
         <div class="row">
@@ -33,9 +38,12 @@
                 <span v-if="session.finished">
                     Complete
                 </span>
+                <span v-else-if="session.world_state.hasOwnProperty('started')">
+                    [[session.world_state.time_remaining]]    
+                </span>         
                 <span v-else>
-                     [[session.time_remaining]]
-                </span>               
+                   --- 
+                </span>      
             </div>
         </div>
     </div>                    

@@ -76,9 +76,6 @@ TEMPLATES = [
 #WSGI_APPLICATION = '_multi_user_socket_template.wsgi.application'
 ASGI_APPLICATION = '_multi_user_socket_template.asgi.application'
 
-# Password validation
-# https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

@@ -144,32 +144,12 @@ simulate_chat_instructions(){
     if(app.chat_text.trim() == "") return;
     if(app.chat_text.trim().length > 200) return;
 
-    if(app.chat_recipients == "NONE") return;
-
-    if(app.chat_recipients == "all")
-    {
-        chat_type = "All";
-
-        message_data = {chat: {text : app.chat_text.trim(),
-                               sender_label : app.session_player.parameter_set_player.id_label,
-                               sender_id : app.session_player.id,
-                               id : random_number(1, 1000000),},
-                        chat_type:chat_type}
-    }
-    else
-    {
-        chat_type = "Individual";
-
-        message_data = {chat: {text : app.chat_text.trim(),
-                               sender_label : app.session_player.parameter_set_player.id_label,
-                               sender_id : app.session_player.id,
-                               id : random_number(1, 1000000),},      
-                        sesson_player_target : app.chat_recipients,       
-                        chat_type:chat_type}
-    }
-
+    message_data = {chat: {text : app.chat_text.trim(),
+                            sender_label : app.session_player.parameter_set_player.id_label,
+                            sender_id : app.session_player.id,
+                            id : random_number(1, 1000000),},
+                    chat_type:chat_type}
    
-
     app.take_update_chat(message_data);
 
     app.chat_text="";

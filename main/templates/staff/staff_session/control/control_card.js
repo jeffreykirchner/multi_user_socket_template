@@ -107,7 +107,7 @@ start_timer(){
 
     let action = "";
 
-    if(app.session.timer_running)
+    if(app.session.world_state.timer_running)
     {
         action = "stop";
     }
@@ -123,7 +123,8 @@ start_timer(){
  * @param message_data {json}
 */
 take_start_timer(message_data){
-    app.take_update_time(message_data);
+   
+    app.session.world_state["timer_running"] = message_data.timer_running;
 },
 
 /**reset experiment, remove all bids, asks and trades
