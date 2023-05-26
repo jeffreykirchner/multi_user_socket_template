@@ -201,6 +201,7 @@ class Session(models.Model):
             p.reset()
 
         self.session_periods.all().delete()
+        self.session_events.all().delete()
 
         # self.parameter_set.setup()
     
