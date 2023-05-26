@@ -5,11 +5,12 @@ send_chat(){
     if(app.chat_text.trim().length > 200) return;
     
     app.working = true;
-    app.send_message("chat", {"recipients" : app.chat_recipients,
-                             "text" : app.chat_text.trim(),
-                            });
+    app.send_message("chat", 
+                    {"text" : app.chat_text.trim()},
+                    "group");
 
-    app.chat_text="";                   
+    app.chat_text="";   
+                   
 },
 
 /** take result of moving goods
@@ -33,10 +34,10 @@ take_chat(message_data){
 */
 take_update_chat(message_data){
     
-    let chat = message_data.chat;
-    app.session.world_state.session_players[chat.sender_id].show_chat = true;    
-    app.session.world_state.session_players[chat.sender_id].chat_time = Date.now();
-    pixi_avatars[chat.sender_id].chat_container.getChildAt(1).text = chat.text;
-    // app.session.world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
+
+    app.session.world_state.session_players[message_data.sender_id].show_chat = true;    
+    app.session.world_state.session_players[message_data.sender_id].chat_time = Date.now();
+    pixi_avatars[message_data.sender_id].chat_container.getChildAt(1).text =  message_data.text;
+
 },
 

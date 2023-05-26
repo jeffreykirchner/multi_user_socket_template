@@ -7,7 +7,7 @@ session event model
 from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
 
-from main.models import SessionPeriod
+from main.models import Session
 
 import main
 
@@ -15,7 +15,7 @@ class SessionEvent(models.Model):
     '''
     session events model
     '''
-    session_period = models.ForeignKey(SessionPeriod, on_delete=models.CASCADE, related_name="session_events")
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="session_events")
 
     period_number = models.IntegerField(default=1, verbose_name="Period Number")
     time_remaining = models.IntegerField(default=0, verbose_name="Time Remaining")

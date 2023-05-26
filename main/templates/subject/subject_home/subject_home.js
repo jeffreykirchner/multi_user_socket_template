@@ -38,7 +38,6 @@ var app = Vue.createApp({
                     form_ids: {{form_ids|safe}},
 
                     chat_text : "",
-                    chat_recipients : "all",
                     chat_button_label : "Chat",
                     chat_list_to_display : [],                //list of chats to display on screen
 
@@ -63,7 +62,7 @@ var app = Vue.createApp({
                     stage_width : 10000,
                     stage_height : 10000,
                     scroll_direction : {x:0, y:0},
-                    draw_bounding_boxes: true,
+                    draw_bounding_boxes: false,
 
                     //forms
                     interaction_form : {direction:null, amount:null},

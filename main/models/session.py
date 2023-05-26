@@ -364,13 +364,7 @@ class Session(models.Model):
         '''
         return json object of model
         '''
-              
-        chat = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
-                                                    .filter(session_player__in=self.session_players.all())\
-                                                    .prefetch_related('session_player_recipients')
-                                                    .select_related('session_player__parameter_set_player')
-                                                    .order_by('-timestamp')[:100:-1]
-               ]                                                           
+                                                                      
         return{
             "id":self.id,
             "title":self.title,
@@ -387,7 +381,6 @@ class Session(models.Model):
             "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
             "session_players":{i.id : i.json(False) for i in self.session_players.all()},
             "session_players_order" : list(self.session_players.all().values_list('id', flat=True)),
-            "chat_all" : chat,
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
             "world_state" : self.world_state,

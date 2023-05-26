@@ -72,7 +72,7 @@ var app = Vue.createApp({
                     scroll_direction : {x:0, y:0},
                     current_location : {x:0, y:0},
                     follow_subject : -1,
-                    draw_bounding_boxes: true,
+                    draw_bounding_boxes: false,
                 }},
     methods: {
 
@@ -342,10 +342,9 @@ var app = Vue.createApp({
         */
         take_update_chat(message_data){
             
-            let chat = message_data.chat;
-            app.session.world_state.session_players[chat.sender_id].show_chat = true;    
-            app.session.world_state.session_players[chat.sender_id].chat_time = Date.now();
-            app.session.world_state.session_players[chat.sender_id].pixi.chat_container.getChildAt(1).text = chat.text;
+            app.session.world_state.session_players[message_data.sender_id].show_chat = true;    
+            app.session.world_state.session_players[message_data.sender_id].chat_time = Date.now();
+            pixi_avatars[message_data.sender_id].chat_container.getChildAt(1).text =  message_data.text;
         },
 
         /**
