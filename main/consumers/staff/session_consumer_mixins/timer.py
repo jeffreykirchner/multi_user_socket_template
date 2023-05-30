@@ -209,7 +209,7 @@ def take_do_period_timer(session_id):
 
     session = Session.objects.get(id=session_id)
 
-    if session.timer_running == False or session.finished:
+    if session.timer_running == False or session.world_state["finished"]:
         return_json = {"value" : "fail", "result" : {"message" : "session no longer running"}}
     else:
         return_json = session.do_period_timer()

@@ -325,7 +325,7 @@ var app = Vue.createApp({
             app.session.world_state.finished = message_data.finished;
             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
 
-            app.session.finished = message_data.finished;
+            // app.session.world_state.finished = message_data.finished;
         
             //collect names
             if(app.session.world_state.current_experiment_phase == 'Names')

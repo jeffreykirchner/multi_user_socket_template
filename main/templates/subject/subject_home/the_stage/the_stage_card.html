@@ -82,7 +82,7 @@
                     <button class="btn btn-outline-primary"
                             type="button" 
                             id="send_chat_id" 
-                            v-bind:disabled="reconnecting || working || session.started===false || session.finished"
+                            v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
                             v-on:click="(session.world_state.current_experiment_phase == 'Instructions') ? simulate_chat_instructions() : send_chat()">Chat <i class="far fa-comments"></i></button>
                   </div>
             </div>

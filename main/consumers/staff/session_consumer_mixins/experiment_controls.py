@@ -224,10 +224,10 @@ def take_next_phase(session_id, data):
 
     elif session.world_state["current_experiment_phase"] == ExperimentPhase.NAMES:
         session.world_state["current_experiment_phase"]  = ExperimentPhase.DONE
-        session.finished = True
+        session.world_state["finished"] = True
 
     # session.world_state["current_experiment_phase"] = session.world_state.current_experiment_phase
-    session.world_state["finished"] = session.finished
+    #session.world_state["finished"] = session.finished
     
     session.save()
 
@@ -235,7 +235,7 @@ def take_next_phase(session_id, data):
     
     return {"value" : status,
             "current_experiment_phase" : session.world_state["current_experiment_phase"],
-            "finished" : session.finished,
+            "finished" : session.world_state["finished"],
             }
 
 def take_end_early(session_id):

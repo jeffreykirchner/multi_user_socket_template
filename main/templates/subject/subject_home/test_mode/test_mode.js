@@ -121,7 +121,7 @@ do_test_mode_run()
             go=false;
         }
     
-    if(app.session.finished) return;
+    if(app.session.world_state.finished) return;
         
     if(go)
         switch (app.random_number(1, 3)){

@@ -35,7 +35,7 @@
                 Time Remaining:
             </div>
             <div class="col text-start ps-1">
-                <span v-if="session.finished">
+                <span v-if="session.world_state.finished">
                     Complete
                 </span>
                 <span v-else-if="session.world_state.hasOwnProperty('started')">
