@@ -234,7 +234,7 @@ def take_next_phase(session_id, data):
     status = "success"
     
     return {"value" : status,
-            "current_experiment_phase" : session.world_state.current_experiment_phase,
+            "current_experiment_phase" : session.world_state["current_experiment_phase"],
             "finished" : session.finished,
             }
 
