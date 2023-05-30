@@ -38,13 +38,13 @@
         </div>
 
         <!-- start timer -->
-        <div class="row" v-if="session.started  && session.current_experiment_phase=='Run' && !session.finished">
+        <div class="row" v-if="session.started  && session.world_state.current_experiment_phase=='Run' && !session.finished">
             <div class="col-md text-center">
                 <button type="button"                        
                         v-on:click = "start_timer()"
                         title="Start/Stop period timer"
                         v-bind:class="[(session.world_state.timer_running) ? 'btn-outline-warning' : 'btn-outline-success' , 'btn']"
-                        v-bind:disabled="reconnecting || working || session.started===false || session.finished || session.current_experiment_phase!='Run'">
+                        v-bind:disabled="reconnecting || working || session.started===false || session.finished || session.world_state.current_experiment_phase!='Run'">
                     <span v-if="session.world_state.timer_running">Stop Timmer <i class="far fa-clock"></i></span>
                     <span v-else>Start Timmer <i class="far fa-clock"></i></span>
                 </button>
@@ -52,20 +52,20 @@
         </div>
 
         <!-- next experiment phase -->
-        <div class="row mt-2" v-show="(session.started && session.current_experiment_phase!='Run') || (session.finished)">
+        <div class="row mt-2" v-show="(session.started && session.world_state.current_experiment_phase!='Run') || (session.finished)">
             <div class="col-md text-center">
                 <button type="button"
                         class="btn btn-outline-primary"
                         v-on:click = "next_experiment_phase()"
                         title="Move to next phase"
-                        v-bind:disabled="reconnecting || working || session.current_experiment_phase=='Done'">
+                        v-bind:disabled="reconnecting || working || session.world_state.current_experiment_phase=='Done'">
                     <span v-html="move_to_next_phase_text"></span>
                 </button>
             </div>
         </div>
 
         <!-- end early -->
-        <div class="row mt-2" v-show="session.started && !session.locked && session.current_experiment_phase =='Run'">
+        <div class="row mt-2" v-show="session.started && !session.locked && session.world_state.current_experiment_phase =='Run'">
             <div class="col-md text-center">
                 <button type="button"
                         class="btn btn-outline-danger"

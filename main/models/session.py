@@ -41,7 +41,7 @@ class Session(models.Model):
     title = models.CharField(max_length = 300, default="*** New Session ***")    #title of session
     start_date = models.DateField(default=now)                                   #date of session start
 
-    current_experiment_phase = models.CharField(max_length=100, choices=ExperimentPhase.choices, default=ExperimentPhase.RUN)         #current phase of expeirment
+    # current_experiment_phase = models.CharField(max_length=100, choices=ExperimentPhase.choices, default=ExperimentPhase.RUN)         #current phase of expeirment
 
     channel_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Channel Key')     #unique channel to communicate on
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
@@ -110,11 +110,6 @@ class Session(models.Model):
         self.current_period = 1
         self.start_date = datetime.now()
         self.time_remaining = self.parameter_set.period_length
-
-        if self.parameter_set.show_instructions:
-            self.current_experiment_phase = ExperimentPhase.INSTRUCTIONS
-        else:
-            self.current_experiment_phase = ExperimentPhase.RUN
         
         session_periods = []
 
@@ -193,7 +188,6 @@ class Session(models.Model):
         self.current_period = 1
         self.time_remaining = self.parameter_set.period_length
         self.timer_running = False
-        self.current_experiment_phase = ExperimentPhase.RUN
         self.world_state ={}
         self.save()
 
@@ -257,11 +251,11 @@ class Session(models.Model):
         if self.time_remaining == 0 and \
            self.current_period >= self.parameter_set.period_count:
 
-            self.current_experiment_phase = ExperimentPhase.NAMES
+            self.world_state["current_experiment_phase"] = ExperimentPhase.NAMES
             stop_timer = True
            
         if not status == "fail" and \
-           self.current_experiment_phase != ExperimentPhase.NAMES:
+           self.world_state["current_experiment_phase"] != ExperimentPhase.NAMES:
 
             if self.time_remaining == 0:
                 self.get_current_session_period().store_earnings()
@@ -371,7 +365,6 @@ class Session(models.Model):
             "locked":self.locked,
             "start_date":self.get_start_date_string(),
             "started":self.started,
-            "current_experiment_phase":self.current_experiment_phase,
             "current_period":self.current_period,
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
@@ -394,7 +387,6 @@ class Session(models.Model):
         
         return{
             "started":self.started,
-            "current_experiment_phase":self.current_experiment_phase,
             "current_period":self.current_period,
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
@@ -424,7 +416,6 @@ class Session(models.Model):
             "timer_running":self.timer_running,
             "finished":self.finished,
             "session_players":session_players,
-            "current_experiment_phase" : self.current_experiment_phase,
             "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
         }
     

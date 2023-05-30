@@ -689,7 +689,10 @@ move_player(delta)
             obj.target_location.y !=  obj.current_location.y )
         {           
             //move player towards target
-            app.move_object(delta, obj, app.move_speed);
+            if(!obj.frozen)
+            {
+                app.move_object(delta, obj, app.move_speed);
+            }
 
             //update the sprite locations
             avatar_container.getChildAt(0).play();
@@ -1042,7 +1045,7 @@ setup_tractor_beam(source_id, target_id)
     let tempYIntercept = myY - tempSlope * myX;
 
     // Rectangle rectTractor;
-    let tractorCircles = source_player.pixi.tractor_beam.length;
+    let tractorCircles = pixi_avatars[source_id].tractor_beam.length;
     let tempScale = 1 / tractorCircles;
 
     let xIncrement = Math.sqrt(Math.pow(myX - targetX, 2) + Math.pow(myY - targetY, 2)) / tractorCircles;
@@ -1052,7 +1055,7 @@ setup_tractor_beam(source_id, target_id)
         let temp_x = (myX - Math.cos(tempAngle) * xIncrement * i);
         let temp_y = (myY - Math.sin(tempAngle) * xIncrement * i);
 
-        tb_sprite = source_player.pixi.tractor_beam[i];
+        tb_sprite = pixi_avatars[source_id].tractor_beam[i];
         tb_sprite.position.set(temp_x, temp_y)
         tb_sprite.scale.set(tempScale * i * 2);
         tb_sprite.visible = true;

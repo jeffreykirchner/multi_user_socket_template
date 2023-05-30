@@ -214,17 +214,17 @@ def take_next_phase(session_id, data):
     #session_id = data["session_id"]
     session = Session.objects.get(id=session_id)
 
-    if session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
-        session.current_experiment_phase = ExperimentPhase.RUN
+    if session.world_state["current_experiment_phase"] == ExperimentPhase.INSTRUCTIONS:
+        session.world_state["current_experiment_phase"] = ExperimentPhase.RUN
 
-    elif session.current_experiment_phase == ExperimentPhase.RUN:
-        session.current_experiment_phase = ExperimentPhase.NAMES
+    elif session.world_state["current_experiment_phase"] == ExperimentPhase.RUN:
+        session.world_state["current_experiment_phase"] = ExperimentPhase.NAMES
 
-    elif session.current_experiment_phase == ExperimentPhase.NAMES:
-        session.current_experiment_phase = ExperimentPhase.DONE
+    elif session.world_state["current_experiment_phase"] == ExperimentPhase.NAMES:
+        session.world_state["current_experiment_phase"]  = ExperimentPhase.DONE
         session.finished = True
 
-    session.world_state["current_experiment_phase"] = session.current_experiment_phase
+    # session.world_state["current_experiment_phase"] = session.world_state.current_experiment_phase
     session.world_state["finished"] = session.finished
     
     session.save()
@@ -232,7 +232,7 @@ def take_next_phase(session_id, data):
     status = "success"
     
     return {"value" : status,
-            "current_experiment_phase" : session.current_experiment_phase,
+            "current_experiment_phase" : session.world_state.current_experiment_phase,
             "finished" : session.finished,
             }
 
