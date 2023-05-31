@@ -245,7 +245,7 @@ def take_end_early(session_id):
 
     session = Session.objects.get(id=session_id)
 
-    session.parameter_set.period_count = session.current_period
+    session.parameter_set.period_count = session.world_state["current_period"]
     session.parameter_set.update_json_local()
     session.parameter_set.save()
 

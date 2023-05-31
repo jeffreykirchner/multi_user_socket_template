@@ -106,7 +106,7 @@ class Session(models.Model):
         '''
 
         self.started = True
-        self.current_period = 1
+        # self.current_period = 1
         self.start_date = datetime.now()
         self.time_remaining = self.parameter_set.period_length
         
@@ -183,7 +183,7 @@ class Session(models.Model):
         reset the experiment
         '''
         self.started = False
-        self.current_period = 1
+
         self.time_remaining = self.parameter_set.period_length
         self.timer_running = False
         self.world_state ={}
@@ -210,7 +210,7 @@ class Session(models.Model):
         if not self.started:
             return None
 
-        return self.session_periods.get(period_number=self.current_period)
+        return self.session_periods.get(period_number=self.world_state["current_period"])
 
     async def aget_current_session_period(self):
         '''
@@ -219,7 +219,7 @@ class Session(models.Model):
         if not self.started:
             return None
 
-        return await self.session_periods.aget(period_number=self.current_period)
+        return await self.session_periods.aget(period_number=self.world_state["current_period"])
     
     def update_player_count(self):
         '''
@@ -247,7 +247,7 @@ class Session(models.Model):
 
         #check session over
         if self.time_remaining == 0 and \
-           self.current_period >= self.parameter_set.period_count:
+           self.world_state["current_period"] >= self.parameter_set.period_count:
 
             self.world_state["current_experiment_phase"] = ExperimentPhase.NAMES
             stop_timer = True
@@ -258,7 +258,7 @@ class Session(models.Model):
             if self.time_remaining == 0:
                 self.get_current_session_period().store_earnings()
 
-                self.current_period += 1
+                self.world_state["current_period"] += 1
                 self.time_remaining = self.parameter_set.period_length
             else:                                     
                 self.time_remaining -= 1
@@ -363,7 +363,6 @@ class Session(models.Model):
             "locked":self.locked,
             "start_date":self.get_start_date_string(),
             "started":self.started,
-            "current_period":self.current_period,
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "parameter_set":self.parameter_set.json(),
@@ -384,7 +383,6 @@ class Session(models.Model):
         
         return{
             "started":self.started,
-            "current_period":self.current_period,
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "parameter_set":self.parameter_set.get_json_for_subject(),
@@ -407,7 +405,6 @@ class Session(models.Model):
 
         return{
             "started":self.started,
-            "current_period":self.current_period,
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "session_players":session_players,

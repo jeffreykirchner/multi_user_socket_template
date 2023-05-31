@@ -151,9 +151,12 @@ do_test_mode_chat(){
  */
 test_mode_move(){
 
+    if(app.session.world_state.finished) return;
+
     let obj = app.session.world_state.session_players[app.session_player.id];
     let current_period_id = app.session.world_state.session_periods_order[app.session.world_state.current_period];
 
+    if(!current_period_id) return;
    
     if(!app.test_mode_location_target || 
         app.get_distance(app.test_mode_location_target,  obj.current_location) <= 25)

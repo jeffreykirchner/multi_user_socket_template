@@ -143,7 +143,6 @@ def create_new_session(auth_user):
     session.parameter_set = parameter_set
     session.start_date = datetime.now(pytz.UTC)
     session.creator = auth_user
-    session.current_period = 1
 
     session.invitation_subject = p.invitation_subject
     session.invitation_text = p.invitation_text

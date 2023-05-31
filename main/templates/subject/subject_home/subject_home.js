@@ -423,10 +423,8 @@ var app = Vue.createApp({
         take_update_next_phase(message_data){
             app.end_game_modal.hide();
 
-            app.session.world_state.current_experiment_phase = message_data.session.current_experiment_phase;
-            app.session.session_players = message_data.session_players;
-            app.session.session_players_order = message_data.session_players_order;
-            app.session_player = message_data.session_player;
+            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+            app.session.world_state.finished = message_data.finished;
 
             if(app.session.world_state.current_experiment_phase == 'Names')
             {
