@@ -48,7 +48,7 @@ class Session(models.Model):
 
     started =  models.BooleanField(default=False)                                #starts session and filll in session
     #current_period = models.IntegerField(default=0)                             #current period of the session
-    time_remaining = models.IntegerField(default=0)                              #time remaining in current phase of current period
+    #time_remaining = models.IntegerField(default=0)                              #time remaining in current phase of current period
     timer_running = models.BooleanField(default=False)                           #true when period timer is running
     # finished = models.BooleanField(default=False)                              #true after all session periods are complete
 
@@ -108,7 +108,7 @@ class Session(models.Model):
         self.started = True
         # self.current_period = 1
         self.start_date = datetime.now()
-        self.time_remaining = self.parameter_set.period_length
+        #self.time_remaining = self.parameter_set.period_length
         
         session_periods = []
 
@@ -184,8 +184,8 @@ class Session(models.Model):
         '''
         self.started = False
 
-        self.time_remaining = self.parameter_set.period_length
-        self.timer_running = False
+        #self.time_remaining = self.parameter_set.period_length
+        #self.timer_running = False
         self.world_state ={}
         self.save()
 
@@ -246,7 +246,7 @@ class Session(models.Model):
         stop_timer = False
 
         #check session over
-        if self.time_remaining == 0 and \
+        if self.world_state["time_remaining"] == 0 and \
            self.world_state["current_period"] >= self.parameter_set.period_count:
 
             self.world_state["current_experiment_phase"] = ExperimentPhase.NAMES
@@ -255,13 +255,13 @@ class Session(models.Model):
         if not status == "fail" and \
            self.world_state["current_experiment_phase"] != ExperimentPhase.NAMES:
 
-            if self.time_remaining == 0:
+            if self.world_state["time_remaining"] == 0:
                 self.get_current_session_period().store_earnings()
 
                 self.world_state["current_period"] += 1
-                self.time_remaining = self.parameter_set.period_length
+                self.world_state["time_remaining"] = self.parameter_set.period_length
             else:                                     
-                self.time_remaining -= 1
+                self.world_state["time_remaining"] -= 1
 
         self.save()
 
@@ -363,8 +363,6 @@ class Session(models.Model):
             "locked":self.locked,
             "start_date":self.get_start_date_string(),
             "started":self.started,
-            "time_remaining":self.time_remaining,
-            "timer_running":self.timer_running,
             "parameter_set":self.parameter_set.json(),
             "session_periods":{i.id : i.json() for i in self.session_periods.all()},
             "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
@@ -383,8 +381,6 @@ class Session(models.Model):
         
         return{
             "started":self.started,
-            "time_remaining":self.time_remaining,
-            "timer_running":self.timer_running,
             "parameter_set":self.parameter_set.get_json_for_subject(),
 
             "session_players":{i.id : i.json_for_subject(session_player) for i in self.session_players.all()},
@@ -405,8 +401,6 @@ class Session(models.Model):
 
         return{
             "started":self.started,
-            "time_remaining":self.time_remaining,
-            "timer_running":self.timer_running,
             "session_players":session_players,
             "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
         }

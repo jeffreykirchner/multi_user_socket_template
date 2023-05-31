@@ -187,15 +187,15 @@ def take_start_timer(session_id, data):
     with transaction.atomic():
         session = Session.objects.select_for_update().get(id=session_id)
 
-        if session.timer_running and action=="start":
+        if session.world_state["timer_running"] and action=="start":
             
             logger.warning(f"Start timer: already started")
             return {"value" : "fail", "result" : {"message":"timer already running"}}
 
         if action == "start":
-            session.timer_running = True
+            session.world_state["timer_running"] = True
         else:
-            session.timer_running = False
+            session.world_state["timer_running"] = False
 
         session.save()
 
