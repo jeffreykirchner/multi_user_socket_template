@@ -154,7 +154,7 @@ test_mode_move(){
     if(app.session.world_state.finished) return;
 
     let obj = app.session.world_state.session_players[app.session_player.id];
-    let current_period_id = app.session.world_state.session_periods_order[app.session.world_state.current_period];
+    let current_period_id = app.session.world_state.session_periods_order[app.session.world_state.current_period-1];
 
     if(!current_period_id) return;
    

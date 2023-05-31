@@ -47,10 +47,10 @@ class Session(models.Model):
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
 
     started =  models.BooleanField(default=False)                                #starts session and filll in session
-    current_period = models.IntegerField(default=0)                              #current period of the session
+    #current_period = models.IntegerField(default=0)                             #current period of the session
     time_remaining = models.IntegerField(default=0)                              #time remaining in current phase of current period
     timer_running = models.BooleanField(default=False)                           #true when period timer is running
-    # finished = models.BooleanField(default=False)                                #true after all session periods are complete
+    # finished = models.BooleanField(default=False)                              #true after all session periods are complete
 
     shared = models.BooleanField(default=False)                                  #shared session parameter sets can be imported by other users
     locked = models.BooleanField(default=False)                                  #locked models cannot be deleted
