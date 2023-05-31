@@ -227,6 +227,7 @@ var app = Vue.createApp({
             app.setup_pixi_tokens_for_current_period();
             app.setup_pixi_subjects();
             app.setup_pixi_minimap();
+            app.update_subject_status_overlay();
         },
 
         /** send winsock request to get session info

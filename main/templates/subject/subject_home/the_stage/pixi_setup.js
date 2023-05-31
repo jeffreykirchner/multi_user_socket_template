@@ -547,7 +547,7 @@ setup_subject_status_overlay()
 /**
  * update subject overlay
  */
-update_subject_status_overlay(delta)
+update_subject_status_overlay()
 {
     if(!app.session.world_state.hasOwnProperty('started')) return;
 
