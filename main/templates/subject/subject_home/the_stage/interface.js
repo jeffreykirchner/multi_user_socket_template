@@ -9,7 +9,7 @@ target_location_update()
     app.send_message("target_location_update", 
                     {"target_location" : session_player.target_location, 
                      "current_location" : session_player.current_location},
-                    "group");                   
+                     "group");                   
 },
 
 /**
@@ -198,8 +198,8 @@ take_update_interaction(message_data)
         source_player.inventory[period] = message_data.source_player_inventory;
         target_player.inventory[period] = message_data.target_player_inventory;
         
-        source_player.pixi.avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
-        target_player.pixi.avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
+        pixi_avatars[source_player_id].avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
+        pixi_avatars[target_player_id].avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
 
          //add transfer beam
          if(message_data.direction == "give")

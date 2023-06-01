@@ -49,7 +49,7 @@ do_test_mode(){
        )
     {
         
-        switch (app.session.current_experiment_phase)
+        switch (app.session.world_state.current_experiment_phase)
         {
             case "Instructions":
                 app.do_test_mode_instructions();
@@ -121,7 +121,7 @@ do_test_mode_run()
             go=false;
         }
     
-    if(app.session.finished) return;
+    if(app.session.world_state.finished) return;
         
     if(go)
         switch (app.random_number(1, 3)){
@@ -151,17 +151,56 @@ do_test_mode_chat(){
  */
 test_mode_move(){
 
-    if(!app.test_mode_location_target)
+    if(app.session.world_state.finished) return;
+
+    let obj = app.session.world_state.session_players[app.session_player.id];
+    let current_period_id = app.session.world_state.session_periods_order[app.session.world_state.current_period-1];
+
+    if(!current_period_id) return;
+   
+    if(!app.test_mode_location_target || 
+        app.get_distance(app.test_mode_location_target,  obj.current_location) <= 25)
     {
-      
+         //if near target location, move to a new one
+
+        let rn = app.random_number(0, Object.keys(app.session.world_state.tokens[current_period_id]).length-1);
+        let r = Object.keys(app.session.world_state.tokens[current_period_id])[rn];
+        
+        app.test_mode_location_target = app.session.world_state.tokens[current_period_id][r].current_location;
     }
-
-    app.test_mode_location_target = {"x" : app.random_number(0, 5000), "y" : app.random_number(0, 5000)};
-
-    obj = app.session.world_state.session_players[app.session_player.id];
-    obj.target_location = app.test_mode_location_target;
+    else if(app.get_distance(app.test_mode_location_target,  obj.current_location)<1000)
+    {
+        //object is close move to it
+        obj.target_location = app.test_mode_location_target;
+    }
+    else
+    {
+        //if far from target location, move to intermediate location
+        obj.target_location = app.get_point_from_angle_distance(obj.current_location.x, 
+                                                        obj.current_location.y,
+                                                        app.test_mode_location_target.x,
+                                                        app.test_mode_location_target.y,
+                                                        app.random_number(300,1000))
+    }
 
     app.target_location_update();
 },
 
+/**
+ * find point given angle and distance
+ **/
+get_point_from_angle_distance(start_x, start_y, end_x, end_y, distance)
+{
+    let angle = app.get_angle(start_x, start_y, end_x, end_y);
+    return {x:start_x + distance * Math.cos(angle), 
+            y:start_y + distance * Math.sin(angle)};
+},
+
+/**
+ * find the angle between two points
+ */
+get_angle(x1, y1, x2, y2)
+{
+    return Math.atan2(y2 - y1, x2 - x1);
+},
 {%endif%}

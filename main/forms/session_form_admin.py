@@ -32,6 +32,9 @@ class SessionFormAdmin(forms.ModelForm):
 
     title = forms.CharField(label='Title',
                             widget=forms.TextInput(attrs={"size":"50"}))
+    
+    channel_key = forms.CharField(label='Channel Key',
+                            widget=forms.TextInput(attrs={"size":"50"}))
 
     
     shared = forms.BooleanField(label='Share parameterset with all.', required=False)
@@ -40,4 +43,4 @@ class SessionFormAdmin(forms.ModelForm):
 
     class Meta:
         model=Session
-        fields = ('parameter_set', 'creator', 'collaborators', 'current_experiment_phase', 'title', 'world_state', 'shared', 'locked', 'soft_delete')
+        fields = ('parameter_set', 'creator', 'collaborators', 'current_experiment_phase', 'title', 'world_state', 'shared', 'locked', 'soft_delete', 'controlling_channel')

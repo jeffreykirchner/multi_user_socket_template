@@ -312,21 +312,21 @@ var app = Vue.createApp({
         /**update text of move on button based on current state
          */
         update_phase_button_text(){
-            if(app.session.finished && app.session.current_experiment_phase == "Done")
+            if(app.session.world_state.finished && app.session.world_state.current_experiment_phase == "Done")
             {
                 app.move_to_next_phase_text = '** Session complete **';
             }
-            else if(app.session.current_experiment_phase == "Names")
+            else if( app.session.world_state.current_experiment_phase == "Names")
             {
                 app.move_to_next_phase_text = 'Complete Session <i class="fas fa-flag-checkered"></i>';
             }
-            else if(app.session.current_experiment_phase == "Run")
+            else if( app.session.world_state.current_experiment_phase == "Run")
             {
                 app.move_to_next_phase_text = 'Running ...';
             }
-            else if(app.session.started && !app.session.finished)
+            else if(app.session.started && !app.session.world_state.finished)
             {
-                if(app.session.current_experiment_phase == "Selection" && app.session.parameter_set.show_instructions == "True")
+                if(app.session.world_state.current_experiment_phase == "Selection" && app.session.parameter_set.show_instructions == "True")
                 {
                     app.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
                 }
@@ -370,10 +370,6 @@ var app = Vue.createApp({
             app.session.world_state.timer_running = message_data.timer_running;
             app.session.world_state.started = message_data.started;
             app.session.world_state.finished = message_data.finished;
-
-            app.current_period = message_data.current_period;
-            app.time_remaining = message_data.time_remaining;
-            app.timer_running = message_data.timer_running;
            
             // app.session.finished = result.finished;
             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;

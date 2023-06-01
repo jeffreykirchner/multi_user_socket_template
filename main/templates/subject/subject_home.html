@@ -46,20 +46,20 @@
     {%include "subject/subject_home/the_stage/interaction_modal.html"%}
     
     <!-- instructions -->
-    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.world_state.current_experiment_phase == 'Instructions'">
         <div class="col-md">
             {%include "subject/subject_home/instructions_card.html"%}
         </div>
     </div>
 
     <!-- the stage -->
-    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.world_state.current_experiment_phase != 'Done'">
         <div class="col-md">
             {%include "subject/subject_home/the_stage/the_stage_card.html"%}                
         </div>
     </div>
 
-    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.world_state.current_experiment_phase == 'Done'">
         <div class="col-12 fs-4 fw-bold text-center">
             <br>
             <br>

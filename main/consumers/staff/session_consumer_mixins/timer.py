@@ -55,6 +55,9 @@ class TimerMixin():
         '''
         continue to next second of the experiment
         '''
+        if self.controlling_channel != self.channel_name:
+            return
+        
         logger = logging.getLogger(__name__)
         # logger.info(f"continue_timer start")
 
@@ -175,45 +178,45 @@ class TimerMixin():
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
-def take_start_timer(session_id, data):
-    '''
-    start timer
-    '''   
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Start timer {data}")
+# def take_start_timer(session_id, data):
+#     '''
+#     start timer
+#     '''   
+#     logger = logging.getLogger(__name__) 
+#     logger.info(f"Start timer {data}")
 
-    action = data["action"]
+#     action = data["action"]
 
-    with transaction.atomic():
-        session = Session.objects.select_for_update().get(id=session_id)
+#     with transaction.atomic():
+#         session = Session.objects.select_for_update().get(id=session_id)
 
-        if session.timer_running and action=="start":
+#         if session.world_state["timer_running"] and action=="start":
             
-            logger.warning(f"Start timer: already started")
-            return {"value" : "fail", "result" : {"message":"timer already running"}}
+#             logger.warning(f"Start timer: already started")
+#             return {"value" : "fail", "result" : {"message":"timer already running"}}
 
-        if action == "start":
-            session.timer_running = True
-        else:
-            session.timer_running = False
+#         if action == "start":
+#             session.world_state["timer_running"] = True
+#         else:
+#             session.world_state["timer_running"] = False
 
-        session.save()
+#         session.save()
 
-    return {"value" : "success", "result" : session.json_for_timer()}
+#     return {"value" : "success", "result" : session.json_for_timer()}
 
-def take_do_period_timer(session_id):
-    '''
-    do period timer actions
-    '''
-    logger = logging.getLogger(__name__)
+# def take_do_period_timer(session_id):
+#     '''
+#     do period timer actions
+#     '''
+#     logger = logging.getLogger(__name__)
 
-    session = Session.objects.get(id=session_id)
+#     session = Session.objects.get(id=session_id)
 
-    if session.timer_running == False or session.finished:
-        return_json = {"value" : "fail", "result" : {"message" : "session no longer running"}}
-    else:
-        return_json = session.do_period_timer()
+#     if session.timer_running == False or session.world_state["finished"]:
+#         return_json = {"value" : "fail", "result" : {"message" : "session no longer running"}}
+#     else:
+#         return_json = session.do_period_timer()
 
-    # logger.info(f"take_do_period_timer: {return_json}")
+#     # logger.info(f"take_do_period_timer: {return_json}")
 
-    return return_json
+#     return return_json

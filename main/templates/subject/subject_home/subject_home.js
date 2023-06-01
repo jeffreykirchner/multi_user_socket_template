@@ -66,6 +66,9 @@ var app = Vue.createApp({
 
                     //forms
                     interaction_form : {direction:null, amount:null},
+
+                    //test mode
+                    test_mode_location_target : null,
                 }},
     methods: {
 
@@ -188,11 +191,11 @@ var app = Vue.createApp({
              {%if session.parameter_set.test_mode%} setTimeout(app.do_test_mode, app.random_number(1000 , 1500)); {%endif%}
 
             // if game is finished show modal
-            if(app.session.current_experiment_phase == 'Names')
+            if( app.session.world_state.current_experiment_phase == 'Names')
             {
                 app.show_end_game_modal();
             }
-            else if(app.session.current_experiment_phase == 'Done' && 
+            else if(app.session.world_state.current_experiment_phase == 'Done' && 
                     app.session.parameter_set.survey_required=='True' && 
                     !app.session_player.survey_complete)
             {
@@ -224,6 +227,7 @@ var app = Vue.createApp({
             app.setup_pixi_tokens_for_current_period();
             app.setup_pixi_subjects();
             app.setup_pixi_minimap();
+            app.update_subject_status_overlay();
         },
 
         /** send winsock request to get session info
@@ -251,12 +255,12 @@ var app = Vue.createApp({
                 
             }            
             
-            if(app.session.current_experiment_phase != 'Done')
+            if(app.session.world_state.current_experiment_phase != 'Done')
             {
                                 
             }
 
-            if(app.session.current_experiment_phase == 'Instructions')
+            if(app.session.world_state.current_experiment_phase == 'Instructions')
             {
                 Vue.nextTick(() => {
                     app.process_instruction_page();
@@ -322,10 +326,10 @@ var app = Vue.createApp({
             app.session.world_state.finished = message_data.finished;
             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
 
-            app.session.finished = message_data.finished;
+            // app.session.world_state.finished = message_data.finished;
         
             //collect names
-            if(app.session.current_experiment_phase == 'Names')
+            if(app.session.world_state.current_experiment_phase == 'Names')
             {
                 app.show_end_game_modal();
             }            
@@ -420,12 +424,10 @@ var app = Vue.createApp({
         take_update_next_phase(message_data){
             app.end_game_modal.hide();
 
-            app.session.current_experiment_phase = message_data.session.current_experiment_phase;
-            app.session.session_players = message_data.session_players;
-            app.session.session_players_order = message_data.session_players_order;
-            app.session_player = message_data.session_player;
+            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+            app.session.world_state.finished = message_data.finished;
 
-            if(app.session.current_experiment_phase == 'Names')
+            if(app.session.world_state.current_experiment_phase == 'Names')
             {
                 app.show_end_game_modal();
             }
@@ -434,7 +436,7 @@ var app = Vue.createApp({
                 app.hide_end_game_modal();
             }
             
-            if(app.session.current_experiment_phase == 'Done' && 
+            if(app.session.world_state.current_experiment_phase == 'Done' && 
                     app.session.parameter_set.survey_required=='True' && 
                     !app.session_player.survey_complete)
             {

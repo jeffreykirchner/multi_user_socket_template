@@ -12,6 +12,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
+from main.models import Session
 from main.models import SessionPlayer
 
 class SocketConsumerMixin(AsyncWebsocketConsumer):
@@ -50,12 +51,16 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
 
         result = await sync_to_async(take_handle_dis_connect, thread_sensitive=self.thread_sensitive)(self.player_key, True)
 
+        session = await Session.objects.filter(channel_key=room_name).afirst()
+
         #send updated connection status to all users
         await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_connection_status",
                  "data": result,
                  "sender_channel_name": self.channel_name,
+                 "connect_or_disconnect": "connect",
+                 "session_id": session.id if session else None,
                 },
             )
 
@@ -77,6 +82,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
                 {"type": "update_connection_status",
                  "data": result,
                  "sender_channel_name": self.channel_name,
+                 "connect_or_disconnect": "disconnect",
                 },
             )
        

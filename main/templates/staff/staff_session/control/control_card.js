@@ -85,7 +85,8 @@ next_experiment_phase(){
 */
 take_next_phase(message_data){
     
-    app.session.current_experiment_phase = message_data.current_experiment_phase;
+    app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+    app.session.world_state.finished = message_data.finished;
     app.update_phase_button_text();
 
 },
@@ -95,7 +96,8 @@ take_next_phase(message_data){
 */
 take_update_next_phase(message_data){
     
-    app.session.current_experiment_phase = message_data.current_experiment_phase;
+    app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+    app.session.world_state.finished = message_data.finished;
     app.update_phase_button_text();
 },
 
@@ -124,7 +126,7 @@ start_timer(){
 */
 take_start_timer(message_data){
    
-    app.session.world_state["timer_running"] = message_data.timer_running;
+    app.session.world_state.timer_running = message_data.timer_running;
 },
 
 /**reset experiment, remove all bids, asks and trades

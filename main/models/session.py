@@ -41,16 +41,18 @@ class Session(models.Model):
     title = models.CharField(max_length = 300, default="*** New Session ***")    #title of session
     start_date = models.DateField(default=now)                                   #date of session start
 
-    current_experiment_phase = models.CharField(max_length=100, choices=ExperimentPhase.choices, default=ExperimentPhase.RUN)         #current phase of expeirment
+    # current_experiment_phase = models.CharField(max_length=100, choices=ExperimentPhase.choices, default=ExperimentPhase.RUN)         #current phase of expeirment
 
     channel_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Channel Key')     #unique channel to communicate on
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
 
+    controlling_channel = models.CharField(max_length = 300, default="")         #channel controlling session
+
     started =  models.BooleanField(default=False)                                #starts session and filll in session
-    current_period = models.IntegerField(default=0)                              #current period of the session
-    time_remaining = models.IntegerField(default=0)                              #time remaining in current phase of current period
+    #current_period = models.IntegerField(default=0)                             #current period of the session
+    #time_remaining = models.IntegerField(default=0)                             #time remaining in current phase of current period
     timer_running = models.BooleanField(default=False)                           #true when period timer is running
-    finished = models.BooleanField(default=False)                                #true after all session periods are complete
+    # finished = models.BooleanField(default=False)                              #true after all session periods are complete
 
     shared = models.BooleanField(default=False)                                  #shared session parameter sets can be imported by other users
     locked = models.BooleanField(default=False)                                  #locked models cannot be deleted
@@ -106,15 +108,9 @@ class Session(models.Model):
         '''
 
         self.started = True
-        self.finished = False
-        self.current_period = 1
+        # self.current_period = 1
         self.start_date = datetime.now()
-        self.time_remaining = self.parameter_set.period_length
-
-        if self.parameter_set.show_instructions:
-            self.current_experiment_phase = ExperimentPhase.INSTRUCTIONS
-        else:
-            self.current_experiment_phase = ExperimentPhase.RUN
+        #self.time_remaining = self.parameter_set.period_length
         
         session_periods = []
 
@@ -140,8 +136,8 @@ class Session(models.Model):
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
                             "time_remaining":self.parameter_set.period_length,
                             "timer_running":False,
-                            "started":self.started,
-                            "finished":self.finished,
+                            "started":True,
+                            "finished":False,
                             "session_periods":{str(i.id) : i.json() for i in self.session_periods.all()},
                             "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
                             "tokens":{},}
@@ -189,11 +185,9 @@ class Session(models.Model):
         reset the experiment
         '''
         self.started = False
-        self.finished = False
-        self.current_period = 1
-        self.time_remaining = self.parameter_set.period_length
-        self.timer_running = False
-        self.current_experiment_phase = ExperimentPhase.RUN
+
+        #self.time_remaining = self.parameter_set.period_length
+        #self.timer_running = False
         self.world_state ={}
         self.save()
 
@@ -218,7 +212,7 @@ class Session(models.Model):
         if not self.started:
             return None
 
-        return self.session_periods.get(period_number=self.current_period)
+        return self.session_periods.get(period_number=self.world_state["current_period"])
 
     async def aget_current_session_period(self):
         '''
@@ -227,7 +221,7 @@ class Session(models.Model):
         if not self.started:
             return None
 
-        return await self.session_periods.aget(period_number=self.current_period)
+        return await self.session_periods.aget(period_number=self.world_state["current_period"])
     
     def update_player_count(self):
         '''
@@ -254,22 +248,22 @@ class Session(models.Model):
         stop_timer = False
 
         #check session over
-        if self.time_remaining == 0 and \
-           self.current_period >= self.parameter_set.period_count:
+        if self.world_state["time_remaining"] == 0 and \
+           self.world_state["current_period"] >= self.parameter_set.period_count:
 
-            self.current_experiment_phase = ExperimentPhase.NAMES
+            self.world_state["current_experiment_phase"] = ExperimentPhase.NAMES
             stop_timer = True
            
         if not status == "fail" and \
-           self.current_experiment_phase != ExperimentPhase.NAMES:
+           self.world_state["current_experiment_phase"] != ExperimentPhase.NAMES:
 
-            if self.time_remaining == 0:
+            if self.world_state["time_remaining"] == 0:
                 self.get_current_session_period().store_earnings()
 
-                self.current_period += 1
-                self.time_remaining = self.parameter_set.period_length
+                self.world_state["current_period"] += 1
+                self.world_state["time_remaining"] = self.parameter_set.period_length
             else:                                     
-                self.time_remaining -= 1
+                self.world_state["time_remaining"] -= 1
 
         self.save()
 
@@ -371,11 +365,6 @@ class Session(models.Model):
             "locked":self.locked,
             "start_date":self.get_start_date_string(),
             "started":self.started,
-            "current_experiment_phase":self.current_experiment_phase,
-            "current_period":self.current_period,
-            "time_remaining":self.time_remaining,
-            "timer_running":self.timer_running,
-            "finished":self.finished,
             "parameter_set":self.parameter_set.json(),
             "session_periods":{i.id : i.json() for i in self.session_periods.all()},
             "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
@@ -394,11 +383,6 @@ class Session(models.Model):
         
         return{
             "started":self.started,
-            "current_experiment_phase":self.current_experiment_phase,
-            "current_period":self.current_period,
-            "time_remaining":self.time_remaining,
-            "timer_running":self.timer_running,
-            "finished":self.finished,
             "parameter_set":self.parameter_set.get_json_for_subject(),
 
             "session_players":{i.id : i.json_for_subject(session_player) for i in self.session_players.all()},
@@ -419,12 +403,7 @@ class Session(models.Model):
 
         return{
             "started":self.started,
-            "current_period":self.current_period,
-            "time_remaining":self.time_remaining,
-            "timer_running":self.timer_running,
-            "finished":self.finished,
             "session_players":session_players,
-            "current_experiment_phase" : self.current_experiment_phase,
             "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
         }
     

@@ -61,6 +61,8 @@ class ExperimentControlsMixin():
         reset experiment on staff
         '''
 
+        self.timer_running = False
+
         result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
 
         await self.send_message(message_to_self=result, message_to_group=None,
@@ -214,26 +216,26 @@ def take_next_phase(session_id, data):
     #session_id = data["session_id"]
     session = Session.objects.get(id=session_id)
 
-    if session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
-        session.current_experiment_phase = ExperimentPhase.RUN
+    if session.world_state["current_experiment_phase"] == ExperimentPhase.INSTRUCTIONS:
+        session.world_state["current_experiment_phase"] = ExperimentPhase.RUN
 
-    elif session.current_experiment_phase == ExperimentPhase.RUN:
-        session.current_experiment_phase = ExperimentPhase.NAMES
+    elif session.world_state["current_experiment_phase"] == ExperimentPhase.RUN:
+        session.world_state["current_experiment_phase"] = ExperimentPhase.NAMES
 
-    elif session.current_experiment_phase == ExperimentPhase.NAMES:
-        session.current_experiment_phase = ExperimentPhase.DONE
-        session.finished = True
+    elif session.world_state["current_experiment_phase"] == ExperimentPhase.NAMES:
+        session.world_state["current_experiment_phase"]  = ExperimentPhase.DONE
+        session.world_state["finished"] = True
 
-    session.world_state["current_experiment_phase"] = session.current_experiment_phase
-    session.world_state["finished"] = session.finished
+    # session.world_state["current_experiment_phase"] = session.world_state.current_experiment_phase
+    #session.world_state["finished"] = session.finished
     
     session.save()
 
     status = "success"
     
     return {"value" : status,
-            "current_experiment_phase" : session.current_experiment_phase,
-            "finished" : session.finished,
+            "current_experiment_phase" : session.world_state["current_experiment_phase"],
+            "finished" : session.world_state["finished"],
             }
 
 def take_end_early(session_id):
@@ -243,7 +245,7 @@ def take_end_early(session_id):
 
     session = Session.objects.get(id=session_id)
 
-    session.parameter_set.period_count = session.current_period
+    session.parameter_set.period_count = session.world_state["current_period"]
     session.parameter_set.update_json_local()
     session.parameter_set.save()
 

@@ -30,7 +30,7 @@ class NameMixin():
         session = await Session.objects.aget(id=self.session_id)
         session_player = await session.session_players.aget(id=self.session_player_id)
 
-        if session.current_experiment_phase != ExperimentPhase.NAMES:
+        if session.world_state["current_experiment_phase"] != ExperimentPhase.NAMES:
             result = {"value" : "fail", "errors" : {f"name":["Session not complete."]},
                       "message" : "Session not complete."}
         else:

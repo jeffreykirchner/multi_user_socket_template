@@ -81,7 +81,7 @@ take_update_collect_token(message_data)
 update_player_inventory()
 {
 
-    let period_id = app.session.session_periods_order[app.session.current_period-1];
+    let period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
 
     for(const i in app.session.session_players_order)
     {
@@ -115,7 +115,7 @@ take_update_interaction(message_data)
     }
     else
     {
-        let currnent_period_id = app.session.session_periods_order[app.session.current_period-1];
+        let current_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
 
         let source_player_id = message_data.source_player_id;
         let target_player_id = message_data.target_player_id;
@@ -141,8 +141,8 @@ take_update_interaction(message_data)
         source_player.inventory[period] = message_data.source_player_inventory;
         target_player.inventory[period] = message_data.target_player_inventory;
         
-        source_player.pixi.avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
-        target_player.pixi.avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
+        pixi_avatars[source_player_id].avatar_container.getChildAt(4).text = source_player.inventory[current_period_id];
+        pixi_avatars[target_player_id].avatar_container.getChildAt(4).text = target_player.inventory[current_period_id];
 
         //add transfer beam
         if(message_data.direction == "give")

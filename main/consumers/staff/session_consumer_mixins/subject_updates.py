@@ -9,6 +9,7 @@ from django.db.models.fields.json import KT
 from main.models import SessionPlayer
 from main.models import Session
 from main.models import SessionEvent
+from django.utils.decorators import method_decorator
 
 from datetime import datetime, timedelta
 
@@ -22,7 +23,9 @@ class SubjectUpdatesMixin():
     async def chat(self, event):
         '''
         take chat from client
-        '''        
+        '''    
+        if self.controlling_channel != self.channel_name:
+            return    
        
         logger = logging.getLogger(__name__) 
         # logger.info(f"take chat: Session {self.session_id}, Player {self.session_player_id}, Data {data}")
@@ -61,10 +64,29 @@ class SubjectUpdatesMixin():
         '''
         handle connection status update from group member
         '''
+        logger = logging.getLogger(__name__) 
         event_data = event["data"]
 
         #update not from a client
         if event_data["value"] == "fail":
+            if not self.session_id:
+                self.session_id = event["session_id"]
+
+            logger.info(f"update_connection_status: event data {event}, channel name {self.channel_name}, group name {self.room_group_name}")
+
+            if "session" in self.room_group_name:
+                if event["connect_or_disconnect"] == "connect":
+                    # session = await Session.objects.aget(id=self.session_id)
+                    self.controlling_channel = event["sender_channel_name"]
+
+                    if self.channel_name == self.controlling_channel:
+                        logger.info(f"update_connection_status: controller {self.channel_name}, session id {self.session_id}")
+                        await Session.objects.filter(id=self.session_id).aupdate(controlling_channel=self.controlling_channel) 
+                else:
+                    pass
+                    # if self.channel_name != event["sender_channel_name"]:
+                    #     self.controlling_channel = self.channel_name
+                    #     await Session.objects.filter(id=self.session_id).aupdate(controlling_channel=self.controlling_channel)
             return
         
         subject_id = event_data["result"]["id"]
@@ -122,6 +144,12 @@ class SubjectUpdatesMixin():
         '''
         update target location from subject screen
         '''
+        if self.controlling_channel != self.channel_name:
+            return
+        
+        logger = logging.getLogger(__name__) 
+        logger.info(f"target_location_update: world state controller {self.controlling_channel} channel name {self.channel_name}")
+        
         logger = logging.getLogger(__name__)
         
         event_data =  event["message_text"]
@@ -173,6 +201,9 @@ class SubjectUpdatesMixin():
         '''
         subject collects token
         '''
+        if self.controlling_channel != self.channel_name:
+            return
+        
         logger = logging.getLogger(__name__)
         
         message_text = event["message_text"]
@@ -219,6 +250,8 @@ class SubjectUpdatesMixin():
         '''
         subject activates tractor beam
         '''
+        if self.controlling_channel != self.channel_name:
+            return
 
         player_id = self.session_players_local[event["player_key"]]["id"]
         target_player_id = event["message_text"]["target_player_id"]
@@ -248,6 +281,12 @@ class SubjectUpdatesMixin():
 
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
+        await SessionEvent.objects.acreate(session_id=self.session_id, 
+                                           type="tractor_beam",
+                                           period_number=self.world_state_local["current_period"],
+                                           time_remaining=self.world_state_local["time_remaining"],
+                                           data={"player_id" : player_id, "target_player_id" : target_player_id,})
+
         result = {"player_id" : player_id, "target_player_id" : target_player_id}
         
         await self.send_message(message_to_self=None, message_to_group=result,
@@ -267,6 +306,9 @@ class SubjectUpdatesMixin():
         '''
         subject sends an interaction
         '''
+        if self.controlling_channel != self.channel_name:
+            return
+        
         player_id = self.session_players_local[event["player_key"]]["id"]
 
         source_player = self.world_state_local['session_players'][str(player_id)]
@@ -304,6 +346,12 @@ class SubjectUpdatesMixin():
                 target_player["inventory"][result["period"]] = result["target_player_inventory"]
 
                 await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+
+            await SessionEvent.objects.acreate(session_id=self.session_id, 
+                                        type="interaction",
+                                        period_number=self.world_state_local["current_period"],
+                                        time_remaining=self.world_state_local["time_remaining"],
+                                        data={"interaction" : interaction, "result":result})
         
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
@@ -322,6 +370,9 @@ class SubjectUpdatesMixin():
         '''
         subject transfers tokens
         '''
+        if self.controlling_channel != self.channel_name:
+            return
+        
         player_id = self.session_players_local[event["player_key"]]["id"]
 
         source_player = self.world_state_local['session_players'][str(player_id)]
@@ -341,6 +392,12 @@ class SubjectUpdatesMixin():
         source_player['tractor_beam_target'] = None
 
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+
+        await SessionEvent.objects.acreate(session_id=self.session_id, 
+                                        type="cancel_interaction",
+                                        period_number=self.world_state_local["current_period"],
+                                        time_remaining=self.world_state_local["time_remaining"],
+                                        data={"player_id" : player_id, "target_player_id":target_player_id})
 
         result = {"source_player_id" : player_id, "target_player_id" : target_player_id, "value" : "success"}
         
