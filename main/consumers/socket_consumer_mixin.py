@@ -56,6 +56,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
                 {"type": "update_connection_status",
                  "data": result,
                  "sender_channel_name": self.channel_name,
+                 "connect_or_disconnect": "connect",
                 },
             )
 
@@ -77,6 +78,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
                 {"type": "update_connection_status",
                  "data": result,
                  "sender_channel_name": self.channel_name,
+                 "connect_or_disconnect": "disconnect",
                 },
             )
        

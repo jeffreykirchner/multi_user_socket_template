@@ -129,6 +129,7 @@ class Session(models.Model):
         setup world state
         '''
         self.world_state = {"last_update":str(datetime.now()), 
+                            "controller":None,
                             "session_players":{},
                             "current_period":1,
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,

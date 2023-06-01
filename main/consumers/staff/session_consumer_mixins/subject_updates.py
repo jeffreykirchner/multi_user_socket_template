@@ -61,10 +61,24 @@ class SubjectUpdatesMixin():
         '''
         handle connection status update from group member
         '''
+        logger = logging.getLogger(__name__) 
         event_data = event["data"]
 
         #update not from a client
         if event_data["value"] == "fail":
+            logger.info(f"update_connection_status: event data {event}, channel name {self.channel_name}, group name {self.room_group_name}")
+
+            if "session" in self.room_group_name:
+                if event["connect_or_disconnect"] == "connect":
+                    self.world_state_local["controller"] = event["sender_channel_name"]
+
+                    if self.channel_name == event["sender_channel_name"]:
+                        logger.info(f"update_connection_status: controller {self.channel_name}, session id {self.session_id}")
+                        await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local) 
+                else:
+                    if self.channel_name != event["sender_channel_name"]:
+                        self.world_state_local["controller"] = self.channel_name
+                        await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
             return
         
         subject_id = event_data["result"]["id"]
@@ -122,6 +136,11 @@ class SubjectUpdatesMixin():
         '''
         update target location from subject screen
         '''
+        logger = logging.getLogger(__name__) 
+        logger.info(f"target_location_update: world state controller {self.world_state_local['controller']} channel name {self.channel_name}")
+        if self.world_state_local["controller"] != self.channel_name:
+            return
+        
         logger = logging.getLogger(__name__)
         
         event_data =  event["message_text"]
