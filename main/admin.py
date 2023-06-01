@@ -152,7 +152,7 @@ class SessionAdmin(admin.ModelAdmin):
     def get_creator_email(self, obj):
         return obj.creator.email
 
-    readonly_fields=['parameter_set', 'session_key','channel_key']
+    readonly_fields=['parameter_set', 'session_key','channel_key', 'controlling_channel']
     inlines = [SessionPlayerInline]
 
     list_display = ['title', 'get_creator_email']
