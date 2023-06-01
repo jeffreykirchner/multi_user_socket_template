@@ -141,8 +141,8 @@ take_update_interaction(message_data)
         source_player.inventory[period] = message_data.source_player_inventory;
         target_player.inventory[period] = message_data.target_player_inventory;
         
-        source_player.pixi.avatar_container.getChildAt(4).text = source_player.inventory[current_period_id];
-        target_player.pixi.avatar_container.getChildAt(4).text = target_player.inventory[current_period_id];
+        pixi_avatars[source_player_id].avatar_container.getChildAt(4).text = source_player.inventory[current_period_id];
+        pixi_avatars[target_player_id].avatar_container.getChildAt(4).text = target_player.inventory[current_period_id];
 
         //add transfer beam
         if(message_data.direction == "give")

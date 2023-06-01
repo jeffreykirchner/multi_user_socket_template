@@ -9,6 +9,7 @@ from django.db.models.fields.json import KT
 from main.models import SessionPlayer
 from main.models import Session
 from main.models import SessionEvent
+from django.utils.decorators import method_decorator
 
 from datetime import datetime, timedelta
 
@@ -22,7 +23,9 @@ class SubjectUpdatesMixin():
     async def chat(self, event):
         '''
         take chat from client
-        '''        
+        '''    
+        if self.controlling_channel != self.channel_name:
+            return    
        
         logger = logging.getLogger(__name__) 
         # logger.info(f"take chat: Session {self.session_id}, Player {self.session_player_id}, Data {data}")
@@ -64,10 +67,11 @@ class SubjectUpdatesMixin():
         logger = logging.getLogger(__name__) 
         event_data = event["data"]
 
-        self.session_id = event["session_id"]
-
         #update not from a client
         if event_data["value"] == "fail":
+            if not self.session_id:
+                self.session_id = event["session_id"]
+
             logger.info(f"update_connection_status: event data {event}, channel name {self.channel_name}, group name {self.room_group_name}")
 
             if "session" in self.room_group_name:
@@ -140,11 +144,11 @@ class SubjectUpdatesMixin():
         '''
         update target location from subject screen
         '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f"target_location_update: world state controller {self.controlling_channel} channel name {self.channel_name}")
-        
         if self.controlling_channel != self.channel_name:
             return
+        
+        logger = logging.getLogger(__name__) 
+        logger.info(f"target_location_update: world state controller {self.controlling_channel} channel name {self.channel_name}")
         
         logger = logging.getLogger(__name__)
         
@@ -197,6 +201,9 @@ class SubjectUpdatesMixin():
         '''
         subject collects token
         '''
+        if self.controlling_channel != self.channel_name:
+            return
+        
         logger = logging.getLogger(__name__)
         
         message_text = event["message_text"]
@@ -243,6 +250,8 @@ class SubjectUpdatesMixin():
         '''
         subject activates tractor beam
         '''
+        if self.controlling_channel != self.channel_name:
+            return
 
         player_id = self.session_players_local[event["player_key"]]["id"]
         target_player_id = event["message_text"]["target_player_id"]
@@ -297,6 +306,9 @@ class SubjectUpdatesMixin():
         '''
         subject sends an interaction
         '''
+        if self.controlling_channel != self.channel_name:
+            return
+        
         player_id = self.session_players_local[event["player_key"]]["id"]
 
         source_player = self.world_state_local['session_players'][str(player_id)]
@@ -358,6 +370,9 @@ class SubjectUpdatesMixin():
         '''
         subject transfers tokens
         '''
+        if self.controlling_channel != self.channel_name:
+            return
+        
         player_id = self.session_players_local[event["player_key"]]["id"]
 
         source_player = self.world_state_local['session_players'][str(player_id)]
