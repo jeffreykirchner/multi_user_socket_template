@@ -46,9 +46,11 @@ class Session(models.Model):
     channel_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Channel Key')     #unique channel to communicate on
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
 
+    controlling_channel = models.CharField(max_length = 300, default="")         #channel controlling session
+
     started =  models.BooleanField(default=False)                                #starts session and filll in session
     #current_period = models.IntegerField(default=0)                             #current period of the session
-    #time_remaining = models.IntegerField(default=0)                              #time remaining in current phase of current period
+    #time_remaining = models.IntegerField(default=0)                             #time remaining in current phase of current period
     timer_running = models.BooleanField(default=False)                           #true when period timer is running
     # finished = models.BooleanField(default=False)                              #true after all session periods are complete
 
@@ -129,7 +131,6 @@ class Session(models.Model):
         setup world state
         '''
         self.world_state = {"last_update":str(datetime.now()), 
-                            "controller":None,
                             "session_players":{},
                             "current_period":1,
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
