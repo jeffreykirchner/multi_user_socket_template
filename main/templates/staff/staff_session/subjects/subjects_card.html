@@ -135,7 +135,12 @@
                                 </span>
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                $[[(temp_p.earnings/100).toFixed(2)]]
+                                <span v-if="Object.keys(session.world_state).length>0">
+                                    $[[(session.world_state.session_players[p].earnings/100).toFixed(2)]]
+                                </span>
+                                <span v-else>
+                                    ---
+                                </span>
                             </td>                            
                             <td class="player_table_cell text-nowrap">
                                 <a v-bind:href="temp_p.login_link">Login Link</a>
