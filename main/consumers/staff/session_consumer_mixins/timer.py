@@ -1,5 +1,8 @@
 import logging
 import asyncio
+import math
+
+from datetime import datetime
 
 from asgiref.sync import sync_to_async
 
@@ -22,6 +25,10 @@ class TimerMixin():
         logger = logging.getLogger(__name__)
         logger.info(f"start_timer {event}")
 
+        if self.controlling_channel != self.channel_name:
+            logger.warning(f"start_timer: not controlling channel")
+            return
+
         if event["message_text"]["action"] == "start":
             if self.timer_running:
                 logger.warning(f"start_timer: already started")
@@ -32,6 +39,7 @@ class TimerMixin():
             self.timer_running = False
 
         self.world_state_local["timer_running"] = self.timer_running
+        self.world_state_local["timer_history"].append({"time": datetime.now(), "count": 0})
         Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
         if self.timer_running:
@@ -70,8 +78,11 @@ class TimerMixin():
         result = {"earnings":{}}
 
         #check session over
-        if self.world_state_local["time_remaining"] == 0 and \
-           self.world_state_local["current_period"] >= self.parameter_set_local["period_count"]:
+        if self.world_state_local["current_period"] >= self.parameter_set_local["period_count"] and \
+           self.world_state_local["time_remaining"] <= 1:
+
+            self.world_state_local["current_period"] = self.parameter_set_local["period_count"]
+            self.world_state_local["time_remaining"] = 0
             
             session = await Session.objects.aget(id=self.session_id)
             current_session_period = await session.session_periods.aget(period_number=self.world_state_local["current_period"])
@@ -82,7 +93,19 @@ class TimerMixin():
            
         if self.world_state_local["current_experiment_phase"] != ExperimentPhase.NAMES:
 
-            if self.world_state_local["time_remaining"] == 0:
+            self.world_state_local["timer_history"][-1]["count"] += 1
+
+            total_time = 0
+            for i in self.world_state_local["timer_history"]:
+                total_time += i["count"]
+
+            current_period = math.floor(total_time / self.parameter_set_local["period_length"]) + 1
+            time_remaining = self.parameter_set_local["period_length"] - (total_time % self.parameter_set_local["period_length"])
+
+            self.world_state_local["time_remaining"] = time_remaining
+            self.world_state_local["current_period"] = current_period
+
+            if self.world_state_local["time_remaining"] == 1:
                 # session = await Session.objects.aget(id=self.session_id)
                 # current_session_period = await session.session_periods.aget(period_number=self.world_state_local["current_period"])
                 # result["earnings"] = await current_session_period.store_earnings(self.world_state_local)
@@ -96,10 +119,10 @@ class TimerMixin():
                     result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]
                     result["earnings"][i]["period_earnings"] = self.world_state_local["session_players"][i]["inventory"][current_period_id]
 
-                self.world_state_local["current_period"] += 1
-                self.world_state_local["time_remaining"] = self.parameter_set_local["period_length"]
-            else:                                     
-                self.world_state_local["time_remaining"] -= 1
+                # self.world_state_local["current_period"] += 1
+                # self.world_state_local["time_remaining"] = self.parameter_set_local["period_length"]
+            # else:                                     
+            #     self.world_state_local["time_remaining"] -= 1
 
         #session status
         result["value"] = "success"
@@ -177,46 +200,3 @@ class TimerMixin():
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
-
-# def take_start_timer(session_id, data):
-#     '''
-#     start timer
-#     '''   
-#     logger = logging.getLogger(__name__) 
-#     logger.info(f"Start timer {data}")
-
-#     action = data["action"]
-
-#     with transaction.atomic():
-#         session = Session.objects.select_for_update().get(id=session_id)
-
-#         if session.world_state["timer_running"] and action=="start":
-            
-#             logger.warning(f"Start timer: already started")
-#             return {"value" : "fail", "result" : {"message":"timer already running"}}
-
-#         if action == "start":
-#             session.world_state["timer_running"] = True
-#         else:
-#             session.world_state["timer_running"] = False
-
-#         session.save()
-
-#     return {"value" : "success", "result" : session.json_for_timer()}
-
-# def take_do_period_timer(session_id):
-#     '''
-#     do period timer actions
-#     '''
-#     logger = logging.getLogger(__name__)
-
-#     session = Session.objects.get(id=session_id)
-
-#     if session.timer_running == False or session.world_state["finished"]:
-#         return_json = {"value" : "fail", "result" : {"message" : "session no longer running"}}
-#     else:
-#         return_json = session.do_period_timer()
-
-#     # logger.info(f"take_do_period_timer: {return_json}")
-
-#     return return_json
