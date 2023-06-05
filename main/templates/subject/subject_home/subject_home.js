@@ -310,7 +310,7 @@ var app = Vue.createApp({
             let period_change = false;
             let period_earnings = 0;
 
-            if (app.session.world_state.current_period != message_data.current_period)
+            if (message_data.time_remaining == 1)
             {
                 period_change = true;
                 period_earnings = message_data.earnings[app.session_player.id].period_earnings;

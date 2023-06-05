@@ -136,6 +136,7 @@ class Session(models.Model):
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
                             "time_remaining":self.parameter_set.period_length,
                             "timer_running":False,
+                            "timer_history":[],
                             "started":True,
                             "finished":False,
                             "session_periods":{str(i.id) : i.json() for i in self.session_periods.all()},
