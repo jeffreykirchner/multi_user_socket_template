@@ -67,6 +67,14 @@ class ParameterSetForm(forms.ModelForm):
                                                                             "step":"1",
                                                                             "min":"1"}))
     
+    interaction_range = forms.IntegerField(label='Interaction Range (Pixels)',
+                                            min_value=100,
+                                            max_value=800,
+                                            widget=forms.NumberInput(attrs={"v-model":"parameter_set.interaction_range",
+                                                                            "step":"1",
+                                                                            "max":"800",
+                                                                            "min":"100"}))
+    
     cool_down_length = forms.IntegerField(label='Cool Down Length (seconds)',
                                           min_value=1,
                                           widget=forms.NumberInput(attrs={"v-model":"parameter_set.cool_down_length",
@@ -94,7 +102,7 @@ class ParameterSetForm(forms.ModelForm):
         model=ParameterSet
         fields =['period_count', 'period_length', 'show_instructions', 'instruction_set', 
                  'survey_required', 'survey_link', 'test_mode', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
-                 'tokens_per_period', 'interaction_length', 'cool_down_length', 'world_width', 'world_height']
+                 'tokens_per_period', 'interaction_length', 'interaction_range', 'cool_down_length', 'world_width', 'world_height']
 
     def clean_survey_link(self):
         

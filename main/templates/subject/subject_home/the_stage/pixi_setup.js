@@ -203,7 +203,7 @@ setup_pixi_subjects(){
         avatar_container.addChild(token_graphic);
         avatar_container.addChild(inventory_label);
         avatar_container.addChild(status_label);
-
+        
         face_sprite.position.set(0, -avatar_container.height * 0.03);
         id_label.position.set(0, -avatar_container.height * 0.2);
         token_graphic.position.set(-2, +avatar_container.height * 0.18);
@@ -275,6 +275,23 @@ setup_pixi_subjects(){
             pixi_avatars[i].tractor_beam.push(tractor_beam_sprite);
             pixi_container_main.addChild(tractor_beam_sprite);
         }
+
+        //interaction range
+        let interaction_container = new PIXI.Container();
+        interaction_container.position.set(subject.current_location.x, subject.current_location.y);
+
+        let interaction_range = new PIXI.Graphics();
+        let interaction_range_radius = app.session.parameter_set.interaction_range;
+
+        interaction_range.lineStyle({width:1, color:app.session.session_players[i].parameter_set_player.hex_color, alignment:0});
+        interaction_range.beginFill(0xFFFFFF,0);
+        interaction_range.drawCircle(0, 0, interaction_range_radius);
+        interaction_range.endFill();    
+        interaction_range.zIndex = 100;
+
+        interaction_container.addChild(interaction_range);
+        pixi_avatars[i].interaction_container = interaction_container;
+        pixi_container_main.addChild(pixi_avatars[i].interaction_container);
     }
 
     //make local subject the top layer
@@ -813,6 +830,14 @@ move_player(delta)
             }
         }
     }
+
+    //update interaction ranges
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj = app.session.world_state.session_players[i];
+        let interaction_container = pixi_avatars[i].interaction_container;
+        interaction_container.position.set(obj.current_location.x, obj.current_location.y);
+    }
 },
 
 /**
@@ -939,51 +964,51 @@ subject_pointer_up(event)
 {
     if(!app.session.world_state.hasOwnProperty('started')) return;
     let local_pos = event.data.getLocalPosition(event.currentTarget);
-    let obj = app.session.world_state.session_players[app.session_player.id];
+    let local_player = app.session.world_state.session_players[app.session_player.id];
 
     if(event.button == 0)
     {
 
-        if(obj.frozen)
+        if(local_player.frozen)
         {
             app.add_text_emitters("No movement while interacting.", 
-                            obj.current_location.x, 
-                            obj.current_location.y,
-                            obj.current_location.x,
-                            obj.current_location.y-100,
+                            local_player.current_location.x, 
+                            local_player.current_location.y,
+                            local_player.current_location.x,
+                            local_player.current_location.y-100,
                             0xFFFFFF,
                             28,
                             null);
             return;
         }
         
-        obj.target_location.x = local_pos.x;
-        obj.target_location.y = local_pos.y;
+        local_player.target_location.x = local_pos.x;
+        local_player.target_location.y = local_pos.y;
 
         app.target_location_update();
     }
     else if(event.button == 2)
     {
-        if(obj.frozen)
+        if(local_player.frozen)
         {
             app.add_text_emitters("No actions while interacting.", 
-                            obj.current_location.x, 
-                            obj.current_location.y,
-                            obj.current_location.x,
-                            obj.current_location.y-100,
+                            local_player.current_location.x, 
+                            local_player.current_location.y,
+                            local_player.current_location.x,
+                            local_player.current_location.y-100,
                             0xFFFFFF,
                             28,
                             null);
             return;
         }
 
-        if(obj.cool_down > 0)
+        if(local_player.cool_down > 0)
         {
             app.add_text_emitters("No actions cooling down.", 
-                            obj.current_location.x, 
-                            obj.current_location.y,
-                            obj.current_location.x,
-                            obj.current_location.y-100,
+                            local_player.current_location.x, 
+                            local_player.current_location.y,
+                            local_player.current_location.x,
+                            local_player.current_location.y-100,
                             0xFFFFFF,
                             28,
                             null);
@@ -994,7 +1019,8 @@ subject_pointer_up(event)
         {
             let obj = app.session.world_state.session_players[i];
 
-            if(app.get_distance(obj.current_location, local_pos) < 75)
+            if(app.get_distance(obj.current_location, local_pos) < 100 &&
+               app.get_distance(obj.current_location, local_player.current_location) <= app.session.parameter_set.interaction_range+125)
             {
                 app.subject_avatar_click(i);              
                 break;
