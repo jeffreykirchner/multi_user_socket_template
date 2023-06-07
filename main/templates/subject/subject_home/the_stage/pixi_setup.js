@@ -869,7 +869,6 @@ move_player(delta)
         }
     }
 
-    
     for(let i in app.session.world_state.session_players)
     {
         let obj = app.session.world_state.session_players[i];
@@ -885,7 +884,6 @@ move_player(delta)
             view_container.position.set(obj.current_location.x, obj.current_location.y);
         }
     }
-
     
 },
 

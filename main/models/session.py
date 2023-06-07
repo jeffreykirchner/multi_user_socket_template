@@ -292,17 +292,33 @@ class Session(models.Model):
         '''
         return data summary in csv format
         '''
+        logger = logging.getLogger(__name__)
         output = io.StringIO()
 
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
         writer.writerow(["Session ID", "Period", "Client #", "Label", "Earnings ¢"])
 
-        session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
-                                                                        .order_by('session_period__period_number', 'session_player__player_number')
+        world_state = self.world_state
+        parameter_set_players = {}
+        for i in self.session_players.all().values('id','parameter_set_player__id_label'):
+            parameter_set_players[str(i['id'])] = i
 
-        for p in session_player_periods.all():
-            p.write_summary_download_csv(writer)
+        logger.info(parameter_set_players)
+
+        for period_number, period in enumerate(world_state["session_periods"]):
+            for player_number, player in enumerate(world_state["session_players"]):
+                writer.writerow([self.id, 
+                                 period_number+1, 
+                                 player_number+1,
+                                 parameter_set_players[str(player)]["parameter_set_player__id_label"], 
+                                 world_state["session_players"][player]["inventory"][period]])
+
+        # session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
+        #                                                                 .order_by('session_period__period_number', 'session_player__player_number')
+
+        # for p in session_player_periods.all():
+        #     p.write_summary_download_csv(writer)
 
         return output.getvalue()
     
