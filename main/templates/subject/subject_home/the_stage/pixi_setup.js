@@ -669,6 +669,23 @@ update_zoom()
 },
 
 /**
+ * fit staff display to screen
+ */
+fit_to_screen()
+{
+    if(app.pixi_mode == "subject") return;
+    
+    app.current_location.x = app.stage_width/2;
+    app.current_location.y = app.stage_height/2;
+
+    let zoom_factor = Math.min(app.canvas_width / app.stage_width, app.canvas_height / app.stage_height);
+
+    app.pixi_scale_range_control = zoom_factor;
+    app.pixi_scale = app.pixi_scale_range_control;
+    pixi_container_main.scale.set(app.pixi_scale);
+},
+
+/**
  * get distance in pixels between two points
  */
 get_distance(point1, point2) 
