@@ -1,9 +1,12 @@
 '''
 auto log subject in view
 '''
+import logging
+import uuid
 
 from django.db import transaction
 
+from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
@@ -59,6 +62,15 @@ class SubjectHomeAutoConnectProlificView(View):
                 if not session_player:
                     session_player = session.session_players.filter(student_id=prolific_pid).first()
 
+                    if session_player:
+                        html_response = f'''<h1><center>
+                                            <br>
+                                            <br>
+                                            <a href="{reverse('subject_home', args=(session_player.player_key,))}">Click to login</a></center>
+                                            </h1></center>
+                                         '''
+                        return HttpResponse(html_response)
+
                 if not session_player:
                     if session.current_experiment_phase != ExperimentPhase.INSTRUCTIONS:
                         return HttpResponse("<br><br><center><h1>The session has already started.</h1></center>")
@@ -74,7 +86,7 @@ class SubjectHomeAutoConnectProlificView(View):
                 if session_player:
                     player_key = session_player.player_key
                 else:
-                    return HttpResponse("<br><br><center><h1>All connections are full.</h1></center>")
+                    return HttpResponse("<br><br><center><h1>All connections are full.<br><br>Wait a few moments and refresh your screen, a slot may open up.</h1></center>")
                 
                 if first_connect:
                     session_player.reset(full_reset=False)
@@ -88,5 +100,4 @@ class SubjectHomeAutoConnectProlificView(View):
         except ObjectDoesNotExist:
             return HttpResponse("<br><br><center><h1>All connections are full.</h1></center>")
     
-
         return HttpResponseRedirect(reverse('subject_home', args=(player_key,)))
