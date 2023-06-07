@@ -292,6 +292,27 @@ setup_pixi_subjects(){
         interaction_container.addChild(interaction_range);
         pixi_avatars[i].interaction_container = interaction_container;
         pixi_container_main.addChild(pixi_avatars[i].interaction_container);
+
+        if(app.pixi_mode != "subject")
+        {
+            //view range for server
+            let view_container = new PIXI.Container();
+            view_container.position.set(subject.current_location.x, subject.current_location.y);
+
+            let view_range = new PIXI.Graphics();
+            // view_range.lineStyle({width:2, color:app.session.session_players[i].parameter_set_player.hex_color, alignment:0});
+            view_range.beginFill(app.session.session_players[i].parameter_set_player.hex_color,0.1);
+            view_range.drawRect(0, 0, 1850, 800);
+            view_range.endFill();    
+            view_range.zIndex = 75;
+            view_range.pivot.set(1850/2, 800/2);
+            view_range.position.set(0, 0);
+
+            view_container.addChild(view_range);
+            pixi_avatars[i].view_container = view_container;
+            pixi_container_main.addChild(pixi_avatars[i].view_container);
+        }
+
     }
 
     //make local subject the top layer
@@ -848,13 +869,24 @@ move_player(delta)
         }
     }
 
-    //update interaction ranges
+    
     for(let i in app.session.world_state.session_players)
     {
         let obj = app.session.world_state.session_players[i];
+
+        //update interaction ranges
         let interaction_container = pixi_avatars[i].interaction_container;
         interaction_container.position.set(obj.current_location.x, obj.current_location.y);
+
+        //update view ranges on staff screen
+        if(app.pixi_mode != "subject")
+        {
+            let view_container = pixi_avatars[i].view_container;
+            view_container.position.set(obj.current_location.x, obj.current_location.y);
+        }
     }
+
+    
 },
 
 /**

@@ -255,6 +255,7 @@ var app = Vue.createApp({
                 });
             
             app.setup_pixi();
+
         },
 
          /**
