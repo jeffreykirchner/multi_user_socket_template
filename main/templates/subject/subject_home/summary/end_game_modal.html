@@ -33,7 +33,7 @@
                     <span class="fs-3 mt-4" v-else>
                         Bonus Earnings: 
                     </span>
-                    <span class="fs-3 mt-4">$[[(session_player.earnings/100).toFixed(2)]]</span>
+                    <span class="fs-3 mt-4">$[[(session.world_state.session_players[session_player.id].earnings/100).toFixed(2)]]</span>
                 </div>
                 
             </div>

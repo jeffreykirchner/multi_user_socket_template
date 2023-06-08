@@ -293,92 +293,120 @@ class Session(models.Model):
         return data summary in csv format
         '''
         logger = logging.getLogger(__name__)
-        output = io.StringIO()
+        
+        
+        with io.StringIO() as output:
 
-        writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(["Session ID", "Period", "Client #", "Label", "Earnings ¢"])
+            writer.writerow(["Session ID", "Period", "Client #", "Label", "Earnings ¢"])
 
-        world_state = self.world_state
-        parameter_set_players = {}
-        for i in self.session_players.all().values('id','parameter_set_player__id_label'):
-            parameter_set_players[str(i['id'])] = i
+            world_state = self.world_state
+            parameter_set_players = {}
+            for i in self.session_players.all().values('id','parameter_set_player__id_label'):
+                parameter_set_players[str(i['id'])] = i
 
-        logger.info(parameter_set_players)
+            # logger.info(parameter_set_players)
 
-        for period_number, period in enumerate(world_state["session_periods"]):
-            for player_number, player in enumerate(world_state["session_players"]):
-                writer.writerow([self.id, 
-                                 period_number+1, 
-                                 player_number+1,
-                                 parameter_set_players[str(player)]["parameter_set_player__id_label"], 
-                                 world_state["session_players"][player]["inventory"][period]])
+            for period_number, period in enumerate(world_state["session_periods"]):
+                for player_number, player in enumerate(world_state["session_players"]):
+                    writer.writerow([self.id, 
+                                    period_number+1, 
+                                    player_number+1,
+                                    parameter_set_players[str(player)]["parameter_set_player__id_label"], 
+                                    world_state["session_players"][player]["inventory"][period]])
+                    
+            v = output.getvalue()
+            output.close()
 
-        # session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
-        #                                                                 .order_by('session_period__period_number', 'session_player__player_number')
-
-        # for p in session_player_periods.all():
-        #     p.write_summary_download_csv(writer)
-
-        return output.getvalue()
+        return v
     
     def get_download_action_csv(self):
         '''
         return data actions in csv format
         '''
-        output = io.StringIO()
+        with io.StringIO() as output:
 
-        writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action", "Info (JSON)", "Timestamp"])
+            writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action", "Info (JSON)", "Timestamp"])
 
-        # session_events =  main.models.SessionEvent.objects.filter(session__id=self.id).prefetch_related('period_number', 'time_remaining', 'type', 'data', 'timestamp')
-        # session_events = session_events.select_related('session_player')
+            # session_events =  main.models.SessionEvent.objects.filter(session__id=self.id).prefetch_related('period_number', 'time_remaining', 'type', 'data', 'timestamp')
+            # session_events = session_events.select_related('session_player')
 
-        for p in self.session_events.all().exclude(type="timer_tick"):
-            writer.writerow([self.id,
-                             p.period_number, 
-                             p.time_remaining, 
-                             "Client #", 
-                             "Label", 
-                             p.type, 
-                             p.data, 
-                             p.timestamp])
+            world_state = self.world_state
+            parameter_set_players = {}
+            for i in self.session_players.all().values('id','player_number','parameter_set_player__id_label'):
+                parameter_set_players[str(i['id'])] = i
 
-        return output.getvalue()
+            for p in self.session_events.all().exclude(type="timer_tick"):
+                writer.writerow([self.id,
+                                p.period_number, 
+                                p.time_remaining, 
+                                parameter_set_players[str(p.session_player_id)]["player_number"], 
+                                parameter_set_players[str(p.session_player_id)]["parameter_set_player__id_label"], 
+                                p.type, 
+                                p.data, 
+                                p.timestamp])
+            
+            v = output.getvalue()
+            output.close()
+
+        return v
     
     def get_download_recruiter_csv(self):
         '''
         return data recruiter in csv format
         '''
-        output = io.StringIO()
+        with io.StringIO() as output:
 
-        writer = csv.writer(output)
+            writer = csv.writer(output)
 
-        session_players = self.session_players.all()
+            parameter_set_players = {}
+            for i in self.session_players.all().values('id','student_id'):
+                parameter_set_players[str(i['id'])] = i
 
-        for p in session_players:
-            writer.writerow([p.student_id, p.earnings/100])
+            for p in self.world_state["session_players"]:
+                writer.writerow([parameter_set_players[p]["student_id"],
+                                 self.world_state["session_players"][p]["earnings"]])
 
-        return output.getvalue()
+            v = output.getvalue()
+            output.close()
+
+        return v
     
     def get_download_payment_csv(self):
         '''
         return data payments in csv format
         '''
-        output = io.StringIO()
+        with io.StringIO() as output:
 
-        writer = csv.writer(output)
+            writer = csv.writer(output)
 
-        writer.writerow(['Session', 'Date', 'Player', 'Name', 'Student ID', 'Earnings'])
+            writer.writerow(['Session', 'Date', 'Player', 'Name', 'Student ID', 'Earnings'])
 
-        session_players = self.session_players.all()
+            # session_players = self.session_players.all()
 
-        for p in session_players:
-            writer.writerow([self.id, self.get_start_date_string(), p.player_number,p.name, p.student_id, p.earnings/100])
+            # for p in session_players:
+            #     writer.writerow([self.id, self.get_start_date_string(), p.player_number,p.name, p.student_id, p.earnings/100])
 
-        return output.getvalue()
+            parameter_set_players = {}
+            for i in self.session_players.all().values('id', 'player_number', 'name', 'student_id'):
+                parameter_set_players[str(i['id'])] = i
 
+            for p in self.world_state["session_players"]:
+                writer.writerow([self.id,
+                                 self.get_start_date_string(),
+                                 parameter_set_players[p]["player_number"],
+                                 parameter_set_players[p]["name"],
+                                 parameter_set_players[p]["student_id"],
+                                 self.world_state["session_players"][p]["earnings"]])
+
+            v = output.getvalue()
+            output.close()
+
+        return v
+    
     def json(self):
         '''
         return json object of model
