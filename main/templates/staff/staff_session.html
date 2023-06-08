@@ -84,12 +84,6 @@
                 {%include "staff/staff_session/control/control_card.html"%} 
             </div>
         </div>
-        
-        <div class="row mt-2">
-            <div class="col">
-                {%include "staff/staff_session/summary/summary_card.html"%}
-            </div>                
-        </div>
 
         <div class="row mt-2">
             <div class="col">
@@ -104,6 +98,15 @@
     <div class="col">
         {%include "subject/subject_home/the_stage/the_stage_card.html"%}
     </div>
+</div>
+
+<div class="row mt-2" v-cloak v-if="session">
+    <div class="col" v-show="session.world_state.current_experiment_phase=='Done'">
+        {%include "staff/staff_session/replay/replay_card.html"%}
+    </div>
+    <div class="col-md-3">
+        {%include "staff/staff_session/summary/summary_card.html"%}
+    </div>                
 </div>
 
 {% endblock %}
