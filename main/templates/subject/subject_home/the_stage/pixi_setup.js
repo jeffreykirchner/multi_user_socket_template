@@ -338,6 +338,12 @@ destory_setup_pixi_subjects()
         {
             pixi_objects.avatar_container.destroy();
             pixi_objects.chat_container.destroy();
+            pixi_objects.interaction_container.destroy();
+
+            if(app.pixi_mode != "subject")
+            {
+                pixi_objects.view_container.destroy();
+            }
         }
     }
 },
