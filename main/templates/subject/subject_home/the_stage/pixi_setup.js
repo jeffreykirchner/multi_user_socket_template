@@ -20,6 +20,11 @@ setup_pixi(){
         app.setup_pixi_minimap();
         app.setup_subject_status_overlay();
         app.update_zoom();
+
+        if(app.pixi_mode!="subject")
+        {
+            app.fit_to_screen();
+        }
     });
 
     pixi_text_emitter = {};
