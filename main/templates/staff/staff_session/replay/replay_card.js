@@ -18,5 +18,7 @@ take_load_session_events(message_data)
     else
     {
         app.session_events = message_data.session_events;
+        app.session.world_state = message_data.world_state_initial;
+        app.session.world_state["current_experiment_phase"] = "Done";
     }
 },
