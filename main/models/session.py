@@ -330,12 +330,20 @@ class Session(models.Model):
 
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action", "Info", "Info (JSON)", "Timestamp"])
+        writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action", "Info (JSON)", "Timestamp"])
 
-        session_player_chats = main.models.SessionPlayerChat.objects.filter(session_player__in=self.session_players.all())
+        # session_events =  main.models.SessionEvent.objects.filter(session__id=self.id).prefetch_related('period_number', 'time_remaining', 'type', 'data', 'timestamp')
+        # session_events = session_events.select_related('session_player')
 
-        for p in session_player_chats.all():
-            p.write_action_download_csv(writer)
+        for p in self.session_events.all().exclude(type="timer_tick"):
+            writer.writerow([self.id,
+                             p.period_number, 
+                             p.time_remaining, 
+                             "Client #", 
+                             "Label", 
+                             p.type, 
+                             p.data, 
+                             p.timestamp])
 
         return output.getvalue()
     
