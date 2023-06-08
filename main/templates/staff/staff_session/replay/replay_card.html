@@ -4,6 +4,15 @@
 
     </div>
     <div class="card-body">      
-        
+        <div class="row">
+            <div class="col" v-if="!session_events">
+                <button type="button" 
+                    class="btn btn-outline-primary" 
+                    title="Load Session Events" 
+                    v-on:click="send_load_session_events()">
+                Load <i class="fas fa-cloud-download-alt"></i>
+            </button>
+            </div>
+        </div>
     </div>                    
 </div> 
