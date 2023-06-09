@@ -135,7 +135,7 @@
                                 </span>
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                <span v-if="Object.keys(session.world_state).length>0">
+                                <span v-if="Object.keys(session.world_state).length>0 && session.started">
                                     $[[(session.world_state.session_players[p].earnings/100).toFixed(2)]]
                                 </span>
                                 <span v-else>
