@@ -312,9 +312,13 @@ var app = Vue.createApp({
 
             if (message_data.time_remaining == 1)
             {
-                period_change = true;
                 period_earnings = message_data.earnings[app.session_player.id].period_earnings;
                 app.session.world_state.session_players[app.session_player.id].earnings = message_data.earnings[app.session_player.id].total_earnings;
+            }
+
+            if (app.session.world_state.current_period != message_data.current_period)
+            {
+                period_change = true;
             }
 
             app.session.started = message_data.started;
@@ -340,7 +344,7 @@ var app = Vue.createApp({
 
 
             //period has changed display earnings
-            if(period_change)
+            if(message_data.time_remaining == 1)
             {
                 Vue.nextTick(() => {
                     let current_location = app.session.world_state.session_players[app.session_player.id].current_location;
@@ -352,12 +356,15 @@ var app = Vue.createApp({
                             current_location.y-100,
                             0xFFFFFF,
                             28,
-                            null)
-
-                    app.setup_pixi_tokens_for_current_period();
-                    app.setup_pixi_minimap();
-                    app.update_player_inventory();
+                            null)                    
                 });               
+            }
+
+            if(period_change)
+            {
+                app.setup_pixi_tokens_for_current_period();
+                app.setup_pixi_minimap();
+                app.update_player_inventory();
             }
 
             //update player states
