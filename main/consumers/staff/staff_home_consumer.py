@@ -149,6 +149,7 @@ def create_new_session(auth_user):
 
     session.save()
     session.update_player_count()
+    session.setup_world_state()
 
     logger = logging.getLogger(__name__) 
     logger.info(f"Create New Session {session}")
