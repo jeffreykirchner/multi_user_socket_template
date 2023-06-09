@@ -169,10 +169,10 @@ class TimerMixin():
 
             await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
             await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                            type="timer_tick",
-                                            period_number=self.world_state_local["current_period"],
-                                            time_remaining=self.world_state_local["time_remaining"],
-                                            data=self.world_state_local)
+                                               type="timer_tick",
+                                               period_number=self.world_state_local["current_period"],
+                                               time_remaining=self.world_state_local["time_remaining"],
+                                               data=self.world_state_local)
             
             await self.send_message(message_to_self=False, message_to_group=result,
                                     message_type="time", send_to_client=False, send_to_group=True)

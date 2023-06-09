@@ -41,6 +41,7 @@ class ParameterSet(models.Model):
 
     interaction_length = models.IntegerField(verbose_name='Interaction Length', default=10)                   #interaction length in seconds
     cool_down_length = models.IntegerField(verbose_name='Cool Down Length', default=10)                       #cool down length in seconds
+    interaction_range = models.IntegerField(verbose_name='Interaction Range', default=300)                    #interaction range in pixels
 
     reconnection_limit = models.IntegerField(verbose_name='Age Warning', default=25)       #age cut that issues a warning for invalid age range
 
@@ -87,6 +88,7 @@ class ParameterSet(models.Model):
 
             self.interaction_length = new_ps.get("interaction_length", 10)
             self.cool_down_length = new_ps.get("cool_down_length", 10)
+            self.interaction_range = new_ps.get("interaction_range", 300)
 
             self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
@@ -190,6 +192,7 @@ class ParameterSet(models.Model):
 
         self.json_for_session["interaction_length"] = self.interaction_length
         self.json_for_session["cool_down_length"] = self.cool_down_length
+        self.json_for_session["interaction_range"] = self.interaction_range
 
         self.json_for_session["reconnection_limit"] = self.reconnection_limit
 

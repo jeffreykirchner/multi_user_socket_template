@@ -20,6 +20,11 @@ setup_pixi(){
         app.setup_pixi_minimap();
         app.setup_subject_status_overlay();
         app.update_zoom();
+
+        if(app.pixi_mode!="subject")
+        {
+            app.fit_to_screen();
+        }
     });
 
     pixi_text_emitter = {};
@@ -203,7 +208,7 @@ setup_pixi_subjects(){
         avatar_container.addChild(token_graphic);
         avatar_container.addChild(inventory_label);
         avatar_container.addChild(status_label);
-
+        
         face_sprite.position.set(0, -avatar_container.height * 0.03);
         id_label.position.set(0, -avatar_container.height * 0.2);
         token_graphic.position.set(-2, +avatar_container.height * 0.18);
@@ -275,6 +280,44 @@ setup_pixi_subjects(){
             pixi_avatars[i].tractor_beam.push(tractor_beam_sprite);
             pixi_container_main.addChild(tractor_beam_sprite);
         }
+
+        //interaction range
+        let interaction_container = new PIXI.Container();
+        interaction_container.position.set(subject.current_location.x, subject.current_location.y);
+
+        let interaction_range = new PIXI.Graphics();
+        let interaction_range_radius = app.session.parameter_set.interaction_range;
+
+        interaction_range.lineStyle({width:1, color:app.session.session_players[i].parameter_set_player.hex_color, alignment:0});
+        interaction_range.beginFill(0xFFFFFF,0);
+        interaction_range.drawCircle(0, 0, interaction_range_radius);
+        interaction_range.endFill();    
+        interaction_range.zIndex = 100;
+
+        interaction_container.addChild(interaction_range);
+        pixi_avatars[i].interaction_container = interaction_container;
+        pixi_container_main.addChild(pixi_avatars[i].interaction_container);
+
+        if(app.pixi_mode != "subject")
+        {
+            //view range for server
+            let view_container = new PIXI.Container();
+            view_container.position.set(subject.current_location.x, subject.current_location.y);
+
+            let view_range = new PIXI.Graphics();
+            // view_range.lineStyle({width:2, color:app.session.session_players[i].parameter_set_player.hex_color, alignment:0});
+            view_range.beginFill(app.session.session_players[i].parameter_set_player.hex_color,0.1);
+            view_range.drawRect(0, 0, 1850, 800);
+            view_range.endFill();    
+            view_range.zIndex = 75;
+            view_range.pivot.set(1850/2, 800/2);
+            view_range.position.set(0, 0);
+
+            view_container.addChild(view_range);
+            pixi_avatars[i].view_container = view_container;
+            pixi_container_main.addChild(pixi_avatars[i].view_container);
+        }
+
     }
 
     //make local subject the top layer
@@ -300,6 +343,12 @@ destory_setup_pixi_subjects()
         {
             pixi_objects.avatar_container.destroy();
             pixi_objects.chat_container.destroy();
+            pixi_objects.interaction_container.destroy();
+
+            if(app.pixi_mode != "subject")
+            {
+                pixi_objects.view_container.destroy();
+            }
         }
     }
 },
@@ -652,6 +701,23 @@ update_zoom()
 },
 
 /**
+ * fit staff display to screen
+ */
+fit_to_screen()
+{
+    if(app.pixi_mode == "subject") return;
+    
+    app.current_location.x = app.stage_width/2;
+    app.current_location.y = app.stage_height/2;
+
+    let zoom_factor = Math.min(app.canvas_width / app.stage_width, app.canvas_height / app.stage_height);
+
+    app.pixi_scale_range_control = zoom_factor;
+    app.pixi_scale = app.pixi_scale_range_control;
+    pixi_container_main.scale.set(app.pixi_scale);
+},
+
+/**
  * get distance in pixels between two points
  */
 get_distance(point1, point2) 
@@ -813,6 +879,23 @@ move_player(delta)
             }
         }
     }
+
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj = app.session.world_state.session_players[i];
+
+        //update interaction ranges
+        let interaction_container = pixi_avatars[i].interaction_container;
+        interaction_container.position.set(obj.current_location.x, obj.current_location.y);
+
+        //update view ranges on staff screen
+        if(app.pixi_mode != "subject")
+        {
+            let view_container = pixi_avatars[i].view_container;
+            view_container.position.set(obj.current_location.x, obj.current_location.y);
+        }
+    }
+    
 },
 
 /**
@@ -939,51 +1022,51 @@ subject_pointer_up(event)
 {
     if(!app.session.world_state.hasOwnProperty('started')) return;
     let local_pos = event.data.getLocalPosition(event.currentTarget);
-    let obj = app.session.world_state.session_players[app.session_player.id];
+    let local_player = app.session.world_state.session_players[app.session_player.id];
 
     if(event.button == 0)
     {
 
-        if(obj.frozen)
+        if(local_player.frozen)
         {
             app.add_text_emitters("No movement while interacting.", 
-                            obj.current_location.x, 
-                            obj.current_location.y,
-                            obj.current_location.x,
-                            obj.current_location.y-100,
+                            local_player.current_location.x, 
+                            local_player.current_location.y,
+                            local_player.current_location.x,
+                            local_player.current_location.y-100,
                             0xFFFFFF,
                             28,
                             null);
             return;
         }
         
-        obj.target_location.x = local_pos.x;
-        obj.target_location.y = local_pos.y;
+        local_player.target_location.x = local_pos.x;
+        local_player.target_location.y = local_pos.y;
 
         app.target_location_update();
     }
     else if(event.button == 2)
     {
-        if(obj.frozen)
+        if(local_player.frozen)
         {
             app.add_text_emitters("No actions while interacting.", 
-                            obj.current_location.x, 
-                            obj.current_location.y,
-                            obj.current_location.x,
-                            obj.current_location.y-100,
+                            local_player.current_location.x, 
+                            local_player.current_location.y,
+                            local_player.current_location.x,
+                            local_player.current_location.y-100,
                             0xFFFFFF,
                             28,
                             null);
             return;
         }
 
-        if(obj.cool_down > 0)
+        if(local_player.cool_down > 0)
         {
             app.add_text_emitters("No actions cooling down.", 
-                            obj.current_location.x, 
-                            obj.current_location.y,
-                            obj.current_location.x,
-                            obj.current_location.y-100,
+                            local_player.current_location.x, 
+                            local_player.current_location.y,
+                            local_player.current_location.x,
+                            local_player.current_location.y-100,
                             0xFFFFFF,
                             28,
                             null);
@@ -994,7 +1077,8 @@ subject_pointer_up(event)
         {
             let obj = app.session.world_state.session_players[i];
 
-            if(app.get_distance(obj.current_location, local_pos) < 75)
+            if(app.get_distance(obj.current_location, local_pos) < 100 &&
+               app.get_distance(obj.current_location, local_player.current_location) <= app.session.parameter_set.interaction_range+125)
             {
                 app.subject_avatar_click(i);              
                 break;

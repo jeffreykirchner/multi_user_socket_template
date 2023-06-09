@@ -12,7 +12,7 @@ download_summary_data(){
 take_download_summary_data(message_data){
 
     let download_link = document.createElement("a");
-    let blob = new Blob(["\ufeff", message_data]);
+    let blob = new Blob(["\ufeff", message_data.result]);
     let url = URL.createObjectURL(blob);
     download_link.href = url;
     download_link.download = "Template_Data_Session_" + app.session.id +".csv";

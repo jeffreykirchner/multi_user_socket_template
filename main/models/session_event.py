@@ -16,6 +16,7 @@ class SessionEvent(models.Model):
     session events model
     '''
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="session_events")
+    session_player = models.ForeignKey("main.SessionPlayer", on_delete=models.CASCADE, related_name="session_events_b", blank=True, null=True)
 
     period_number = models.IntegerField(default=1, verbose_name="Period Number")
     time_remaining = models.IntegerField(default=0, verbose_name="Time Remaining")
@@ -32,7 +33,7 @@ class SessionEvent(models.Model):
 
         verbose_name = 'Session Event'
         verbose_name_plural = 'Session Events'
-        ordering = ['period_number', 'time_remaining']
+        ordering = ['period_number', '-time_remaining']
 
     def json(self):
         '''

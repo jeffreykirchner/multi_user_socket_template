@@ -38,7 +38,7 @@
 
         <!-- controls -->
         <div class="row" v-if="pixi_mode=='staff' && session">
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <label for="zoom_range" 
                        class="form-label">
                     Zoom
@@ -66,6 +66,18 @@
                            Player [[temp_p.parameter_set_player.id_label]]
                     </option>
                 </select>
+            </div>
+            <div class="col-md-1">
+                <label for="fit_to_screen" 
+                       class="form-label">Fit to Screen</label>
+                <br>
+                <button type="button"
+                        id="fit_to_screen"
+                        class="form_button btn btn-outline-primary"
+                        v-bind:disabled="reconnecting || working || session.started===false"
+                        v-on:click="fit_to_screen()">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                </button>
             </div>
         </div>
 

@@ -15,6 +15,8 @@ from datetime import datetime, timedelta
 
 from main.globals import ExperimentPhase
 
+import main
+
 class SubjectUpdatesMixin():
     '''
     subject updates mixin for staff session consumer
@@ -43,6 +45,7 @@ class SubjectUpdatesMixin():
         result["sender_id"] = self.session_players_local[event["player_key"]]["id"]
 
         await SessionEvent.objects.acreate(session_id=self.session_id, 
+                                           session_player_id=result["sender_id"],
                                            type="chat",
                                            period_number=self.world_state_local["current_period"],
                                            time_remaining=self.world_state_local["time_remaining"],
@@ -224,7 +227,8 @@ class SubjectUpdatesMixin():
         inventory = self.world_state_local['session_players'][str(player_id)]['inventory'][str(period_id)]
 
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
-        await SessionEvent.objects.acreate(session_id=self.session_id, 
+        await SessionEvent.objects.acreate(session_id=self.session_id,
+                                           session_player_id=player_id, 
                                            type="collect_token",
                                            period_number=self.world_state_local["current_period"],
                                            time_remaining=self.world_state_local["time_remaining"],
@@ -282,6 +286,7 @@ class SubjectUpdatesMixin():
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
         await SessionEvent.objects.acreate(session_id=self.session_id, 
+                                           session_player_id=player_id,
                                            type="tractor_beam",
                                            period_number=self.world_state_local["current_period"],
                                            time_remaining=self.world_state_local["time_remaining"],
@@ -348,10 +353,11 @@ class SubjectUpdatesMixin():
                 await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
             await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                        type="interaction",
-                                        period_number=self.world_state_local["current_period"],
-                                        time_remaining=self.world_state_local["time_remaining"],
-                                        data={"interaction" : interaction, "result":result})
+                                               session_player_id=player_id,
+                                               type="interaction",
+                                               period_number=self.world_state_local["current_period"],
+                                               time_remaining=self.world_state_local["time_remaining"],
+                                               data={"interaction" : interaction, "result":result})
         
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
@@ -394,10 +400,11 @@ class SubjectUpdatesMixin():
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
         await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                        type="cancel_interaction",
-                                        period_number=self.world_state_local["current_period"],
-                                        time_remaining=self.world_state_local["time_remaining"],
-                                        data={"player_id" : player_id, "target_player_id":target_player_id})
+                                           session_player_id=player_id,
+                                           type="cancel_interaction",
+                                           period_number=self.world_state_local["current_period"],
+                                           time_remaining=self.world_state_local["time_remaining"],
+                                           data={"player_id" : player_id, "target_player_id":target_player_id})
 
         result = {"source_player_id" : player_id, "target_player_id" : target_player_id, "value" : "success"}
         

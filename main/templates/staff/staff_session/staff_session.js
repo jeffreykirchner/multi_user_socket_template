@@ -29,6 +29,7 @@ var app = Vue.createApp({
                     session_key : "{{session.session_key}}",
                     other_color : 0xD3D3D3,
                     session : null,
+                    session_events : null,
 
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
 
@@ -203,7 +204,10 @@ var app = Vue.createApp({
                     break;
                 case "update_cancel_interaction":
                     app.take_update_cancel_interaction(message_data);
-                    break;    
+                    break;   
+                case "load_session_events":
+                    app.take_load_session_events(message_data);
+                    break; 
             }
 
             app.first_load_done = true;
@@ -255,6 +259,7 @@ var app = Vue.createApp({
                 });
             
             app.setup_pixi();
+
         },
 
          /**
@@ -420,6 +425,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}
         {%include "staff/staff_session/interface/interface_card.js"%}
+        {%include "staff/staff_session/replay/replay_card.js"%}
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
         {%include "js/help_doc.js"%}
     
