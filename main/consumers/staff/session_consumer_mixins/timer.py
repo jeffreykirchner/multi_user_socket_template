@@ -182,7 +182,7 @@ class TimerMixin():
 
             loop = asyncio.get_event_loop()
 
-            loop.call_later(0.25, asyncio.create_task, 
+            loop.call_later(0.33, asyncio.create_task, 
                             self.channel_layer.send(
                                 self.channel_name,
                                 {
