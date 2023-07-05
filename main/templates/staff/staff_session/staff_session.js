@@ -385,7 +385,11 @@ var app = Vue.createApp({
             if(period_change)
             {
                 app.setup_pixi_tokens_for_current_period();
-                app.update_player_inventory();
+                app.update_player_inventory();                
+            }
+
+            if(app.session.world_state.time_remaining == 1)
+            {
                 app.take_update_earnings(message_data.earnings);
             }
 
