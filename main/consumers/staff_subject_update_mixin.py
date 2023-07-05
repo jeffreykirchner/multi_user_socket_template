@@ -18,8 +18,7 @@ class StaffSubjectUpdateMixin():
 
     connection_type = None            #staff or subject
     connection_uuid = None            #uuid of connected object   
-    session_id = None                 #id of session
-    controlling_channel = None        #channel that is controlling the session
+    session_id = None                 #id of session    
     
     async def help_doc(self, event):
         '''

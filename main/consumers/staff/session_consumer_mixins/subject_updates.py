@@ -78,6 +78,7 @@ class SubjectUpdatesMixin():
             logger.info(f"update_connection_status: event data {event}, channel name {self.channel_name}, group name {self.room_group_name}")
 
             if "session" in self.room_group_name:
+                #connection from staff screen
                 if event["connect_or_disconnect"] == "connect":
                     # session = await Session.objects.aget(id=self.session_id)
                     self.controlling_channel = event["sender_channel_name"]
@@ -85,11 +86,11 @@ class SubjectUpdatesMixin():
                     if self.channel_name == self.controlling_channel:
                         logger.info(f"update_connection_status: controller {self.channel_name}, session id {self.session_id}")
                         await Session.objects.filter(id=self.session_id).aupdate(controlling_channel=self.controlling_channel) 
+                        await self.send_message(message_to_self=None, message_to_group={"controlling_channel" : self.controlling_channel},
+                                                message_type="set_controlling_channel", send_to_client=False, send_to_group=True)
                 else:
-                    pass
-                    # if self.channel_name != event["sender_channel_name"]:
-                    #     self.controlling_channel = self.channel_name
-                    #     await Session.objects.filter(id=self.session_id).aupdate(controlling_channel=self.controlling_channel)
+                    #connection from subject screen
+                    pass                   
             return
         
         subject_id = event_data["result"]["id"]
@@ -103,6 +104,12 @@ class SubjectUpdatesMixin():
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+
+    async def update_set_controlling_channel(self, event):
+        '''
+        only for subject screens
+        '''
+        pass
 
     async def update_name(self, event):
         '''

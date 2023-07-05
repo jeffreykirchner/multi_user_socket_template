@@ -47,6 +47,13 @@ class SubjectHomeConsumer(SocketConsumerMixin,
                      "staff_data": message_to_staff,
                      "sender_channel_name": self.channel_name},
                 )
+    
+    async def update_set_controlling_channel(self, event):
+        '''
+        update controlling channel
+        '''
+        event_data = event["group_data"]
+        self.controlling_channel = event_data["controlling_channel"]
            
     #consumer calls to ignore
     async def update_reset_connections(self, event):

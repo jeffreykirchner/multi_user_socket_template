@@ -26,6 +26,7 @@ class GetSessionMixin():
                 session_player = await SessionPlayer.objects.select_related('session').aget(player_key=self.connection_uuid)
                 self.session_id = session_player.session.id
                 self.session_player_id = session_player.id
+                self.controlling_channel =  session_player.session.controlling_channel
             except ObjectDoesNotExist:
                 result = {"session" : None, "session_player" : None}
             else:        
