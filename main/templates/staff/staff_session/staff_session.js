@@ -30,6 +30,7 @@ var app = Vue.createApp({
                     other_color : 0xD3D3D3,
                     session : null,
                     session_events : null,
+                    timer_pulse : null,
 
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
 
@@ -385,7 +386,11 @@ var app = Vue.createApp({
             if(period_change)
             {
                 app.setup_pixi_tokens_for_current_period();
-                app.update_player_inventory();
+                app.update_player_inventory();                
+            }
+
+            if(app.session.world_state.time_remaining == 1)
+            {
                 app.take_update_earnings(message_data.earnings);
             }
 
