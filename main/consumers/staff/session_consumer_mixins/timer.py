@@ -43,14 +43,18 @@ class TimerMixin():
         Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
         if self.timer_running:
+            result = {"timer_running" : True}
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
+        
             #start continue timer
-            await self.channel_layer.send(
-                self.channel_name,
-                {
-                    'type': "continue_timer",
-                    'message_text': {},
-                }
-            )
+            # await self.channel_layer.send(
+            #     self.channel_name,
+            #     {
+            #         'type': "continue_timer",
+            #         'message_text': {},
+            #     }
+            # )
         else:
             #stop timer
             result = {"timer_running" : False}
@@ -69,9 +73,9 @@ class TimerMixin():
         logger = logging.getLogger(__name__)
         # logger.info(f"continue_timer start")
 
-        if not self.timer_running:
-            logger.info(f"continue_timer timer off")
-            return
+        # if not self.timer_running:
+        #     logger.info(f"continue_timer timer off")
+        #     return
 
         stop_timer = False
         send_update = True
@@ -178,6 +182,7 @@ class TimerMixin():
                                     message_type="time", send_to_client=False, send_to_group=True)
 
         #if session is not over continue
+        stop_timer = True
         if not stop_timer:
 
             loop = asyncio.get_event_loop()

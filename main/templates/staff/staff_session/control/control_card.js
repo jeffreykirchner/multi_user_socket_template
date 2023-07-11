@@ -126,7 +126,25 @@ start_timer(){
 */
 take_start_timer(message_data){
    
+    if(app.timer_pulse != null) clearTimeout(app.timer_pulse);
     app.session.world_state.timer_running = message_data.timer_running;
+
+    if(app.session.world_state.timer_running)
+    {
+        app.do_timer_pulse();
+    }
+},
+
+/**
+ * handle local timer pulse
+ */
+do_timer_pulse(){
+    console.log("timer pulse");
+    if(app.session.world_state.timer_running)
+    {
+        app.send_message("continue_timer", {});
+        app.timer_pulse = setTimeout(app.do_timer_pulse, 1000);
+    }
 },
 
 /**reset experiment, remove all bids, asks and trades

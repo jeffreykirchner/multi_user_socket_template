@@ -30,6 +30,7 @@ var app = Vue.createApp({
                     other_color : 0xD3D3D3,
                     session : null,
                     session_events : null,
+                    timer_pulse : null,
 
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
 
