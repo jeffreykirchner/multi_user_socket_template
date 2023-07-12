@@ -29,38 +29,34 @@ class TimerMixin():
             logger.warning(f"start_timer: not controlling channel")
             return
 
-        if event["message_text"]["action"] == "start":
-            if self.timer_running:
-                logger.warning(f"start_timer: already started")
-                return
-            
-            self.timer_running = True
+        if event["message_text"]["action"] == "start":            
+            self.world_state_local["timer_running"] = True
         else:
-            self.timer_running = False
+            self.world_state_local["timer_running"] = False
 
-        self.world_state_local["timer_running"] = self.timer_running
         self.world_state_local["timer_history"].append({"time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
                                                         "count": 0})
-        Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
-
-        if self.timer_running:
-            result = {"timer_running" : True}
-            await self.send_message(message_to_self=result, message_to_group=None,
-                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         
-            #start continue timer
-            # await self.channel_layer.send(
-            #     self.channel_name,
-            #     {
-            #         'type': "continue_timer",
-            #         'message_text': {},
-            #     }
-            # )
-        else:
+        await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+
+        # if self.world_state_local["timer_running"]:
+        #     result = {"timer_running" : True}
+        #     await self.send_message(message_to_self=result, message_to_group=None,
+        #                             message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+        #     #start continue timer
+        #     # await self.channel_layer.send(
+        #     #     self.channel_name,
+        #     #     {
+        #     #         'type': "continue_timer",
+        #     #         'message_text': {},
+        #     #     }
+        #     # )
+        # else:
             #stop timer
-            result = {"timer_running" : False}
-            await self.send_message(message_to_self=result, message_to_group=None,
-                                    message_type=event['type'], send_to_client=True, send_to_group=False)
+        result = {"timer_running" : self.world_state_local["timer_running"]}
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
         
         # logger.info(f"start_timer complete {event}")
 
@@ -68,14 +64,17 @@ class TimerMixin():
         '''
         continue to next second of the experiment
         '''
+
         if self.controlling_channel != self.channel_name:
             return
         
         logger = logging.getLogger(__name__)
-        logger.info(f"continue_timer start")
+        #logger.info(f"continue_timer: start")
 
-        if not self.timer_running:
+        if not self.world_state_local["timer_running"]:
             logger.info(f"continue_timer timer off")
+            await self.send_message(message_to_self=True, message_to_group=None,
+                                    message_type="stop_timer_pulse", send_to_client=True, send_to_group=False)
             return
 
         stop_timer = False
@@ -172,6 +171,9 @@ class TimerMixin():
             
             result["session_player_status"] = session_player_status
 
+            if stop_timer:
+                self.world_state_local["timer_running"] = False
+
             await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
             await SessionEvent.objects.acreate(session_id=self.session_id, 
                                                type="timer_tick",
@@ -183,19 +185,19 @@ class TimerMixin():
                                     message_type="time", send_to_client=False, send_to_group=True)
 
         #if session is not over continue
-        stop_timer = True
-        if not stop_timer:
+        #stop_timer = True
+        # if not stop_timer:
 
-            loop = asyncio.get_event_loop()
+        #     loop = asyncio.get_event_loop()
 
-            loop.call_later(0.33, asyncio.create_task, 
-                            self.channel_layer.send(
-                                self.channel_name,
-                                {
-                                    'type': "continue_timer",
-                                    'message_text': {},
-                                }
-                            ))
+        #     loop.call_later(0.33, asyncio.create_task, 
+        #                     self.channel_layer.send(
+        #                         self.channel_name,
+        #                         {
+        #                             'type': "continue_timer",
+        #                             'message_text': {},
+        #                         }
+        #                     ))
         
         # logger.info(f"continue_timer end")
 

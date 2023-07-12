@@ -139,6 +139,8 @@ var app = Vue.createApp({
                 case "start_timer":
                     app.take_start_timer(message_data);
                     break;   
+                case "stop_timer_pulse":
+                    app.take_stop_timer_pulse(message_data);
                 case "update_connection_status":
                     app.take_update_connection_status(message_data);
                     break;   

@@ -153,6 +153,13 @@ do_timer_pulse(){
     }
 },
 
+/**
+ * stop local timer pulse 
+ */
+take_stop_timer_pulse(){
+    if(app.timer_pulse != null) clearTimeout(app.timer_pulse);
+},
+
 /**reset experiment, remove all bids, asks and trades
 */
 end_early(){
