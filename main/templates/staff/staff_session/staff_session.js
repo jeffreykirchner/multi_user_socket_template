@@ -87,7 +87,9 @@ var app = Vue.createApp({
         /** fire trys to connect to server
          * return true if re-connect should be allowed else false
         */
-        handle_socket_connection_try(){            
+        handle_socket_connection_try(){         
+            app.session.world_state.timer_running = false;
+            if(app.timer_pulse != null) clearTimeout(app.timer_pulse);   
             return true;
         },
 
@@ -137,6 +139,8 @@ var app = Vue.createApp({
                 case "start_timer":
                     app.take_start_timer(message_data);
                     break;   
+                case "stop_timer_pulse":
+                    app.take_stop_timer_pulse(message_data);
                 case "update_connection_status":
                     app.take_update_connection_status(message_data);
                     break;   
@@ -308,11 +312,14 @@ var app = Vue.createApp({
             else
             {
                 Vue.nextTick(() => {
-                    app.do_reload();
+                    app.do_reload();                    
                 });
             }
             
-            app.update_phase_button_text();    
+            app.update_phase_button_text();
+            let v = {};
+            v.timer_running = app.session.world_state.timer_running;
+            app.take_start_timer(v); 
         },
 
         /**update text of move on button based on current state

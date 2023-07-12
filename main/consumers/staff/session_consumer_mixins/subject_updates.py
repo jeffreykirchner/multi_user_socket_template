@@ -89,7 +89,7 @@ class SubjectUpdatesMixin():
                         await self.send_message(message_to_self=None, message_to_group={"controlling_channel" : self.controlling_channel},
                                                 message_type="set_controlling_channel", send_to_client=False, send_to_group=True)
                 else:
-                    #connection from subject screen
+                    #disconnect from staff screen
                     pass                   
             return
         

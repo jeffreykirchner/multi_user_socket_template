@@ -61,8 +61,6 @@ class ExperimentControlsMixin():
         reset experiment on staff
         '''
 
-        self.timer_running = False
-
         result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
 
         await self.send_message(message_to_self=result, message_to_group=None,

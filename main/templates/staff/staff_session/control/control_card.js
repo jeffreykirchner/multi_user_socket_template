@@ -33,6 +33,9 @@ reset_experiment(){
         return;
     }
 
+    if(app.timer_pulse != null) clearTimeout(app.timer_pulse);
+
+    app.session.world_state.timer_running = false;
     app.working = true;
     app.send_message("reset_experiment", {});
 },
@@ -139,12 +142,22 @@ take_start_timer(message_data){
  * handle local timer pulse
  */
 do_timer_pulse(){
-    console.log("timer pulse");
+    // console.log("timer pulse");
     if(app.session.world_state.timer_running)
     {
-        app.send_message("continue_timer", {});
+        if(app.chat_socket.readyState === WebSocket.OPEN)
+        {
+            app.send_message("continue_timer", {});
+        }
         app.timer_pulse = setTimeout(app.do_timer_pulse, 1000);
     }
+},
+
+/**
+ * stop local timer pulse 
+ */
+take_stop_timer_pulse(){
+    if(app.timer_pulse != null) clearTimeout(app.timer_pulse);
 },
 
 /**reset experiment, remove all bids, asks and trades
