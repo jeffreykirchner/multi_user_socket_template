@@ -39,7 +39,8 @@ class TimerMixin():
             self.timer_running = False
 
         self.world_state_local["timer_running"] = self.timer_running
-        self.world_state_local["timer_history"].append({"time": datetime.now(), "count": 0})
+        self.world_state_local["timer_history"].append({"time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+                                                        "count": 0})
         Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
         if self.timer_running:
@@ -71,11 +72,11 @@ class TimerMixin():
             return
         
         logger = logging.getLogger(__name__)
-        # logger.info(f"continue_timer start")
+        logger.info(f"continue_timer start")
 
-        # if not self.timer_running:
-        #     logger.info(f"continue_timer timer off")
-        #     return
+        if not self.timer_running:
+            logger.info(f"continue_timer timer off")
+            return
 
         stop_timer = False
         send_update = True
@@ -98,7 +99,7 @@ class TimerMixin():
            
         if self.world_state_local["current_experiment_phase"] != ExperimentPhase.NAMES:
 
-            ts = datetime.now() - self.world_state_local["timer_history"][-1]["time"]
+            ts = datetime.now() - datetime.strptime(self.world_state_local["timer_history"][-1]["time"],"%Y-%m-%dT%H:%M:%S.%f")
 
             #check if a full second has passed
             if self.world_state_local["timer_history"][-1]["count"] == math.floor(ts.seconds):

@@ -1,5 +1,6 @@
 import logging
 
+from datetime import datetime
 from asgiref.sync import sync_to_async
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -26,6 +27,12 @@ class GetSessionMixin():
 
         self.world_state_local = result["world_state"]
         self.session_players_local = {}
+
+        if self.controlling_channel == self.channel_name:
+            self.timer_running = self.world_state_local["timer_running"]
+            self.world_state_local["timer_history"].append({"time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+                                                        "count": 0})
+            Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
         for p in result["session_players"]:
             session_player = result["session_players"][p]
