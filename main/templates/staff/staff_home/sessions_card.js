@@ -20,6 +20,9 @@ take_create_session(message_data){
  * @param id : int
  */
 send_delete_session(id){
+    if (!confirm('Delete Session?')) {
+        return;
+    }
     app.working = true;
     app.send_message("delete_session",{"id" : id});
 },
