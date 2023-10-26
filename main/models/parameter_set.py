@@ -43,6 +43,11 @@ class ParameterSet(models.Model):
     cool_down_length = models.IntegerField(verbose_name='Cool Down Length', default=10)                       #cool down length in seconds
     interaction_range = models.IntegerField(verbose_name='Interaction Range', default=300)                    #interaction range in pixels
 
+    avatar_scale = models.DecimalField(verbose_name='Avatar Scale', decimal_places=2, max_digits=3, default=1) #avatar scale
+    avatar_bound_box_percent = models.DecimalField(verbose_name='Avatar Bound Box Percent', decimal_places=2, max_digits=3, default=0.75) #avatar bound box percent for interaction
+    avatar_move_speed = models.DecimalField(verbose_name='Move Speed', decimal_places=1, max_digits=3, default=5.0)            #move speed
+    avatar_animation_speed = models.DecimalField(verbose_name='Animation Speed', decimal_places=2, max_digits=3, default=1.0)  #animation speed
+
     reconnection_limit = models.IntegerField(verbose_name='Age Warning', default=25)       #age cut that issues a warning for invalid age range
 
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
@@ -89,6 +94,11 @@ class ParameterSet(models.Model):
             self.interaction_length = new_ps.get("interaction_length", 10)
             self.cool_down_length = new_ps.get("cool_down_length", 10)
             self.interaction_range = new_ps.get("interaction_range", 300)
+
+            self.avatar_scale = new_ps.get("avatar_scale", 1)
+            self.avatar_bound_box_percent = new_ps.get("avatar_bound_box_percent", 0.75)
+            self.avatar_move_speed = new_ps.get("avatar_move_speed", 5.0)
+            self.avatar_animation_speed = new_ps.get("avatar_animation_speed", 1.0)
 
             self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
@@ -193,6 +203,11 @@ class ParameterSet(models.Model):
         self.json_for_session["interaction_length"] = self.interaction_length
         self.json_for_session["cool_down_length"] = self.cool_down_length
         self.json_for_session["interaction_range"] = self.interaction_range
+        
+        self.json_for_session["avatar_scale"] = self.avatar_scale
+        self.json_for_session["avatar_bound_box_percent"] = self.avatar_bound_box_percent
+        self.json_for_session["avatar_move_speed"] = self.avatar_move_speed
+        self.json_for_session["avatar_animation_speed"] = self.avatar_animation_speed
 
         self.json_for_session["reconnection_limit"] = self.reconnection_limit
 

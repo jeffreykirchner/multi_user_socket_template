@@ -81,6 +81,38 @@ class ParameterSetForm(forms.ModelForm):
                                                                           "step":"1",
                                                                           "min":"1"}))
 
+    avatar_scale = forms.DecimalField(label='Avatar Scale',
+                                      max_digits=3,
+                                      decimal_places=2,
+                                      min_value=0.01,
+                                      widget=forms.NumberInput(attrs={"v-model":"parameter_set.avatar_scale",
+                                                                      "step":"0.01",
+                                                                      "min":"0.01"})) 
+    
+    avatar_bound_box_percent = forms.DecimalField(label='Avatar Bounding Box Percent',
+                                                    max_digits=3,
+                                                    decimal_places=2,
+                                                    min_value=0.01,
+                                                    widget=forms.NumberInput(attrs={"v-model":"parameter_set.avatar_bound_box_percent",
+                                                                                    "step":"0.01",
+                                                                                    "min":"0.01"}))
+    
+    avatar_move_speed = forms.DecimalField(label='Avatar Move Speed (pixels per second)',
+                                             max_digits=3,
+                                             decimal_places=2,
+                                             min_value=0.01,
+                                             widget=forms.NumberInput(attrs={"v-model":"parameter_set.avatar_move_speed",
+                                                                            "step":"0.01",
+                                                                            "min":"0.01"}))
+    
+    avatar_animation_speed = forms.DecimalField(label='Avatar Animation Speed',
+                                                max_digits=3,
+                                                decimal_places=2,
+                                                min_value=0.01,
+                                                widget=forms.NumberInput(attrs={"v-model":"parameter_set.avatar_animation_speed",
+                                                                                "step":"0.01",
+                                                                                "min":"0.01"}))
+
     world_width = forms.IntegerField(label='World Width (pixels)',
                                     min_value=1,
                                     widget=forms.NumberInput(attrs={"v-model":"parameter_set.world_width",
@@ -102,7 +134,9 @@ class ParameterSetForm(forms.ModelForm):
         model=ParameterSet
         fields =['period_count', 'period_length', 'show_instructions', 'instruction_set', 
                  'survey_required', 'survey_link', 'test_mode', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
-                 'tokens_per_period', 'interaction_length', 'interaction_range', 'cool_down_length', 'world_width', 'world_height']
+                 'tokens_per_period', 'interaction_length', 'interaction_range', 'cool_down_length',
+                 'avatar_scale', 'avatar_bound_box_percent', 'avatar_move_speed', 'avatar_animation_speed',
+                 'world_width', 'world_height']
 
     def clean_survey_link(self):
         

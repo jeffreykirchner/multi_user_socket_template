@@ -468,7 +468,8 @@ var app = Vue.createApp({
         {%include "subject/subject_home/instructions/instructions_card.js"%}
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
         {%include "subject/subject_home/the_stage/interface.js"%}
-    
+        {%include "subject/subject_home/the_stage/avatar.js"%}
+
         /** clear form error messages
         */
         clear_main_form_errors(){

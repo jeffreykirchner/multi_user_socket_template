@@ -439,6 +439,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/interface/interface_card.js"%}
         {%include "staff/staff_session/replay/replay_card.js"%}
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
+        {%include "subject/subject_home/the_stage/avatar.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages
