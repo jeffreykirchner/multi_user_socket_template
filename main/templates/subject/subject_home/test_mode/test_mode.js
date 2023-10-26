@@ -1,30 +1,6 @@
 {%if session.parameter_set.test_mode%}
 
-/**
- * do random self test actions
- */
-random_number(min, max){
-    //return a random number between min and max
-    min = Math.ceil(min);
-    max = Math.floor(max+1);
-    return Math.floor(Math.random() * (max - min) + min);
-},
-
-random_string(min_length, max_length){
-
-    let s = "";
-    let r = app.random_number(min_length, max_length);
-
-    for(let i=0;i<r;i++)
-    {
-        let v = app.random_number(48, 122);
-        s += String.fromCharCode(v);
-    }
-
-    return s;
-},
-
-do_test_mode(){
+do_test_mode: function do_test_mode(){
     {%if DEBUG%}
     console.log("Do Test Mode");
     {%endif%}
@@ -68,7 +44,7 @@ do_test_mode(){
 /**
  * test during instruction phase
  */
- do_test_mode_instructions()
+do_test_mode_instructions: function do_test_mode_instructions()
  {
     if(app.session_player.instructions_finished) return;
     if(app.working) return;
@@ -109,7 +85,7 @@ do_test_mode(){
 /**
  * test during run phase
  */
-do_test_mode_run()
+do_test_mode_run: function do_test_mode_run()
 {
     //do chat
     let go = true;
@@ -141,7 +117,7 @@ do_test_mode_run()
 /**
  * test mode chat
  */
-do_test_mode_chat(){
+do_test_mode_chat: function do_test_mode_chat(){
 
     app.chat_text = app.random_string(5, 20);
 },
@@ -149,7 +125,7 @@ do_test_mode_chat(){
 /**
  * test mode move to a location
  */
-test_mode_move(){
+test_mode_move: function test_mode_move(){
 
     if(app.session.world_state.finished) return;
 
@@ -184,23 +160,5 @@ test_mode_move(){
     }
 
     app.target_location_update();
-},
-
-/**
- * find point given angle and distance
- **/
-get_point_from_angle_distance(start_x, start_y, end_x, end_y, distance)
-{
-    let angle = app.get_angle(start_x, start_y, end_x, end_y);
-    return {x:start_x + distance * Math.cos(angle), 
-            y:start_y + distance * Math.sin(angle)};
-},
-
-/**
- * find the angle between two points
- */
-get_angle(x1, y1, x2, y2)
-{
-    return Math.atan2(y2 - y1, x2 - x1);
 },
 {%endif%}

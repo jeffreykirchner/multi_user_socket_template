@@ -140,89 +140,6 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
 },
 
 /**
- * setup the pixi components for each token
- */
-setup_pixi_tokens_for_current_period: function setup_pixi_tokens_for_current_period()
-{
-    if(!app.session) return;
-    if(!app.session.started) return;
-
-    app.destroy_pixi_tokens_for_all_periods();
-
-    const current_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
-
-    pixi_tokens[current_period_id] = {};
-
-    for(const i in app.session.world_state.tokens[current_period_id]){
-
-        let token =  app.session.world_state.tokens[current_period_id][i];
-        let token_container = new PIXI.Container();
-
-        token_container.zIndex = 100;
-
-        let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
-        token_graphic.animationSpeed = app.animation_speed;
-        token_graphic.anchor.set(0.5)
-        token_graphic.eventMode = 'passive';
-
-        if(token.status=="available")
-        {
-            token_graphic.play();
-        }
-        else
-        {
-            token_graphic.alpha = 0.25;
-        }
-
-        token_container.addChild(token_graphic);
-        // token_container.pivot.set(token_container.width/2, token_container.height/2);
-        token_container.position.set(token.current_location.x, token.current_location.y);
-
-        //bounding box outline
-        if(app.draw_bounding_boxes)
-        {
-            let bounding_box = new PIXI.Graphics();
-
-            bounding_box.width = token_container.width;
-            bounding_box.height = token_container.height;
-            bounding_box.lineStyle(1, 0x000000);
-            bounding_box.drawRect(0, 0, token_container.width, token_container.height);
-            bounding_box.endFill();
-            bounding_box.pivot.set(bounding_box.width/2, bounding_box.height/2);
-            bounding_box.position.set(0, 0);
-            token_container.addChild(bounding_box);
-        }
-
-        let v = {"token_container":token_container};
-
-        pixi_tokens[current_period_id][i] = v;
-        pixi_container_main.addChild(pixi_tokens[current_period_id][i].token_container);
-       
-   }
-},
-
-/**
- * destory pixi tokens in world state
- */
-destroy_pixi_tokens_for_all_periods: function destroy_pixi_tokens_for_all_periods()
-{
-    if(!app.session) return;
-
-    for(const i in app.session.session_periods_order){
-
-        let period_id = app.session.session_periods_order[i];
-
-        for(const j in app.session.world_state.tokens[period_id]){
-
-            if (period_id in pixi_tokens)
-            {
-                pixi_tokens[period_id][j].token_container.destroy();
-            }
-        }
-    }
-},
-
-/**
  * setup mini map on subject screen 
  * */
 setup_pixi_minimap: function setup_pixi_minimap()
@@ -501,27 +418,6 @@ fit_to_screen: function fit_to_screen()
     app.pixi_scale_range_control = zoom_factor;
     app.pixi_scale = app.pixi_scale_range_control;
     pixi_container_main.scale.set(app.pixi_scale);
-},
-
-/**
- * get distance in pixels between two points
- */
-get_distance: function get_distance(point1, point2) 
-{
-    // Get the difference between the x-coordinates of the two points.
-    const dx = point2.x - point1.x;
-  
-    // Get the difference between the y-coordinates of the two points.
-    const dy = point2.y - point1.y;
-  
-    // Calculate the square of the distance between the two points.
-    const distanceSquared = dx * dx + dy * dy;
-  
-    // Take the square root of the distance between the two points.
-    const distance = Math.sqrt(distanceSquared);
-  
-    // Return the distance between the two points.
-    return distance;
 },
 
 /**
