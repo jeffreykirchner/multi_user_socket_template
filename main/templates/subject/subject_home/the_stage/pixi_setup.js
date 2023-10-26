@@ -3,7 +3,7 @@
 /**
  * update the pixi players with new info
  */
-setup_pixi(){    
+setup_pixi: function setup_pixi(){    
     app.reset_pixi_app();
 
     PIXI.Assets.add('sprite_sheet', '{% static "gear_3_animated.json" %}');
@@ -34,7 +34,7 @@ setup_pixi(){
     pixi_transfer_beams_key = 0;
 },
 
-reset_pixi_app(){    
+reset_pixi_app: function reset_pixi_app(){    
 
     app.stage_width = app.session.parameter_set.world_width;
     app.stage_height = app.session.parameter_set.world_height;
@@ -60,7 +60,7 @@ reset_pixi_app(){
 
 /** load pixi sprite sheets
 */
-setup_pixi_sheets(textures){
+setup_pixi_sheets: function setup_pixi_sheets(textures){
 
     app.pixi_textures = textures;
     app.background_tile_tex = textures.bg_tex;
@@ -142,7 +142,7 @@ setup_pixi_sheets(textures){
 /**
  * setup the pixi components for each token
  */
-setup_pixi_tokens_for_current_period()
+setup_pixi_tokens_for_current_period: function setup_pixi_tokens_for_current_period()
 {
     if(!app.session) return;
     if(!app.session.started) return;
@@ -204,7 +204,7 @@ setup_pixi_tokens_for_current_period()
 /**
  * destory pixi tokens in world state
  */
-destroy_pixi_tokens_for_all_periods()
+destroy_pixi_tokens_for_all_periods: function destroy_pixi_tokens_for_all_periods()
 {
     if(!app.session) return;
 
@@ -225,7 +225,7 @@ destroy_pixi_tokens_for_all_periods()
 /**
  * setup mini map on subject screen 
  * */
-setup_pixi_minimap()
+setup_pixi_minimap: function setup_pixi_minimap()
 {
     if(!app.session) return;
     if(!app.session.started) return;
@@ -298,7 +298,7 @@ setup_pixi_minimap()
 /**
  * setup subject screen status overlay
  */
-setup_subject_status_overlay()
+setup_subject_status_overlay: function setup_subject_status_overlay()
 {
     if(!app.session) return;
     if(app.pixi_mode!="subject") return;
@@ -397,7 +397,7 @@ update_subject_status_overlay()
 /**
  * add scroll buttons to staff screen
  */
-add_scroll_button(button_size, name, text)
+add_scroll_button: function add_scroll_button(button_size, name, text)
 {
     let g = new PIXI.Graphics();
     g.lineStyle(1, 0x000000);
@@ -433,7 +433,7 @@ add_scroll_button(button_size, name, text)
 /**
  * game loop for pixi
  */
-game_loop(delta)
+game_loop: function game_loop(delta)
 {
     app.move_player(delta);
     app.move_text_emitters(delta);
@@ -470,7 +470,7 @@ game_loop(delta)
 /**
  * update zoom level on staff screen
  */
-update_zoom()
+update_zoom: function update_zoom()
 {
     if(app.pixi_mode == "subject") return;
     if(app.pixi_scale == app.pixi_scale_range_control) return;
@@ -489,7 +489,7 @@ update_zoom()
 /**
  * fit staff display to screen
  */
-fit_to_screen()
+fit_to_screen: function fit_to_screen()
 {
     if(app.pixi_mode == "subject") return;
     
@@ -506,7 +506,7 @@ fit_to_screen()
 /**
  * get distance in pixels between two points
  */
-get_distance(point1, point2) 
+get_distance: function get_distance(point1, point2) 
 {
     // Get the difference between the x-coordinates of the two points.
     const dx = point2.x - point1.x;
@@ -527,7 +527,7 @@ get_distance(point1, point2)
 /**
  * move players if target does not equal current location
  */
-move_player(delta)
+move_player: function move_player(delta)
 {
     if(!app.session.world_state) return;
 
@@ -687,7 +687,7 @@ move_player(delta)
 /**
  * update the mini map
  */
-update_mini_map(delta)
+update_mini_map: function update_mini_map(delta)
 {
     let obj = app.session.world_state.session_players[app.session_player.id]
     let mini_map_vp = mini_map_container.getChildAt(1);
@@ -698,7 +698,7 @@ update_mini_map(delta)
 /**
  * update the amount of shift needed to center the player
  */
-update_offsets_player(delta)
+update_offsets_player: function update_offsets_player(delta)
 {
     offset = app.get_offset();
 
@@ -714,7 +714,7 @@ update_offsets_player(delta)
 /**
  * check for collisions between local player and other objects
  */
-check_for_collisions(delta)
+check_for_collisions: function check_for_collisions(delta)
 {
     if(Date.now() - app.last_collision_check < 100) return;
     app.last_collision_check = Date.now();
@@ -758,7 +758,7 @@ check_for_collisions(delta)
 /**
  * update the amount of shift needed for the staff view
  */
-update_offsets_staff(delta)
+update_offsets_staff: function update_offsets_staff(delta)
 {
     let offset = app.get_offset_staff();
 
@@ -769,7 +769,7 @@ update_offsets_staff(delta)
 /**
  * manaully scroll staff screen
  */
-scroll_staff(delta)
+scroll_staff: function scroll_staff(delta)
 {
     app.current_location.x += app.scroll_direction.x;
     app.current_location.y += app.scroll_direction.y;
@@ -778,7 +778,7 @@ scroll_staff(delta)
 /**
  * subject screen offset from the origin
  */
-get_offset()
+get_offset:function get_offset()
 {
     let obj = app.session.world_state.session_players[app.session_player.id];
 
@@ -789,7 +789,7 @@ get_offset()
 /**
  * staff screen offset from origin
  */
-get_offset_staff()
+get_offset_staff: function get_offset_staff()
 {
     if(app.follow_subject != -1 && app.session.started)
     {
@@ -804,7 +804,7 @@ get_offset_staff()
 /**
  *pointer up on subject screen
  */
-subject_pointer_up(event)
+ subject_pointer_up: function subject_pointer_up(event)
 {
     if(!app.session.world_state.hasOwnProperty('started')) return;
     let local_pos = event.data.getLocalPosition(event.currentTarget);
@@ -876,7 +876,7 @@ subject_pointer_up(event)
 /**
  *scroll control for staff
  */
-staff_screen_scroll_button_over(event)
+ staff_screen_scroll_button_over: function staff_screen_scroll_button_over(event)
 {
     event.currentTarget.alpha = 1;  
     app.scroll_direction = event.currentTarget.name.scroll_direction;
@@ -885,7 +885,7 @@ staff_screen_scroll_button_over(event)
 /**
  *scroll control for staff
  */
-staff_screen_scroll_button_out(event)
+ staff_screen_scroll_button_out: function staff_screen_scroll_button_out(event)
 {
     event.currentTarget.alpha = 0.5;
     app.scroll_direction = {x:0, y:0};
@@ -894,7 +894,7 @@ staff_screen_scroll_button_out(event)
 /**
  * update tractor beam between two players
  */
-setup_tractor_beam(source_id, target_id)
+setup_tractor_beam: function setup_tractor_beam(source_id, target_id)
 {
     let source_player = app.session.world_state.session_players[source_id];
     let target_player = app.session.world_state.session_players[target_id];
@@ -959,7 +959,7 @@ setup_tractor_beam(source_id, target_id)
 /**
  * add text emitters to the screen
  */
-add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, emitter_image)
+add_text_emitters: function add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, emitter_image)
 {
     let emitter_container = new PIXI.Container();
     emitter_container.position.set(start_x, start_y);
@@ -996,7 +996,7 @@ add_text_emitters(text, start_x, start_y, end_x, end_y, font_color, font_size, e
 /**
  * move text emitters
  */
-move_text_emitters(delta)
+move_text_emitters: function move_text_emitters(delta)
 {
     let completed = [];
 
@@ -1028,7 +1028,7 @@ move_text_emitters(delta)
 /**
  * create transfer beam between two points
  */
-add_transfer_beam(source_location, target_location, beam_texture, source_amount, target_amount)
+add_transfer_beam: function add_transfer_beam(source_location, target_location, beam_texture, source_amount, target_amount)
 {
 
     let transfer_beam = {source_location:source_location, 
@@ -1086,7 +1086,7 @@ add_transfer_beam(source_location, target_location, beam_texture, source_amount,
 /**
  * animate the transfer beam
  */
-animate_transfer_beams(delta)
+animate_transfer_beams: function animate_transfer_beams(delta)
 {
     let completed = [];
     let speed = 0.05;
@@ -1185,7 +1185,7 @@ animate_transfer_beams(delta)
 /**
  * move the object towards its target location
  */
-move_object(delta, obj, move_speed)
+move_object: function move_object(delta, obj, move_speed)
 {
     let noX = false;
     let noY = false;

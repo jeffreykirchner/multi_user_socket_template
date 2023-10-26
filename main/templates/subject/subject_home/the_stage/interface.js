@@ -1,7 +1,7 @@
 /**
  * send movement update to server
  */
-target_location_update()
+target_location_update: function target_location_update()
 {
 
     let session_player = app.session.world_state.session_players[app.session_player.id];
@@ -15,7 +15,7 @@ target_location_update()
 /**
  * take update from server about new location target for a player
  */
-take_target_location_update(message_data)
+take_target_location_update: function take_target_location_update(message_data)
 {
     if(message_data.value == "success")
     {
@@ -30,7 +30,7 @@ take_target_location_update(message_data)
 /**
  * take and update from the server about a collected token
  */
-take_update_collect_token(message_data)
+take_update_collect_token: function take_update_collect_token(message_data)
 {
     if(message_data.period_id != app.session.session_periods_order[app.session.world_state.current_period-1]) return;
 
@@ -71,7 +71,7 @@ take_update_collect_token(message_data)
 /**
  * update the inventory of the player
  */
-update_player_inventory()
+update_player_inventory: function update_player_inventory()
 {
 
     let period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
@@ -86,7 +86,7 @@ update_player_inventory()
 /**
  * subject avatar click
  */
-subject_avatar_click(target_player_id)
+subject_avatar_click: function subject_avatar_click(target_player_id)
 {
     if(target_player_id == app.session_player.id) return;
 
@@ -100,7 +100,7 @@ subject_avatar_click(target_player_id)
 /**
  * result of subject activating tractor beam
  */
-take_update_tractor_beam(message_data)
+take_update_tractor_beam: function take_update_tractor_beam(message_data)
 {
     let player_id = message_data.player_id;
     let target_player_id = message_data.target_player_id;
@@ -125,7 +125,7 @@ take_update_tractor_beam(message_data)
 /**
  * send interaction to server
  */
-send_interaction()
+send_interaction: function send_interaction()
 {
     app.clear_main_form_errors();
 
@@ -158,7 +158,7 @@ send_interaction()
 /**
  * take update from server about interactions
  */
-take_update_interaction(message_data)
+take_update_interaction: function take_update_interaction(message_data)
 {
     if(message_data.value == "fail")
     {
@@ -229,14 +229,14 @@ take_update_interaction(message_data)
 
 /** hide choice grid modal modal
 */
-hide_interaction_modal(){
+hide_interaction_modal: function hide_interaction_modal(){
     
 },
 
 /**
  * cancel interaction in progress
  */
-cancel_interaction()
+cancel_interaction:function cancel_interaction()
 {
     session_player = app.session.world_state.session_players[app.session_player.id];
 
@@ -252,7 +252,7 @@ cancel_interaction()
                      "group"); 
 },
 
-take_update_cancel_interaction(message_data)
+take_update_cancel_interaction: function take_update_cancel_interaction(message_data)
 {
     let source_player_id = message_data.source_player_id;
     let target_player_id = message_data.target_player_id;
