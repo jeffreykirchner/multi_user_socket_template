@@ -306,7 +306,7 @@ take_update_tractor_beam: function take_update_tractor_beam(message_data)
  */
 take_update_interaction: function take_update_interaction(message_data)
 {
-    if(message_data.value == "fail")
+    if(message_data.status == "fail")
     {
         if(message_data.source_player_id == app.session_player.id)
         {

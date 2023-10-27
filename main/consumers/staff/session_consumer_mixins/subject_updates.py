@@ -355,6 +355,8 @@ class SubjectUpdatesMixin():
                 status = "fail"
                 error_message = "No interaction in progress."
         
+        result = {"source_player_id": player_id}
+
         if status != "fail":
 
             target_player_id = source_player['tractor_beam_target']
@@ -365,7 +367,9 @@ class SubjectUpdatesMixin():
             source_player = self.world_state_local['session_players'][str(player_id)]
             target_player = self.world_state_local['session_players'][str(target_player_id)]
 
-            current_period_id = str(session.get_current_session_period().id)
+            session = await Session.objects.aget(id=self.session_id)
+            current_session = await session.aget_current_session_period()
+            current_period_id = str(current_session.id)
 
             if direction == 'take':
                 #take from target
@@ -390,39 +394,38 @@ class SubjectUpdatesMixin():
                     result["source_player_change"] = f"-{amount}"
                     result["target_player_change"] = f"+{amount}"
 
-            result = {"status" : status, "error_message" : error_message, "source_player_id": player_id,}
+        result["status"] = status
+        result["error_message"] = error_message
 
-            if status != "fail":
+        if status != "fail":
 
-                result["source_player_inventory"] = source_player["inventory"][current_period_id]
-                result["target_player_inventory"] = target_player["inventory"][current_period_id]
+            result["source_player_inventory"] = source_player["inventory"][current_period_id]
+            result["target_player_inventory"] = target_player["inventory"][current_period_id]
 
-                result["period"] = current_period_id
-                result["direction"] = direction
+            result["period"] = current_period_id
+            result["direction"] = direction
+            result["target_player_id"] = target_player_id
 
-                #clear status
-                source_player['interaction'] = 0
-                target_player['interaction'] = 0
+            #clear status
+            source_player['interaction'] = 0
+            target_player['interaction'] = 0
 
-                source_player['frozen'] = False
-                target_player['frozen'] = False
+            source_player['frozen'] = False
+            target_player['frozen'] = False
 
-                source_player["cool_down"] = self.parameter_set_local["cool_down_length"]
-                target_player["cool_down"] = self.parameter_set_local["cool_down_length"]
+            source_player["cool_down"] = self.parameter_set_local["cool_down_length"]
+            target_player["cool_down"] = self.parameter_set_local["cool_down_length"]
 
-                source_player['tractor_beam_target'] = None
+            source_player['tractor_beam_target'] = None
 
-                source_player["inventory"][result["period"]] = result["source_player_inventory"]
-                target_player["inventory"][result["period"]] = result["target_player_inventory"]
+            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
-                await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
-
-                await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                                session_player_id=player_id,
-                                                type="interaction",
-                                                period_number=self.world_state_local["current_period"],
-                                                time_remaining=self.world_state_local["time_remaining"],
-                                                data={"interaction" : interaction, "result":result})
+            await SessionEvent.objects.acreate(session_id=self.session_id, 
+                                            session_player_id=player_id,
+                                            type="interaction",
+                                            period_number=self.world_state_local["current_period"],
+                                            time_remaining=self.world_state_local["time_remaining"],
+                                            data={"interaction" : interaction, "result":result})
         
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
@@ -484,62 +487,6 @@ class SubjectUpdatesMixin():
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
-        
-
-def sync_interaction(session_id, source_player_id, target_player_id, direction, amount):
-    '''
-    syncronous interaction transaction
-    '''
-
-    # world_state_filter=f"world_state__tokens__{period_id}__{token_id}__status"
-    
-    result = {"value" : "success"}
-    result["source_player_id"] = source_player_id
-    result["target_player_id"] = target_player_id
-
-    with transaction.atomic():
-    
-        session = Session.objects.select_for_update().get(id=session_id)
-
-        source_player = session.world_state['session_players'][str(source_player_id)]
-        target_player = session.world_state['session_players'][str(target_player_id)]
-
-        current_period_id = str(session.get_current_session_period().id)
-
-        if direction == 'take':
-            #take from target
-            if target_player["inventory"][current_period_id] < amount:
-                result["value"] = "fail"
-                result["error_message"] = "They do not have enough tokens."
-                return result
-            else:
-                target_player["inventory"][current_period_id] -= amount
-                source_player["inventory"][current_period_id] += amount
-
-                result["target_player_change"] = f"-{amount}"
-                result["source_player_change"] = f"+{amount}"             
-        else:
-            #give to target
-            if source_player["inventory"][current_period_id] < amount:
-                result["value"] = "fail"
-                result["error_message"] = "You do not have enough tokens."
-                return result
-            else:
-                source_player["inventory"][current_period_id] -= amount
-                target_player["inventory"][current_period_id] += amount
-
-                result["source_player_change"] = f"-{amount}"
-                result["target_player_change"] = f"+{amount}"
-                
-        session.save()
-
-    result["source_player_inventory"] = source_player["inventory"][current_period_id]
-    result["target_player_inventory"] = target_player["inventory"][current_period_id]
-
-    result["period"] = current_period_id
-    result["direction"] = direction
-
-    return result
                                       
     
 
