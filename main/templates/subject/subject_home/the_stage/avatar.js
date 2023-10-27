@@ -347,28 +347,31 @@ take_update_interaction: function take_update_interaction(message_data)
         pixi_avatars[source_player_id].avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
         pixi_avatars[target_player_id].avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
 
-         //add transfer beam
-         if(message_data.direction == "give")
-         {
-             app.add_transfer_beam(source_player.current_location, 
-                                  target_player.current_location,
-                                  app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
-                                  message_data.source_player_change,
-                                  message_data.target_player_change);
-         }
-         else
-         {
-             app.add_transfer_beam(target_player.current_location, 
-                                   source_player.current_location,
-                                   app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
-                                   message_data.target_player_change,
-                                   message_data.source_player_change);
-         }
-
-        if(message_data.source_player_id == app.session_player.id)
+        //add transfer beam
+        if(message_data.direction == "give")
         {
-            app.working = false;
-            app.interaction_modal.hide();
+            app.add_transfer_beam(source_player.current_location, 
+                                target_player.current_location,
+                                app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
+                                message_data.source_player_change,
+                                message_data.target_player_change);
+        }
+        else
+        {
+            app.add_transfer_beam(target_player.current_location, 
+                                source_player.current_location,
+                                app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
+                                message_data.target_player_change,
+                                message_data.source_player_change);
+        }
+
+        if(app.pixi_mode=="subject")
+        {
+            if(message_data.source_player_id == app.session_player.id)
+            {
+                app.working = false;
+                app.interaction_modal.hide();
+            }
         }
     }
 },
@@ -447,5 +450,70 @@ take_target_location_update: function take_target_location_update(message_data)
     else
     {
         
+    }
+},
+
+/**
+ * update tractor beam between two players
+ */
+setup_tractor_beam: function setup_tractor_beam(source_id, target_id)
+{
+    let source_player = app.session.world_state.session_players[source_id];
+    let target_player = app.session.world_state.session_players[target_id];
+
+    let dY = source_player.current_location.y - target_player.current_location.y;
+    let dX = source_player.current_location.x - target_player.current_location.x;
+
+    let myX = source_player.current_location.x;
+    let myY = source_player.current_location.y;
+    let targetX = target_player.current_location.x;
+    let targetY = target_player.current_location.y;
+    
+    let tempAngle = Math.atan2(dY, dX);
+    let tempSlope = (myY - targetY) / (myX - targetX);
+
+    if (myX - targetX == 0) tempSlope = 0.999999999999;
+
+    let tempYIntercept = myY - tempSlope * myX;
+
+    // Rectangle rectTractor;
+    let tractorCircles = pixi_avatars[source_id].tractor_beam.length;
+    let tempScale = 1 / tractorCircles;
+
+    let xIncrement = Math.sqrt(Math.pow(myX - targetX, 2) + Math.pow(myY - targetY, 2)) / tractorCircles;
+
+    for (let i=0; i<tractorCircles; i++)
+    {
+        let temp_x = (myX - Math.cos(tempAngle) * xIncrement * i);
+        let temp_y = (myY - Math.sin(tempAngle) * xIncrement * i);
+
+        tb_sprite = pixi_avatars[source_id].tractor_beam[i];
+        tb_sprite.position.set(temp_x, temp_y)
+        tb_sprite.scale.set(tempScale * i);
+        tb_sprite.visible = true;
+        
+        if (app.pixi_tick_tock.value == 'tick')
+        {
+            if (i%2 == 0)
+            {
+                tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+            }
+            else
+            {
+                tb_sprite.tint = 0xFFFFFF;
+            }
+        }
+        else
+        {
+            if (i%2 == 0)
+            {
+               tb_sprite.tint = 0xFFFFFF;
+            }
+            else
+            {
+                tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+            }
+        }
+
     }
 },

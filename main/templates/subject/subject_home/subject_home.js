@@ -470,6 +470,11 @@ var app = Vue.createApp({
         {%include "subject/subject_home/the_stage/token.js"%}
         {%include "subject/subject_home/the_stage/avatar.js"%}
         {%include "subject/subject_home/the_stage/helpers.js"%}
+        {%include "subject/subject_home/the_stage/subject.js"%}
+        {%include "subject/subject_home/the_stage/mini_map.js"%}
+        {%include "subject/subject_home/the_stage/subject_overlay.js"%}
+        {%include "subject/subject_home/the_stage/text_emitter.js"%}
+        {%include "subject/subject_home/the_stage/transfer_beam.js"%}
 
         /** clear form error messages
         */
