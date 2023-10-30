@@ -370,13 +370,6 @@ var app = Vue.createApp({
 
             if(status == "fail") return;
 
-            let period_change = false;
-
-            if (app.session.world_state.current_period != message_data.current_period)
-            {
-                period_change = true;
-            }
-
             // app.session.started = result.started;
             app.session.world_state.current_period = message_data.current_period;
             app.session.world_state.time_remaining = message_data.time_remaining;
@@ -390,15 +383,11 @@ var app = Vue.createApp({
             app.update_phase_button_text();
 
             //update player earnings and inventory if period has changed
-            if(period_change)
+            if(message_data.period_is_over)
             {
                 app.setup_pixi_tokens_for_current_period();
-                app.update_player_inventory();                
-            }
-
-            if(app.session.world_state.time_remaining == 1)
-            {
-                app.take_update_earnings(message_data.earnings);
+                app.update_player_inventory();              
+                app.take_update_earnings(message_data.earnings);  
             }
 
             //update player status

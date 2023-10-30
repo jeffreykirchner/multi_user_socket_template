@@ -141,6 +141,10 @@ class Session(models.Model):
                             "tokens":{},}
         
         inventory = {str(i):0 for i in list(self.session_periods.all().values_list('id', flat=True))}
+
+        #session periods
+        for i in self.world_state["session_periods"]:
+            self.world_state["session_periods"][i]["consumption_completed"] = False
         
         #session players
         for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
@@ -167,9 +171,9 @@ class Session(models.Model):
             for j in range(self.parameter_set.tokens_per_period):
                 
                 token = {"current_location" : {
-                            "x":random.randint(25, self.parameter_set.world_width-25),
-                            "y":random.randint(25, self.parameter_set.world_height-25)},
-                        "status":"available",}
+                         "x":random.randint(25, self.parameter_set.world_width-25),
+                         "y":random.randint(25, self.parameter_set.world_height-25)},
+                         "status":"available",}
                 
                 tokens[str(i)][str(j)] = token
             
@@ -236,41 +240,6 @@ class Session(models.Model):
             new_session_player.player_number = i.player_number
 
             new_session_player.save()
-
-    def do_period_timer(self):
-        '''
-        do period timer actions
-        '''
-
-        status = "success"        
-        stop_timer = False
-
-        #check session over
-        if self.world_state["time_remaining"] == 0 and \
-           self.world_state["current_period"] >= self.parameter_set.period_count:
-
-            self.world_state["current_experiment_phase"] = ExperimentPhase.NAMES
-            stop_timer = True
-           
-        if not status == "fail" and \
-           self.world_state["current_experiment_phase"] != ExperimentPhase.NAMES:
-
-            if self.world_state["time_remaining"] == 0:
-                self.get_current_session_period().store_earnings()
-
-                self.world_state["current_period"] += 1
-                self.world_state["time_remaining"] = self.parameter_set.period_length
-            else:                                     
-                self.world_state["time_remaining"] -= 1
-
-        self.save()
-
-        result = self.json_for_timer()
-
-        return {"value" : status,
-                "result" : result,
-                "stop_timer" : stop_timer,
-                }
 
     def user_is_owner(self, user):
         '''
