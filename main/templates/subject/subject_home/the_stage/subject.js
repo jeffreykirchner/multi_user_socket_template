@@ -74,6 +74,21 @@ get_offset:function get_offset()
             if(app.get_distance(obj.current_location, local_pos) < 100 &&
                app.get_distance(obj.current_location, local_player.current_location) <= app.session.parameter_set.interaction_range+125)
             {
+
+                if(app.session.world_state.time_remaining > app.session.parameter_set.period_length &&
+                    app.session.world_state.current_period % app.session.parameter_set.break_frequency == 0)
+                {
+                    app.add_text_emitters("No interactions while on break.", 
+                                            obj.current_location.x, 
+                                            obj.current_location.y,
+                                            obj.current_location.x,
+                                            obj.current_location.y-100,
+                                            0xFFFFFF,
+                                            28,
+                                            null);
+                    return;
+                }
+
                 app.subject_avatar_click(i);              
                 break;
             }

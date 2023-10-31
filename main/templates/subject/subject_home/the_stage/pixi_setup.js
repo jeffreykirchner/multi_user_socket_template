@@ -344,6 +344,13 @@ move_player: function move_player(delta)
  */
 check_for_collisions: function check_for_collisions(delta)
 {
+    //no harvesting during breaks
+    if(app.session.world_state.time_remaining > app.session.parameter_set.period_length &&
+        app.session.world_state.current_period % app.session.parameter_set.break_frequency == 0)
+    {
+        return;
+    }
+
     if(Date.now() - app.last_collision_check < 100) return;
     app.last_collision_check = Date.now();
 
@@ -361,8 +368,7 @@ check_for_collisions: function check_for_collisions(delta)
            token.status == "available" && 
            !collision_found)
         {
-            // token.token_container.getChildAt(0).stop();
-            // token.token_container.getChildAt(0).alpha = 0.25;
+            
             token.status = "waiting";
             collision_found = true;
 
