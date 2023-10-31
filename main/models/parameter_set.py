@@ -220,13 +220,18 @@ class ParameterSet(models.Model):
 
         self.save()
     
-    def update_json_fk(self, update_players=False):
+    def update_json_fk(self, update_players=False, update_notices=False):
         '''
         update json model
         '''
         if update_players:
             self.json_for_session["parameter_set_players_order"] = list(self.parameter_set_players.all().values_list('id', flat=True))
             self.json_for_session["parameter_set_players"] = {p.id : p.json() for p in self.parameter_set_players.all()}
+
+
+        if update_notices:
+            self.json_for_session["parameter_set_notices_order"] = list(self.parameter_set_notices.all().values_list('id', flat=True))
+            self.json_for_session["parameter_set_notices"] = {str(p.id) : p.json() for p in self.parameter_set_notices.all()}    
 
         self.save()
 
@@ -238,7 +243,7 @@ class ParameterSet(models.Model):
            update_required:
             self.json_for_session = {}
             self.update_json_local()
-            self.update_json_fk(update_players=True)
+            self.update_json_fk(update_players=True, update_notices=True)
 
         return self.json_for_session
     

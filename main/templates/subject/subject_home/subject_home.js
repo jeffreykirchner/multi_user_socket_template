@@ -18,6 +18,8 @@ var pixi_fps_label = null;                     //fps label
 var mini_map_container = null;                 //mini map container
 var pixi_avatars = {};                         //avatars
 var pixi_tokens = {};                          //tokens
+var pixi_notices = {container:null, notices:{}};                         //notices
+var pixi_notices_key = 0;
 
 //vue app
 var app = Vue.createApp({
@@ -45,6 +47,8 @@ var app = Vue.createApp({
 
                     instruction_pages : {{instruction_pages|safe}},
                     instruction_pages_show_scroll : false,
+
+                    notices_seen: [],
 
                     // modals
                     end_game_modal : null,
@@ -296,6 +300,8 @@ var app = Vue.createApp({
             app.take_get_session(message_data);
 
             app.end_game_modal.hide();            
+
+            app.notices_seen = [];
         },
 
         /**
@@ -338,7 +344,7 @@ var app = Vue.createApp({
             });
 
 
-            //period has changed display earnings
+            //period has changed
             if(message_data.period_is_over)
             {
                 Vue.nextTick(() => {
@@ -357,6 +363,14 @@ var app = Vue.createApp({
                 app.setup_pixi_tokens_for_current_period();
                 app.setup_pixi_minimap();
                 app.update_player_inventory();
+
+                //add break notice
+                if(app.session.world_state.current_period % app.session.parameter_set.break_frequency == 0)
+                {
+                    app.add_notice("Break Time: Interactions are disabled. Chat is enabled.", 
+                                    app.session.world_state.current_period,
+                                    app.session.parameter_set.period_length);
+                }
             }
 
             //update player states
@@ -382,6 +396,23 @@ var app = Vue.createApp({
                     }
                 }
             }
+
+            //add notices
+            for(let i in app.session.parameter_set.parameter_set_notices)
+            {
+                let notice = app.session.parameter_set.parameter_set_notices[i];
+
+                if(notice.start_period == app.session.world_state.current_period && 
+                   notice.start_time >= app.session.world_state.time_remaining &&
+                   app.notices_seen.indexOf(notice.id) === -1)
+                {
+                    app.add_notice(notice.text, notice.end_period, notice.end_time);
+                    app.notices_seen.push(notice.id);
+                }
+            }
+
+            //update any notices on screen
+            app.update_notices();
 
             //hide interaction modal if interaction is over
             if(app.session.world_state.session_players[app.session_player.id].interaction == 0)
@@ -441,6 +472,16 @@ var app = Vue.createApp({
             {
                 window.location.replace(app.session_player.survey_link);
             }
+
+            if(app.session.world_state.current_experiment_phase == 'Run' || 
+                app.session.world_state.current_experiment_phase == 'Instructions')
+            {
+                app.session.world_state = message_data.world_state;
+                
+                app.destory_setup_pixi_subjects();
+                app.do_reload();
+                app.remove_all_notices();
+            }
         },
 
         /** hide choice grid modal modal
@@ -467,6 +508,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/the_stage/subject_overlay.js"%}
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
         {%include "subject/subject_home/the_stage/transfer_beam.js"%}
+        {%include "subject/subject_home/the_stage/notices.js"%}
 
         /** clear form error messages
         */
