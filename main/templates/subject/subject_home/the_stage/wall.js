@@ -1,7 +1,7 @@
 /**
  * setup wall objects
  */
-setup_pixi_wall()
+setup_pixi_wall: function setup_pixi_wall()
 {
     for(const i in app.session.parameter_set.parameter_set_walls_order)
     {
@@ -34,7 +34,7 @@ setup_pixi_wall()
 /**
  * check wall intersection
  */
-check_walls_intersection(rect1)
+check_walls_intersection: function check_walls_intersection(rect1)
 {
     for(let i in app.session.parameter_set.parameter_set_walls)
     {

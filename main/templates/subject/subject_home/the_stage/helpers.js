@@ -60,3 +60,34 @@ get_distance: function get_distance(point1, point2)
     // Return the distance between the two points.
     return distance;
 },
+
+/**
+ * check for rectangle intersection
+ */
+check_for_rect_intersection: function check_for_rect_intersection(rect1, rect2)
+{
+   if(rect1.x < rect2.x + rect2.width &&
+      rect1.x + rect1.width > rect2.x &&
+      rect1.y < rect2.y + rect2.height &&
+      rect1.y + rect1.height > rect2.y)
+   {
+        return true;
+   }
+
+   return false;
+
+},
+
+/**
+ * check if point is in rectangle
+ */
+check_point_in_rectagle: function check_point_in_rectagle(point, rect)
+{
+    if(point.x >= rect.x && point.x <= rect.x + rect.width &&
+         point.y >= rect.y && point.y <= rect.y + rect.height)
+    {
+        return true;
+    }
+
+    return false;
+},

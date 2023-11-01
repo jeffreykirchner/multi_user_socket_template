@@ -74,24 +74,40 @@ setup_pixi_subjects: function setup_pixi_subjects(){
         inventory_label.position.set(2, +avatar_container.height * 0.18);
         status_label.position.set(0, -avatar_container.height/2 + 30);
 
+        pixi_avatars[i].status_label = status_label;
+        pixi_avatars[i].gear_sprite = gear_sprite;
+
         avatar_container.scale.set(app.session.parameter_set.avatar_scale);
 
-        //bounding box outline
-        if(app.draw_bounding_boxes)
-        {
-            let bounding_box = new PIXI.Graphics();
-        
-            bounding_box.width = avatar_container.width;
-            bounding_box.height = avatar_container.height;
-            bounding_box.lineStyle(1, 0x000000);
-            //bounding_box.beginFill(0xBDB76B);
-            bounding_box.drawRect(0, 0, avatar_container.width * app.session.parameter_set.avatar_bound_box_percent * app.session.parameter_set.avatar_scale, 
-                                        avatar_container.height * app.session.parameter_set.avatar_bound_box_percent * app.session.parameter_set.avatar_scale);
-            bounding_box.endFill();
-            bounding_box.pivot.set(bounding_box.width/2, bounding_box.height/2);
-            bounding_box.position.set(0, 0);
+        //bounding box with avatar scaller        
+        let bounding_box = new PIXI.Graphics();
+    
+        bounding_box.lineStyle(2, "orchid");
+        bounding_box.drawRect(0, 0, avatar_container.width * app.session.parameter_set.avatar_bound_box_percent * app.session.parameter_set.avatar_scale, 
+                                    avatar_container.height * app.session.parameter_set.avatar_bound_box_percent * app.session.parameter_set.avatar_scale);
+        bounding_box.endFill();
+        bounding_box.pivot.set(bounding_box.width/2, bounding_box.height/2);
+        bounding_box.position.set(0, 0);
+        bounding_box.visible = false;
 
-            avatar_container.addChild(bounding_box);
+        avatar_container.addChild(bounding_box);
+        pixi_avatars[i].bounding_box = bounding_box;
+
+        //bound box view
+        let bounding_box_view = new PIXI.Graphics();
+    
+        bounding_box_view.lineStyle(2, "orchid");
+        bounding_box_view.drawRect(0, 0, avatar_container.width * app.session.parameter_set.avatar_bound_box_percent, 
+                                    avatar_container.height * app.session.parameter_set.avatar_bound_box_percent);
+        bounding_box_view.endFill();
+        bounding_box_view.pivot.set(bounding_box_view.width/2, bounding_box_view.height/2);
+        bounding_box_view.position.set(0, 0);
+
+        avatar_container.addChild(bounding_box_view);
+        
+        if(!app.draw_bounding_boxes)
+        {
+            bounding_box_view.visible = false;
         }
 
         pixi_avatars[i].avatar_container = avatar_container;
@@ -516,4 +532,169 @@ setup_tractor_beam: function setup_tractor_beam(source_id, target_id)
         }
 
     }
+},
+
+/**
+ * move players if target does not equal current location
+ */
+move_player: function move_player(delta)
+{
+    if(!app.session.world_state.started) return;
+
+    //move players
+    for(let i in app.session.world_state.session_players){
+
+        let obj = app.session.world_state.session_players[i];
+        // let avatar = app.session.world_state.avatars[i];
+        let avatar_container = pixi_avatars[i].avatar_container;
+        let gear_sprite = pixi_avatars[i].gear_sprite;
+        let status_label = pixi_avatars[i].status_label;
+
+        if(obj.target_location.x !=  obj.current_location.x ||
+            obj.target_location.y !=  obj.current_location.y )
+        {           
+            //move player towards target
+            if(!obj.frozen)
+            {
+                app.move_avatar(delta,i);
+            }
+
+            //update the sprite locations
+            gear_sprite.play();
+            avatar_container.position.set(obj.current_location.x, obj.current_location.y);
+            if (obj.current_location.x < obj.target_location.x )
+            {
+                gear_sprite.animationSpeed =  app.session.parameter_set.avatar_animation_speed;
+            }
+            else
+            {
+                gear_sprite.animationSpeed = -app.session.parameter_set.avatar_animation_speed;
+            }
+
+            //hide chat if longer than 10 seconds and moving
+            if(obj.chat_time)
+            {
+                if(Date.now() - obj.chat_time >= 10000)
+                {
+                    obj.show_chat = false;
+                }
+            }
+        }
+        else
+        {
+            gear_sprite.stop();
+        }
+
+        //update status
+        if(obj.interaction > 0)
+        {
+            status_label.text = "Interaction ... " + obj.interaction;
+            status_label.visible = true;
+        }
+        else if(obj.cool_down > 0)
+        {
+            status_label.text = "Cooling ... " + obj.cool_down;
+            status_label.visible = true;
+        }
+        else
+        {
+            status_label.visible = false;
+        }
+
+    }
+
+    //find nearest players
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj1 = app.session.world_state.session_players[i];
+        obj1.nearest_player = null;
+        obj1.nearest_player_distance = null;
+
+        for(let j in app.session.world_state.session_players)
+        {
+            let obj2 = app.session.world_state.session_players[j];
+
+            if(i != j)
+            {
+                temp_distance = app.get_distance(obj1.current_location, obj2.current_location);
+
+                if(!obj1.nearest_player)
+                {
+                    obj1.nearest_player = j;
+                    obj1.nearest_player_distance = temp_distance;
+                }
+                else
+                {
+                   if(temp_distance < obj1.nearest_player_distance)
+                   {
+                        obj1.nearest_player = j;
+                        obj1.nearest_player_distance = temp_distance;
+                   }
+                }
+            }
+        }
+    }
+
+    //update chat boxes
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj = app.session.world_state.session_players[i];
+        let chat_container = pixi_avatars[i].chat_container;
+        // let avatar_container = obj.pixi.chat_container;
+        let offset = {x:chat_container.width*.5, y:chat_container.height*.45};
+
+        if(obj.nearest_player && 
+           app.session.world_state.session_players[obj.nearest_player].current_location.x < obj.current_location.x)
+        {
+            chat_container.position.set(obj.current_location.x + offset.x,
+                                        obj.current_location.y - offset.y);
+            
+            chat_container.getChildAt(0).scale.x = 1;
+        }
+        else
+        {
+            chat_container.position.set(obj.current_location.x - offset.x,
+                                        obj.current_location.y - offset.y);
+
+            chat_container.getChildAt(0).scale.x = -1;
+        }
+
+        chat_container.visible = obj.show_chat;
+    }   
+
+    //update tractor beams and status
+    for(let i in app.session.world_state.session_players)
+    {
+        let player = app.session.world_state.session_players[i];
+
+        if(player.tractor_beam_target)
+        {
+            app.setup_tractor_beam(i, player.tractor_beam_target);
+        }
+        else
+        {
+            for (let j=0; j< pixi_avatars[i].tractor_beam.length; j++)
+            {
+                tb_sprite = pixi_avatars[i].tractor_beam[j];
+                tb_sprite.visible = false;
+            }
+        }
+    }
+
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj = app.session.world_state.session_players[i];
+
+        //update interaction ranges
+        let interaction_container = pixi_avatars[i].interaction_container;
+        interaction_container.position.set(obj.current_location.x, obj.current_location.y);
+
+        //update view ranges on staff screen
+        if(app.pixi_mode != "subject")
+        {
+            let view_container = pixi_avatars[i].view_container;
+            view_container.position.set(obj.current_location.x, obj.current_location.y);
+        }
+    }
+    
 },
