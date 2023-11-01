@@ -20,6 +20,7 @@ var pixi_avatars = {};                         //avatars
 var pixi_tokens = {};                          //tokens
 var pixi_notices = {container:null, notices:{}};                         //notices
 var pixi_notices_key = 0;
+var pixi_walls = {};                           //walls
 
 //vue app
 var app = Vue.createApp({
@@ -509,6 +510,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
         {%include "subject/subject_home/the_stage/transfer_beam.js"%}
         {%include "subject/subject_home/the_stage/notices.js"%}
+        {%include "subject/subject_home/the_stage/wall.js"%}
 
         /** clear form error messages
         */

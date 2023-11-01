@@ -10,13 +10,15 @@ setup_pixi: function setup_pixi(){
     PIXI.Assets.add('sprite_sheet_2', '{% static "sprite_sheet.json" %}');
     PIXI.Assets.add('bg_tex', '{% static "background_tile_low.jpg"%}');
     PIXI.Assets.add('cherry_token', '{% static "cherry_1_animated.json"%}');
+    PIXI.Assets.add('wall_tex', '{% static "wall.png"%}');
 
-    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 'cherry_token']);
+    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 'cherry_token', 'wall_tex']);
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
         app.setup_pixi_tokens_for_current_period();
         app.setup_pixi_subjects();
+        app.setup_pixi_wall();
         
         if(app.pixi_mode!="subject")
         {
