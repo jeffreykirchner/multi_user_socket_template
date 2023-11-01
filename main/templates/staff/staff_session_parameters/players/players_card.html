@@ -27,6 +27,9 @@
                                     Label
                                 </th>         
                                 <th scope="col" class = "m-1 p-1">
+                                    Group
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
                                     Location (X,Y)
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
@@ -46,6 +49,13 @@
                                 <td v-on:click="show_edit_parameter_set_player(p)" 
                                     class="player_table_cell">
                                     [[temp_p.id_label]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_player(p)" 
+                                    class="player_table_cell">
+                                    <span v-if="temp_p.parameter_set_group && 
+                                                temp_p.parameter_set_group in parameter_set.parameter_set_groups">
+                                        [[parameter_set.parameter_set_groups[temp_p.parameter_set_group].name]]
+                                    </span>
                                 </td>
                                 <td v-on:click="show_edit_parameter_set_player(p)" 
                                     class="player_table_cell">

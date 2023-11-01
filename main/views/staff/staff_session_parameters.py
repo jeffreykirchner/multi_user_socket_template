@@ -19,9 +19,10 @@ from main.models import Session
 
 from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
-from main.forms import parameterSetPlayerForm
+from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetNoticeForm
 from main.forms import ParameterSetWallForm
+from main.forms import ParameterSetGroupForm
 
 class StaffSessionParametersView(SingleObjectMixin, View):
     '''
@@ -39,9 +40,12 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         '''
         session = self.get_object()
 
-        parameter_set_player_form = parameterSetPlayerForm()
+        parameter_set_player_form = ParameterSetPlayerForm()
         parameter_set_notice_form = ParameterSetNoticeForm()
         parameter_set_wall_form = ParameterSetWallForm()
+        parameter_set_group_form = ParameterSetGroupForm()
+
+        parameter_set_player_form.fields["parameter_set_group"].queryset = session.parameter_set.parameter_set_groups.all()
 
         parameterset_form_ids=[]
         for i in ParameterSetForm():
@@ -59,6 +63,10 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         for i in parameter_set_wall_form:
             parameter_set_wall_form_ids.append(i.html_name)
 
+        parameter_set_group_form_ids=[]
+        for i in parameter_set_group_form:
+            parameter_set_group_form_ids.append(i.html_name)
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),
@@ -69,6 +77,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "parameter_set_player_form" : parameter_set_player_form,
                                "parameter_set_notice_form" : parameter_set_notice_form,
                                "parameter_set_wall_form" : parameter_set_wall_form,
+                               "parameter_set_group_form" : parameter_set_group_form,
                                
                                "import_parameters_form" : ImportParametersForm(user=request.user, session_id=session.id),
 
@@ -76,6 +85,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "parameter_set_player_form_ids" : parameter_set_player_form_ids,
                                "parameter_set_notice_form_ids" : parameter_set_notice_form_ids,
                                "parameter_set_wall_form_ids" : parameter_set_wall_form_ids,
+                               "parameter_set_group_form_ids" : parameter_set_group_form_ids,
                  
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',

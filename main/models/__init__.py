@@ -9,6 +9,7 @@ from .instruction_set import InstructionSet
 from .instruction import Instruction
 
 from .parameter_set import ParameterSet
+from .parameter_set_group import ParameterSetGroup
 from .parameter_set_player import ParameterSetPlayer
 from .parameter_set_notice import ParameterSetNotice
 from .parameter_set_wall import ParameterSetWall

@@ -6,6 +6,7 @@ from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import ParameterSet
+from main.models import ParameterSetGroup
 
 import main
 
@@ -15,6 +16,7 @@ class ParameterSetPlayer(models.Model):
     '''
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_players")
+    parameter_set_group = models.ForeignKey(ParameterSetGroup, on_delete=models.SET_NULL, related_name="parameter_set_players_b", blank=True, null=True)
 
     id_label = models.CharField(verbose_name='ID Label', max_length=2, default="1")      #id label shown on screen to subjects
     player_number = models.IntegerField(verbose_name='Player number', default=0)         #player number, from 1 to N 
@@ -76,6 +78,7 @@ class ParameterSetPlayer(models.Model):
         return{
 
             "id" : self.id,
+            "parameter_set_group" : self.parameter_set_group.id if self.parameter_set_group else None,
             "player_number" : self.player_number,
             "id_label" : self.id_label,
             "start_x" : self.start_x,
