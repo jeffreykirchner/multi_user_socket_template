@@ -12,11 +12,14 @@ setup_pixi: function setup_pixi(){
     PIXI.Assets.add('cherry_token', '{% static "cherry_1_animated.json"%}');
     PIXI.Assets.add('wall_tex', '{% static "wall.png"%}');
     PIXI.Assets.add('barrier_tex', '{% static "barrier.png"%}');
+    PIXI.Assets.add('bridge_tex', '{% static "bridge.jpg"%}');
 
-    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 'cherry_token', 'wall_tex', 'barrier_tex']);
+    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 
+                                               'cherry_token', 'wall_tex', 'barrier_tex', 'bridge_tex']);
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
+        app.setup_pixi_ground();
         app.setup_pixi_tokens_for_current_period();
         app.setup_pixi_subjects();
         app.setup_pixi_wall();

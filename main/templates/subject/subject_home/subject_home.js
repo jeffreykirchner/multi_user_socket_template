@@ -22,6 +22,7 @@ var pixi_notices = {container:null, notices:{}};                         //notic
 var pixi_notices_key = 0;
 var pixi_walls = {};                           //walls
 var pixi_barriers = {};                        //barriers
+var pixi_grounds = {};                         //grounds
 var wall_search = {counter:0, current_location:{x:-1,y:-1}, target_location:{x:-1,y:-1}};
 var wall_search_objects = [];
 
@@ -36,8 +37,6 @@ var app = Vue.createApp({
                     reconnection_count : 0,
                     first_load_done : false,                       //true after software is loaded for the first time
                     player_key : "{{session_player.player_key}}",
-                    owner_color : 0xA9DFBF,
-                    other_color : 0xD3D3D3,
                     session_player : null, 
                     session : null,
 
@@ -519,6 +518,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/the_stage/wall.js"%}
         {%include "subject/subject_home/the_stage/move_objects.js"%}
         {%include "subject/subject_home/the_stage/barriers.js"%}
+        {%include "subject/subject_home/the_stage/ground.js"%}
 
         /** clear form error messages
         */

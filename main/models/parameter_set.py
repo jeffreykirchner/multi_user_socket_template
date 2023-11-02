@@ -165,6 +165,14 @@ class ParameterSet(models.Model):
                 p = main.models.ParameterSetNotice.objects.create(parameter_set=self)
                 p.from_dict(new_parameter_set_notices[i])
 
+            #parameter set grounds
+            self.parameter_set_grounds.all().delete()
+            new_parameter_set_grounds = new_ps.get("parameter_set_grounds")
+
+            for i in new_parameter_set_grounds:
+                p = main.models.ParameterSetGround.objects.create(parameter_set=self)
+                p.from_dict(new_parameter_set_grounds[i])
+
             self.json_for_session = None
             self.save()
             
@@ -268,6 +276,7 @@ class ParameterSet(models.Model):
                              update_notices=False, 
                              update_walls=False,
                              update_barriers=False,
+                             update_grounds=False,
                              update_groups=False):
         '''
         update json model
@@ -283,6 +292,10 @@ class ParameterSet(models.Model):
         if update_barriers:
             self.json_for_session["parameter_set_barriers_order"] = list(self.parameter_set_barriers_a.all().values_list('id', flat=True))
             self.json_for_session["parameter_set_barriers"] = {str(p.id) : p.json() for p in self.parameter_set_barriers_a.all()}
+        
+        if update_grounds:
+            self.json_for_session["parameter_set_grounds_order"] = list(self.parameter_set_grounds.all().values_list('id', flat=True))
+            self.json_for_session["parameter_set_grounds"] = {str(p.id) : p.json() for p in self.parameter_set_grounds.all()}
 
         if update_notices:
             self.json_for_session["parameter_set_notices_order"] = list(self.parameter_set_notices.all().values_list('id', flat=True))
@@ -306,6 +319,7 @@ class ParameterSet(models.Model):
                                 update_notices=True,
                                 update_walls=True,
                                 update_barriers=True,
+                                update_grounds=True,
                                 update_groups=True)
 
         return self.json_for_session

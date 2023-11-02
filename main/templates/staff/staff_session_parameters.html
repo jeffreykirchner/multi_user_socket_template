@@ -50,6 +50,7 @@
 {%include "staff/staff_session_parameters/walls/edit_parameterset_wall_modal.html"%}
 {%include "staff/staff_session_parameters/groups/edit_parameterset_group_modal.html"%}
 {%include "staff/staff_session_parameters/barriers/edit_parameterset_barrier_modal.html"%}
+{%include "staff/staff_session_parameters/grounds/edit_parameterset_ground_modal.html"%}
 {%include "help_modal.html"%}
 
 <!-- cards -->
@@ -72,7 +73,16 @@
         </div>
     </div>
     <div class="col">   
-        {%include "staff/staff_session_parameters/players/players_card.html"%}                  
+        <div class="row justify-content-lg-center">
+            <div class="col-md">
+                {%include "staff/staff_session_parameters/players/players_card.html"%}   
+            </div>
+        </div>
+        <div class="row justify-content-lg-center mt-4">
+            <div class="col-md">
+                {%include "staff/staff_session_parameters/grounds/grounds_card.html"%}  
+            </div>
+        </div>                 
     </div> 
     <div class="col-md">
         <div class="row justify-content-lg-center">

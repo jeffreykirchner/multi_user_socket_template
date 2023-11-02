@@ -54,6 +54,27 @@ setup_pixi_minimap: function setup_pixi_minimap()
         mini_map.container.addChild(temp_wall);
     }
 
+    //mini map tokens
+    const current_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
+
+    for(const i in app.session.world_state.tokens[current_period_id]){       
+
+        let token =  app.session.world_state.tokens[current_period_id][i];
+
+        if(token.status != "available") continue;
+
+        let token_graphic = new PIXI.Graphics();
+
+        token_graphic.beginFill(0xFFFFFF);
+        token_graphic.drawRect(0, 0, 2, 2);
+        token_graphic.endFill();
+        token_graphic.pivot.set(token_graphic.width/2, token_graphic.height/2);
+        token_graphic.position.set(token.current_location.x * scale, token.current_location.y * scale);
+
+        pixi_tokens[current_period_id][i].mini_map_graphic = token_graphic;
+        mini_map.container.addChild(pixi_tokens[current_period_id][i].mini_map_graphic);
+    }
+
     //mini map view port
     let mini_map_vp = new PIXI.Graphics();
     mini_map_vp.width = pixi_app.screen.width * scale;
