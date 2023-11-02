@@ -15,6 +15,7 @@ var pixi_fps_label = null;                     //fps label
 var pixi_avatars = {};                         //avatars
 var pixi_tokens = {};                          //tokens
 var pixi_walls = {};                           //walls
+var pixi_barriers = {};                        //barriers
 
 //vue app
 var app = Vue.createApp({
@@ -412,8 +413,8 @@ var app = Vue.createApp({
                 }
             }
 
-            //update player location on server side
-            //app.send_world_state_update();
+            //update barriers
+            app.update_barriers();
         },
        
         //do nothing on when enter pressed for post

@@ -1,0 +1,45 @@
+{% load crispy_forms_tags %}
+<!--Edit Barrier Modal -->
+<div class="modal fade"
+     id="edit_parameterset_barrier_modal"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     aria-labelledby="edit_parameterset_barrier_modal"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">                
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="parameter_set_barrier_form" v-on:submit.prevent="onSubmit">
+                    {% for i in parameter_set_barrier_form %}
+                    <div class="row">
+                        <div class = "col col-md-10 offset-md-1">  
+                            {{ i|as_crispy_field }}         
+                        </div>            
+                    </div> 
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        title="Remove barrier from parameter set."
+                        v-on:click = "send_remove_parameter_set_barrier()"
+                        v-bind:disabled="reconnecting || working">
+                    Delete <i class="far fa-trash-alt"></i>
+                </button>
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        title="Update barrier settings."
+                        v-on:click = "send_update_parameter_set_barrier()"
+                        v-bind:disabled="reconnecting || working">
+                    Update <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

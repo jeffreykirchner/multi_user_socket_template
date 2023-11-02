@@ -12,6 +12,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin,
                                      ControlParameterSetMixin,
                                      ParameterSetNoticesMixin,
                                      ParameterSetWallsMixin,
+                                     ParameterSetBarriersMixin,
                                      ParameterSetGroupsMixin,
                                      SendMessageMixin):
     '''

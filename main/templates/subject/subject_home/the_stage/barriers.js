@@ -53,8 +53,6 @@ setup_pixi_barrier: function setup_pixi_barrier()
  */
 check_barriers_intersection: function check_barriers_intersection(rect1, parameter_set_group)
 {
-    //test code
-    return false;
 
     for(let i in app.session.parameter_set.parameter_set_barriers)
     {        

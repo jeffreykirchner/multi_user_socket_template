@@ -15,12 +15,13 @@ var pixi_text_emitter_key = 0;
 var pixi_transfer_beams = {};                  //transfer beam json
 var pixi_transfer_beams_key = 0;
 var pixi_fps_label = null;                     //fps label
-var mini_map_container = null;                 //mini map container
+var mini_map = {container:null};               //mini map container
 var pixi_avatars = {};                         //avatars
 var pixi_tokens = {};                          //tokens
 var pixi_notices = {container:null, notices:{}};                         //notices
 var pixi_notices_key = 0;
 var pixi_walls = {};                           //walls
+var pixi_barriers = {};                        //barriers
 var wall_search = {counter:0, current_location:{x:-1,y:-1}, target_location:{x:-1,y:-1}};
 var wall_search_objects = [];
 
@@ -422,6 +423,9 @@ var app = Vue.createApp({
             {
                 app.interaction_modal.hide();
             }
+
+            //update barriers
+            app.update_barriers();
         },
 
         /**

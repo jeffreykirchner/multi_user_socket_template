@@ -91,3 +91,12 @@ check_point_in_rectagle: function check_point_in_rectagle(point, rect)
 
     return false;
 },
+
+/**
+ * degrees to radians
+ */
+degrees_to_radians(degrees)
+{
+    let pi = Math.PI;
+    return degrees * (pi/180);
+},

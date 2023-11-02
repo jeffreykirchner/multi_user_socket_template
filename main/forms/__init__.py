@@ -13,6 +13,7 @@ from .parameter_set_player_form import ParameterSetPlayerForm
 from .parameter_set_notice_form import ParameterSetNoticeForm
 from .parameter_set_wall_form import ParameterSetWallForm
 from .parameter_set_group_form import ParameterSetGroupForm
+from .parameter_set_barrier_form import ParameterSetBarrierForm
 
 from .session_player_name_etc_form import StaffEditNameEtcForm
 
