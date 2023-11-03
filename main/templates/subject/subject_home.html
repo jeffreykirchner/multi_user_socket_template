@@ -45,6 +45,12 @@
     {%include "subject/subject_home/summary/end_game_modal.html"%}
     {%include "subject/subject_home/the_stage/interaction_modal.html"%}
     
+    <div class="row justify-content-lg-center mt-4 mb-4" v-cloak v-show="!session.started">
+        <div class="col-md text-center fs-2 fw-bold">
+            The session has not started.
+        </div>
+    </div>
+   
     <!-- instructions -->
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.world_state.current_experiment_phase == 'Instructions'">
         <div class="col-md">
@@ -73,7 +79,7 @@
         <div class="col-12 text-end text-muted">
             <span class="align-middle">Client [[session_player.player_number]]</span>
         </div>  
-    </div>
+    </div>    
 </div>
 <div v-else>
     <div class="col text-end">
