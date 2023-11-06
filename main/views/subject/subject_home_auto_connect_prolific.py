@@ -72,7 +72,7 @@ class SubjectHomeAutoConnectProlificView(View):
                         return HttpResponse(html_response)
 
                 if not session_player:
-                    if session.current_experiment_phase != ExperimentPhase.INSTRUCTIONS:
+                    if session.world_state["current_experiment_phase"] != ExperimentPhase.INSTRUCTIONS:
                         return HttpResponse("<br><br><center><h1>The session has already started.</h1></center>")
                     
                     first_connect = True

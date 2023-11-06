@@ -143,13 +143,13 @@ def create_new_session(auth_user):
     session.parameter_set = parameter_set
     session.start_date = datetime.now(pytz.UTC)
     session.creator = auth_user
-    session.current_period = 1
 
     session.invitation_subject = p.invitation_subject
     session.invitation_text = p.invitation_text
 
     session.save()
     session.update_player_count()
+    session.setup_world_state()
 
     logger = logging.getLogger(__name__) 
     logger.info(f"Create New Session {session}")

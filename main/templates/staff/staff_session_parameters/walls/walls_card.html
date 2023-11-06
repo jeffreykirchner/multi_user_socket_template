@@ -1,0 +1,80 @@
+<div class="card">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">
+            Walls ([[ Object.keys(parameter_set.parameter_set_walls).length]]) 
+        </span>      
+
+        <span class="float-end">
+            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Parameters Walls')">
+                <i class="far fa-question-circle"></i> 
+            </button>
+        </span> 
+                
+    </div>
+    <div class="card-body" >        
+
+        <div class="row justify-content-center">
+            <!-- wall settings -->
+            <div class="col-md-auto text-center">                
+                <div class="table-responsive">
+                    <table class="table table-condensed"> 
+                        <thead>
+                            <tr>
+                                <th scope="col" class = "m-1 p-1">
+                                    Info
+                                </th> 
+                                <th scope="col" class = "m-1 p-1">
+                                    Location
+                                </th>         
+                                <th scope="col" class = "m-1 p-1">
+                                    Width
+                                </th> 
+                                <th scope="col" class = "m-1 p-1">
+                                    Height
+                                </th>                
+                            </tr>
+                        </thead>
+                        <tbody id="wall_list">
+                            <tr v-for="(p, index) in parameter_set.parameter_set_walls_order" 
+                                v-bind:key="p"
+                                :set="temp_p=parameter_set.parameter_set_walls[p]"
+                                >
+                                <td v-on:click="show_edit_parameter_set_wall(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.info]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_wall(p)" 
+                                   class="player_table_cell">
+                                    [[temp_p.start_x]], [[temp_p.start_y]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_wall(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.width]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_wall(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.height]]
+                                </td>
+                               
+                            </tr>
+                        </tbody>
+                        
+                    </table>
+                </div>
+            </div>
+        </div>  
+
+        <div class="row justify-content-center">
+            <div class="col-md-auto">
+                <button class="btn btn-outline-success btn-sm"
+                        type="button"
+                        title="Add wall"
+                        v-bind:disabled="session.started || reconnecting || working"
+                        v-on:click="send_add_parameter_set_wall()">
+                        Add <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        
+    </div>                    
+</div> 

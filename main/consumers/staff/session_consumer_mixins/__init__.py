@@ -5,3 +5,4 @@ from .timer import TimerMixin
 from .subject_controls import SubjectControlsMixin
 from .data import DataMixin
 from .subject_updates import SubjectUpdatesMixin
+from .interface import InterfaceMixin

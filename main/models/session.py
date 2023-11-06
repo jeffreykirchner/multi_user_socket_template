@@ -12,6 +12,7 @@ import uuid
 import csv
 import io
 import json
+import random
 
 from django.conf import settings
 
@@ -40,24 +41,24 @@ class Session(models.Model):
     title = models.CharField(max_length = 300, default="*** New Session ***")    #title of session
     start_date = models.DateField(default=now)                                   #date of session start
 
-    current_experiment_phase = models.CharField(max_length=100, choices=ExperimentPhase.choices, default=ExperimentPhase.RUN)         #current phase of expeirment
+    # current_experiment_phase = models.CharField(max_length=100, choices=ExperimentPhase.choices, default=ExperimentPhase.RUN)         #current phase of expeirment
 
     channel_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Channel Key')     #unique channel to communicate on
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
 
-    started =  models.BooleanField(default=False)                                #starts session and filll in session
-    current_period = models.IntegerField(default=0)                              #current period of the session
-    time_remaining = models.IntegerField(default=0)                              #time remaining in current phase of current period
-    timer_running = models.BooleanField(default=False)                           #true when period timer is running
-    finished = models.BooleanField(default=False)                                #true after all session periods are complete
+    controlling_channel = models.CharField(max_length = 300, default="")         #channel controlling session
 
+    started =  models.BooleanField(default=False)                                #starts session and filll in session
+   
     shared = models.BooleanField(default=False)                                  #shared session parameter sets can be imported by other users
     locked = models.BooleanField(default=False)                                  #locked models cannot be deleted
 
     invitation_text = HTMLField(default="", verbose_name="Invitation Text")       #inviataion email subject and text
     invitation_subject = HTMLField(default="", verbose_name="Invitation Subject")
 
-    soft_delete =  models.BooleanField(default=False)                            #hide session if true
+    world_state = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session State")       #world state at this point in session
+
+    soft_delete =  models.BooleanField(default=False)                             #hide session if true
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -103,15 +104,9 @@ class Session(models.Model):
         '''
 
         self.started = True
-        self.finished = False
-        self.current_period = 1
+        # self.current_period = 1
         self.start_date = datetime.now()
-        self.time_remaining = self.parameter_set.period_length
-
-        if self.parameter_set.show_instructions:
-            self.current_experiment_phase = ExperimentPhase.INSTRUCTIONS
-        else:
-            self.current_experiment_phase = ExperimentPhase.RUN
+        #self.time_remaining = self.parameter_set.period_length
         
         session_periods = []
 
@@ -124,23 +119,87 @@ class Session(models.Model):
 
         for i in self.session_players.all():
             i.start()
- 
+
+        self.setup_world_state()
+
+    def setup_world_state(self):
+        '''
+        setup world state
+        '''
+        self.world_state = {"last_update":str(datetime.now()), 
+                            "session_players":{},
+                            "current_period":1,
+                            "current_session_period":self.session_periods.get(period_number=1).id,
+                            "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
+                            "time_remaining":self.parameter_set.period_length,
+                            "timer_running":False,
+                            "timer_history":[],
+                            "started":True,
+                            "finished":False,
+                            "session_periods":{str(i.id) : i.json() for i in self.session_periods.all()},
+                            "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
+                            "tokens":{},}
+        
+        inventory = {str(i):0 for i in list(self.session_periods.all().values_list('id', flat=True))}
+
+        #session periods
+        for i in self.world_state["session_periods"]:
+            self.world_state["session_periods"][i]["consumption_completed"] = False
+        
+        #session players
+        for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
+                                                                                            'parameter_set_player__start_x',
+                                                                                            'parameter_set_player__start_y',
+                                                                                            'parameter_set_player__id' ):
+            v = {}
+
+            v['current_location'] = {'x':i['parameter_set_player__start_x'], 'y':i['parameter_set_player__start_y']}
+            v['target_location'] = v['current_location']
+            v['inventory'] = inventory
+            v['tractor_beam_target'] = None
+            v['frozen'] = False
+            v['cool_down'] = 0
+            v['interaction'] = 0
+            v['earnings'] = 0
+            v['parameter_set_player_id'] = i['parameter_set_player__id']
+            
+            self.world_state["session_players"][str(i['id'])] = v
+        
+        #tokens
+        tokens = {}
+        for i in self.session_periods.all():
+            tokens[str(i)] = {}
+
+            for j in range(self.parameter_set.tokens_per_period):
+                
+                token = {"current_location" : {
+                         "x":random.randint(25, self.parameter_set.world_width-25),
+                         "y":random.randint(25, self.parameter_set.world_height-25)},
+                         "status":"available",}
+                
+                tokens[str(i)][str(j)] = token
+            
+
+        self.world_state["tokens"] = tokens
+
+        self.save()
+
     def reset_experiment(self):
         '''
         reset the experiment
         '''
         self.started = False
-        self.finished = False
-        self.current_period = 1
-        self.time_remaining = self.parameter_set.period_length
-        self.timer_running = False
-        self.current_experiment_phase = ExperimentPhase.RUN
+
+        #self.time_remaining = self.parameter_set.period_length
+        #self.timer_running = False
+        self.world_state ={}
         self.save()
 
         for p in self.session_players.all():
             p.reset()
 
         self.session_periods.all().delete()
+        self.session_events.all().delete()
 
         # self.parameter_set.setup()
     
@@ -157,7 +216,7 @@ class Session(models.Model):
         if not self.started:
             return None
 
-        return self.session_periods.get(period_number=self.current_period)
+        return self.session_periods.get(period_number=self.world_state["current_period"])
 
     async def aget_current_session_period(self):
         '''
@@ -166,7 +225,7 @@ class Session(models.Model):
         if not self.started:
             return None
 
-        return await self.session_periods.aget(period_number=self.current_period)
+        return await self.session_periods.aget(period_number=self.world_state["current_period"])
     
     def update_player_count(self):
         '''
@@ -183,39 +242,6 @@ class Session(models.Model):
             new_session_player.player_number = i.player_number
 
             new_session_player.save()
-
-    def do_period_timer(self):
-        '''
-        do period timer actions
-        '''
-
-        status = "success"        
-        stop_timer = False
-
-        #check session over
-        if self.time_remaining == 0 and \
-           self.current_period >= self.parameter_set.period_count:
-
-            self.current_experiment_phase = ExperimentPhase.NAMES
-            stop_timer = True
-           
-        if not status == "fail" and \
-           self.current_experiment_phase != ExperimentPhase.NAMES:
-
-            if self.time_remaining == 0:
-                self.current_period += 1
-                self.time_remaining = self.parameter_set.period_length
-            else:                                     
-                self.time_remaining -= 1
-
-        self.save()
-
-        result = self.json_for_timer()
-
-        return {"value" : status,
-                "result" : result,
-                "stop_timer" : stop_timer,
-                }
 
     def user_is_owner(self, user):
         '''
@@ -234,99 +260,140 @@ class Session(models.Model):
         '''
         return data summary in csv format
         '''
-        output = io.StringIO()
+        logger = logging.getLogger(__name__)
+        
+        
+        with io.StringIO() as output:
 
-        writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(["Session ID", "Period", "Client #", "Label", "Earnings ¢"])
+            writer.writerow(["Session ID", "Period", "Client #", "Label", "Earnings ¢"])
 
-        session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
-                                                                        .order_by('session_period__period_number', 'session_player__player_number')
+            world_state = self.world_state
+            parameter_set_players = {}
+            for i in self.session_players.all().values('id','parameter_set_player__id_label'):
+                parameter_set_players[str(i['id'])] = i
 
-        for p in session_player_periods.all():
-            p.write_summary_download_csv(writer)
+            # logger.info(parameter_set_players)
 
-        return output.getvalue()
+            for period_number, period in enumerate(world_state["session_periods"]):
+                for player_number, player in enumerate(world_state["session_players"]):
+                    writer.writerow([self.id, 
+                                    period_number+1, 
+                                    player_number+1,
+                                    parameter_set_players[str(player)]["parameter_set_player__id_label"], 
+                                    world_state["session_players"][player]["inventory"][period]])
+                    
+            v = output.getvalue()
+            output.close()
+
+        return v
     
     def get_download_action_csv(self):
         '''
         return data actions in csv format
         '''
-        output = io.StringIO()
+        with io.StringIO() as output:
 
-        writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action", "Info", "Info (JSON)", "Timestamp"])
+            writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action", "Info (JSON)", "Timestamp"])
 
-        session_player_chats = main.models.SessionPlayerChat.objects.filter(session_player__in=self.session_players.all())
+            # session_events =  main.models.SessionEvent.objects.filter(session__id=self.id).prefetch_related('period_number', 'time_remaining', 'type', 'data', 'timestamp')
+            # session_events = session_events.select_related('session_player')
 
-        for p in session_player_chats.all():
-            p.write_action_download_csv(writer)
+            world_state = self.world_state
+            parameter_set_players = {}
+            for i in self.session_players.all().values('id','player_number','parameter_set_player__id_label'):
+                parameter_set_players[str(i['id'])] = i
 
-        return output.getvalue()
+            for p in self.session_events.all().exclude(type="timer_tick"):
+                writer.writerow([self.id,
+                                p.period_number, 
+                                p.time_remaining, 
+                                parameter_set_players[str(p.session_player_id)]["player_number"], 
+                                parameter_set_players[str(p.session_player_id)]["parameter_set_player__id_label"], 
+                                p.type, 
+                                p.data, 
+                                p.timestamp])
+            
+            v = output.getvalue()
+            output.close()
+
+        return v
     
     def get_download_recruiter_csv(self):
         '''
         return data recruiter in csv format
         '''
-        output = io.StringIO()
+        with io.StringIO() as output:
 
-        writer = csv.writer(output)
+            writer = csv.writer(output)
 
-        session_players = self.session_players.all()
+            parameter_set_players = {}
+            for i in self.session_players.all().values('id','student_id'):
+                parameter_set_players[str(i['id'])] = i
 
-        for p in session_players:
-            writer.writerow([p.student_id, p.earnings/100])
+            for p in self.world_state["session_players"]:
+                writer.writerow([parameter_set_players[p]["student_id"],
+                                 self.world_state["session_players"][p]["earnings"]])
 
-        return output.getvalue()
+            v = output.getvalue()
+            output.close()
+
+        return v
     
     def get_download_payment_csv(self):
         '''
         return data payments in csv format
         '''
-        output = io.StringIO()
+        with io.StringIO() as output:
 
-        writer = csv.writer(output)
+            writer = csv.writer(output)
 
-        writer.writerow(['Session', 'Date', 'Player', 'Name', 'Student ID', 'Earnings'])
+            writer.writerow(['Session', 'Date', 'Player', 'Name', 'Student ID', 'Earnings'])
 
-        session_players = self.session_players.all()
+            # session_players = self.session_players.all()
 
-        for p in session_players:
-            writer.writerow([self.id, self.get_start_date_string(), p.player_number,p.name, p.student_id, p.earnings/100])
+            # for p in session_players:
+            #     writer.writerow([self.id, self.get_start_date_string(), p.player_number,p.name, p.student_id, p.earnings/100])
 
-        return output.getvalue()
+            parameter_set_players = {}
+            for i in self.session_players.all().values('id', 'player_number', 'name', 'student_id'):
+                parameter_set_players[str(i['id'])] = i
 
+            for p in self.world_state["session_players"]:
+                writer.writerow([self.id,
+                                 self.get_start_date_string(),
+                                 parameter_set_players[p]["player_number"],
+                                 parameter_set_players[p]["name"],
+                                 parameter_set_players[p]["student_id"],
+                                 self.world_state["session_players"][p]["earnings"]])
+
+            v = output.getvalue()
+            output.close()
+
+        return v
+    
     def json(self):
         '''
         return json object of model
         '''
-              
-        chat = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
-                                                    .filter(session_player__in=self.session_players.all())\
-                                                    .prefetch_related('session_player_recipients')
-                                                    .select_related('session_player__parameter_set_player')
-                                                    .order_by('-timestamp')[:100:-1]
-               ]                                                           
+                                                                      
         return{
             "id":self.id,
             "title":self.title,
             "locked":self.locked,
             "start_date":self.get_start_date_string(),
             "started":self.started,
-            "current_experiment_phase":self.current_experiment_phase,
-            "current_period":self.current_period,
-            "time_remaining":self.time_remaining,
-            "timer_running":self.timer_running,
-            "finished":self.finished,
             "parameter_set":self.parameter_set.json(),
             "session_periods":{i.id : i.json() for i in self.session_periods.all()},
             "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
             "session_players":{i.id : i.json(False) for i in self.session_players.all()},
             "session_players_order" : list(self.session_players.all().values_list('id', flat=True)),
-            "chat_all" : chat,
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
+            "world_state" : self.world_state,
         }
     
     def json_for_subject(self, session_player):
@@ -337,15 +404,15 @@ class Session(models.Model):
         
         return{
             "started":self.started,
-            "current_experiment_phase":self.current_experiment_phase,
-            "current_period":self.current_period,
-            "time_remaining":self.time_remaining,
-            "timer_running":self.timer_running,
-            "finished":self.finished,
             "parameter_set":self.parameter_set.get_json_for_subject(),
 
             "session_players":{i.id : i.json_for_subject(session_player) for i in self.session_players.all()},
             "session_players_order" : list(self.session_players.all().values_list('id', flat=True)),
+
+            "session_periods":{i.id : i.json() for i in self.session_periods.all()},
+            "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
+
+            "world_state" : self.world_state,
         }
     
     def json_for_timer(self):
@@ -357,12 +424,7 @@ class Session(models.Model):
 
         return{
             "started":self.started,
-            "current_period":self.current_period,
-            "time_remaining":self.time_remaining,
-            "timer_running":self.timer_running,
-            "finished":self.finished,
             "session_players":session_players,
-            "current_experiment_phase" : self.current_experiment_phase,
             "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
         }
     

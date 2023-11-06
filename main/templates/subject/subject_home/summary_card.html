@@ -1,6 +1,6 @@
-{%include "subject/subject_home/summary/end_game_modal.html"%}
 
-<div class="card" v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'">                  
+
+<div class="card" v-show="first_load_done && session.started && session.world_state.current_experiment_phase!='Selection'">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">Summary</span>            
 
@@ -11,7 +11,7 @@
                 Current Period:
             </div>
             <div class="col text-start ps-1">
-                [[session.current_period]]
+                [[session.world_state.current_period]]
             </div>
         </div>  
         <div class="row">
@@ -19,7 +19,7 @@
                 Time Remaining:
             </div>
             <div class="col text-start ps-1">
-                [[session.time_remaining]]
+                [[session.world_state.time_remaining]]
             </div>
         </div>
         <div class="row">

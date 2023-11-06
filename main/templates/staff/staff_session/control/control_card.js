@@ -33,6 +33,9 @@ reset_experiment(){
         return;
     }
 
+    if(app.timer_pulse != null) clearTimeout(app.timer_pulse);
+
+    app.session.world_state.timer_running = false;
     app.working = true;
     app.send_message("reset_experiment", {});
 },
@@ -85,7 +88,8 @@ next_experiment_phase(){
 */
 take_next_phase(message_data){
     
-    app.session.current_experiment_phase = message_data.current_experiment_phase;
+    app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+    app.session.world_state.finished = message_data.finished;
     app.update_phase_button_text();
 
 },
@@ -95,7 +99,8 @@ take_next_phase(message_data){
 */
 take_update_next_phase(message_data){
     
-    app.session.current_experiment_phase = message_data.current_experiment_phase;
+    app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+    app.session.world_state.finished = message_data.finished;
     app.update_phase_button_text();
 },
 
@@ -107,7 +112,7 @@ start_timer(){
 
     let action = "";
 
-    if(app.session.timer_running)
+    if(app.session.world_state.timer_running)
     {
         action = "stop";
     }
@@ -123,7 +128,36 @@ start_timer(){
  * @param message_data {json}
 */
 take_start_timer(message_data){
-    app.take_update_time(message_data);
+   
+    if(app.timer_pulse != null) clearTimeout(app.timer_pulse);
+    app.session.world_state.timer_running = message_data.timer_running;
+
+    if(app.session.world_state.timer_running)
+    {
+        app.do_timer_pulse();
+    }
+},
+
+/**
+ * handle local timer pulse
+ */
+do_timer_pulse(){
+    // console.log("timer pulse");
+    if(app.session.world_state.timer_running)
+    {
+        if(app.chat_socket.readyState === WebSocket.OPEN)
+        {
+            app.send_message("continue_timer", {});
+        }
+        app.timer_pulse = setTimeout(app.do_timer_pulse, 1000);
+    }
+},
+
+/**
+ * stop local timer pulse 
+ */
+take_stop_timer_pulse(){
+    if(app.timer_pulse != null) clearTimeout(app.timer_pulse);
 },
 
 /**reset experiment, remove all bids, asks and trades

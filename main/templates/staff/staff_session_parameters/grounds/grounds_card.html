@@ -1,0 +1,107 @@
+<div class="card">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">
+            Ground Elements ([[ Object.keys(parameter_set.parameter_set_grounds).length]]) 
+        </span>      
+
+        <span class="float-end">
+            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Parameters grounds')">
+                <i class="far fa-question-circle"></i> 
+            </button>
+        </span> 
+                
+    </div>
+    <div class="card-body" >        
+
+        <div class="row justify-content-center">
+            <!-- ground settings -->
+            <div class="col-md-auto text-center">                
+                <div class="table-responsive">
+                    <table class="table table-condensed"> 
+                        <thead>
+                            <tr>
+                                <th scope="col" class = "m-1 p-1">
+                                    Info
+                                </th> 
+                                <th scope="col" class = "m-1 p-1">
+                                    Location
+                                </th>         
+                                <th scope="col" class = "m-1 p-1">
+                                    Width
+                                </th> 
+                                <th scope="col" class = "m-1 p-1">
+                                    Height
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Tint
+                                </th>   
+                                <th scope="col" class = "m-1 p-1">
+                                    Texture
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Rotation
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Scale
+                                </th>             
+                            </tr>
+                        </thead>
+                        <tbody id="ground_list">
+                            <tr v-for="(p, index) in parameter_set.parameter_set_grounds_order" 
+                                v-bind:key="p"
+                                :set="temp_p=parameter_set.parameter_set_grounds[p]"
+                                >
+                                <td v-on:click="show_edit_parameter_set_ground(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.info]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_ground(p)" 
+                                   class="player_table_cell">
+                                    [[temp_p.x]], [[temp_p.y]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_ground(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.width]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_ground(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.height]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_ground(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.tint]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_ground(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.texture]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_ground(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.rotation]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_ground(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.scale]]
+                                </td>
+                            </tr>
+                        </tbody>
+                        
+                    </table>
+                </div>
+            </div>
+        </div>  
+
+        <div class="row justify-content-center">
+            <div class="col-md-auto">
+                <button class="btn btn-outline-success btn-sm"
+                        type="button"
+                        title="Add ground"
+                        v-bind:disabled="session.started || reconnecting || working"
+                        v-on:click="send_add_parameter_set_ground()">
+                        Add <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        
+    </div>                    
+</div> 

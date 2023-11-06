@@ -17,50 +17,74 @@
             <!-- player settings -->
             <div class="col-md-auto text-center">                
                 <div class="table-responsive">
-                <table class="table table-condensed"> 
-                    <thead>
-                        <tr>
-                            <th scope="col" class = "m-1 p-1">
-                                #
-                            </th> 
-                            <th scope="col" class = "m-1 p-1">
-                                Label
-                            </th>                           
-                        </tr>
-                    </thead>
-                    <tbody id="player_list">
-                        <tr v-for="(p, index) in parameter_set.parameter_set_players_order" v-bind:key="p">
-                            <td v-on:click="show_edit_parameter_set_player(p)" 
-                                class="player_table_cell">
-                                [[parameter_set.parameter_set_players[p].player_number]]
-                            </td>
-                            <td v-on:click="show_edit_parameter_set_player(p)" 
-                                class="player_table_cell">
-                                [[parameter_set.parameter_set_players[p].id_label]]
-                            </td>
-                            
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <!-- copy groups forward -->
-                        <tr>
-                            <td>
-                                <button class="btn btn-outline-success btn-sm"
-                                        type="button"
-                                        title="Add player"
-                                        v-bind:disabled="session.started || reconnecting || working"
-                                        v-on:click="send_add_parameter_set_player()">
-                                       Add <i class="fas fa-plus"></i>
-                                </button>
-                            </td>                            
-                            <td>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                    <table class="table table-condensed"> 
+                        <thead>
+                            <tr>
+                                <th scope="col" class = "m-1 p-1">
+                                    #
+                                </th> 
+                                <th scope="col" class = "m-1 p-1">
+                                    Label
+                                </th>         
+                                <th scope="col" class = "m-1 p-1">
+                                    Group
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Location (X,Y)
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Color
+                                </th>                    
+                            </tr>
+                        </thead>
+                        <tbody id="player_list">
+                            <tr v-for="(p, index) in parameter_set.parameter_set_players_order" 
+                                v-bind:key="p"
+                                :set="temp_p=parameter_set.parameter_set_players[p]"
+                                >
+                                <td v-on:click="show_edit_parameter_set_player(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.player_number]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_player(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.id_label]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_player(p)" 
+                                    class="player_table_cell">
+                                    <span v-if="temp_p.parameter_set_group && 
+                                                temp_p.parameter_set_group in parameter_set.parameter_set_groups">
+                                        [[parameter_set.parameter_set_groups[temp_p.parameter_set_group].name]]
+                                    </span>
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_player(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.start_x]], [[temp_p.start_y]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_player(p)" 
+                                    class="player_table_cell"
+                                    v-bind:style="{color:temp_p.hex_color.replace('0x','#')}">
+                                    [[temp_p.hex_color]]
+                                </td>
+                            </tr>
+                        </tbody>
+                        
+                    </table>
                 </div>
             </div>
         </div>  
+
+        <div class="row justify-content-center">
+            <div class="col-md-auto">
+                <button class="btn btn-outline-success btn-sm"
+                        type="button"
+                        title="Add player"
+                        v-bind:disabled="session.started || reconnecting || working"
+                        v-on:click="send_add_parameter_set_player()">
+                        Add <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
         
     </div>                    
 </div> 

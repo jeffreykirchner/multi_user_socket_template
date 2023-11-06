@@ -18,10 +18,35 @@ var app = Vue.createApp({
     
                     current_parameter_set_player : {
                         id:0,
-                    },                  
+                    },        
+                    
+                    current_parameter_set_notice : {
+                        id:0,
+                    },
+
+                    current_parameter_set_wall : {
+                        id:0,
+                    },
+
+                    current_parameter_set_group : {
+                        id:0,
+                    },
+
+                    current_parameter_set_barrier : {
+                        id:0,
+                    },
+
+                    current_parameter_set_ground : {
+                        id:0,
+                    },
 
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
-                    parameterset_player_form_ids: {{parameterset_player_form_ids|safe}},
+                    parameter_set_player_form_ids: {{parameter_set_player_form_ids|safe}},
+                    parameter_set_notice_form_ids: {{parameter_set_notice_form_ids|safe}},
+                    parameter_set_wall_form_ids: {{parameter_set_wall_form_ids|safe}},
+                    parameter_set_group_form_ids: {{parameter_set_group_form_ids|safe}},
+                    parameter_set_barrier_form_ids: {{parameter_set_barrier_form_ids|safe}},
+                    parameter_set_ground_form_ids: {{parameter_set_ground_form_ids|safe}},
 
                     upload_file: null,
                     upload_file_name:'Choose File',
@@ -33,6 +58,11 @@ var app = Vue.createApp({
                     import_parameters_modal : null,
                     edit_parameterset_modal : null,
                     edit_parameterset_player_modal : null,
+                    edit_parameterset_notice_modal : null,
+                    edit_parameterset_wall_modal : null,
+                    edit_parameterset_group_modal : null,
+                    edit_parameterset_ground_modal : null,
+                    upload_parameter_set_modal : null,
 
                     //form paramters
                     session_import : null,
@@ -102,7 +132,12 @@ var app = Vue.createApp({
             app.edit_parameterset_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_modal'), {keyboard: false})            
             app.edit_parameterset_player_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_player_modal'), {keyboard: false})
             app.upload_parameter_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_parameter_set_modal'), {keyboard: false})   
-               
+            app.edit_parameterset_notice_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_notice_modal'), {keyboard: false})
+            app.edit_parameterset_wall_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_wall_modal'), {keyboard: false})
+            app.edit_parameterset_group_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_group_modal'), {keyboard: false})
+            app.edit_parameterset_barrier_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_barrier_modal'), {keyboard: false})
+            app.edit_parameterset_ground_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_ground_modal'), {keyboard: false})
+
             document.getElementById('import_parameters_modal').addEventListener('hidden.bs.modal', app.hide_import_parameters);
             document.getElementById('edit_parameterset_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameter_set);
             document.getElementById('upload_parameter_set_modal').addEventListener('hidden.bs.modal', app.hide_upload_parameters);
@@ -141,6 +176,13 @@ var app = Vue.createApp({
         {%include "staff/staff_session_parameters/general_settings/general_settings.js"%}
         {%include "staff/staff_session_parameters/control/control.js"%}
         {%include "staff/staff_session_parameters/players/players.js"%}
+        {%include "staff/staff_session_parameters/notices/notices.js"%}
+        {%include "staff/staff_session_parameters/walls/walls.js"%}
+        {%include "staff/staff_session_parameters/groups/groups.js"%}
+        {%include "staff/staff_session_parameters/barriers/barriers.js"%}
+        {%include "staff/staff_session_parameters/grounds/grounds.js"%}
+
+
         {%include "js/help_doc.js"%}
     
         /** clear form error messages
@@ -160,7 +202,42 @@ var app = Vue.createApp({
                 if(e) e.remove();
             }
 
-            s = app.parameterset_player_form_ids;
+            s = app.parameter_set_player_form_ids;
+            for(let i in s)
+            {
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
+            }
+
+            s = app.parameter_set_notice_form_ids;
+            for(let i in s)
+            {
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
+            }
+
+            s = app.parameter_set_wall_form_ids;
+            for(let i in s)
+            {
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
+            }
+
+            s = app.parameter_set_group_form_ids;
+            for(let i in s)
+            {
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
+            }
+
+            s = app.parameter_set_barrier_form_ids;
+            for(let i in s)
+            {
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
+            }
+
+            s = app.parameter_set_ground_form_ids;
             for(let i in s)
             {
                 let e = document.getElementById("id_errors_" + s[i]);

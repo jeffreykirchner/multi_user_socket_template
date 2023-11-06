@@ -31,11 +31,19 @@
         </div>
         <div class="row">
             <div class="col-7 text-end">
-                {{parameter_set_form.private_chat.label}}:                
+                {{parameter_set_form.break_frequency.label}}:
             </div>
             <div class="col text-start">
-                <span v-if="parameter_set.private_chat=='True'">Yes</span><span v-else>No</span>                
-            </div>  
+                [[parameter_set.break_frequency]]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.break_length.label}}:
+            </div>
+            <div class="col text-start">
+                [[parameter_set.break_length]]
+            </div>
         </div>
         <div class="row">
             <div class="col-7 text-end">
@@ -76,7 +84,87 @@
             <div class="col text-start">
                 <span v-if="parameter_set.test_mode=='True'">Yes</span><span v-else>No</span>                
             </div>  
-        </div>        
+        </div>   
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.tokens_per_period.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.tokens_per_period]]                          
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.interaction_length.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.interaction_length]]                          
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.interaction_range.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.interaction_range]]                          
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.avatar_scale.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.avatar_scale]]                          
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.avatar_bound_box_percent.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.avatar_bound_box_percent]]                          
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.avatar_move_speed.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.avatar_move_speed]]                          
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.avatar_animation_speed.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.avatar_animation_speed]]                          
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.cool_down_length.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.cool_down_length]]                          
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.world_width.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.world_width]]                 
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.world_height.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.world_height]]                          
+            </div>  
+        </div> 
         <div class="row justify-content-center">
             <div class="col-md text-center mb-2 mt-2">
                 <button class="btn btn-outline-primary"

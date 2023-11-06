@@ -4,6 +4,20 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
+//var app.session.world_state = {};
+var pixi_app = null;
+var pixi_container_main = null;
+var pixi_text_emitter = {};
+var pixi_text_emitter_key = 0;
+var pixi_transfer_beams = {};
+var pixi_transfer_beams_key = 0;
+var pixi_fps_label = null;                     //fps label
+var pixi_avatars = {};                         //avatars
+var pixi_tokens = {};                          //tokens
+var pixi_walls = {};                           //walls
+var pixi_barriers = {};                        //barriers
+var pixi_grounds = {};                         //grounds
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
@@ -16,8 +30,9 @@ var app = Vue.createApp({
                     help_text : "Loading ...",
                     session_id : {{session.id}},
                     session_key : "{{session.session_key}}",
-                    other_color : 0xD3D3D3,
                     session : null,
+                    session_events : null,
+                    timer_pulse : null,
 
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
 
@@ -39,12 +54,29 @@ var app = Vue.createApp({
 
                     csv_email_list : "",           //csv email list
 
+                    last_world_state_update : null,
+
                     //modals
                     edit_subject_modal : null,
                     edit_session_modal : null,
                     send_message_modal : null,
                     upload_email_modal : null,
-                   
+
+                    //pixi
+                    canvas_width  : null,
+                    canvas_height : null,
+                    move_speed : 5,
+                    animation_speed : 0.5,
+                    scroll_speed : 10,
+                    pixi_mode : "staff",
+                    pixi_scale : 1,
+                    pixi_scale_range_control : 1,
+                    stage_width : 10000,
+                    stage_height : 10000,
+                    scroll_direction : {x:0, y:0},
+                    current_location : {x:0, y:0},
+                    follow_subject : -1,
+                    draw_bounding_boxes: false,
                 }},
     methods: {
 
@@ -57,7 +89,9 @@ var app = Vue.createApp({
         /** fire trys to connect to server
          * return true if re-connect should be allowed else false
         */
-        handle_socket_connection_try(){            
+        handle_socket_connection_try(){         
+            app.session.world_state.timer_running = false;
+            if(app.timer_pulse != null) clearTimeout(app.timer_pulse);   
             return true;
         },
 
@@ -107,6 +141,8 @@ var app = Vue.createApp({
                 case "start_timer":
                     app.take_start_timer(message_data);
                     break;   
+                case "stop_timer_pulse":
+                    app.take_stop_timer_pulse(message_data);
                 case "update_connection_status":
                     app.take_update_connection_status(message_data);
                     break;   
@@ -161,7 +197,24 @@ var app = Vue.createApp({
                 case "update_refresh_screens":
                     app.take_refresh_screens(message_data);
                     break;
-
+                case "update_target_location_update":
+                    app.take_target_location_update(message_data);
+                    break;
+                case "update_collect_token":
+                    app.take_update_collect_token(message_data);
+                    break;
+                case "update_tractor_beam":
+                    app.take_update_tractor_beam(message_data);
+                    break;
+                case "update_interaction":
+                    app.take_update_interaction(message_data);
+                    break;
+                case "update_cancel_interaction":
+                    app.take_update_cancel_interaction(message_data);
+                    break;   
+                case "load_session_events":
+                    app.take_load_session_events(message_data);
+                    break; 
             }
 
             app.first_load_done = true;
@@ -185,17 +238,17 @@ var app = Vue.createApp({
         /**
          * do after session has loaded
          */
-         do_first_load()
-         {
-             app.edit_subject_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_subject_modal'), {keyboard: false});
-             app.edit_session_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_session_modal'), {keyboard: false});;           
-             app.send_message_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('send_message_modal'), {keyboard: false});           
-             app.upload_email_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_email_modal'), {keyboard: false});
- 
-             document.getElementById('edit_subject_modal').addEventListener('hidden.bs.modal', app.hide_edit_subject);
-             document.getElementById('edit_session_modal').addEventListener('hidden.bs.modal', app.hide_edit_session);
-             document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
-             document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
+        do_first_load()
+        {
+            app.edit_subject_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_subject_modal'), {keyboard: false});
+            app.edit_session_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_session_modal'), {keyboard: false});;           
+            app.send_message_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('send_message_modal'), {keyboard: false});           
+            app.upload_email_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_email_modal'), {keyboard: false});
+
+            document.getElementById('edit_subject_modal').addEventListener('hidden.bs.modal', app.hide_edit_subject);
+            document.getElementById('edit_session_modal').addEventListener('hidden.bs.modal', app.hide_edit_session);
+            document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
+            document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
 
             tinyMCE.init({
                 target: document.getElementById('id_invitation_subject'),
@@ -211,7 +264,19 @@ var app = Vue.createApp({
                     e.stopImmediatePropagation();
                 }
                 });
-         },
+            
+            app.setup_pixi();
+
+        },
+
+         /**
+         * after reconnection, load again
+         */
+        do_reload()
+        {
+            app.setup_pixi_tokens_for_current_period();
+            app.setup_pixi_subjects();
+        },
 
         /** send winsock request to get session info
         */
@@ -224,7 +289,12 @@ var app = Vue.createApp({
         */
         take_get_session(message_data){
             
+            app.destroy_pixi_tokens_for_all_periods();
+            app.destory_setup_pixi_subjects();
+
             app.session = message_data;
+
+            app.session.world_state =  app.session.world_state;
 
             if(app.session.started)
             {
@@ -241,29 +311,37 @@ var app = Vue.createApp({
                     app.do_first_load();
                 });
             }
+            else
+            {
+                Vue.nextTick(() => {
+                    app.do_reload();                    
+                });
+            }
             
-            app.update_chat_display();
-            app.update_phase_button_text();    
+            app.update_phase_button_text();
+            let v = {};
+            v.timer_running = app.session.world_state.timer_running;
+            app.take_start_timer(v); 
         },
 
         /**update text of move on button based on current state
          */
         update_phase_button_text(){
-            if(app.session.finished && app.session.current_experiment_phase == "Done")
+            if(app.session.world_state.finished && app.session.world_state.current_experiment_phase == "Done")
             {
                 app.move_to_next_phase_text = '** Session complete **';
             }
-            else if(app.session.current_experiment_phase == "Names")
+            else if( app.session.world_state.current_experiment_phase == "Names")
             {
                 app.move_to_next_phase_text = 'Complete Session <i class="fas fa-flag-checkered"></i>';
             }
-            else if(app.session.current_experiment_phase == "Run")
+            else if( app.session.world_state.current_experiment_phase == "Run")
             {
                 app.move_to_next_phase_text = 'Running ...';
             }
-            else if(app.session.started && !app.session.finished)
+            else if(app.session.started && !app.session.world_state.finished)
             {
-                if(app.session.current_experiment_phase == "Selection" && app.session.parameter_set.show_instructions == "True")
+                if(app.session.world_state.current_experiment_phase == "Selection" && app.session.parameter_set.show_instructions == "True")
                 {
                     app.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
                 }
@@ -279,22 +357,9 @@ var app = Vue.createApp({
         */
         take_update_chat(message_data){
             
-            let result = message_data;
-            let chat = result.chat;
-
-            if(app.session.chat_all.length>=100)
-                app.session.chat_all.shift();
-            
-            app.session.chat_all.push(chat);
-            app.update_chat_display();
-        },
-
-        /**
-         * update chat
-         */
-        update_chat_display(){
-            
-            app.chat_list_to_display=app.session.chat_all;
+            app.session.world_state.session_players[message_data.sender_id].show_chat = true;    
+            app.session.world_state.session_players[message_data.sender_id].chat_time = Date.now();
+            pixi_avatars[message_data.sender_id].chat_container.getChildAt(1).text =  message_data.text;
         },
 
         /**
@@ -302,21 +367,54 @@ var app = Vue.createApp({
          */
         take_update_time(message_data){
 
-            let result = message_data.result;
+           
             let status = message_data.value;
 
             if(status == "fail") return;
 
-            app.session.started = result.started;
-            app.session.current_period = result.current_period;
-            app.session.time_remaining = result.time_remaining;
-            app.session.timer_running = result.timer_running;
-            app.session.finished = result.finished;
-            app.session.current_experiment_phase = result.current_experiment_phase;
-
-            app.take_update_earnings(message_data);
+            // app.session.started = result.started;
+            app.session.world_state.current_period = message_data.current_period;
+            app.session.world_state.time_remaining = message_data.time_remaining;
+            app.session.world_state.timer_running = message_data.timer_running;
+            app.session.world_state.started = message_data.started;
+            app.session.world_state.finished = message_data.finished;
+           
+            // app.session.finished = result.finished;
+            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
 
             app.update_phase_button_text();
+
+            //update player earnings and inventory if period has changed
+            if(message_data.period_is_over)
+            {
+                app.setup_pixi_tokens_for_current_period();
+                app.update_player_inventory();              
+                app.take_update_earnings(message_data.earnings);  
+            }
+
+            //update player status
+            for(p in message_data.session_player_status)
+            {
+                session_player = message_data.session_player_status[p];
+                app.session.world_state.session_players[p].interaction = session_player.interaction;
+                app.session.world_state.session_players[p].frozen = session_player.frozen;
+                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
+                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
+            }
+
+            //update player location
+            for(p in message_data.current_locations)
+            {
+                let server_location = message_data.current_locations[p];
+
+                if(app.get_distance(server_location, app.session.world_state.session_players[p].current_location) > 1000)
+                {
+                    app.session.world_state.session_players[p].current_location = server_location;
+                }
+            }
+
+            //update barriers
+            app.update_barriers();
         },
        
         //do nothing on when enter pressed for post
@@ -329,6 +427,19 @@ var app = Vue.createApp({
         {%include "staff/staff_session/subjects/subjects_card.js"%}
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}
+        {%include "staff/staff_session/interface/interface_card.js"%}
+        {%include "staff/staff_session/replay/replay_card.js"%}
+        {%include "subject/subject_home/the_stage/pixi_setup.js"%}
+        {%include "subject/subject_home/the_stage/avatar.js"%}
+        {%include "subject/subject_home/the_stage/token.js"%}
+        {%include "subject/subject_home/the_stage/helpers.js"%}
+        {%include "subject/subject_home/the_stage/staff.js"%}
+        {%include "subject/subject_home/the_stage/text_emitter.js"%}
+        {%include "subject/subject_home/the_stage/transfer_beam.js"%}
+        {%include "subject/subject_home/the_stage/wall.js"%}
+        {%include "subject/subject_home/the_stage/move_objects.js"%}
+        {%include "subject/subject_home/the_stage/barriers.js"%}
+        {%include "subject/subject_home/the_stage/ground.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages

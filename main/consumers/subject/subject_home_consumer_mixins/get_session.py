@@ -26,10 +26,11 @@ class GetSessionMixin():
                 session_player = await SessionPlayer.objects.select_related('session').aget(player_key=self.connection_uuid)
                 self.session_id = session_player.session.id
                 self.session_player_id = session_player.id
+                self.controlling_channel =  session_player.session.controlling_channel
             except ObjectDoesNotExist:
                 result = {"session" : None, "session_player" : None}
             else:        
-                result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)
+                result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)                
 
             await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                     message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -38,7 +39,7 @@ class GetSessionMixin():
         '''
         start experiment on subjects
         '''
-
+        
         result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 

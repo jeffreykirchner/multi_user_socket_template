@@ -19,7 +19,12 @@ from main.models import Session
 
 from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
-from main.forms import parameter_set_player_form
+from main.forms import ParameterSetPlayerForm
+from main.forms import ParameterSetNoticeForm
+from main.forms import ParameterSetWallForm
+from main.forms import ParameterSetBarrierForm
+from main.forms import ParameterSetGroupForm
+from main.forms import ParameterSetGroundForm
 
 class StaffSessionParametersView(SingleObjectMixin, View):
     '''
@@ -37,26 +42,68 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         '''
         session = self.get_object()
 
-        parameterset_player_form = parameter_set_player_form()
+        parameter_set_player_form = ParameterSetPlayerForm()
+        parameter_set_notice_form = ParameterSetNoticeForm()
+        parameter_set_wall_form = ParameterSetWallForm()
+        parameter_set_barrier_form = ParameterSetBarrierForm()
+        parameter_set_group_form = ParameterSetGroupForm()
+        parameter_set_ground_form = ParameterSetGroundForm()
+
+        parameter_set_player_form.fields["parameter_set_group"].queryset = session.parameter_set.parameter_set_groups.all()
+        parameter_set_barrier_form.fields["parameter_set_groups"].queryset = session.parameter_set.parameter_set_groups.all()
 
         parameterset_form_ids=[]
         for i in ParameterSetForm():
             parameterset_form_ids.append(i.html_name)
 
-        parameterset_player_form_ids=[]
-        for i in parameterset_player_form:
-            parameterset_player_form_ids.append(i.html_name)
+        parameter_set_player_form_ids=[]
+        for i in parameter_set_player_form:
+            parameter_set_player_form_ids.append(i.html_name)
+
+        parameter_set_notice_form_ids=[]
+        for i in parameter_set_notice_form:
+            parameter_set_notice_form_ids.append(i.html_name)
+
+        parameter_set_wall_form_ids=[]
+        for i in parameter_set_wall_form:
+            parameter_set_wall_form_ids.append(i.html_name)
+
+        parameter_set_wall_form_ids=[]
+        for i in parameter_set_wall_form:
+            parameter_set_wall_form_ids.append(i.html_name)
+
+        parameter_set_group_form_ids=[]
+        for i in parameter_set_group_form:
+            parameter_set_group_form_ids.append(i.html_name)
+
+        parameter_set_ground_form_ids=[]
+        for i in parameter_set_ground_form:
+            parameter_set_ground_form_ids.append(i.html_name)
 
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),
                                "player_key" :  uuid.uuid4(),
                                "id" : session.id,
+
                                "parameter_set_form" : ParameterSetForm(),
-                               "parameter_set_player_form" : parameterset_player_form,
+                               "parameter_set_player_form" : parameter_set_player_form,
+                               "parameter_set_notice_form" : parameter_set_notice_form,
+                               "parameter_set_wall_form" : parameter_set_wall_form,
+                               "parameter_set_group_form" : parameter_set_group_form,
+                               "parameter_set_barrier_form" : parameter_set_barrier_form,
+                               "parameter_set_ground_form" : parameter_set_ground_form,
+                               
+                               "import_parameters_form" : ImportParametersForm(user=request.user, session_id=session.id),
+
                                "parameterset_form_ids" : parameterset_form_ids,
-                               "parameterset_player_form_ids" : parameterset_player_form_ids,
-                               "import_parameters_form" : ImportParametersForm(user=request.user, session_id=session.id),     
+                               "parameter_set_player_form_ids" : parameter_set_player_form_ids,
+                               "parameter_set_notice_form_ids" : parameter_set_notice_form_ids,
+                               "parameter_set_wall_form_ids" : parameter_set_wall_form_ids,
+                               "parameter_set_group_form_ids" : parameter_set_group_form_ids,
+                               "parameter_set_barrier_form_ids" : parameter_set_wall_form_ids,
+                               "parameter_set_ground_form_ids" : parameter_set_ground_form_ids,
+                 
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',
                                "number_of_player_types" : range(4),

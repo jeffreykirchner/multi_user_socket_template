@@ -1,0 +1,104 @@
+<div class="card" id="graph_card">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle"></span>
+
+        <span class="float-end">
+            <span v-show="reconnecting" class="me-1">
+                Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
+            </span>
+
+            {%if session.parameter_set.test_mode%}
+                <div class="form-check" v-if="is_subject">
+                    <input class="form-check-input"
+                           type="checkbox" 
+                           value="" 
+                           id="testModeCheckBox" 
+                           v-model="test_mode"
+                           >
+                    <label class="form-check-label" for="testModeCheckBox">
+                    Test Mode On
+                    </label>
+                </div>
+            {%endif%}
+        </span>
+
+    </div>
+    <div class="card-body">
+        
+        <!-- the pixi stage -->
+        <div class="row">
+            <div class="col">           
+                <canvas class="field" 
+                        key="sd_graph" 
+                        id="sd_graph_id" 
+                        style="border-style: solid;border-width: 1px;"
+                        oncontextmenu="return false;"></canvas>                
+            </div>
+        </div>
+
+        <!-- controls -->
+        <div class="row" v-if="pixi_mode=='staff' && session">
+            <div class="col-md-8">
+                <label for="zoom_range" 
+                       class="form-label">
+                    Zoom
+                </label>
+                <input type="range" 
+                       class="form-range" 
+                       min=0.05
+                       max=1 
+                       step=0.05
+                       v-model="pixi_scale_range_control"
+                       v-on:input="update_zoom()"
+                       id="zoom_range">
+            </div>
+            <div class="col-md-3">
+                <label for="follow_subject" class="form-label">Follow Subject</label>
+                <select v-model="follow_subject" 
+                        class="form-select" 
+                        aria-label="Follow Subject"
+                        id="follow_subject">
+                    <option :value="-1" :key="-1">None</option>
+                    <option v-for="(p, index) in session.session_players_order" 
+                           :value="session.session_players[p].id" 
+                           :key="index"
+                           :set="temp_p=session.session_players[p]">
+                           Player [[temp_p.parameter_set_player.id_label]]
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label for="fit_to_screen" 
+                       class="form-label">Fit to Screen</label>
+                <br>
+                <button type="button"
+                        id="fit_to_screen"
+                        class="form_button btn btn-outline-primary"
+                        v-bind:disabled="reconnecting || working || session.started===false"
+                        v-on:click="fit_to_screen()">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-2" v-show="session.started" v-if="pixi_mode=='subject'">
+            <div class="col-md-8">                 
+                <div class="input-group">
+                    <input type="text" 
+                           class="form-control" 
+                           placeholder="Chat Text" 
+                           v-model="chat_text"
+                           aria-label="Chat Text"                           
+                           v-on:keyup.enter="(session.world_state.current_experiment_phase == 'Instructions') ? simulate_chat_instructions() : send_chat()"
+                           aria-describedby="send_chat_id">
+                    <button class="btn btn-outline-primary"
+                            type="button" 
+                            id="send_chat_id" 
+                            v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
+                            v-on:click="(session.world_state.current_experiment_phase == 'Instructions') ? simulate_chat_instructions() : send_chat()">Chat <i class="far fa-comments"></i></button>
+                  </div>
+            </div>
+        </div>
+       
+    </div>                    
+</div> 

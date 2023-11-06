@@ -1,17 +1,17 @@
 {% load crispy_forms_tags %}
-<!--Edit Period Modal -->
+<!--interaction Modal -->
 <div class="modal fade " 
-     id="end_game_modal" 
+     id="interaction_modal" 
      data-bs-backdrop="static" 
      data-bs-keyboard="false" 
      tabindex="-1" 
-     aria-labelledby="end_game_modal" 
+     aria-labelledby="interaction_modal" 
      aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header fw-bold">
-                The experiment is complete.
+                Interaction
             </div>
             <div class="modal-body">
                 
@@ -29,11 +29,18 @@
             
             </div>
             <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-primary mr-2"
+                        v-on:click = "cancel_interaction()"
+                        title="Cancel Interaction"                       
+                        v-bind:disabled="reconnecting || working">
+                    Cancel <i class="fas fa-ban"></i>
+                </button>
                 
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "send_name()"
-                        title="Submit Name"                       
+                        v-on:click = "send_interaction()"
+                        title="Submit Interaction"                       
                         v-bind:disabled="reconnecting || working">
                     Submit <i class="fas fa-sign-in-alt"></i>
                 </button>

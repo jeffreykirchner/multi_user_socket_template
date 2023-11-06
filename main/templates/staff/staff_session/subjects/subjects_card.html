@@ -102,7 +102,7 @@
                             <th scope="col" class = "text-center">
                                 Connected
                             </th>
-                            <th scope="col" class = "text-center" v-show="session.current_experiment_phase == 'Instructions'">
+                            <th scope="col" class = "text-center" v-show="session.world_state.current_experiment_phase == 'Instructions'">
                                 Instructions
                             </th>
                             <th scope="col" class = "text-center" v-if="session.parameter_set.survey_required=='True'">
@@ -135,7 +135,12 @@
                                 </span>
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                $[[(temp_p.earnings/100).toFixed(2)]]
+                                <span v-if="Object.keys(session.world_state).length>0 && session.started">
+                                    $[[(session.world_state.session_players[p].earnings/100).toFixed(2)]]
+                                </span>
+                                <span v-else>
+                                    ---
+                                </span>
                             </td>                            
                             <td class="player_table_cell text-nowrap">
                                 <a v-bind:href="temp_p.login_link">Login Link</a>
@@ -148,7 +153,7 @@
                                     <i class="fas fa-times"></i>
                                 </span>
                             </td>
-                            <td class="player_table_cell text-nowrap" v-show="session.current_experiment_phase == 'Instructions'">
+                            <td class="player_table_cell text-nowrap" v-show="session.world_state.current_experiment_phase == 'Instructions'">
                                 [[temp_p.instructions_finished ? "Finished" : "Page " + temp_p.current_instruction.toString()]]
                             </td>
                             <td class="player_table_cell text-nowrap" v-if="session.parameter_set.survey_required=='True'">

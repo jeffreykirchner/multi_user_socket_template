@@ -15,8 +15,8 @@ from main.models import ParameterSet
 from main.models import ParameterSetPlayer
 
 from main.models import Session
+from main.models import SessionEvent
 from main.models import SessionPlayer
-from main.models import SessionPlayerChat
 from main.models import SessionPlayerPeriod
 
 from main.models import  HelpDocs
@@ -73,7 +73,6 @@ class ParametersAdmin(admin.ModelAdmin):
 
     actions = []
 
-admin.site.register(SessionPlayerChat)
 admin.site.register(HelpDocs)
 
 @admin.register(SessionPlayerPeriod)
@@ -138,6 +137,13 @@ class SessionPlayerInline(admin.TabularInline):
     fields = ['get_parameter_set_player_id_label', 'name', 'student_id', 'email', 'name_submitted', 'survey_complete']
     readonly_fields = ('get_parameter_set_player_id_label',)
 
+@admin.register(SessionEvent)
+class SessionEventAdmin(admin.ModelAdmin):
+
+    readonly_fields=['session']
+
+    list_display = ['session', 'period_number', 'time_remaining','type']
+
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
     form = SessionFormAdmin
@@ -146,7 +152,7 @@ class SessionAdmin(admin.ModelAdmin):
     def get_creator_email(self, obj):
         return obj.creator.email
 
-    readonly_fields=['parameter_set', 'session_key','channel_key']
+    readonly_fields=['parameter_set', 'session_key','channel_key', 'controlling_channel']
     inlines = [SessionPlayerInline]
 
     list_display = ['title', 'get_creator_email']

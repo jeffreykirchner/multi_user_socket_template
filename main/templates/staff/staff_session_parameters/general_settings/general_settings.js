@@ -35,7 +35,7 @@ send_update_parameter_set(){
     }
 
     app.send_message("update_parameter_set", {"session_id" : app.session.id,
-                                            "form_data" : form_data});
+                                              "form_data" : form_data});
 },
 
 /** handle result of updating parameter set
@@ -51,6 +51,11 @@ take_update_parameter_set(message_data){
 
         app.edit_parameterset_modal.hide();            
         app.edit_parameterset_player_modal.hide();
+        app.edit_parameterset_notice_modal.hide();
+        app.edit_parameterset_wall_modal.hide();
+        app.edit_parameterset_group_modal.hide();
+        app.edit_parameterset_barrier_modal.hide();
+        app.edit_parameterset_ground_modal.hide();
     } 
     else
     {

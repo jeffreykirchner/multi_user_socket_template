@@ -1,5 +1,6 @@
 import logging
 
+from datetime import datetime
 from asgiref.sync import sync_to_async
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -24,7 +25,20 @@ class GetSessionMixin():
 
         result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)       
 
+        self.world_state_local = result["world_state"]
+        self.session_players_local = {}
+
+        if self.controlling_channel == self.channel_name and result["started"]:
+            self.world_state_local["timer_history"].append({"time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+                                                        "count": 0})
+            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+
+        for p in result["session_players"]:
+            session_player = result["session_players"][p]
+            self.session_players_local[str(session_player["player_key"])] = {"id" : p}
+
         self.session_id = result["id"]
+        self.parameter_set_local = result["parameter_set"]
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

@@ -31,16 +31,11 @@ class SessionPeriod(models.Model):
         verbose_name = 'Session Period'
         verbose_name_plural = 'Session Periods'
         ordering = ['period_number']
-
-    #return json object of class
+    
     def json(self):
         '''
         json object of model
         '''
-        #current_best_bid = self.get_current_best_bid()
-        #current_best_offer = self.get_current_best_offer()
-
-        #current_trade = self.get_current_trade()
 
         return{
             "id" : self.id,

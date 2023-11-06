@@ -6,6 +6,7 @@ from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import ParameterSet
+from main.models import ParameterSetGroup
 
 import main
 
@@ -15,9 +16,14 @@ class ParameterSetPlayer(models.Model):
     '''
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_players")
+    parameter_set_group = models.ForeignKey(ParameterSetGroup, on_delete=models.SET_NULL, related_name="parameter_set_players_b", blank=True, null=True)
 
     id_label = models.CharField(verbose_name='ID Label', max_length=2, default="1")      #id label shown on screen to subjects
     player_number = models.IntegerField(verbose_name='Player number', default=0)         #player number, from 1 to N 
+
+    start_x = models.IntegerField(verbose_name='Start Location X', default=50)                #starting location x and y
+    start_y = models.IntegerField(verbose_name='Start Location Y', default=50)
+    hex_color = models.CharField(verbose_name='Hex Color', max_length = 8, default="0x000000") #color of player
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -38,6 +44,9 @@ class ParameterSetPlayer(models.Model):
 
         self.id_label = new_ps.get("id_label")
         self.player_number = new_ps.get("player_number")
+        self.start_x = new_ps.get("start_x")
+        self.start_y = new_ps.get("start_y")
+        self.hex_color = new_ps.get("hex_color")
 
         self.save()
         
@@ -56,6 +65,7 @@ class ParameterSetPlayer(models.Model):
         update parameter set json
         '''
         self.parameter_set.json_for_session["parameter_set_players"][self.id] = self.json()
+
         self.parameter_set.save()
 
         self.save()
@@ -68,8 +78,12 @@ class ParameterSetPlayer(models.Model):
         return{
 
             "id" : self.id,
+            "parameter_set_group" : self.parameter_set_group.id if self.parameter_set_group else None,
             "player_number" : self.player_number,
             "id_label" : self.id_label,
+            "start_x" : self.start_x,
+            "start_y" : self.start_y,
+            "hex_color" : self.hex_color,
         }
     
     def get_json_for_subject(self, update_required=False):
