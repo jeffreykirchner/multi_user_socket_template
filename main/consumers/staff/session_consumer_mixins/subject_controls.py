@@ -149,38 +149,65 @@ def take_send_invitations(session_id, data):
                         "invitation_text" : session.invitation_text }}
 
 def take_email_list(session_id, data):
+    '''
+    take uploaded csv server from list and load emails into session players
+    '''
+
     logger = logging.getLogger(__name__)
     logger.info(f'take_email_list: {session_id} {data}')
 
     try:        
         session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
-        logger.warning(f"take_email_list session, not found: {session_id}")
-        return {"status":"fail", "result":"session not found"}
+        logger.warning(f"take_send_invitations session, not found: {session_id}")
+        return {"value":"fail", "result":"session not found"}
     
-    try:
-        raw_list = data["csv_data"]
+    raw_list = data["csv_data"]
 
-        raw_list = raw_list.splitlines()
+    raw_list = raw_list.splitlines()
 
-        counter = 1
-        for i in range(len(raw_list)):
-            raw_list[i] = re.split(r',|\t', raw_list[i])
+    for i in range(len(raw_list)):
+        raw_list[i] =  re.split(r',|\t', raw_list[i])
+    
+    u_list = []
 
-            if raw_list[i][0] != "Last Name":
-                p = session.session_players.filter(player_number=counter).first()
+    if not session.parameter_set.prolific_mode:
+        for i in raw_list:
+            for j in i:
+                if "@" in j:
+                    u_list.append(j)
+        
+        if len(u_list)>0:
+            session.session_players.update(email=None)
 
-                if p:
-                    p.name = raw_list[i][0] + " " + raw_list[i][1]
-                    p.email = raw_list[i][2]
-                    p.student_id = raw_list[i][3]
+        for i in u_list:
+            p = session.session_players.filter(email=None).first()
 
-                    p.save()
-                
-                counter+=1
-    except Exception as e:
-        logger.warning(f"take_email_list invalid format: {e}")
-        return {"status":"fail", "result":str(e)}
+            if(p):
+                p.email = i
+                p.save()
+            else:
+                break
+    else:
+        for i in raw_list:
+            for j in i:
+                u_list.append(j)
+
+        if len(u_list)>0:
+            session.session_players.update(student_id="")
+        
+        for i in u_list:
+            p = session.session_players.filter(student_id='').first()
+
+            if(p):
+                p.student_id = i
+                p.save()
+            else:
+                break
+    
+    result = []
+    for p in session.session_players.all():
+        result.append({"id" : p.id, "email" : p.email,  "student_id" : p.student_id})
 
     return {"value" : "success", "result" : {"session":session.json()}}
 

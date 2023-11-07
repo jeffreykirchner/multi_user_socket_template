@@ -238,12 +238,14 @@ hide_edit_subject:function(){
 
     let text="";
  
-     for(i=0;i<app.session.session_players.length;i++)
+     for(i=0;i<app.session.session_players_order.length;i++)
      {
-         text += app.session.session_players[i].student_id + ",";
-         text += app.session.session_players[i].earnings;
+        session_player = app.session.session_players[app.session.session_players_order[i]];
+
+        text += session_player.student_id + ",";
+        text += Math.ceil(Number(app.session.world_state.session_players[session_player.id].earnings))/100;
  
-         if(i<app.session.session_players.length-1) text += "\r\n";
+        if(i<app.session.session_players_order.length-1) text += "\r\n";
      }
  
     app.copy_to_clipboard(text);
