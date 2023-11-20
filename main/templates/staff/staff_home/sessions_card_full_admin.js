@@ -1,18 +1,18 @@
-send_get_sessionsAdmin(){
+send_get_sessionsAdmin: function send_get_sessionsAdmin(){
     //get list of sessions
     app.working = true;
     app.sessions_full_admin_visible = true;
     app.send_message("get_sessions_admin",{});
 },
 
-take_get_sessionsAdmin(message_data){
+take_get_sessionsAdmin: function take_get_sessionsAdmin(message_data){
     //process list of all sessions
     app.working = false;
     app.sessions_full_admin = message_data.sessions_admin;
 },
 
 //sort by title
-sort_by_title_all_sessions:function(){
+sort_by_title_all_sessions:function sort_by_title_all_sessions(){
 
     app.working = true;
 
@@ -25,7 +25,7 @@ sort_by_title_all_sessions:function(){
     app.working = false;
 },
 
-sort_by_date_all_sessions:function(){
+sort_by_date_all_sessions:function sort_by_date_all_sessions(){
 
     app.working = true;
 
@@ -37,7 +37,7 @@ sort_by_date_all_sessions:function(){
     app.working = false;
 },
 
-sort_by_owner_all_sessions:function(){
+sort_by_owner_all_sessions:function sort_by_owner_all_sessions(){
 
     app.working = true;
 
