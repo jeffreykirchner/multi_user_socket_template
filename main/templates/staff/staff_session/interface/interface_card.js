@@ -1,12 +1,11 @@
 /**
  * take update from client for new location target
  */
-take_target_location_update(message_data)
+take_target_location_update: function take_target_location_update(message_data)
 {
     if(message_data.value == "success")
     {
-        app.session.world_state.session_players[message_data.session_player_id].target_location = message_data.target_location;        
-        // app.send_world_state_update();         
+        app.session.world_state.session_players[message_data.session_player_id].target_location = message_data.target_location;             
     } 
     else
     {
@@ -14,32 +13,7 @@ take_target_location_update(message_data)
     }
 },
 
-/**
- * send an update to the server to store the current world state
- */
-send_world_state_update()
-{
-    if(app.last_world_state_update == null) 
-    {
-        app.last_world_state_update = Date.now();
-        return;
-    }
-
-    if(Date.now() - app.last_world_state_update < 1000) return;
-
-    let temp_world_state = {"session_players":{}}
-
-    for(i in app.session.world_state.session_players)
-    {
-        temp_world_state["session_players"][i] = {"current_location" : app.session.world_state.session_players[i].current_location};
-    }
-
-    app.last_world_state_update = Date.now();
-    app.send_message("world_state_update", {"world_state" : temp_world_state});       
-},
-
-
-take_update_collect_token(message_data)
+take_update_collect_token: function take_update_collect_token(message_data)
 {
 
     if(message_data.period_id != app.session.session_periods_order[app.session.world_state.current_period-1]) return;
@@ -78,7 +52,7 @@ take_update_collect_token(message_data)
                           token_graphic)
 },
 
-update_player_inventory()
+update_player_inventory: function update_player_inventory()
 {
 
     let period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
@@ -90,7 +64,7 @@ update_player_inventory()
     }
 },
 
-take_update_tractor_beam(message_data)
+take_update_tractor_beam: function take_update_tractor_beam(message_data)
 {
     let player_id = message_data.player_id;
     let target_player_id = message_data.target_player_id;
@@ -107,7 +81,7 @@ take_update_tractor_beam(message_data)
 /**
  * take update from server about interactions
  */
-take_update_interaction(message_data)
+take_update_interaction: function take_update_interaction(message_data)
 {
     if(message_data.value == "fail")
     {
@@ -165,7 +139,7 @@ take_update_interaction(message_data)
     }
 },
 
-take_update_cancel_interaction(message_data)
+take_update_cancel_interaction: function take_update_cancel_interaction(message_data)
 {
     let source_player_id = message_data.source_player_id;
     let target_player_id = message_data.target_player_id;

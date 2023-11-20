@@ -2,7 +2,7 @@
  * take update player groups
  * @param message_data {json} session day in json format
  */
-  take_update_connection_status(message_data){
+ take_update_connection_status: function take_update_connection_status(message_data){
             
     if(message_data.value == "success")
     {
@@ -26,7 +26,7 @@
 /** take name and student id
 * @param message_data {json} session day in json format
 */
-take_update_name(message_data){
+take_update_name: function take_update_name(message_data){
            
     if(message_data.value == "success")
     {
@@ -45,7 +45,7 @@ take_update_name(message_data){
 /** take name and student id
 * @param message_data {json} session day in json format
 */
-take_next_instruction(message_data){
+take_next_instruction: function take_next_instruction(message_data){
            
     if(message_data.value == "success")
     {
@@ -64,7 +64,7 @@ take_next_instruction(message_data){
  /** take name and student id
 * @param message_data {json} session day in json format
 */
-take_finished_instructions(message_data){
+take_finished_instructions: function take_finished_instructions(message_data){
            
     if(message_data.value == "success")
     {
@@ -84,7 +84,7 @@ take_finished_instructions(message_data){
   * update subject earnings
   *  @param message_data {json} session day in json format
   */
- take_update_earnings(earnings){
+ take_update_earnings: function take_update_earnings(earnings){
 
     for(i in earnings)
     {
@@ -93,27 +93,9 @@ take_finished_instructions(message_data){
     
  },
 
-
-/**
- * return session player index that has specified id
- */
-find_session_player_index(id){
-
-    let session_players = app.session.session_players;
-    for(let i=0; i<session_players_order.length; i++)
-    {
-        if(session_players_order[i] == id)
-        {
-            return i;
-        }
-    }
-
-    return null;
-},
-
 /** send session update form   
 */
-send_email_list(){
+send_email_list: function send_email_list(){
     app.cancel_modal = false;
     app.working = true;
 
@@ -124,7 +106,7 @@ send_email_list(){
 /** take update subject response
  * @param message_data {json} result of update, either sucess or fail with errors
 */
-take_update_email_list(message_data){
+take_update_email_list: function take_update_email_list(message_data){
     app.clear_main_form_errors();
 
     if(message_data.value == "success")
@@ -141,7 +123,7 @@ take_update_email_list(message_data){
 
 /** show edit subject modal
 */
-show_send_email_list(){
+show_send_email_list: function show_send_email_list(){
     app.clear_main_form_errors();
     app.cancel_modal=true;
 
@@ -154,7 +136,7 @@ show_send_email_list(){
 
 /** hide edit subject modal
 */
-hide_send_email_list(){
+hide_send_email_list: function hide_send_email_list(){
     app.csv_email_list = "";
 
     if(app.cancel_modal)
@@ -165,7 +147,7 @@ hide_send_email_list(){
 
 /** send session update form   
 */
-send_update_subject(){
+send_update_subject: function send_update_subject(){
     app.cancel_modal = false;
     app.working = true;
     app.send_message("update_subject",
@@ -175,7 +157,7 @@ send_update_subject(){
 /** take update subject response
  * @param message_data {json} result of update, either sucess or fail with errors
 */
-take_update_subject(message_data){
+take_update_subject: function take_update_subject(message_data){
     app.clear_main_form_errors();
 
     if(message_data.value == "success")
@@ -200,7 +182,7 @@ take_update_subject(message_data){
 
 /** show edit subject modal
 */
-show_edit_subject:function(id){
+show_edit_subject: function show_edit_subject(id){
 
     if(!app.session.started) return;
 
@@ -223,7 +205,7 @@ show_edit_subject:function(id){
 
 /** hide edit subject modal
 */
-hide_edit_subject:function(){
+hide_edit_subject: function hide_edit_subject(){
     if(app.cancel_modal)
     {
        
@@ -234,7 +216,7 @@ hide_edit_subject:function(){
 /**
  * copy earnings to clipboard
  */
- copy_earnings(){
+copy_earnings: function copy_earnings(){
 
     let text="";
  
@@ -251,7 +233,7 @@ hide_edit_subject:function(){
  },
  
  //copy text to clipboard
- copy_to_clipboard(text){
+ copy_to_clipboard: function copy_to_clipboard(text){
  
      // Create a dummy input to copy the string array inside it
      let dummy = document.createElement("textarea");
@@ -281,7 +263,7 @@ hide_edit_subject:function(){
 
  /** send request to anonymize the data
 */
-send_anonymize_data(){
+send_anonymize_data: function send_anonymize_data(){
     
     if (!confirm('Anonymize data? Identifying information will be permanent removed.')) {
         return;
@@ -294,7 +276,7 @@ send_anonymize_data(){
 /** take anonymize data result for server
  * @param message_data {json} result of update, either sucess or fail with errors
 */
-take_anonymize_data(message_data){
+take_anonymize_data: function take_anonymize_data(message_data){
     app.clear_main_form_errors();
 
     if(message_data.value == "success")
@@ -321,7 +303,7 @@ take_anonymize_data(message_data){
 /** take survey completed by subject
  * @param message_data {json} result of update, either sucess or fail with errors
 */
-take_update_survey_complete(message_data){
+take_update_survey_complete: function take_update_survey_complete(message_data){
     let result = message_data;
 
     let session_player = app.session.session_players[result.player_id];

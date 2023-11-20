@@ -556,23 +556,6 @@ var app = Vue.createApp({
         }, 
 
         /**
-         * return session player index that has specified id
-         */
-        find_session_player_index: function find_session_player_index(id){
-
-            let session_players = app.session.session_players;
-            for(let i=0; i<session_players.length; i++)
-            {
-                if(session_players[i].id == id)
-                {
-                    return i;
-                }
-            }
-
-            return null;
-        },
-
-        /**
          * handle window resize event
          */
         handleResize: function handleResize(){

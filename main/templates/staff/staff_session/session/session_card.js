@@ -1,6 +1,6 @@
 /** send session update form   
 */
-send_update_session(){
+send_update_session: function send_update_session(){
     app.cancel_modal = false;
     app.working = true;
     app.send_message("update_session",{"form_data" : {title:app.session.title}});
@@ -9,7 +9,7 @@ send_update_session(){
 /** take update session reponse
  * @param message_data {json} result of update, either sucess or fail with errors
 */
-take_update_session(message_data){
+take_update_session: function take_update_session(message_data){
     app.clear_main_form_errors();
 
     if(message_data.status == "success")
@@ -26,7 +26,7 @@ take_update_session(message_data){
 
 /** show edit session modal
 */
-show_edit_session:function(){
+show_edit_session: function show_edit_session(){
     app.clear_main_form_errors();
     app.cancel_modal=true;
     app.session_before_edit = Object.assign({}, app.session);
@@ -36,7 +36,7 @@ show_edit_session:function(){
 
 /** hide edit session modal
 */
-hide_edit_session:function(){
+hide_edit_session:function hide_edit_session(){
     if(app.cancel_modal)
     {
         Object.assign(app.session, app.session_before_edit);
