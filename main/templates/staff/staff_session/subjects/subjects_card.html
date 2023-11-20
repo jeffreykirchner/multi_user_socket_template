@@ -35,10 +35,16 @@
 
             <button type="button" 
                     class="btn btn-outline-primary ms-2" 
-                    title="Upload Email List" 
+                    title="Upload Subject List" 
                     v-on:click="show_send_email_list()"
                     v-if="session.started">
-                Upload Email List
+                
+                <span v-if="session.parameter_set.prolific_mode=='False'">
+                    Upload Email List <i class="fas fa-upload"></i>
+                </span>
+                <span v-else>
+                    Upload Prolific ID List <i class="fas fa-upload"></i>
+                </span>
             </button>
 
             <button type="button" 

@@ -1,25 +1,24 @@
 {% load crispy_forms_tags %}
 
 <!-- Edit Session Modal -->
-<div class="modal fade" id="upload_email_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="upload_email_modalLabel" aria-hidden="true">
+<div class="modal fade" id="upload_email_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploadEmailModalLabel" aria-hidden="true">
 <div class="modal-dialog">
     <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title">Upload player list from Recruiter</h5>
+        <h5 class="modal-title">Upload Subject List</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
-        <label for="id_email_list" class="form-label">CSV/TAB format:<br>First Name, Last Name, Email, Student ID</label>
+        <label for="id_email_list" class="form-label">Email List, CSV or TAB format.</label>
         <textarea class="form-control" id="id_email_list" v-model="csv_email_list" rows="10"></textarea>
     </div>
     <div class="modal-footer">
-        <label class="form-label text-danger me-4">[[email_list_error]]</label>
-
+        
         <button type="button"
                 class="btn btn-outline-primary"
                 v-bind:disabled="reconnecting || working"
                 v-on:click = "send_email_list()">
-            Send <i class="fas fa-sign-in-alt"></i>
+            Upload <i class="fas fa-upload"></i>
         </button>
     </div>
     </div>
