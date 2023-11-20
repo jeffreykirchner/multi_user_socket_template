@@ -1,4 +1,4 @@
-send_name(){
+send_name: function send_name(){
 
     app.working = true;
     app.send_message("name", {"form_data" : {name : app.session_player.name, student_id : app.session_player.student_id}});
@@ -7,7 +7,7 @@ send_name(){
 
 /** take result of submitting name
 */
-take_name(message_data){
+take_name: function take_name(message_data){
 
     app.clear_main_form_errors();
 
@@ -26,7 +26,7 @@ take_name(message_data){
 /**
  * 
  */
-post_session_link(){
+post_session_link: function post_session_link(){
 
     if(app.session.parameter_set.survey_required == 'True' && 
        app.session_player.survey_complete == false)

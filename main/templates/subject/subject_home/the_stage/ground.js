@@ -1,7 +1,7 @@
 /**
  * setup ground objects
  */
-setup_pixi_ground()
+setup_pixi_ground: function setup_pixi_ground()
 {
     for(const i in app.session.parameter_set.parameter_set_grounds_order)
     {

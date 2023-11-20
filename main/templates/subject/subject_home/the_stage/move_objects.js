@@ -1,7 +1,7 @@
 /**
  * move the object towards its target location
  */
-move_object(delta, obj, move_speed)
+move_object: function move_object(delta, obj, move_speed)
 {
     let temp_move_speed = (move_speed * delta);
 

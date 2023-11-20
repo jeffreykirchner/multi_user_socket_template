@@ -3,7 +3,7 @@
  * Given the page number return the requested instruction text
  * @param pageNumber : int
  */
-get_instruction_page(pageNumber){
+get_instruction_page: function get_instruction_page(pageNumber){
 
     for(let i=0;i<app.instruction_pages.length;i++)
     {
@@ -19,7 +19,7 @@ get_instruction_page(pageNumber){
 /**
  * advance to next instruction page
  */
-send_next_instruction(direction){
+send_next_instruction: function send_next_instruction(direction){
 
     if(app.working) return;
     
@@ -30,7 +30,7 @@ send_next_instruction(direction){
 /**
  * advance to next instruction page
  */
-take_next_instruction(message_data){
+take_next_instruction: function take_next_instruction(message_data){
     if(message_data.value == "success")
     {
         result = message_data.result;       
@@ -51,7 +51,7 @@ take_next_instruction(message_data){
 /**
  * finish instructions
  */
-send_finish_instructions(){
+send_finish_instructions: function send_finish_instructions(){
 
     if(app.working) return;
     
@@ -62,7 +62,7 @@ send_finish_instructions(){
 /**
  * finish instructions
  */
-take_finish_instructions(message_data){
+take_finish_instructions: function take_finish_instructions(message_data){
     if(message_data.value == "success")
     {
         result = message_data.result;       
@@ -79,7 +79,7 @@ take_finish_instructions(message_data){
 /**
  * process instruction page
  */
-process_instruction_page(){
+process_instruction_page: function process_instruction_page(){
 
     //update view when instructions changes
     switch(app.session_player.current_instruction){
@@ -108,7 +108,7 @@ process_instruction_page(){
 /**
  * scroll instruction into view
  */
-instruction_display_scroll(){
+instruction_display_scroll: function instruction_display_scroll(){
     
     if(document.getElementById("instructions_frame"))
         document.getElementById("instructions_frame").scrollIntoView();
@@ -118,7 +118,7 @@ instruction_display_scroll(){
     });
 },
 
-scroll_update()
+scroll_update: function scroll_update()
 {
     let scroll_top = document.getElementById('instructions_frame_a').scrollTop;
     let scroll_height = document.getElementById('instructions_frame_a').scrollHeight; // added
@@ -139,7 +139,7 @@ scroll_update()
 /**
  * simulate goods transfer on page 4
  */
-simulate_chat_instructions(){
+simulate_chat_instructions: function simulate_chat_instructions(){
 
     if(app.chat_text.trim() == "") return;
     if(app.chat_text.trim().length > 200) return;
