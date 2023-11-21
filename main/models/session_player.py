@@ -102,10 +102,19 @@ class SessionPlayer(models.Model):
         instructions = [i.json() for i in self.parameter_set_player.parameter_set.instruction_set.instructions.all()]
  
         for i in instructions:
-            i["text_html"] = i["text_html"].replace("#player_number#", self.parameter_set_player.id_label)
-            i["text_html"] = i["text_html"].replace("#player_count-1#", str(self.parameter_set_player.parameter_set.parameter_set_players.count()-1))
+            i["text_html"] = self.process_instruction_text(i["text_html"])
 
         return instructions
+    
+    def process_instruction_text(self, text):
+        '''
+        process instruction text
+        '''
+
+        text = text.replace("#player_number#", self.parameter_set_player.id_label)
+        text = text.replace("#player_count-1#", str(self.parameter_set_player.parameter_set.parameter_set_players.count()-1))
+        
+        return text
     
     def get_survey_link(self):
         '''

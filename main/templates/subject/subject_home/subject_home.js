@@ -32,6 +32,7 @@ var app = Vue.createApp({
 
     data() {return {chat_socket : "",
                     reconnecting : true,
+                    help_text : "Loading ...",
                     is_subject : true,
                     working : false,
                     reconnection_count : 0,
@@ -56,6 +57,7 @@ var app = Vue.createApp({
                     // modals
                     end_game_modal : null,
                     interaction_modal : null,
+                    help_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
                     //pixi
@@ -119,6 +121,9 @@ var app = Vue.createApp({
                 case "get_session":
                     app.take_get_session(message_data);
                     break; 
+                case "help_doc_subject":
+                    app.take_load_help_doc_subject(message_data);
+                    break;
                 case "update_start_experiment":
                     app.take_update_start_experiment(message_data);
                     break;
@@ -189,13 +194,14 @@ var app = Vue.createApp({
         */
         do_first_load: function do_first_load()
         {           
-             app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})   
-             app.interaction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_modal'), {keyboard: false})          
+            app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})   
+            app.interaction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_modal'), {keyboard: false})          
+            app.help_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('help_modal'), {keyboard: false})
+            
+            document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
+            document.getElementById('interaction_modal').addEventListener('hidden.bs.modal', app.hide_interaction_modal);
 
-             document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
-             document.getElementById('interaction_modal').addEventListener('hidden.bs.modal', app.hide_interaction_modal);
-
-             {%if session.parameter_set.test_mode%} setTimeout(app.do_test_mode, app.random_number(1000 , 1500)); {%endif%}
+            {%if session.parameter_set.test_mode%} setTimeout(app.do_test_mode, app.random_number(1000 , 1500)); {%endif%}
 
             // if game is finished show modal
             if( app.session.world_state.current_experiment_phase == 'Names')
@@ -522,6 +528,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/the_stage/move_objects.js"%}
         {%include "subject/subject_home/the_stage/barriers.js"%}
         {%include "subject/subject_home/the_stage/ground.js"%}
+        {%include "subject/subject_home/help_doc_subject.js"%}
 
         /** clear form error messages
         */

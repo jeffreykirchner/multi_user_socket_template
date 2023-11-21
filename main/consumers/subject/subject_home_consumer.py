@@ -19,6 +19,7 @@ class SubjectHomeConsumer(SocketConsumerMixin,
                           InstructionsMixin,
                           PhaseMixin,
                           TimeMixin,
+                          GetHelpDocSubjectMixin,
                           InterfaceMixin):
     '''
     websocket methods for subject home

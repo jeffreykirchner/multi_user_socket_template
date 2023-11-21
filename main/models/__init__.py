@@ -7,6 +7,7 @@ from .help_docs import  HelpDocs
 
 from .instruction_set import InstructionSet
 from .instruction import Instruction
+from .help_docs_subject import HelpDocsSubject
 
 from .parameter_set import ParameterSet
 from .parameter_set_group import ParameterSetGroup

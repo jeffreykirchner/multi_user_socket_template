@@ -44,6 +44,7 @@
     <!-- modals -->
     {%include "subject/subject_home/summary/end_game_modal.html"%}
     {%include "subject/subject_home/the_stage/interaction_modal.html"%}
+    {%include "help_modal.html"%}
     
     <div class="row justify-content-lg-center mt-4 mb-4" v-cloak v-show="!session.started">
         <div class="col-md text-center fs-2 fw-bold">
@@ -75,7 +76,7 @@
         </div>    
     </div>
 
-    <div class="row justify-content-lg-center mt-4">
+    <div class="row justify-content-lg-center mt-4" v-cloak>
         <div class="col-12 text-end text-muted">
             <span class="align-middle">Client [[session_player.player_number]]</span>
         </div>  

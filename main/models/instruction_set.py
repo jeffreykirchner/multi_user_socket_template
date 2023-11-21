@@ -42,6 +42,15 @@ class InstructionSet(models.Model):
             instructions.append(main.models.Instruction(instruction_set=self, text_html=i.text_html, page_number=i.page_number))
         
         main.models.Instruction.objects.bulk_create(instructions)
+    
+    def copy_help_docs_subject(self, i_set):
+        
+        help_docs_subject = []
+
+        for i in i_set.all():
+            help_docs_subject.append(main.models.HelpDocsSubject(instruction_set=self, title=i.title, text=i.text))
+
+        main.models.HelpDocsSubject.objects.bulk_create(help_docs_subject)
         
     #return json object of class
     def json(self):

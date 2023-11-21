@@ -9,3 +9,4 @@ from .intructions import InstructionsMixin
 from .phase import PhaseMixin
 from .time import TimeMixin
 from .interface import InterfaceMixin
+from .help_doc_subject import GetHelpDocSubjectMixin

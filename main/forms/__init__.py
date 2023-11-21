@@ -19,8 +19,10 @@ from .parameter_set_ground_form import ParameterSetGroundForm
 from .session_player_name_etc_form import StaffEditNameEtcForm
 
 from .session_form_admin import SessionFormAdmin
+
 from .instruction_set_form_admin import InstructionSetFormAdmin
 from .instruction_form_admin import InstructionFormAdmin
+from .help_doc_subject_form_admin import HelpDocSubjectFormAdmin
 
 from .end_game_form import EndGameForm
 from .interaction_form import InteractionForm
