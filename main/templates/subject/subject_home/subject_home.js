@@ -49,7 +49,7 @@ var app = Vue.createApp({
 
                     end_game_modal_visible : false,
 
-                    instruction_pages : {{instruction_pages|safe}},
+                    instructions : {{instructions|safe}},
                     instruction_pages_show_scroll : false,
 
                     notices_seen: [],

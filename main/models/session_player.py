@@ -99,10 +99,13 @@ class SessionPlayer(models.Model):
         return a proccessed list of instructions to the subject
         '''
 
-        instructions = [i.json() for i in self.parameter_set_player.parameter_set.instruction_set.instructions.all()]
+        instruction_pages = [i.json() for i in self.parameter_set_player.parameter_set.instruction_set.instructions.all()]
  
-        for i in instructions:
+        for i in instruction_pages:
             i["text_html"] = self.process_instruction_text(i["text_html"])
+
+        instructions = self.parameter_set_player.parameter_set.instruction_set.json()
+        instructions["instruction_pages"] = instruction_pages
 
         return instructions
     

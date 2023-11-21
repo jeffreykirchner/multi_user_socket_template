@@ -5,11 +5,11 @@
  */
 get_instruction_page: function get_instruction_page(pageNumber){
 
-    for(let i=0;i<app.instruction_pages.length;i++)
+    for(let i=0;i<app.instructions.instruction_pages.length;i++)
     {
-        if(app.instruction_pages[i].page_number==pageNumber)
+        if(app.instructions.instruction_pages[i].page_number==pageNumber)
         {
-            return app.instruction_pages[i].text_html;
+            return app.instructions.instruction_pages[i].text_html;
         }
     }
 
@@ -40,6 +40,8 @@ take_next_instruction: function take_next_instruction(message_data){
 
         app.process_instruction_page();
         app.instruction_display_scroll();
+
+        app.working = false;
     } 
     else
     {

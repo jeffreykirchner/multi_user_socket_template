@@ -57,7 +57,7 @@ class SubjectHomeView(View):
                                "form_ids" : form_ids,
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'session-{session.id}',
-                               "instruction_pages" : json.dumps(session_player.get_instruction_set(), cls=DjangoJSONEncoder),
+                               "instructions" : json.dumps(session_player.get_instruction_set(), cls=DjangoJSONEncoder),
                                "session_player" : session_player,
                                "session" : session,
                                "parameters" : parameters,

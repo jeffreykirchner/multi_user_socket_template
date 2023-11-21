@@ -62,7 +62,7 @@ class InstructionSet(models.Model):
             "id" : self.id,         
 
             "label" : self.label,
-            "instructions" : [i.json() for i in self.instructions.all()],
+            "instruction_pages" : [i.json() for i in self.instructions.all()],
         }
     
     #return json object of class

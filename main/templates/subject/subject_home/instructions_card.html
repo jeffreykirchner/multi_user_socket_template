@@ -3,7 +3,7 @@
         <span class="align-middle">Instructions</span>       
             
         <span class="float-end">
-            Page [[session_player.current_instruction]] of [[instruction_pages.length]]
+            Page [[session_player.current_instruction]] of [[instructions.instruction_pages.length]]
         </span>
         
     </div>
@@ -43,7 +43,7 @@
                             type="button" 
                             title="Next Instruction Page"
                             id="instructions_next_id"
-                            v-bind:disabled="reconnecting || working || session_player.current_instruction == instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction"
+                            v-bind:disabled="reconnecting || working || session_player.current_instruction == instructions.instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction"
                             v-on:click="send_next_instruction(1)">Next <i class="far fa-arrow-alt-circle-right"></i></button>
                     
                     <!-- start button -->
@@ -51,7 +51,7 @@
                             type="button" 
                             title="Finished with Instructions"
                             id="instructions_start_id"
-                            v-show="!session_player.instructions_finished && session_player.current_instruction_complete == instruction_pages.length"
+                            v-show="!session_player.instructions_finished && session_player.current_instruction_complete == instructions.instruction_pages.length"
                             v-bind:disabled="reconnecting || working"
                             v-on:click="send_finish_instructions()">Start <i class="far fa-check-circle"></i></button>
 
