@@ -83,7 +83,7 @@ var app = Vue.createApp({
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        take_message(data) {
+        take_message: function take_message(data) {
 
             {%if DEBUG%}
             console.log(data);
@@ -117,7 +117,7 @@ var app = Vue.createApp({
         *    @param message_type {string} type of message sent to server
         *    @param message_text {json} body of message being sent to server
         */
-        send_message(message_type, message_text, message_target="self")
+        send_message: function send_message(message_type, message_text, message_target="self")
         {          
             app.chat_socket.send(JSON.stringify({
                     'message_type': message_type,
@@ -126,7 +126,7 @@ var app = Vue.createApp({
                 }));
         },
 
-        do_first_load()
+        do_first_load: function do_first_load()
         {
             app.import_parameters_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('import_parameters_modal'), {keyboard: false})
             app.edit_parameterset_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_modal'), {keyboard: false})            
@@ -148,7 +148,7 @@ var app = Vue.createApp({
         /** take create new session
         *    @param message_data {json} session day in json format
         */
-        take_get_parameter_set(message_data){
+        take_get_parameter_set: function take_get_parameter_set(message_data){
             
             app.parameter_set = message_data.parameter_set;
 
@@ -169,7 +169,7 @@ var app = Vue.createApp({
         // },
 
         //do nothing on when enter pressed for post
-        onSubmit(){
+        onSubmit: function onSubmit(){
             //do nothing
         },
 
@@ -187,7 +187,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clear_main_form_errors(){
+        clear_main_form_errors: function clear_main_form_errors(){
             
             for(let item in app.session)
             {
@@ -247,7 +247,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        display_errors(errors){
+        display_errors: function display_errors(errors){
             for(let e in errors)
                 {
                     //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")

@@ -1,6 +1,6 @@
 /**show edit parameter set wall
  */
-show_edit_parameter_set_wall(index){
+show_edit_parameter_set_wall: function show_edit_parameter_set_wall(index){
     
     if(app.session.started) return;
     if(app.working) return;
@@ -13,7 +13,7 @@ show_edit_parameter_set_wall(index){
 
 /** update parameterset wall
 */
-send_update_parameter_set_wall(){
+send_update_parameter_set_wall: function send_update_parameter_set_wall(){
     
     app.working = true;
 
@@ -24,7 +24,7 @@ send_update_parameter_set_wall(){
 
 /** remove the selected parameterset wall
 */
-send_remove_parameter_set_wall(){
+send_remove_parameter_set_wall: function send_remove_parameter_set_wall(){
 
     app.working = true;
     app.send_message("remove_parameterset_wall", {"session_id" : app.session.id,
@@ -34,7 +34,7 @@ send_remove_parameter_set_wall(){
 
 /** add a new parameterset wall
 */
-send_add_parameter_set_wall(wall_id){
+send_add_parameter_set_wall: function send_add_parameter_set_wall(wall_id){
     app.working = true;
     app.send_message("add_parameterset_wall", {"session_id" : app.session.id});
                                                    

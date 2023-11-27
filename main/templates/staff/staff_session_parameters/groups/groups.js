@@ -1,6 +1,6 @@
 /**show edit parameter set group
  */
-show_edit_parameter_set_group(index){
+show_edit_parameter_set_group: function show_edit_parameter_set_group(index){
     
     if(app.session.started) return;
     if(app.working) return;
@@ -13,7 +13,7 @@ show_edit_parameter_set_group(index){
 
 /** update parameterset group
 */
-send_update_parameter_set_group(){
+send_update_parameter_set_group: function send_update_parameter_set_group(){
     
     app.working = true;
 
@@ -24,7 +24,7 @@ send_update_parameter_set_group(){
 
 /** remove the selected parameterset group
 */
-send_remove_parameter_set_group(){
+send_remove_parameter_set_group: function send_remove_parameter_set_group(){
 
     app.working = true;
     app.send_message("remove_parameterset_group", {"session_id" : app.session.id,
@@ -34,7 +34,7 @@ send_remove_parameter_set_group(){
 
 /** add a new parameterset group
 */
-send_add_parameter_set_group(group_id){
+send_add_parameter_set_group: function send_add_parameter_set_group(group_id){
     app.working = true;
     app.send_message("add_parameterset_group", {"session_id" : app.session.id});
                                                    

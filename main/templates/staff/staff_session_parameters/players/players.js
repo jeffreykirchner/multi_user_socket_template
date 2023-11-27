@@ -1,6 +1,6 @@
 /**show edit parameter set player
  */
-show_edit_parameter_set_player:function(index){
+show_edit_parameter_set_player:function show_edit_parameter_set_player(index){
     
     if(app.session.started) return;
     if(app.working) return;
@@ -13,7 +13,7 @@ show_edit_parameter_set_player:function(index){
 
 /** update parameterset player
 */
-send_update_parameter_set_player(){
+send_update_parameter_set_player: function send_update_parameter_set_player(){
     
     app.working = true;
 
@@ -24,7 +24,7 @@ send_update_parameter_set_player(){
 
 /** remove the selected parameterset player
 */
-send_remove_parameter_set_player(){
+send_remove_parameter_set_player: function send_remove_parameter_set_player(){
 
     app.working = true;
     app.send_message("remove_parameterset_player", {"session_id" : app.session.id,
@@ -34,7 +34,7 @@ send_remove_parameter_set_player(){
 
 /** add a new parameterset player
 */
-send_add_parameter_set_player(player_id){
+send_add_parameter_set_player: function send_add_parameter_set_player(player_id){
     app.working = true;
     app.send_message("add_parameterset_player", {"session_id" : app.session.id});
                                                    
