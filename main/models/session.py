@@ -307,7 +307,7 @@ class Session(models.Model):
             for i in self.session_players.all().values('id','player_number','parameter_set_player__id_label'):
                 parameter_set_players[str(i['id'])] = i
 
-            for p in self.session_events.all().exclude(type="timer_tick"):
+            for p in self.session_events.exclude(type="time").exclude(type="world_state").exclude(type='target_locations'):
                 writer.writerow([self.id,
                                 p.period_number, 
                                 p.time_remaining, 

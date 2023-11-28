@@ -77,6 +77,14 @@ var app = Vue.createApp({
                     current_location : {x:0, y:0},
                     follow_subject : -1,
                     draw_bounding_boxes: false,
+
+                    //replay
+                    session_events : null,
+                    session_ticks : null,
+                    replay_mode : "paused",
+                    replay_timeout : null,
+                    replay_time_remaining : 0,
+                    replay_current_period : 0,
                 }},
     methods: {
 
