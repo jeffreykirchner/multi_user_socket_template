@@ -38,7 +38,7 @@ replay_load_world_state: function replay_load_world_state()
     {
         if(events[i].type == "world_state")
         { 
-            app.session.world_state = JSON.parse(JSON.stringify(events[i].data.world_state_local));
+            app.session.world_state = JSON.parse(JSON.stringify(events[i].data));
            
             app.session.world_state["current_experiment_phase"] = "Done";
 
@@ -47,6 +47,19 @@ replay_load_world_state: function replay_load_world_state()
 
             break;
         }
+    }
+},
+
+/**
+ * update the replay mode
+ */
+update_replay_mode: function update_replay_mode(new_replay_mode)
+{
+    app.replay_mode = new_replay_mode;
+
+    if(app.replay_mode == "playing")
+    {
+        app.replay_mode_play();
     }
 },
 
@@ -111,16 +124,24 @@ process_replay_events: function process_replay_events(update_current_location = 
     {   
         let event =  app.session_events[current_period][time_remaining][i];
 
-        if(event.type == "target_locations")
+        if(event.type == "time")
         {
-            for(i in event.data.target_locations)
+            for(i in event.data.current_locations)
             {
-                app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.target_locations[i]));
-
                 if(update_current_location)
                 {
                     app.session.world_state.session_players[i].current_location = JSON.parse(JSON.stringify(event.data.current_locations[i]));
                 }
+                
+                app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.target_locations[i]));
+            }
+        }
+        else if(event.type == "world_state" && update_current_location)
+        {
+            for(i in event.data.world_state_local.session_players)
+            {
+                app.session.world_state.session_players[i].current_location = JSON.parse(JSON.stringify(event.data.session_players[i].current_location));
+                app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.session_players[i].target_location));
             }
         }
         else
@@ -147,7 +168,7 @@ move_avatars_to_current_location: function move_avatars_to_current_location()
 
     for(i in event.data.current_locations)
     {
-        app.session.world_state_avatars.session_players[i].current_location = JSON.parse(JSON.stringify(event.data.current_locations[i]));
+        app.session.world_state.session_players[i].current_location = JSON.parse(JSON.stringify(event.data.current_locations[i]));
     }
     
 },

@@ -18,6 +18,9 @@ var pixi_walls = {};                           //walls
 var pixi_barriers = {};                        //barriers
 var pixi_grounds = {};                         //grounds
 
+var wall_search = {counter:0, current_location:{x:-1,y:-1}, target_location:{x:-1,y:-1}};
+var wall_search_objects = [];
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],

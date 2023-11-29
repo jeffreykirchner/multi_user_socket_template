@@ -30,7 +30,7 @@ class InterfaceMixin():
             for j in range(total_period_length+1):
                 session_events[str(i.period_number)][str(j)] = []
 
-        async for i in session.session_events.all():
+        async for i in session.session_events.exclude(type="help_doc"):
             v = {"type" : i.type, "data" : i.data}
             session_events[str(i.period_number)][str(i.time_remaining)].append(v)
 
