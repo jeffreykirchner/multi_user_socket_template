@@ -134,22 +134,27 @@ process_replay_events: function process_replay_events(update_current_location = 
                 }
                 
                 app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.target_locations[i]));
+                app.session.world_state.session_players[i].current_location.x-=1;
+                app.session.world_state.session_players[i].current_location.y-=1;
             }
         }
         else if(event.type == "world_state" && update_current_location)
         {
-            for(i in event.data.world_state_local.session_players)
+            for(i in event.data.session_players)
             {
                 app.session.world_state.session_players[i].current_location = JSON.parse(JSON.stringify(event.data.session_players[i].current_location));
-                app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.session_players[i].target_location));
+                app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.session_players[i].target_location)); 
+                app.session.world_state.session_players[i].current_location.x-=1;
+                app.session.world_state.session_players[i].current_location.y-=1;  
             }
+
+            continue;
         }
-        else
-        {
-            let data = {message:{message_data:JSON.parse(JSON.stringify(event.data)),
-                                 message_type:"update_" + event.type},}
-            app.take_message(data);
-        }
+
+        let data = {message:{message_data:JSON.parse(JSON.stringify(event.data)),
+                                message_type:"update_" + event.type},}
+        app.take_message(data);
+        
     }
     app.session.world_state["current_experiment_phase"] = "Done";
     app.session.world_state["time_remaining"] = app.replay_time_remaining;

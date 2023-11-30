@@ -308,12 +308,15 @@ take_update_tractor_beam: function take_update_tractor_beam(message_data)
     app.session.world_state.session_players[player_id].interaction = app.session.parameter_set.interaction_length;
     app.session.world_state.session_players[target_player_id].interaction = app.session.parameter_set.interaction_length;
 
-    if(player_id == app.session_player.id)
+    if(app.is_subject)
     {
-        app.clear_main_form_errors();
-        app.interaction_form.direction = null;
-        app.interaction_form.amount = null;
-        app.interaction_modal.toggle();
+        if(player_id == app.session_player.id)
+        {
+            app.clear_main_form_errors();
+            app.interaction_form.direction = null;
+            app.interaction_form.amount = null;
+            app.interaction_modal.toggle();
+        }
     }
 },
 
@@ -433,10 +436,13 @@ take_update_cancel_interaction: function take_update_cancel_interaction(message_
     source_player.interaction = 0;
     target_player.interaction = 0;
 
-    if(source_player_id == app.session_player.id)
+    if(app.is_subject)
     {
-        app.working = false;
-        app.interaction_modal.hide();
+        if(source_player_id == app.session_player.id)
+        {
+            app.working = false;
+            app.interaction_modal.hide();
+        }
     }
 }, 
 
