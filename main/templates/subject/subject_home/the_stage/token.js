@@ -53,6 +53,7 @@ setup_pixi_tokens_for_current_period: function setup_pixi_tokens_for_current_per
         }
 
         let v = {"token_container":token_container};
+        v.token_graphic = token_graphic;
 
         pixi_tokens[current_period_id][i] = v;
         pixi_container_main.addChild(pixi_tokens[current_period_id][i].token_container);
@@ -94,8 +95,8 @@ take_update_collect_token: function take_update_collect_token(message_data)
         let token = app.session.world_state.tokens[message_data.period_id][message_data.token_id];
 
         try{
-            pixi_tokens[message_data.period_id][message_data.token_id].token_container.getChildAt(0).stop();
-            pixi_tokens[message_data.period_id][message_data.token_id].token_container.getChildAt(0).alpha = 0.25;
+            pixi_tokens[message_data.period_id][message_data.token_id].token_graphic.stop();
+            pixi_tokens[message_data.period_id][message_data.token_id].token_graphic.alpha = 0.25;
             pixi_tokens[message_data.period_id][message_data.token_id].mini_map_graphic.visible = false;
         } catch (error) {
 
@@ -107,7 +108,7 @@ take_update_collect_token: function take_update_collect_token(message_data)
         let current_location =  app.session.world_state.session_players[message_data.player_id].current_location;
 
         session_player.inventory[message_data.period_id] = message_data.inventory;
-        pixi_avatars[message_data.player_id].avatar_container.getChildAt(4).text = message_data.inventory;
+        pixi_avatars[message_data.player_id].inventory_label.text = message_data.inventory;
 
         let token_graphic = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
         token_graphic.anchor.set(1, 0.5)

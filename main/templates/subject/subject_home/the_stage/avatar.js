@@ -76,6 +76,7 @@ setup_pixi_subjects: function setup_pixi_subjects(){
 
         pixi_avatars[i].status_label = status_label;
         pixi_avatars[i].gear_sprite = gear_sprite;
+        pixi_avatars[i].inventory_label = inventory_label;
 
         avatar_container.scale.set(app.session.parameter_set.avatar_scale);
 
@@ -110,7 +111,9 @@ setup_pixi_subjects: function setup_pixi_subjects(){
             bounding_box_view.visible = false;
         }
 
+        pixi_avatars[i].avatar = {};
         pixi_avatars[i].avatar_container = avatar_container;
+
         pixi_container_main.addChild(pixi_avatars[i].avatar_container);
 
         //chat
@@ -135,14 +138,17 @@ setup_pixi_subjects: function setup_pixi_subjects(){
 
         chat_bubble_text.position.set(-14 * app.session.parameter_set.avatar_scale, -chat_container.height*.09)
         chat_bubble_text.anchor.set(0.5);
-
-        pixi_avatars[i].chat_container = chat_container;
-        pixi_avatars[i].chat_container.zIndex = current_z_index++;
+        
+        pixi_avatars[i].chat = {};
+        pixi_avatars[i].chat.container = chat_container;
+        pixi_avatars[i].chat.bubble_text = chat_bubble_text;
+        pixi_avatars[i].chat.bubble_sprite = chat_bubble_sprite;
+        pixi_avatars[i].chat.container.zIndex = current_z_index++;
 
         subject.show_chat = false;
         subject.chat_time = null;
 
-        pixi_container_main.addChild(pixi_avatars[i].chat_container);
+        pixi_container_main.addChild(pixi_avatars[i].chat.container);
 
         //tractor beam
         pixi_avatars[i].tractor_beam = [];
@@ -202,7 +208,7 @@ setup_pixi_subjects: function setup_pixi_subjects(){
     if(app.pixi_mode=="subject")
     {  
         pixi_avatars[app.session_player.id].avatar_container.zIndex = 999;
-        pixi_avatars[app.session_player.id].chat_container.zIndex = current_z_index;
+        pixi_avatars[app.session_player.id].chat.container.zIndex = current_z_index;
     }
 },
 
@@ -220,7 +226,7 @@ destory_setup_pixi_subjects: function destory_setup_pixi_subjects()
         if(pixi_objects)
         {
             pixi_objects.avatar_container.destroy();
-            pixi_objects.chat_container.destroy();
+            pixi_objects.chat.container.destroy();
             pixi_objects.interaction_container.destroy();
 
             if(app.pixi_mode != "subject")
@@ -256,7 +262,7 @@ update_player_inventory: function update_player_inventory()
     for(const i in app.session.session_players_order)
     {
         const player_id = app.session.session_players_order[i];
-        pixi_avatars[player_id].avatar_container.getChildAt(4).text = app.session.world_state.session_players[player_id].inventory[period_id];
+        pixi_avatars[player_id].inventory_label.text = app.session.world_state.session_players[player_id].inventory[period_id];
     }
 },
 
@@ -363,8 +369,8 @@ take_update_interaction: function take_update_interaction(message_data)
         source_player.inventory[period] = message_data.source_player_inventory;
         target_player.inventory[period] = message_data.target_player_inventory;
         
-        pixi_avatars[source_player_id].avatar_container.getChildAt(4).text = source_player.inventory[currnent_period_id];
-        pixi_avatars[target_player_id].avatar_container.getChildAt(4).text = target_player.inventory[currnent_period_id];
+        pixi_avatars[source_player_id].inventory_label.text = source_player.inventory[currnent_period_id];
+        pixi_avatars[target_player_id].inventory_label.text = target_player.inventory[currnent_period_id];
 
         //add transfer beam
         if(message_data.direction == "give")
@@ -645,7 +651,8 @@ move_player: function move_player(delta)
     for(let i in app.session.world_state.session_players)
     {
         let obj = app.session.world_state.session_players[i];
-        let chat_container = pixi_avatars[i].chat_container;
+        let chat_container = pixi_avatars[i].chat.container;
+        let chat_bubble_sprite = pixi_avatars[i].chat.bubble_sprite;
         // let avatar_container = obj.pixi.chat_container;
         let offset = {x:chat_container.width*.5, y:chat_container.height*.45};
 
@@ -655,14 +662,14 @@ move_player: function move_player(delta)
             chat_container.position.set(obj.current_location.x + offset.x,
                                         obj.current_location.y - offset.y);
             
-            chat_container.getChildAt(0).scale.x = 1;
+            chat_bubble_sprite.scale.x = 1;
         }
         else
         {
             chat_container.position.set(obj.current_location.x - offset.x,
                                         obj.current_location.y - offset.y);
 
-            chat_container.getChildAt(0).scale.x = -1;
+            chat_bubble_sprite.scale.x = -1;
         }
 
         chat_container.visible = obj.show_chat;

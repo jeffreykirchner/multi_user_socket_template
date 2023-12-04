@@ -6,7 +6,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 //global variables
 //var world_state = {};
-var subject_status_overlay_container = null;
+var subject_status_overlay = {container:null, current_period_label:null, time_remaining_label:null, profit_label:null};
 var pixi_app = null;                           //pixi app   
 var pixi_container_main = null;                //main container for pixi
 var pixi_target = null;                        //target sprite for your avatar
