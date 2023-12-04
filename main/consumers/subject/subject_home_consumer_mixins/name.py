@@ -23,7 +23,7 @@ class NameMixin():
         data = event["message_text"]
 
         logger = logging.getLogger(__name__) 
-        logger.info(f"Take name: {self.session_id} {self.session_player_id} {data}")
+        # logger.info(f"Take name: {self.session_id} {self.session_player_id} {data}")
 
         form_data_dict =  data["form_data"]
         
