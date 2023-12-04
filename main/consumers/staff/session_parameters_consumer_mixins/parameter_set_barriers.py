@@ -77,6 +77,7 @@ def take_update_parameter_set_barrier(data):
 
     form = ParameterSetBarrierForm(form_data_dict, instance=parameter_set_barrier)
     form.fields["parameter_set_groups"].queryset = session.parameter_set.parameter_set_groups.all()
+    form.fields["parameter_set_players"].queryset = session.parameter_set.parameter_set_players.all()
 
     if form.is_valid():         
         form.save()              

@@ -3,6 +3,13 @@
  */
 setup_pixi_barrier: function setup_pixi_barrier()
 {
+    //destory old barriers
+    for(const i in pixi_barriers)
+    {
+        if(pixi_barriers[i].barrier_container) pixi_barriers[i].barrier_container.destroy();
+    }
+
+    //create new barriers
     for(const i in app.session.parameter_set.parameter_set_barriers)
     {
         pixi_barriers[i] = {};
@@ -18,13 +25,25 @@ setup_pixi_barrier: function setup_pixi_barrier()
         //outline
         let outline = new PIXI.Graphics();
         //outline.lineStyle(1, 0x000000);
-        scale = 100 / app.pixi_textures.barrier_tex.width;
         let matrix = new PIXI.Matrix(1,0,0,1,0,0);
+        
+        let scale_y = 1;
+        if(rotation == 0)
+        {
+            scale_y = barrier.height / app.pixi_textures.barrier_tex.height;
+        }
+        else
+        {
+            scale_y = barrier.width / app.pixi_textures.barrier_tex.height;
+        }
+        matrix.scale(1,scale_y);
+
         matrix.rotate(rotation);
+        
         outline.beginTextureFill({texture: app.pixi_textures['barrier_tex'], matrix:matrix});  //, 
         outline.drawRect(0, 0, barrier.width, barrier.height);
        
-        let label = new PIXI.Text(barrier.text, {
+        let label = new PIXI.Text(barrier.text.replace('\\n', '\n'), {
             fontFamily: 'Arial',
             fontSize: 40,
             fill: 'white',
@@ -51,14 +70,14 @@ setup_pixi_barrier: function setup_pixi_barrier()
 /**
  * check barrier intersection
  */
-check_barriers_intersection: function check_barriers_intersection(rect1, parameter_set_group)
+check_barriers_intersection: function check_barriers_intersection(rect1, parameter_set_group, parameter_set_player)
 {
-
     for(let i in app.session.parameter_set.parameter_set_barriers)
     {        
         let temp_barrier = app.session.parameter_set.parameter_set_barriers[i];
 
-        if(temp_barrier.parameter_set_groups.includes(parameter_set_group) && 
+        if((temp_barrier.parameter_set_groups.includes(parameter_set_group) ||
+            temp_barrier.parameter_set_players.includes(parameter_set_player)) && 
            app.session.world_state.current_period >= temp_barrier.period_on &&
            app.session.world_state.current_period < temp_barrier.period_off)
         {
@@ -80,7 +99,7 @@ check_barriers_intersection: function check_barriers_intersection(rect1, paramet
 /**
  * update barriers
  */
-update_barriers: function update_barriers()
+update_barriers: function()
 {
     for(let i in app.session.parameter_set.parameter_set_barriers)
     {

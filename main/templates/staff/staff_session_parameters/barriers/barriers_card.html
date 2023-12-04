@@ -31,6 +31,9 @@
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
                                     Blocked Groups
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Blocked Players
                                 </th>     
                                 <th scope="col" class = "m-1 p-1">
                                     Location
@@ -65,6 +68,15 @@
                                     <div v-for="g in temp_p.parameter_set_groups">
                                         <span v-if="g in parameter_set.parameter_set_groups">
                                             [[parameter_set.parameter_set_groups[g].name]]
+                                        </span>
+                                    </div>
+                                    
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_barrier(p)" 
+                                    class="player_table_cell">
+                                    <div v-for="g in temp_p.parameter_set_players">
+                                        <span v-if="g in parameter_set.parameter_set_players">
+                                            [[parameter_set.parameter_set_players[g].id_label]]
                                         </span>
                                     </div>
                                     

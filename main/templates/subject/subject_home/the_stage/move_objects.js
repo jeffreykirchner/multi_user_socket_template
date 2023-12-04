@@ -74,7 +74,7 @@ move_avatar: function move_avatar(delta, player_id)
                    height:container.height};  
         
         if(app.check_walls_intersection(rect1) || 
-           app.check_barriers_intersection(rect1, parameter_set_group))
+           app.check_barriers_intersection(rect1, parameter_set_group, obj.parameter_set_player_id))
         {
             obj.current_location =  Object.assign({}, temp_current_location);  
             wall_limit_hit = true;
@@ -109,7 +109,8 @@ move_avatar: function move_avatar(delta, player_id)
                         width:container.width,
                         height:container.height};
 
-            let v = app.search_for_path_around_walls(rect1, obj.current_location, obj.target_location, parameter_set_group);       
+            let v = app.search_for_path_around_walls(rect1, obj.current_location, obj.target_location, 
+                                                     parameter_set_group, obj.parameter_set_player_id);       
            
             if(v)
             {
@@ -124,7 +125,8 @@ move_avatar: function move_avatar(delta, player_id)
 /**
  * seach for path around walls
  */
-search_for_path_around_walls: function search_for_path_around_walls(starting_rect, current_location, target_location, parameter_set_group)
+search_for_path_around_walls: function search_for_path_around_walls(starting_rect, current_location, 
+                                                         target_location, parameter_set_group, parameter_set_player)
 {
     
     //target already in bounding rect
@@ -179,7 +181,7 @@ search_for_path_around_walls: function search_for_path_around_walls(starting_rec
                             }
                         }
                         else if(!app.check_walls_intersection(rect1) && 
-                                !app.check_barriers_intersection(rect1, parameter_set_group)) 
+                                !app.check_barriers_intersection(rect1, parameter_set_group, parameter_set_player)) 
                         {
                             new_search_grid[v] = {rect:rect1, 
                                                   searched:false, 

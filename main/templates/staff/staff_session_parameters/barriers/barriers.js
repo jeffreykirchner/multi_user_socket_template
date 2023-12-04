@@ -13,7 +13,7 @@ show_edit_parameter_set_barrier: function show_edit_parameter_set_barrier(index)
 
 /** update parameterset barrier
 */
-send_update_parameter_set_barrier(){
+send_update_parameter_set_barrier: function send_update_parameter_set_barrier(){
     
     app.working = true;
 

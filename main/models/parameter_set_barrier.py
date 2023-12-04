@@ -7,6 +7,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import ParameterSet
 from main.models import ParameterSetGroup
+from main.models import ParameterSetPlayer
 
 import main
 
@@ -17,6 +18,7 @@ class ParameterSetBarrier(models.Model):
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_barriers_a")
     parameter_set_groups = models.ManyToManyField(ParameterSetGroup, related_name="parameter_set_barriers_b")
+    parameter_set_players = models.ManyToManyField(ParameterSetPlayer, related_name="parameter_set_barriers_c")
 
     info = models.CharField(verbose_name='Info', blank=True, null=True, max_length=100, default="Info Here")
 
@@ -100,6 +102,7 @@ class ParameterSetBarrier(models.Model):
             "text" : self.text,
             "rotation" : self.rotation,
             "parameter_set_groups" : [group.id for group in self.parameter_set_groups.all()],
+            "parameter_set_players" : [player.id for player in self.parameter_set_players.all()],
             "period_on" : self.period_on,
             "period_off" : self.period_off,
         }

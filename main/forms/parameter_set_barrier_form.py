@@ -7,6 +7,7 @@ from django.db.models.query import RawQuerySet
 
 from main.models import ParameterSetBarrier
 from main.models import ParameterSetGroup
+from main.models import ParameterSetPlayer
 
 class ParameterSetBarrierForm(forms.ModelForm):
     '''
@@ -53,10 +54,17 @@ class ParameterSetBarrierForm(forms.ModelForm):
                                                                     "min":"0",
                                                                     "max":"360"}))
     
-    parameter_set_groups = forms.ModelMultipleChoiceField(label='Groups',
+    parameter_set_groups = forms.ModelMultipleChoiceField(label='Blocked Groups',
+                                                          required=False,
                                                           queryset=ParameterSetGroup.objects.none(),
                                                           widget=forms.CheckboxSelectMultiple(attrs={"v-model":"current_parameter_set_barrier.parameter_set_groups",
                                                                                                      "class":"selectpicker" }))
+    
+    parameter_set_players = forms.ModelMultipleChoiceField(label='Blocked Players',
+                                                            required=False,
+                                                            queryset=ParameterSetPlayer.objects.none(),
+                                                            widget=forms.CheckboxSelectMultiple(attrs={"v-model":"current_parameter_set_barrier.parameter_set_players",
+                                                                                                       "class":"selectpicker" }))
 
     period_on = forms.IntegerField(label='Period On',
                                    min_value=1,
@@ -72,5 +80,5 @@ class ParameterSetBarrierForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSetBarrier
-        fields =['info', 'text', 'rotation', 'parameter_set_groups', 'start_x', 'start_y', 'width', 'height', 'period_on', 'period_off']
+        fields =['info', 'text', 'rotation', 'parameter_set_groups', 'parameter_set_players', 'start_x', 'start_y', 'width', 'height', 'period_on', 'period_off']
     
