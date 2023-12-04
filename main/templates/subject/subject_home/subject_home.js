@@ -442,9 +442,13 @@ var app = Vue.createApp({
         show_end_game_modal: function show_end_game_modal(){
             if(app.end_game_modal_visible) return;
    
+            app.interaction_modal.hide();
+            app.help_modal.hide();
+            
             app.end_game_modal.toggle();
 
             app.end_game_modal_visible = true;
+            app.working = false;
         },
 
         /** take refresh screen
