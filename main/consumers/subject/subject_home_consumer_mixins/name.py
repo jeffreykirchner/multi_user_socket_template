@@ -47,7 +47,8 @@ class NameMixin():
 
                 session_player.name = string.capwords(session_player.name)
 
-                await sync_to_async(session_player.save, thread_sensitive=self.thread_sensitive)()    
+                # await sync_to_async(session_player.save, thread_sensitive=self.thread_sensitive)()    
+                await session_player.asave()
                 
                 result = {"value" : "success",
                             "result" : {"id" : self.session_player_id,
