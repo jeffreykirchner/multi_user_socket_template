@@ -243,6 +243,7 @@ def take_next_phase(session_id, data):
     return {"value" : status,
             "current_experiment_phase" : session.world_state["current_experiment_phase"],
             "finished" : session.world_state["finished"],
+            "world_state" : session.world_state,
             }
 
 def take_end_early(session_id):
