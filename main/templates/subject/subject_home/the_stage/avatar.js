@@ -557,7 +557,7 @@ move_player: function move_player(delta)
     for(let i in app.session.world_state.session_players){
 
         let obj = app.session.world_state.session_players[i];
-        // let avatar = app.session.world_state.avatars[i];
+
         let avatar_container = pixi_avatars[i].avatar_container;
         let gear_sprite = pixi_avatars[i].gear_sprite;
         let status_label = pixi_avatars[i].status_label;

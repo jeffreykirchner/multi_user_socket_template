@@ -41,6 +41,14 @@
         max-width: 1920px;
     }
 
+    .the_feed{
+        height: 300px;
+        word-breaK:break-word;
+        overflow-y:scroll;
+        display:flex;
+        flex-direction:column-reverse;
+    }
+
 </style>
 
 {%endblock head%}
@@ -100,13 +108,22 @@
     </div>
 </div>
 
-<div class="row mt-2" v-cloak v-if="session">
-    <div class="col" v-show="session.world_state.current_experiment_phase=='Done'">
-        {%include "staff/staff_session/replay/replay_card.html"%}
-    </div>
+<div class="row mt-2" v-cloak v-if="session">    
     <div class="col-md-3">
-        {%include "staff/staff_session/summary/summary_card.html"%}
-    </div>                
+        <div class = "row">
+            <div class="col">
+                {%include "staff/staff_session/summary/summary_card.html"%}
+            </div>
+        </div>
+        <div class = "row mt-2" v-if="session.world_state.current_experiment_phase=='Done'">
+            <div class="col">
+                {%include "staff/staff_session/replay/replay_card.html"%}
+            </div>
+        </div>
+    </div>    
+    <div class="col-md-9">
+        {%include "staff/staff_session/the_feed/the_feed_card.html"%}
+    </div>            
 </div>
 
 {% endblock %}

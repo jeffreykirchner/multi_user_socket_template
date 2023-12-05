@@ -36,6 +36,7 @@ var app = Vue.createApp({
                     session : null,
                     session_events : null,
                     timer_pulse : null,
+                    the_feed : [],
 
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
 
@@ -233,7 +234,7 @@ var app = Vue.createApp({
 
             app.first_load_done = true;
             app.working = false;
-            //Vue.nextTick(app.update_sdgraph_canvas());
+            app.process_the_feed(message_type, message_data);
         },
 
         /** send websocket message to server
@@ -451,6 +452,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/data/data_card.js"%}
         {%include "staff/staff_session/interface/interface_card.js"%}
         {%include "staff/staff_session/replay/replay_card.js"%}
+        {%include "staff/staff_session/the_feed/the_feed_card.js"%}
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
         {%include "subject/subject_home/the_stage/avatar.js"%}
         {%include "subject/subject_home/the_stage/token.js"%}

@@ -1,0 +1,13 @@
+<div class="card" v-show="first_load_done">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">The Feed</span>            
+
+    </div>
+    <div class="card-body">      
+        <div class="the_feed">
+            <div v-for="(c, index) in the_feed" v-bind:key="c.id">
+                <div v-html="c"></div>
+            </div>
+        </div>
+    </div>                    
+</div> 
