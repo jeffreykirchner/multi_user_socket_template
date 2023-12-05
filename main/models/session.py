@@ -13,6 +13,7 @@ import csv
 import io
 import json
 import random
+import re
 
 from django.conf import settings
 
@@ -297,7 +298,7 @@ class Session(models.Model):
 
             writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-            writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action", "Info (JSON)", "Timestamp"])
+            writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action","Info (Plain)", "Info (JSON)", "Timestamp"])
 
             # session_events =  main.models.SessionEvent.objects.filter(session__id=self.id).prefetch_related('period_number', 'time_remaining', 'type', 'data', 'timestamp')
             # session_events = session_events.select_related('session_player')
@@ -307,6 +308,10 @@ class Session(models.Model):
             for i in self.session_players.all().values('id','player_number','parameter_set_player__id_label'):
                 parameter_set_players[str(i['id'])] = i
 
+            session_players = {}
+            for i in self.session_players.all().values('id','player_number','parameter_set_player__id_label'):
+                session_players[str(i['id'])] = i
+
             for p in self.session_events.exclude(type="time").exclude(type="world_state").exclude(type='target_locations'):
                 writer.writerow([self.id,
                                 p.period_number, 
@@ -314,6 +319,7 @@ class Session(models.Model):
                                 parameter_set_players[str(p.session_player_id)]["player_number"], 
                                 parameter_set_players[str(p.session_player_id)]["parameter_set_player__id_label"], 
                                 p.type, 
+                                self.action_data_parse(p.type, p.data, session_players),
                                 p.data, 
                                 p.timestamp])
             
@@ -321,6 +327,25 @@ class Session(models.Model):
             output.close()
 
         return v
+
+    def action_data_parse(self, type, data, session_players):
+        '''
+        return plain text version of action
+        '''
+
+        if type == "chat":
+            nearby_text = ""
+            for i in data["nearby_players"]:
+                if nearby_text != "":
+                    nearby_text += ", "
+                nearby_text += f'{session_players[str(i)]["parameter_set_player__id_label"]}'
+
+            temp_s = re.sub("\n", " ", data["text"])
+            return f'{temp_s} @  {nearby_text}'
+        elif type == "help_doc":
+            return data
+
+        return ""
     
     def get_download_recruiter_csv(self):
         '''
