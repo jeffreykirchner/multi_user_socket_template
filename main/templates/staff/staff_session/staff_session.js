@@ -226,6 +226,9 @@ var app = Vue.createApp({
                 case "load_session_events":
                     app.take_load_session_events(message_data);
                     break; 
+                case "update_rescue_subject":
+                    app.take_rescue_subject(message_data);
+                    break;
             }
 
             app.first_load_done = true;

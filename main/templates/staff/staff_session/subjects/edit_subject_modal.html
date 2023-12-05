@@ -20,6 +20,12 @@
         </form>
     </div>
     <div class="modal-footer">
+        <button type="button"
+                class="btn btn-outline-warning me2"
+                v-bind:disabled="reconnecting || working"
+                v-on:click = "send_rescue_subject()">
+            Rescue <i class="fas fa-parachute-box"></i>
+        </button>
         
         <button type="button"
                 class="btn btn-outline-primary"

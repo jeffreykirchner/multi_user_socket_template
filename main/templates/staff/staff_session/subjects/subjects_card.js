@@ -311,3 +311,31 @@ take_update_survey_complete: function take_update_survey_complete(message_data){
     let session_player = app.session.session_players[result.player_id];
     session_player.survey_complete = true;
 },
+
+/**
+ * rescue subject if stuck
+ */
+send_rescue_subject: function send_rescue_subject()
+{
+    if (!confirm('Return subject to their starting location?')) {
+        return;
+    }
+
+    let player_id = app.staff_edit_name_etc_form.id;
+
+    app.send_message("rescue_subject", {player_id:player_id});
+},
+
+/**
+ * take rescue subject
+ */
+take_rescue_subject: function take_rescue_subject(message_data)
+{
+    let session_player = app.session.world_state.session_players[message_data.player_id];
+
+    session_player.current_location = message_data.new_location; 
+    session_player.target_location.x = message_data.new_location.x+1;
+    session_player.target_location.y = message_data.new_location.y+1;
+
+    app.edit_subject_modal.hide();
+},

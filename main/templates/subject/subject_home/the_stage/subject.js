@@ -111,3 +111,20 @@ update_offsets_player: function update_offsets_player(delta)
     pixi_target.x = obj.target_location.x;
     pixi_target.y = obj.target_location.y;
 },
+
+/**
+ * take rescue subject
+ */
+take_rescue_subject: function take_rescue_subject(message_data)
+{
+    let session_player = app.session.world_state.session_players[message_data.player_id];
+
+    session_player.current_location = message_data.new_location; 
+    session_player.target_location.x = message_data.new_location.x+1;
+    session_player.target_location.y = message_data.new_location.y+1;
+
+    if(message_data.player_id==app.session_player.id)
+    {
+       app.working = false;
+    }
+},

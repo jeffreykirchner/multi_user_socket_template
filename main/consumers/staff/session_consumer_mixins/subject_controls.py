@@ -69,6 +69,48 @@ class SubjectControlsMixin():
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def rescue_subject(self, event):
+        '''
+        move subject back to their starting position
+
+        '''
+
+        logger = logging.getLogger(__name__) 
+        # logger.info(f"target_location_update: world state controller {self.controlling_channel} channel name {self.channel_name}")
+                
+        event_data =  event["message_text"]
+
+        try:
+            player_id = event_data["player_id"]            
+        except KeyError:
+            logger.info(f"update_rescue_subject: invalid player, {event['message_text']}")
+            return
+            # result = {"value" : "fail", "result" : {"message" : "Invalid location."}}
+
+
+        session_player = self.world_state_local["session_players"][str(player_id)]
+        parameter_set_player = self.parameter_set_local["parameter_set_players"][str(session_player["parameter_set_player_id"])]
+
+        session_player["current_location"] = {"x" : parameter_set_player["start_x"], "y" : parameter_set_player["start_y"]}
+        session_player["target_location"] = session_player["current_location"]
+        
+        result = {"value" : "success", 
+                  "new_location" : session_player["current_location"], 
+                  "player_id" : player_id}
+        
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
+
+    async def update_rescue_subject(self, event):
+        '''
+        move subject back to their starting position
+        '''
+
+        event_data = event["group_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
         
 
 def take_update_subject(session_id, data):
