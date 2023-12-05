@@ -105,9 +105,7 @@ class Session(models.Model):
         '''
 
         self.started = True
-        # self.current_period = 1
         self.start_date = datetime.now()
-        #self.time_remaining = self.parameter_set.period_length
         
         session_periods = []
 
@@ -130,7 +128,6 @@ class Session(models.Model):
         self.world_state = {"last_update":str(datetime.now()), 
                             "session_players":{},
                             "current_period":1,
-                            "current_session_period":self.session_periods.get(period_number=1).id,
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
                             "time_remaining":self.parameter_set.period_length,
                             "timer_running":False,
