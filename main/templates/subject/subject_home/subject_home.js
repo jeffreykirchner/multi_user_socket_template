@@ -130,9 +130,6 @@ var app = Vue.createApp({
                 case "update_reset_experiment":
                     app.take_update_reset_experiment(message_data);
                     break;
-                case "chat":
-                    app.take_chat(message_data);
-                    break;
                 case "update_chat":
                     app.take_update_chat(message_data);
                     break;
@@ -444,7 +441,7 @@ var app = Vue.createApp({
    
             app.interaction_modal.hide();
             app.help_modal.hide();
-            
+
             app.end_game_modal.toggle();
 
             app.end_game_modal_visible = true;

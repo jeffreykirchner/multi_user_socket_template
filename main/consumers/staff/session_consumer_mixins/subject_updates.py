@@ -1,7 +1,9 @@
 
 import logging
+import math
 
 from asgiref.sync import sync_to_async
+from textwrap import TextWrapper
 
 from django.db import transaction
 from django.db.models.fields.json import KT
@@ -10,6 +12,7 @@ from main.models import SessionPlayer
 from main.models import Session
 from main.models import SessionEvent
 from django.utils.decorators import method_decorator
+
 
 from datetime import datetime, timedelta
 
@@ -30,26 +33,60 @@ class SubjectUpdatesMixin():
             return    
        
         logger = logging.getLogger(__name__) 
-        # logger.info(f"take chat: Session {self.session_id}, Player {self.session_player_id}, Data {data}")
+        # logger.info(f"take chat: Session ")
         
-        if not self.world_state_local["started"] or \
-           self.world_state_local["finished"] or \
-           self.world_state_local["current_experiment_phase"] != ExperimentPhase.RUN:
-            logger.info(f"take chat: failed, session not started, finished, or not in run phase {self.world_state_local}")
-            return
-        
-        result = {"value" : "success"}
-        event_data = event["message_text"]
-        
-        result["text"] = event_data["text"]
-        result["sender_id"] = self.session_players_local[event["player_key"]]["id"]
+        status = "success"
+        error_message = ""
+        player_id = None
 
-        await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                           session_player_id=result["sender_id"],
-                                           type="chat",
-                                           period_number=self.world_state_local["current_period"],
-                                           time_remaining=self.world_state_local["time_remaining"],
-                                           data=result)
+        if status == "success":
+            try:
+                player_id = self.session_players_local[event["player_key"]]["id"]
+                event_data = event["message_text"]
+                current_location = event_data["current_location"]
+            except:
+                logger.info(f"chat: invalid data, {event['message_text']}")
+                status = "fail"
+                error_message = "Invalid data."
+        
+        if status == "success":
+            if not self.world_state_local["started"] or \
+            self.world_state_local["finished"] or \
+            self.world_state_local["current_experiment_phase"] != ExperimentPhase.RUN:
+                logger.info(f"take chat: failed, session not started, finished, or not in run phase")
+                status = "fail"
+                error_message = "Session not started."
+        
+        result = {"status": status, "error_message": error_message}
+        result["sender_id"] = player_id
+
+        if status == "success":
+            session_player = self.world_state_local["session_players"][str(player_id)]
+            session_player["current_location"] = current_location
+            
+            result["text"] = event_data["text"]
+            result["nearby_players"] = []
+
+            #format text for chat bubbles
+            wrapper = TextWrapper(width=13, max_lines=6)
+            result['text'] = wrapper.fill(text=result['text'])
+
+            #find nearby players
+            session_players = self.world_state_local["session_players"]
+            for i in session_players:
+                if i != str(result["sender_id"]):
+                    source_pt = [session_players[str(result["sender_id"])]["current_location"]["x"], session_players[str(result["sender_id"])]["current_location"]["y"]]
+                    target_pt = [session_players[i]["current_location"]["x"], session_players[i]["current_location"]["y"]]
+                    
+                    if math.dist(source_pt, target_pt) <= 1000:
+                        result["nearby_players"].append(i)
+
+            await SessionEvent.objects.acreate(session_id=self.session_id, 
+                                               session_player_id=result["sender_id"],
+                                               type="chat",
+                                               period_number=self.world_state_local["current_period"],
+                                               time_remaining=self.world_state_local["time_remaining"],
+                                               data=result)
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
