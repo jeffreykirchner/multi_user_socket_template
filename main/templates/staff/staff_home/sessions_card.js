@@ -13,8 +13,6 @@ function send_create_session(){
 function take_create_session(message_data){    
     app.create_session_button_text ='Create Session <i class="fas fa-plus"></i>';
     app.take_get_sessions(message_data);
-
-    app.HelloWorld.update_msg("Session Created");
 }
 
 /**
