@@ -4,9 +4,32 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 const { createApp, ref } = Vue
 
+const HelloWorld = {
+    delimiters: ["[[", "]]"],
+    props: ['msg'],
+    setup(props) {
+        function update_msg(text){
+            props.msg = text;
+        }
+
+        return {
+            update_msg
+        }
+    },
+    
+    template: `<div>
+      <h1>Hello world</h1>
+      <div>[[this.msg]]</div>
+    </div>`
+  };
+
 //vue app
 var app = createApp({
     delimiters: ["[[", "]]"],
+
+    components: {
+        HelloWorld
+      },
 
     setup() {
         //variables
@@ -153,7 +176,8 @@ var app = createApp({
             take_get_sessionsAdmin,
             sort_by_title_all_sessions,
             sort_by_date_all_sessions,
-            sort_by_owner_all_sessions
+            sort_by_owner_all_sessions,
+            HelloWorld
         }
     }
 }).mount('#app');
