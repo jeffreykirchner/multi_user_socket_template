@@ -1,37 +1,36 @@
 /**
  * send request to create new session
  */
-send_create_session: function send_create_session(){
+function send_create_session(){
     app.working = true;
     app.create_session_button_text ='<i class="fas fa-spinner fa-spin"></i>';
     app.send_message("create_session",{});
-},
+}
 
 /**
  * take crate a new session
  */
-take_create_session: function take_create_session(message_data){    
+function take_create_session(message_data){    
     app.create_session_button_text ='Create Session <i class="fas fa-plus"></i>';
     app.take_get_sessions(message_data);
-},
+}
 
 /**
  * send request to delete session
  * @param id : int
  */
-send_delete_session: function send_delete_session(id){
+function send_delete_session(id){
     if (!confirm('Delete Session?')) {
         return;
     }
     app.working = true;
     app.send_message("delete_session",{"id" : id});
-},
-
+}
 
 /**
  * sort by title
  */
-sort_by_title:function sort_by_title(){
+function sort_by_title(){
 
     app.working = true;
 
@@ -42,12 +41,12 @@ sort_by_title:function sort_by_title(){
     });
 
     app.working = false;
-},
+}
 
 /**
  * sort by date
  */
-sort_by_date:function sort_by_date(){
+function sort_by_date(){
 
     app.working = true;
 
@@ -57,4 +56,4 @@ sort_by_date:function sort_by_date(){
     });
 
     app.working = false;
-},
+}
