@@ -59,3 +59,23 @@ def check_sesison_started_ws(function):
             return False
 
     return wrap
+
+def check_message_for_me(function):
+    async def wrap(self, *args, **kwargs):      
+        #logger = logging.getLogger(__name__) 
+        #logger.info(f"check_message_for_me {args} {kwargs}")
+
+        target_list = args[0].get('target_list', None)
+
+        if target_list:
+            #logger.info(f"check_message_for_me target list found")
+            if self.session_player_id in target_list:
+                #logger.info(f"check_message_for_me target in list")
+                return await function(self, *args, **kwargs)
+            else:
+                #logger.info(f"check_message_for_me target not in list")
+                return
+            
+        return await function(self, *args, **kwargs)
+
+    return wrap

@@ -127,6 +127,7 @@ class Session(models.Model):
         '''
         self.world_state = {"last_update":str(datetime.now()), 
                             "session_players":{},
+                            "session_players_order":[],
                             "current_period":1,
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
                             "time_remaining":self.parameter_set.period_length,
@@ -162,6 +163,7 @@ class Session(models.Model):
             v['parameter_set_player_id'] = i['parameter_set_player__id']
             
             self.world_state["session_players"][str(i['id'])] = v
+            self.world_state["session_players_order"].append(i['id'])
         
         #tokens
         tokens = {}

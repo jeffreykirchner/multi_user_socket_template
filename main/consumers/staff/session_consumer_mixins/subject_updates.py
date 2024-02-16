@@ -89,7 +89,8 @@ class SubjectUpdatesMixin():
                                                data=result)
 
         await self.send_message(message_to_self=None, message_to_group=result,
-                                message_type=event['type'], send_to_client=False, send_to_group=True)
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True, target_list=self.world_state_local["session_players_order"])
 
     async def update_chat(self, event):
         '''

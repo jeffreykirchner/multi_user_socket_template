@@ -9,7 +9,8 @@ class SendMessageMixin:
     '''
 
     async def send_message(self, message_to_self:dict, message_to_group:dict,
-                                 message_type:dict, send_to_client:bool, send_to_group:bool):
+                                 message_type:dict, send_to_client:bool, 
+                                 send_to_group:bool, target_list: list = None):
             '''
             send response to client
             '''
@@ -25,6 +26,7 @@ class SendMessageMixin:
                 await self.channel_layer.group_send(
                     self.room_group_name,
                         {"type": f"update_{message_type}",
-                        "group_data": message_to_group,
-                        "sender_channel_name": self.channel_name},
+                         "group_data": message_to_group,
+                         "target_list": target_list,
+                         "sender_channel_name": self.channel_name},
                     )
