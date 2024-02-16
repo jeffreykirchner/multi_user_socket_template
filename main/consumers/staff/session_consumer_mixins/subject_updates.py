@@ -49,6 +49,8 @@ class SubjectUpdatesMixin():
                 status = "fail"
                 error_message = "Invalid data."
         
+        target_list = [player_id]
+
         if status == "success":
             if not self.world_state_local["started"] or \
             self.world_state_local["finished"] or \
@@ -87,10 +89,12 @@ class SubjectUpdatesMixin():
                                                period_number=self.world_state_local["current_period"],
                                                time_remaining=self.world_state_local["time_remaining"],
                                                data=result)
+            
+            target_list = self.world_state_local["session_players_order"]
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, 
-                                send_to_group=True, target_list=self.world_state_local["session_players_order"])
+                                send_to_group=True, target_list=target_list)
 
     async def update_chat(self, event):
         '''
@@ -248,7 +252,8 @@ class SubjectUpdatesMixin():
                   "session_player_id" : player_id}
         
         await self.send_message(message_to_self=None, message_to_group=result,
-                                message_type=event['type'], send_to_client=False, send_to_group=True)
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True)
 
     async def update_target_location_update(self, event):
         '''
@@ -282,6 +287,8 @@ class SubjectUpdatesMixin():
             status = "fail"
             error_message.append({"id":"collect_token", "message": "Invalid data, try again."})
         
+        target_list = [player_id]
+
         if status == "success":
             if self.world_state_local['tokens'][str(period_id)][str(token_id)]['status'] != 'available':
                 status = "fail"
@@ -308,13 +315,16 @@ class SubjectUpdatesMixin():
                                             period_number=self.world_state_local["current_period"],
                                             time_remaining=self.world_state_local["time_remaining"],
                                             data=result)
+            
+            target_list = self.world_state_local["session_players_order"]
 
        
                  
         #logger.warning(f'collect_token: {message_text}, token {token_id}')
 
         await self.send_message(message_to_self=None, message_to_group=result,
-                                message_type=event['type'], send_to_client=False, send_to_group=True)
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True, target_list=target_list)
 
     async def update_collect_token(self, event):
         '''
@@ -370,7 +380,8 @@ class SubjectUpdatesMixin():
                                            data=result)
 
         await self.send_message(message_to_self=None, message_to_group=result,
-                                message_type=event['type'], send_to_client=False, send_to_group=True)
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True)
 
     async def update_tractor_beam(self, event):
         '''
@@ -405,6 +416,8 @@ class SubjectUpdatesMixin():
             logger.info(f"interaction: invalid data, {event['message_text']}")
             status = "fail"
             error_message.append({"id":"interaction", "message": "Invalid data, try again."})
+
+        target_list = [player_id]
 
         if status == "success":
             if source_player['interaction'] == 0:
@@ -482,9 +495,12 @@ class SubjectUpdatesMixin():
                                                period_number=self.world_state_local["current_period"],
                                                time_remaining=self.world_state_local["time_remaining"],
                                                data=result)
+            
+            target_list = self.world_state_local["session_players_order"]
         
         await self.send_message(message_to_self=None, message_to_group=result,
-                                message_type=event['type'], send_to_client=False, send_to_group=True)
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True, target_list=target_list)
 
     async def update_interaction(self, event):
         '''
@@ -533,7 +549,8 @@ class SubjectUpdatesMixin():
                                            data=result)
 
         await self.send_message(message_to_self=None, message_to_group=result,
-                                message_type=event['type'], send_to_client=False, send_to_group=True)
+                                message_type=event['type'], send_to_client=False,
+                                send_to_group=True)
 
     async def update_cancel_interaction(self, event):
         '''
@@ -542,7 +559,8 @@ class SubjectUpdatesMixin():
         event_data = event["group_data"]
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
+                                message_type=event['type'], send_to_client=True, 
+                                send_to_group=False)
                                       
     
 
