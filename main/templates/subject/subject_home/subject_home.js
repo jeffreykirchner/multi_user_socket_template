@@ -13,6 +13,9 @@ var pixi_notices_key = 0;
 
 {%include "subject/subject_home/the_stage/pixi_globals.js"%}
 
+//prevent right click
+document.addEventListener('contextmenu', event => event.preventDefault());
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
