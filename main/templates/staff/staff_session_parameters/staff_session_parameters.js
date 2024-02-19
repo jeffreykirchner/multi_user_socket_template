@@ -80,6 +80,13 @@ var app = Vue.createApp({
             }
         },
 
+        /**
+         * fire when websocket connection is lost and reconnected
+        */
+        handle_socket_connection_try: function handle_socket_connection_try(){         
+            return true;
+        },
+
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
