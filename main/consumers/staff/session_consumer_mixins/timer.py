@@ -225,7 +225,7 @@ class TimerMixin():
                                                     time_remaining=self.world_state_local["time_remaining"],
                                                     data=result))
             
-            await SessionEvent.objects.abulk_create(self.session_events)
+            await SessionEvent.objects.abulk_create(self.session_events, ignore_conflicts=True)
 
             self.session_events = []
 

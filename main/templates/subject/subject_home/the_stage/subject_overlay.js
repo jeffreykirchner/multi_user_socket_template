@@ -5,7 +5,7 @@ setup_subject_status_overlay: function setup_subject_status_overlay()
 {
     if(!app.session) return;
     if(app.pixi_mode!="subject") return;
-    if(subject_status_overlay.container) subject_status_overlay.container.destroy();
+    if(subject_status_overlay.container) subject_status_overlay.container.destroy({children:true, baseTexture:true});
 
     subject_status_overlay.container = new PIXI.Container();
     subject_status_overlay.container.eventMode = 'none';

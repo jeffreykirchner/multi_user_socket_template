@@ -76,7 +76,7 @@ destroy_pixi_tokens_for_all_periods: function destroy_pixi_tokens_for_all_period
 
             if (period_id in pixi_tokens)
             {
-                pixi_tokens[period_id][j].token_container.destroy();
+                pixi_tokens[period_id][j].token_container.destroy({children:true, baseTexture:true});
             }
         }
     }

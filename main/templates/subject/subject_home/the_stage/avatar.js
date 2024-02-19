@@ -225,13 +225,13 @@ destory_setup_pixi_subjects: function destory_setup_pixi_subjects()
 
         if(pixi_objects)
         {
-            pixi_objects.avatar_container.destroy();
-            pixi_objects.chat.container.destroy();
-            pixi_objects.interaction_container.destroy();
+            pixi_objects.avatar_container.destroy({children:true, baseTexture:true});
+            pixi_objects.chat.container.destroy({children:true, baseTexture:true});
+            pixi_objects.interaction_container.destroy({children:true, baseTexture:true});
 
             if(app.pixi_mode != "subject")
             {
-                pixi_objects.view_container.destroy();
+                pixi_objects.view_container.destroy({children:true, baseTexture:true});
             }
         }
     }

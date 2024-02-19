@@ -233,7 +233,7 @@ search_for_path_around_walls: function search_for_path_around_walls(starting_rec
     {
         for(i=0;i<wall_search_objects.length;i++)
         {
-            wall_search_objects[i].destroy();
+            wall_search_objects[i].destroy({children:true, baseTexture:true});
         }
 
         wall_search_objects = [];
