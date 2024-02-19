@@ -5,21 +5,7 @@ axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 //var app.session.world_state = {};
-var pixi_app = null;
-var pixi_container_main = null;
-var pixi_text_emitter = {};
-var pixi_text_emitter_key = 0;
-var pixi_transfer_beams = {};
-var pixi_transfer_beams_key = 0;
-var pixi_fps_label = null;                     //fps label
-var pixi_avatars = {};                         //avatars
-var pixi_tokens = {};                          //tokens
-var pixi_walls = {};                           //walls
-var pixi_barriers = {};                        //barriers
-var pixi_grounds = {};                         //grounds
-
-var wall_search = {counter:0, current_location:{x:-1,y:-1}, target_location:{x:-1,y:-1}};
-var wall_search_objects = [];
+{%include "subject/subject_home/the_stage/pixi_globals.js"%}
 
 var worker = null;
 

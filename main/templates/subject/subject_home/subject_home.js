@@ -5,26 +5,13 @@ axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 //global variables
-//var world_state = {};
 var subject_status_overlay = {container:null, current_period_label:null, time_remaining_label:null, profit_label:null};
-var pixi_app = null;                           //pixi app   
-var pixi_container_main = null;                //main container for pixi
 var pixi_target = null;                        //target sprite for your avatar
-var pixi_text_emitter = {};                    //text emitter json
-var pixi_text_emitter_key = 0;
-var pixi_transfer_beams = {};                  //transfer beam json
-var pixi_transfer_beams_key = 0;
-var pixi_fps_label = null;                     //fps label
 var mini_map = {container:null};               //mini map container
-var pixi_avatars = {};                         //avatars
-var pixi_tokens = {};                          //tokens
 var pixi_notices = {container:null, notices:{}};                         //notices
 var pixi_notices_key = 0;
-var pixi_walls = {};                           //walls
-var pixi_barriers = {};                        //barriers
-var pixi_grounds = {};                         //grounds
-var wall_search = {counter:0, current_location:{x:-1,y:-1}, target_location:{x:-1,y:-1}};
-var wall_search_objects = [];
+
+{%include "subject/subject_home/the_stage/pixi_globals.js"%}
 
 //vue app
 var app = Vue.createApp({
