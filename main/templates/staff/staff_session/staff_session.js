@@ -105,7 +105,7 @@ var app = Vue.createApp({
         */
         handle_socket_connection_try: function handle_socket_connection_try(){         
             app.session.world_state.timer_running = false;
-            worker.terminate();   
+            if(worker) worker.terminate();
             return true;
         },
 

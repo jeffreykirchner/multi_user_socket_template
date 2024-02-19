@@ -83,12 +83,12 @@ class SubjectUpdatesMixin():
                     if math.dist(source_pt, target_pt) <= 1000:
                         result["nearby_players"].append(i)
 
-            await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                               session_player_id=result["sender_id"],
-                                               type="chat",
-                                               period_number=self.world_state_local["current_period"],
-                                               time_remaining=self.world_state_local["time_remaining"],
-                                               data=result)
+            self.session_events.append(SessionEvent(session_id=self.session_id, 
+                                                    session_player_id=result["sender_id"],
+                                                    type="chat",
+                                                    period_number=self.world_state_local["current_period"],
+                                                    time_remaining=self.world_state_local["time_remaining"],
+                                                    data=result))
             
             target_list = self.world_state_local["session_players_order"]
 
@@ -309,12 +309,12 @@ class SubjectUpdatesMixin():
             result["player_id"] = player_id
             result["inventory"] = inventory
 
-            await SessionEvent.objects.acreate(session_id=self.session_id,
-                                            session_player_id=player_id, 
-                                            type="collect_token",
-                                            period_number=self.world_state_local["current_period"],
-                                            time_remaining=self.world_state_local["time_remaining"],
-                                            data=result)
+            self.session_events.append(SessionEvent(session_id=self.session_id,
+                                                    session_player_id=player_id, 
+                                                    type="collect_token",
+                                                    period_number=self.world_state_local["current_period"],
+                                                    time_remaining=self.world_state_local["time_remaining"],
+                                                    data=result))
             
             target_list = self.world_state_local["session_players_order"]
 
@@ -372,12 +372,12 @@ class SubjectUpdatesMixin():
 
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
-        await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                           session_player_id=player_id,
-                                           type="tractor_beam",
-                                           period_number=self.world_state_local["current_period"],
-                                           time_remaining=self.world_state_local["time_remaining"],
-                                           data=result)
+        self.session_events.append(SessionEvent(session_id=self.session_id, 
+                                                session_player_id=player_id,
+                                                type="tractor_beam",
+                                                period_number=self.world_state_local["current_period"],
+                                                time_remaining=self.world_state_local["time_remaining"],
+                                                data=result))
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, 
@@ -489,12 +489,12 @@ class SubjectUpdatesMixin():
 
             await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
-            await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                               session_player_id=player_id,
-                                               type="interaction",
-                                               period_number=self.world_state_local["current_period"],
-                                               time_remaining=self.world_state_local["time_remaining"],
-                                               data=result)
+            self.session_events.append(SessionEvent(session_id=self.session_id, 
+                                       session_player_id=player_id,
+                                       type="interaction",
+                                       period_number=self.world_state_local["current_period"],
+                                       time_remaining=self.world_state_local["time_remaining"],
+                                       data=result))
             
             target_list = self.world_state_local["session_players_order"]
         
@@ -541,12 +541,12 @@ class SubjectUpdatesMixin():
 
         result = {"source_player_id" : player_id, "target_player_id" : target_player_id, "value" : "success"}
 
-        await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                           session_player_id=player_id,
-                                           type="cancel_interaction",
-                                           period_number=self.world_state_local["current_period"],
-                                           time_remaining=self.world_state_local["time_remaining"],
-                                           data=result)
+        self.session_events.append(SessionEvent(session_id=self.session_id, 
+                                                session_player_id=player_id,
+                                                type="cancel_interaction",
+                                                period_number=self.world_state_local["current_period"],
+                                                time_remaining=self.world_state_local["time_remaining"],
+                                                data=result))
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False,
