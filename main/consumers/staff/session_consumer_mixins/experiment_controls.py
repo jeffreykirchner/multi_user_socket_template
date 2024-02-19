@@ -40,12 +40,12 @@ class ExperimentControlsMixin():
 
         #store first tick
         if self.controlling_channel == self.channel_name:
-            await SessionEvent.objects.acreate(session_id=self.session_id, 
-                                                type="world_state",
-                                                period_number=self.world_state_local["current_period"],
-                                                time_remaining=self.world_state_local["time_remaining"],
-                                                data=self.world_state_local)
-
+            self.session_events.append(SessionEvent(session_id=self.session_id, 
+                                                    type="world_state",
+                                                    period_number=self.world_state_local["current_period"],
+                                                    time_remaining=self.world_state_local["time_remaining"],
+                                                    data=self.world_state_local))
+           
         result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
 
         await self.send_message(message_to_self=result, message_to_group=None,
