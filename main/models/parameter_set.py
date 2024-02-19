@@ -120,7 +120,9 @@ class ParameterSet(models.Model):
 
             for i in new_parameter_set_groups:
                 p = main.models.ParameterSetGroup.objects.create(parameter_set=self)
-                p.from_dict(new_parameter_set_groups[i])
+                v = new_parameter_set_groups[i]
+                p.from_dict(v)
+
                 new_parameter_set_groups_map[i] = p.id
 
             #parameter set players
@@ -135,6 +137,8 @@ class ParameterSet(models.Model):
 
                 if v.get("parameter_set_group", None) != None:
                     p.parameter_set_group_id=new_parameter_set_groups_map[str(v["parameter_set_group"])]
+                
+                p.save()
 
             self.update_player_count()
 
