@@ -33,7 +33,7 @@ reset_experiment: function reset_experiment(){
         return;
     }
 
-    worker.terminate();
+    if(worker) worker.terminate();
 
     app.session.world_state.timer_running = false;
     app.working = true;
@@ -149,7 +149,7 @@ take_start_timer: function take_start_timer(message_data){
  * stop local timer pulse 
  */
 take_stop_timer_pulse: function take_stop_timer_pulse(){
-    worker.terminate();
+    if(worker) worker.terminate();
 },
 
 /**reset experiment, remove all bids, asks and trades

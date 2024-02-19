@@ -227,6 +227,8 @@ class TimerMixin():
             
             await SessionEvent.objects.abulk_create(self.session_events)
 
+            self.session_events = []
+
             if stop_timer:
                 self.world_state_local["timer_running"] = False
 

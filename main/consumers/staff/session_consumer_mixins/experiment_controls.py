@@ -23,6 +23,8 @@ class ExperimentControlsMixin():
         '''
         result = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
 
+        self.session_events = []
+
         #Send message to staff page
         if result["value"] == "fail":
             await self.send_message(message_to_self=result, message_to_group=None,
@@ -56,6 +58,8 @@ class ExperimentControlsMixin():
         reset experiment
         '''
         result = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
+
+        self.session_events = []
 
         #Send message to staff page
         if result["value"] == "fail":
@@ -164,17 +168,16 @@ def take_start_experiment(session_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Start Experiment: session {session_id}, data {data}")
 
-    #session_id = data["session_id"]
-    with transaction.atomic():
-        session = Session.objects.get(id=session_id)
+    #session_id = data["session_id"]   
+    session = Session.objects.get(id=session_id)
 
-        if not session.started:
-            session.start_experiment()
+    if not session.started:
+        session.start_experiment()
 
-        value = "success"
-        
-        return {"value" : value, 
-                "world_state" : session.world_state}
+    value = "success"
+    
+    return {"value" : value, 
+            "world_state" : session.world_state}
 
 def take_reset_experiment(session_id, data):
     '''
