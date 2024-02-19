@@ -99,7 +99,7 @@ check_barriers_intersection: function check_barriers_intersection(rect1, paramet
 /**
  * update barriers
  */
-update_barriers: function()
+update_barriers: function update_barriers()
 {
     for(let i in app.session.parameter_set.parameter_set_barriers)
     {
