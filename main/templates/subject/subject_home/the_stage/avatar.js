@@ -226,9 +226,19 @@ destory_setup_pixi_subjects: function destory_setup_pixi_subjects()
 
         if(pixi_objects)
         {
+            pixi_container_main.removeChild(pixi_objects.avatar_container);
+            pixi_container_main.removeChild(pixi_objects.chat.container);
+            pixi_container_main.removeChild(pixi_objects.interaction_container);
+
             pixi_objects.avatar_container.destroy({children:true, baseTexture:true});
             pixi_objects.chat.container.destroy({children:true, baseTexture:true});
             pixi_objects.interaction_container.destroy({children:true, baseTexture:true});
+
+            if(app.pixi_mode != "subject")
+            {
+                pixi_container_main.removeChild(pixi_objects.view_container);
+                pixi_objects.view_container.destroy({children:true, baseTexture:true});
+            }
 
             if(app.pixi_mode != "subject")
             {
@@ -490,6 +500,8 @@ setup_tractor_beam: function setup_tractor_beam(source_id, target_id)
     let source_player = app.session.world_state.session_players[source_id];
     let target_player = app.session.world_state.session_players[target_id];
 
+    let parameter_set_player = app.session.parameter_set.parameter_set_players[source_player.parameter_set_player_id];
+
     let dY = source_player.current_location.y - target_player.current_location.y;
     let dX = source_player.current_location.x - target_player.current_location.x;
 
@@ -525,7 +537,7 @@ setup_tractor_beam: function setup_tractor_beam(source_id, target_id)
         {
             if (i%2 == 0)
             {
-                tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+                tb_sprite.tint = parameter_set_player.hex_color;
             }
             else
             {
@@ -540,7 +552,7 @@ setup_tractor_beam: function setup_tractor_beam(source_id, target_id)
             }
             else
             {
-                tb_sprite.tint = app.session.session_players[source_id].parameter_set_player.hex_color;
+                tb_sprite.tint = parameter_set_player.hex_color;
             }
         }
 

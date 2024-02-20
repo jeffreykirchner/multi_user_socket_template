@@ -60,7 +60,9 @@ move_text_emitters: function move_text_emitters(delta)
     }
 
     //remove the completed emitters
-    for(let i=completed.length-1; i>=0; i--){
+    for(let i=completed.length-1; i>=0; i--)
+    {
+        pixi_container_main.removeChild(pixi_text_emitter[completed[i]].emitter_container);
         pixi_text_emitter[completed[i]].emitter_container.destroy({children:true, baseTexture:true});
 
         delete pixi_text_emitter[completed[i]]; 

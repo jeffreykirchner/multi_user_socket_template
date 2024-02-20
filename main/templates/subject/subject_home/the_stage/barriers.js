@@ -6,7 +6,11 @@ setup_pixi_barrier: function setup_pixi_barrier()
     //destory old barriers
     for(const i in pixi_barriers)
     {
-        if(pixi_barriers[i].barrier_container) pixi_barriers[i].barrier_container.destroy({children:true, baseTexture:true});
+        if(pixi_barriers[i].barrier_container)
+        {
+            pixi_container_main.removeChild(pixi_barriers[i].barrier_container);
+            pixi_barriers[i].barrier_container.destroy({children:true, baseTexture:true});
+        }
     }
 
     //create new barriers

@@ -88,7 +88,8 @@ animate_transfer_beams: function animate_transfer_beams(delta)
             {
                 if(beam_image.scale <= 0)
                 {
-                    beam_image.token_graphic.destroy();
+                    pixi_container_main.removeChild(beam_image.token_graphic);
+                    beam_image.token_graphic.destroy({children:true, baseTexture:true});
                     beam_image.direction = "done";
                 }
                 else
