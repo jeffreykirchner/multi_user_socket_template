@@ -23,9 +23,7 @@ var app = Vue.createApp({
                     session_key : "{{session.session_key}}",
                     session : null,
                     session_events : null,
-                    timer_pulse : null,
                     the_feed : [],
-
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
 
                     move_to_next_phase_text : 'Start Next Experiment Phase',
