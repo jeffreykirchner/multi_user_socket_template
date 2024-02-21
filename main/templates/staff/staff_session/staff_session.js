@@ -219,7 +219,7 @@ var app = Vue.createApp({
                     app.take_rescue_subject(message_data);
                     break;
             }
-            
+            app.working = false;
             app.process_the_feed(message_type, message_data);
         },
 

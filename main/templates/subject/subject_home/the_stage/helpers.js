@@ -95,7 +95,7 @@ check_point_in_rectagle: function check_point_in_rectagle(point, rect)
 /**
  * degrees to radians
  */
-degrees_to_radians(degrees)
+degrees_to_radians: function degrees_to_radians(degrees)
 {
     let pi = Math.PI;
     return degrees * (pi/180);
@@ -103,10 +103,11 @@ degrees_to_radians(degrees)
 
 /**
  * get the parameter set player from the player id
- */
+*/
 get_parameter_set_player_from_player_id: function get_parameter_set_player_from_player_id(player_id)
 {
-    try {
+    try 
+    {
         let parameter_set_player_id = app.session.world_state.session_players[player_id].parameter_set_player_id;
         return app.session.parameter_set.parameter_set_players[parameter_set_player_id];
     }

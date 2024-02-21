@@ -246,11 +246,11 @@ var app = Vue.createApp({
         {
             app.setup_pixi_tokens_for_current_period();
             app.setup_pixi_ground();
-            app.setup_pixi_tokens_for_current_period();
             app.setup_pixi_subjects();
             app.setup_pixi_wall();
             app.setup_pixi_barrier();
             app.update_subject_status_overlay();
+            app.setup_pixi_minimap();
         },
 
         /** send winsock request to get session info
@@ -318,7 +318,14 @@ var app = Vue.createApp({
         take_update_reset_experiment: function take_update_reset_experiment(message_data){
             app.take_get_session(message_data);
 
-            app.end_game_modal.hide();            
+            app.end_game_modal.hide();        
+            
+            app.interaction_modal.hide();
+            app.interaction_start_modal.hide();
+            app.help_modal.hide();
+
+            app.setup_pixi_minimap();
+            app.remove_all_notices();
 
             app.notices_seen = [];
         },

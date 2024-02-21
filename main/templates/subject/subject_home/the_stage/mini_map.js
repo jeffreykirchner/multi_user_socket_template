@@ -3,16 +3,17 @@
  * */
 setup_pixi_minimap: function setup_pixi_minimap()
 {
-    if(!app.session) return;
-    if(!app.session.started) return;
-    if(app.pixi_mode!="subject") return;
+    if(app.pixi_mode!="subject") return; 
 
     if(mini_map.container)
     {
         pixi_app.stage.removeChild(mini_map.container);
         mini_map.container.destroy({children:true, baseTexture:true});
-    } 
+    }
 
+    if(!app.session) return;
+    if(!app.session.started) return;
+    
     app.mini_map_scale = Math.min((pixi_app.screen.width * 0.2)/app.stage_width,  (pixi_app.screen.height * 0.3)/app.stage_height);
 
     let scale = app.mini_map_scale;
