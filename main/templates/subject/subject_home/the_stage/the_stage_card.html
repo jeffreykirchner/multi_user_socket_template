@@ -67,7 +67,7 @@
                            :value="session.session_players[p].id" 
                            :key="index"
                            :set="temp_p=session.session_players[p]">
-                           Player [[temp_p.parameter_set_player.id_label]]
+                           Player [[get_parameter_set_player_from_player_id(p).id_label]]
                     </option>
                 </select>
             </div>

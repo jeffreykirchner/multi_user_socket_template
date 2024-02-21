@@ -204,13 +204,13 @@ var app = Vue.createApp({
                     app.take_update_collect_token(message_data);
                     break;
                 case "update_tractor_beam":
-                    app.take_update_tractor_beam(message_data);
+                    app.take_tractor_beam(message_data);
                     break;
                 case "update_interaction":
-                    app.take_update_interaction(message_data);
+                    app.take_interaction(message_data);
                     break;
                 case "update_cancel_interaction":
-                    app.take_update_cancel_interaction(message_data);
+                    app.take_cancel_interaction(message_data);
                     break;   
                 case "load_session_events":
                     app.take_load_session_events(message_data);

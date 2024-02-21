@@ -1,0 +1,60 @@
+{% load crispy_forms_tags %}
+<!--interaction start Modal -->
+<div class="modal fade " 
+     id="interaction_start_modal" 
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false" 
+     tabindex="-1" 
+     aria-labelledby="interaction_start_modal" 
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header fw-bold">
+                Start Interaction?
+
+                <span class="float-end">
+                    <button type="button" class="btn btn-link" title="Show Help" v-on:click="send_load_help_doc_subject('subject_interaction_start')">
+                        <i class="far fa-question-circle"></i> 
+                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </span>
+            </div>
+            <div class="modal-body" v-if="selected_player.session_player">
+                
+                <div class="row">
+                    <div class="col text-center">
+                        <button type="button"
+                                class="btn btn-lg btn-outline-primary mr-2"
+                                v-on:click = "start_send()"
+                                id="id_start_send_button"
+                                title="Send Cherries"                       
+                                v-bind:disabled="reconnecting || working">
+                            Send to:<br><img src='/static/cherry.png' width='20'> <i class="fas fa-arrow-right"></i> Avatar [[selected_player.parameter_set_player.id_label]]
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col text-center">
+                        <button type="button"
+                                class="btn btn-lg btn-outline-primary mr-2"
+                                v-on:click = "start_take()"      
+                                id="id_start_take_button"                          
+                                title="Take Cherries"                       
+                                v-bind:disabled="reconnecting || working">
+                            Take from:<br> Avatar [[selected_player.parameter_set_player.id_label]] <i class="fas fa-arrow-right"></i>  <img src='/static/cherry.png' width='20'>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row mt-4 fw-bold" v-if="interaction_start_error">
+                    <div class="col text-center">                  
+                        Error: [[interaction_start_error]]  
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -47,6 +47,7 @@ var app = Vue.createApp({
                     // modals
                     end_game_modal : null,
                     interaction_modal : null,
+                    insteration_start_modal : null,
                     help_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
@@ -63,11 +64,25 @@ var app = Vue.createApp({
                     scroll_direction : {x:0, y:0},
                     draw_bounding_boxes: false,
 
+                    //selected avatar
+                    selected_player : {
+                        session_player:null,
+                        parameter_set_player:null,
+                        interaction_amount:null,
+                    },
+
                     //forms
                     interaction_form : {direction:null, amount:null},
 
                     //test mode
                     test_mode_location_target : null,
+
+                    //errors
+                    interaction_start_error: null,
+                    interaction_error: null,
+
+                    //open modals
+                    interaction_start_modal_open : false,
                 }},
     methods: {
 
@@ -148,13 +163,13 @@ var app = Vue.createApp({
                     app.take_update_collect_token(message_data);
                     break;
                 case "update_tractor_beam":
-                    app.take_update_tractor_beam(message_data);
+                    app.take_tractor_beam(message_data);
                     break;
                 case "update_interaction":
-                    app.take_update_interaction(message_data);
+                    app.take_interaction(message_data);
                     break;
                 case "update_cancel_interaction":
-                    app.take_update_cancel_interaction(message_data);
+                    app.take_cancel_interaction(message_data);
                     break;
                 case "update_rescue_subject":
                     app.take_rescue_subject(message_data);
@@ -185,11 +200,13 @@ var app = Vue.createApp({
         do_first_load: function do_first_load()
         {           
             app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})   
-            app.interaction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_modal'), {keyboard: false})          
+            app.interaction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_modal'), {keyboard: false})
+            app.interaction_start_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_start_modal'), {keyboard: false})          
             app.help_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('help_modal'), {keyboard: false})
             
             document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
             document.getElementById('interaction_modal').addEventListener('hidden.bs.modal', app.hide_interaction_modal);
+            document.getElementById('interaction_start_modal').addEventListener('hidden.bs.modal', app.hide_interaction_start_modal);
 
             {%if session.parameter_set.test_mode%} setTimeout(app.do_test_mode, app.random_number(1000 , 1500)); {%endif%}
 
@@ -415,12 +432,6 @@ var app = Vue.createApp({
 
             //update any notices on screen
             app.update_notices();
-
-            //hide interaction modal if interaction is over
-            if(app.session.world_state.session_players[app.session_player.id].interaction == 0)
-            {
-                app.interaction_modal.hide();
-            }
 
             //update barriers
             app.update_barriers();

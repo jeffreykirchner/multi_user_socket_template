@@ -8,30 +8,68 @@
      aria-labelledby="interaction_modal" 
      aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header fw-bold">
                 Interaction
+
+                <span class="float-end">
+                    <button type="button" 
+                            class="btn btn-link" 
+                            title="Show Help" 
+                            v-on:click="send_load_help_doc_subject('subject_interaction')">
+                        <i class="far fa-question-circle"></i> 
+                    </button>
+                    
+                </span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" v-if="selected_player && selected_player.session_player">
+                <div class="row text-center">
+                    <div calss="col">
+                        <img src="/static/cherry.png" style="width: 50;"/>
+                    </div>
+                </div>
+
+                <div class="row h5 mt-2">
+                    <div class="col text-center">
+                        <span v-if="selected_player.interaction_type=='send'">
+                            Send <i class="fas fa-arrow-right"></i> cherries to Avatar [[selected_player.parameter_set_player.id_label]]
+                        </span>
+                        <span v-if="selected_player.interaction_type=='take'">
+                            Take <i class="fas fa-arrow-left"></i> cherries from [[selected_player.parameter_set_player.id_label]]
+                        </span>
+                    </div>
+                </div>
                 
-                <div>
-                    <form id="endGameForm" v-on:submit.prevent="onSubmit">
-                        {% for i in interaction_form %}
-                        <div class="row">
-                            <div class = "col col-md-10 offset-md-1">  
-                                {{ i|as_crispy_field }}         
-                            </div>            
-                        </div> 
-                        {% endfor %}
-                    </form>
-                </div>               
-            
+                <div class="row mt-4 ">                   
+                    <div class="row justify-content-center">
+                        <div class="col-5 me-0 pe-1">
+                            <input type="number" 
+                                class="form-control form-control-lg fw-bold"
+                                v-model="selected_player.interaction_amount"
+                                min="0"
+                                max="999"
+                                step="1">    
+                        </div>
+
+                        <div class="col-4 ms-0 ps-1 pe-0">
+                            <button type="button"
+                                class="btn btn-outline-primary btn-lg"
+                                v-on:click = "select_all()"
+                                title="Select All Seeds"                       
+                                v-bind:disabled="reconnecting || working">
+                                All <i class="fas fa-check-double"></i>
+                            </button>
+                        </div>
+                    </div>                   
+                </div>
+                         
             </div>
             <div class="modal-footer">
                 <button type="button"
                         class="btn btn-outline-primary mr-2"
                         v-on:click = "cancel_interaction()"
+                        id = "id_cancel_interaction_button"
                         title="Cancel Interaction"                       
                         v-bind:disabled="reconnecting || working">
                     Cancel <i class="fas fa-ban"></i>
@@ -40,11 +78,25 @@
                 <button type="button"
                         class="btn btn-outline-primary"
                         v-on:click = "send_interaction()"
+                        id = "id_submit_interaction_button"
                         title="Submit Interaction"                       
                         v-bind:disabled="reconnecting || working">
-                    Submit <i class="fas fa-sign-in-alt"></i>
+                    <span v-if="selected_player.interaction_type=='send'">
+                        Send
+                    </span>
+                    <span v-if="selected_player.interaction_type=='take'">
+                        Take
+                    </span>
+
+                    <i class="fas fa-sign-in-alt"></i>
                 </button>
 
+            </div>
+
+            <div class="row mt-2 mb-2 fw-bold" v-if="interaction_error">
+                <div class="col text-center">                  
+                    Error: [[interaction_error]]  
+                </div>
             </div>
         </div>
     </div>
