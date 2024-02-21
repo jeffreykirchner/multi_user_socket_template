@@ -116,8 +116,6 @@ var app = Vue.createApp({
                     app.take_load_help_doc(message_data);
                     break;
             }
-
-            app.working = false;
         },
 
         /** send websocket message to server

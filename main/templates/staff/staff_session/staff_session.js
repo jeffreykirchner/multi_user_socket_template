@@ -219,9 +219,7 @@ var app = Vue.createApp({
                     app.take_rescue_subject(message_data);
                     break;
             }
-
-            app.first_load_done = true;
-            app.working = false;
+            
             app.process_the_feed(message_type, message_data);
         },
 
@@ -269,7 +267,7 @@ var app = Vue.createApp({
                 });
             
             app.setup_pixi();
-
+            app.first_load_done = true;
         },
 
          /**
