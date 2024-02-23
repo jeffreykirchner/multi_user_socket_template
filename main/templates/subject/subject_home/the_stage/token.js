@@ -86,7 +86,7 @@ destroy_pixi_tokens_for_all_periods: function destroy_pixi_tokens_for_all_period
 /**
  * take and update from the server about a collected token
  */
-take_update_collect_token: function take_update_collect_token(message_data)
+take_collect_token: function take_collect_token(message_data)
 {
 
     if(message_data.status == "success")

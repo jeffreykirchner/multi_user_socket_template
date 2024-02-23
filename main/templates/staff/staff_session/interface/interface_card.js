@@ -13,7 +13,7 @@ take_target_location_update: function take_target_location_update(message_data)
     }
 },
 
-take_update_collect_token: function take_update_collect_token(message_data)
+take_collect_token: function take_collect_token(message_data)
 {
 
     if(message_data.period_id != app.session.session_periods_order[app.session.world_state.current_period-1]) return;
