@@ -98,7 +98,11 @@ take_collect_token: function take_collect_token(message_data)
         try{
             pixi_tokens[message_data.period_id][message_data.token_id].token_graphic.stop();
             pixi_tokens[message_data.period_id][message_data.token_id].token_graphic.alpha = 0.25;
-            pixi_tokens[message_data.period_id][message_data.token_id].mini_map_graphic.visible = false;
+
+            if(app.is_subject)
+            {
+                pixi_tokens[message_data.period_id][message_data.token_id].mini_map_graphic.visible = false;
+            }
         } catch (error) {
 
         }
