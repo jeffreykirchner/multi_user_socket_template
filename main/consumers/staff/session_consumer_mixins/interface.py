@@ -14,13 +14,13 @@ class InterfaceMixin():
         '''
         load session events
         '''
-        session_events = {}
+        session_events_local = {}
 
         session = await Session.objects.aget(id=self.session_id)
 
         async for i in session.session_periods.all():
 
-            session_events[str(i.period_number)] = {}
+            session_events_local[str(i.period_number)] = {}
 
             total_period_length = self.parameter_set_local["period_length"]
 
@@ -28,13 +28,13 @@ class InterfaceMixin():
                 total_period_length += self.parameter_set_local["break_length"]
 
             for j in range(total_period_length+1):
-                session_events[str(i.period_number)][str(j)] = []
+                session_events_local[str(i.period_number)][str(j)] = []
 
-        async for i in session.session_events.exclude(type="help_doc"):
+        async for i in session.session_events_local.exclude(type="help_doc"):
             v = {"type" : i.type, "data" : i.data}
-            session_events[str(i.period_number)][str(i.time_remaining)].append(v)
+            session_events_local[str(i.period_number)][str(i.time_remaining)].append(v)
 
-        result = {"session_events": session_events}
+        result = {"session_events_local": session_events_local}
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
