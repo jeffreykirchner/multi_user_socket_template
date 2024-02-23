@@ -452,19 +452,25 @@ take_interaction: function take_interaction(message_data)
         //add transfer beam
         if(message_data.direction == "send")
         {
+            let elements = [];
+            element = {source_change: message_data.source_player_change,
+                       target_change: message_data.target_player_change, 
+                       texture:app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]}
+            elements.push(element);
             app.add_transfer_beam(source_player.current_location, 
-                                target_player.current_location,
-                                app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
-                                message_data.source_player_change,
-                                message_data.target_player_change);
+                                  target_player.current_location,
+                                  elements);
         }
         else
         {
+            let elements = [];
+            element = {source_change: message_data.target_player_change,
+                       target_change: message_data.source_player_change, 
+                       texture:app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]}
+            elements.push(element);
             app.add_transfer_beam(target_player.current_location, 
-                                source_player.current_location,
-                                app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"],
-                                message_data.target_player_change,
-                                message_data.source_player_change);
+                                  source_player.current_location,
+                                  elements);
         }
 
         if(app.pixi_mode=="subject")
