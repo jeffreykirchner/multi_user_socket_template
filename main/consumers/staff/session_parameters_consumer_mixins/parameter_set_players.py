@@ -58,7 +58,7 @@ def take_update_parameter_set_player(data):
     update parameterset player
     '''   
     logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset player: {data}")
+    # logger.info(f"Update parameterset player: {data}")
 
     session_id = data["session_id"]
     parameterset_player_id = data["parameterset_player_id"]
@@ -73,7 +73,7 @@ def take_update_parameter_set_player(data):
     
     form_data_dict = form_data
 
-    logger.info(f'form_data_dict : {form_data_dict}')
+    # logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetPlayerForm(form_data_dict, instance=parameter_set_player)
     form.fields["parameter_set_group"].queryset = session.parameter_set.parameter_set_groups.all()
@@ -84,7 +84,7 @@ def take_update_parameter_set_player(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid parameterset player form")
+    logger.warning("Invalid parameterset player form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 @sync_to_async
@@ -93,7 +93,7 @@ def take_remove_parameterset_player(data):
     remove the specifed parmeterset player
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Remove parameterset player: {data}")
+    # logger.info(f"Remove parameterset player: {data}")
 
     session_id = data["session_id"]
     parameterset_player_id = data["parameterset_player_id"]
@@ -114,7 +114,7 @@ def take_add_parameterset_player(data):
     add a new parameter player to the parameter set
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Add parameterset player: {data}")
+    # logger.info(f"Add parameterset player: {data}")
 
     session_id = data["session_id"]
 

@@ -23,7 +23,7 @@ class TimerMixin():
         start or stop timer 
         '''
         logger = logging.getLogger(__name__)
-        logger.info(f"start_timer {event}")
+        # logger.info(f"start_timer {event}")
 
         if self.controlling_channel != self.channel_name:
             logger.warning(f"start_timer: not controlling channel")
@@ -72,7 +72,7 @@ class TimerMixin():
         #logger.info(f"continue_timer: start")
 
         if not self.world_state_local["timer_running"]:
-            logger.info(f"continue_timer timer off")
+            # logger.info(f"continue_timer timer off")
             await self.send_message(message_to_self=True, message_to_group=None,
                                     message_type="stop_timer_pulse", send_to_client=True, send_to_group=False)
             return

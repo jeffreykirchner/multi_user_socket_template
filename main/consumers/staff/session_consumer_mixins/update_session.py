@@ -31,7 +31,7 @@ def take_update_session_form(session_id, data):
     '''
 
     logger = logging.getLogger(__name__)
-    logger.info(f'take_update_session_form: {data}')
+    # logger.info(f'take_update_session_form: {data}')
 
     form_data = data["form_data"]
 
@@ -49,5 +49,5 @@ def take_update_session_form(session_id, data):
 
         return {"status":"success", "result" : session.json()}                      
                                 
-    logger.info("Invalid session form")
+    logger.warning("Invalid session form")
     return {"status":"fail", "errors":dict(form.errors.items())}

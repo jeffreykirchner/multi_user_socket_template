@@ -84,7 +84,7 @@ class SubjectControlsMixin():
         try:
             player_id = event_data["player_id"]            
         except KeyError:
-            logger.info(f"update_rescue_subject: invalid player, {event['message_text']}")
+            logger.warning(f"update_rescue_subject: invalid player, {event['message_text']}")
             return
             # result = {"value" : "fail", "result" : {"message" : "Invalid location."}}
 
@@ -120,7 +120,7 @@ def take_update_subject(session_id, data):
     '''
 
     logger = logging.getLogger(__name__)
-    logger.info(f'take_update_subject: {data}')
+    # logger.info(f'take_update_subject: {data}')
 
     #session_id = data["session_id"]
     form_data = dict(data["form_data"])
@@ -147,7 +147,7 @@ def take_update_subject(session_id, data):
 
         return {"value":"success", "session_player" : session_player.json()}                      
                                 
-    logger.info("Invalid session form")
+    logger.warning("Invalid session form")
     return {"status":"fail", "errors":dict(form.errors.items())}
 
 def take_send_invitations(session_id, data):
@@ -155,7 +155,7 @@ def take_send_invitations(session_id, data):
     send login link to subjects in session
     '''
     logger = logging.getLogger(__name__)
-    logger.info(f'take_send_invitations: {session_id} {data}')
+    # logger.info(f'take_send_invitations: {session_id} {data}')
 
     try:        
         session = Session.objects.get(id=session_id)
@@ -196,7 +196,7 @@ def take_email_list(session_id, data):
     '''
 
     logger = logging.getLogger(__name__)
-    logger.info(f'take_email_list: {session_id} {data}')
+    # logger.info(f'take_email_list: {session_id} {data}')
 
     try:        
         session = Session.objects.get(id=session_id)
@@ -259,7 +259,7 @@ def take_anonymize_data(session_id, data):
     '''
 
     logger = logging.getLogger(__name__)
-    logger.info(f'take_email_list: {session_id} {data}')
+    # logger.info(f'take_email_list: {session_id} {data}')
 
     try:        
         session = Session.objects.get(id=session_id)

@@ -45,7 +45,6 @@ def take_help_doc(data):
     logger.info(f"Take help doc: {data}")
 
     try:
-
         help_doc = HelpDocs.objects.get(title=data["title"])
     except ObjectDoesNotExist:
         logger.warning(f"take_help_doc not found : {data}")

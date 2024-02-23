@@ -11,7 +11,7 @@ def logout_view(request):
     log out user
     '''
     logger = logging.getLogger(__name__)     
-    logger.info(f"Log out {request.user}")
+    # logger.info(f"Log out {request.user}")
 
     logout(request)
 

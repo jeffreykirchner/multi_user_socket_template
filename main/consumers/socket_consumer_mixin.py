@@ -149,5 +149,5 @@ def take_handle_dis_connect(connection_uuid, value):
         return {"value" : "success",  "result" : {"id" : session_player.id, "player_key" : f'{session_player.player_key}', "connected_count" : session_player.connected_count}}              
 
     except ObjectDoesNotExist:
-        logger.info(f"take_handle_dis_connect session player not found: {connection_uuid} {value}")
+        logger.warning(f"take_handle_dis_connect session player not found: {connection_uuid} {value}")
         return {"value" : "fail",  "result" : {}}

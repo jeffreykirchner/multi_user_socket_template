@@ -16,7 +16,7 @@ class GetSessionMixin():
             return a list of sessions
             '''
             logger = logging.getLogger(__name__) 
-            logger.info(f"Get Session {event}, thread sensitive {self.thread_sensitive}")
+            # logger.info(f"Get Session {event}, thread sensitive {self.thread_sensitive}")
 
             self.connection_uuid = event["message_text"]["player_key"]
             self.connection_type = "subject"
@@ -71,7 +71,7 @@ def take_get_session_subject(session_player_id):
     '''
 
     logger = logging.getLogger(__name__) 
-    logger.info(f'take_get_session_subject: id {session_player_id}')
+    # logger.info(f'take_get_session_subject: id {session_player_id}')
 
     try:
         session_player = SessionPlayer.objects.get(id=session_player_id)

@@ -34,7 +34,7 @@ class NameMixin():
             result = {"value" : "fail", "errors" : {f"name":["Session not complete."]},
                       "message" : "Session not complete."}
         else:
-            logger.info(f'form_data_dict : {form_data_dict}')       
+            # logger.info(f'form_data_dict : {form_data_dict}')       
 
             form = EndGameForm(form_data_dict)
                 
@@ -56,7 +56,7 @@ class NameMixin():
                                         "name_submitted" : session_player.name_submitted,
                                         "student_id" : session_player.student_id}}                      
             else:                            
-                logger.info("Invalid name form")
+                logger.warning("Invalid name form")
 
                 result = {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
 

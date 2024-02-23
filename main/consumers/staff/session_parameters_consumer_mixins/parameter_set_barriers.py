@@ -58,7 +58,7 @@ def take_update_parameter_set_barrier(data):
     update parameterset barrier
     '''   
     logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset barrier: {data}")
+    # logger.info(f"Update parameterset barrier: {data}")
 
     session_id = data["session_id"]
     parameterset_barrier_id = data["parameterset_barrier_id"]
@@ -73,7 +73,7 @@ def take_update_parameter_set_barrier(data):
     
     form_data_dict = form_data
 
-    logger.info(f'form_data_dict : {form_data_dict}')
+    # logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetBarrierForm(form_data_dict, instance=parameter_set_barrier)
     form.fields["parameter_set_groups"].queryset = session.parameter_set.parameter_set_groups.all()
@@ -85,7 +85,7 @@ def take_update_parameter_set_barrier(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid parameterset barrier form")
+    logger.warning("Invalid parameterset barrier form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 @sync_to_async
@@ -94,7 +94,7 @@ def take_remove_parameterset_barrier(data):
     remove the specifed parmeterset barrier
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Remove parameterset barrier: {data}")
+    # logger.info(f"Remove parameterset barrier: {data}")
 
     session_id = data["session_id"]
     parameterset_barrier_id = data["parameterset_barrier_id"]
@@ -118,7 +118,7 @@ def take_add_parameterset_barrier(data):
     add a new parameter barrier to the parameter set
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Add parameterset barrier: {data}")
+    # logger.info(f"Add parameterset barrier: {data}")
 
     session_id = data["session_id"]
 
