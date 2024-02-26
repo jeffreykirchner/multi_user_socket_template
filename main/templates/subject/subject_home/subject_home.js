@@ -35,7 +35,6 @@ var app = Vue.createApp({
 
                     chat_text : "",
                     chat_button_label : "Chat",
-                    chat_list_to_display : [],                //list of chats to display on screen
 
                     end_game_modal_visible : false,
 
@@ -133,7 +132,7 @@ var app = Vue.createApp({
                     app.take_update_start_experiment(message_data);
                     break;
                 case "update_reset_experiment":
-                    app.take_update_reset_experiment(message_data);
+                    app.take_reset_experiment(message_data);
                     break;
                 case "update_chat":
                     app.take_update_chat(message_data);
@@ -315,7 +314,7 @@ var app = Vue.createApp({
         /** update reset status
         *    @param message_data {json} session day in json format
         */
-        take_update_reset_experiment: function take_update_reset_experiment(message_data){
+        take_reset_experiment: function take_reset_experiment(message_data){
             app.take_get_session(message_data);
 
             app.end_game_modal.hide();        

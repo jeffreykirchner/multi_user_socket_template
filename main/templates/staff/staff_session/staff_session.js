@@ -28,8 +28,6 @@ var app = Vue.createApp({
 
                     move_to_next_phase_text : 'Start Next Experiment Phase',
 
-                    chat_list_to_display : [],                  //list of chats to display on screen
-
                     data_downloading : false,                   //show spinner when data downloading
                     earnings_copied : false,                    //if true show earnings copied   
 
@@ -112,13 +110,10 @@ var app = Vue.createApp({
                 case "update_session":
                     app.take_update_session(message_data);
                     break;
-                case "start_experiment":
-                    app.take_start_experiment(message_data);
-                    break;
                 case "update_start_experiment":
                     app.take_update_start_experiment(message_data);
                     break;
-                case "reset_experiment":
+                case "update_reset_experiment":
                     app.take_reset_experiment(message_data);
                     break;
                 case "next_phase":
@@ -127,9 +122,6 @@ var app = Vue.createApp({
                 case "update_next_phase":
                     app.take_update_next_phase(message_data);
                     break; 
-                case "update_reset_experiment":
-                    app.take_update_reset_experiment(message_data);
-                    break;
                 case "update_chat":
                     app.take_update_chat(message_data);
                     break;
