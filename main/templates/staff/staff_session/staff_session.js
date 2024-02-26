@@ -199,7 +199,7 @@ var app = Vue.createApp({
                     app.take_target_location_update(message_data);
                     break;
                 case "update_collect_token":
-                    app.take_update_collect_token(message_data);
+                    app.take_collect_token(message_data);
                     break;
                 case "update_tractor_beam":
                     app.take_tractor_beam(message_data);

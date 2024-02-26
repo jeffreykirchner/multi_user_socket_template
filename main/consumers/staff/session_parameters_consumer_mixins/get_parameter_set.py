@@ -58,7 +58,7 @@ def take_update_parameter_set(data):
     '''   
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameters: {data}")
+    # logger.info(f"Update parameters: {data}")
 
     session_id = data["session_id"]
     form_data = data["form_data"]
@@ -80,5 +80,5 @@ def take_update_parameter_set(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid paramterset form")
+    logger.warning("Invalid paramterset form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}

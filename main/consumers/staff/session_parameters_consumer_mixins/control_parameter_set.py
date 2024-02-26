@@ -42,7 +42,7 @@ def take_import_parameters(data):
     import parameters from another session
     '''   
     logger = logging.getLogger(__name__) 
-    logger.info(f"Import parameters: {data}")
+    # logger.info(f"Import parameters: {data}")
 
     session_id = data["session_id"]
     form_data = data["form_data"]
@@ -65,7 +65,7 @@ def take_download_parameters(data):
     download parameters to a file
     '''   
     logger = logging.getLogger(__name__) 
-    logger.info(f"Download parameters: {data}")
+    # logger.info(f"Download parameters: {data}")
 
     session_id = data["session_id"]
 

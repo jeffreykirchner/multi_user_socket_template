@@ -126,7 +126,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         try:
             f = request.FILES['file']
         except Exception  as e: 
-            logger.info(f'Staff_Session no file upload: {e}')
+            logger.warning(f'Staff_Session no file upload: {e}')
             f = -1
         
          #check for file upload
@@ -141,7 +141,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
 #take parameter file upload
 def takeFileUpload(f, session):
     logger = logging.getLogger(__name__) 
-    logger.info("Upload file")
+    # logger.info("Upload file")
 
     #format incoming data
     v=""
@@ -158,7 +158,7 @@ def takeFileUpload(f, session):
             message = "Invalid file format."
     except Exception as e:
         message = f"Failed to load file: {e}"
-        logger.info(message)       
+        logger.warning(message)       
 
     return JsonResponse({"session" : session.json(),
                          "message" : message,
@@ -167,7 +167,7 @@ def takeFileUpload(f, session):
 #take parameter set to upload
 def upload_parameter_set(v, session):
     logger = logging.getLogger(__name__) 
-    logger.info("Upload parameter set")
+    # logger.info("Upload parameter set")
     
 
     ps = session.parameter_set

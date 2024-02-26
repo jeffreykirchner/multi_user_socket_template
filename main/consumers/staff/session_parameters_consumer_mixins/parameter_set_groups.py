@@ -58,7 +58,7 @@ def take_update_parameter_set_group(data):
     update parameterset group
     '''   
     logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset group: {data}")
+    # logger.info(f"Update parameterset group: {data}")
 
     session_id = data["session_id"]
     parameterset_group_id = data["parameterset_group_id"]
@@ -73,7 +73,7 @@ def take_update_parameter_set_group(data):
     
     form_data_dict = form_data
 
-    logger.info(f'form_data_dict : {form_data_dict}')
+    # logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetGroupForm(form_data_dict, instance=parameter_set_group)
     
@@ -83,7 +83,7 @@ def take_update_parameter_set_group(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid parameterset group form")
+    logger.warning("Invalid parameterset group form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 @sync_to_async
@@ -92,7 +92,7 @@ def take_remove_parameterset_group(data):
     remove the specifed parmeterset group
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Remove parameterset group: {data}")
+    # logger.info(f"Remove parameterset group: {data}")
 
     session_id = data["session_id"]
     parameterset_group_id = data["parameterset_group_id"]
@@ -116,7 +116,7 @@ def take_add_parameterset_group(data):
     add a new parameter group to the parameter set
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Add parameterset group: {data}")
+    # logger.info(f"Add parameterset group: {data}")
 
     session_id = data["session_id"]
 

@@ -58,7 +58,7 @@ def take_update_parameter_set_notice(data):
     update parameterset notice
     '''   
     logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset notice: {data}")
+    # logger.info(f"Update parameterset notice: {data}")
 
     session_id = data["session_id"]
     parameterset_notice_id = data["parameterset_notice_id"]
@@ -72,7 +72,7 @@ def take_update_parameter_set_notice(data):
     
     form_data_dict = form_data
 
-    logger.info(f'form_data_dict : {form_data_dict}')
+    # logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetNoticeForm(form_data_dict, instance=parameter_set_notice)
 
@@ -82,7 +82,7 @@ def take_update_parameter_set_notice(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid parameterset notice form")
+    logger.warning("Invalid parameterset notice form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 @sync_to_async
@@ -91,7 +91,7 @@ def take_remove_parameterset_notice(data):
     remove the specifed parmeterset notice
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Remove parameterset notice: {data}")
+    # logger.info(f"Remove parameterset notice: {data}")
 
     session_id = data["session_id"]
     parameterset_notice_id = data["parameterset_notice_id"]
@@ -115,7 +115,7 @@ def take_add_parameterset_notice(data):
     add a new parameter notice to the parameter set
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Add parameterset notice: {data}")
+    # logger.info(f"Add parameterset notice: {data}")
 
     session_id = data["session_id"]
 

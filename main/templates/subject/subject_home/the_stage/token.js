@@ -86,7 +86,7 @@ destroy_pixi_tokens_for_all_periods: function destroy_pixi_tokens_for_all_period
 /**
  * take and update from the server about a collected token
  */
-take_update_collect_token: function take_update_collect_token(message_data)
+take_collect_token: function take_collect_token(message_data)
 {
 
     if(message_data.status == "success")
@@ -98,7 +98,11 @@ take_update_collect_token: function take_update_collect_token(message_data)
         try{
             pixi_tokens[message_data.period_id][message_data.token_id].token_graphic.stop();
             pixi_tokens[message_data.period_id][message_data.token_id].token_graphic.alpha = 0.25;
-            pixi_tokens[message_data.period_id][message_data.token_id].mini_map_graphic.visible = false;
+
+            if(app.is_subject)
+            {
+                pixi_tokens[message_data.period_id][message_data.token_id].mini_map_graphic.visible = false;
+            }
         } catch (error) {
 
         }

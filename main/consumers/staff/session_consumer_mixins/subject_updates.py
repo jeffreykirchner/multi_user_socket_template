@@ -45,7 +45,7 @@ class SubjectUpdatesMixin():
                 event_data = event["message_text"]
                 current_location = event_data["current_location"]
             except:
-                logger.info(f"chat: invalid data, {event['message_text']}")
+                logger.warning(f"chat: invalid data, {event['message_text']}")
                 status = "fail"
                 error_message = "Invalid data."
         
@@ -55,7 +55,7 @@ class SubjectUpdatesMixin():
             if not self.world_state_local["started"] or \
             self.world_state_local["finished"] or \
             self.world_state_local["current_experiment_phase"] != ExperimentPhase.RUN:
-                logger.info(f"take chat: failed, session not started, finished, or not in run phase")
+                logger.warning(f"take chat: failed, session not started, finished, or not in run phase")
                 status = "fail"
                 error_message = "Session not started."
         
@@ -117,7 +117,7 @@ class SubjectUpdatesMixin():
             if not self.session_id:
                 self.session_id = event["session_id"]
 
-            logger.info(f"update_connection_status: event data {event}, channel name {self.channel_name}, group name {self.room_group_name}")
+            # logger.info(f"update_connection_status: event data {event}, channel name {self.channel_name}, group name {self.room_group_name}")
 
             if "session" in self.room_group_name:
                 #connection from staff screen
@@ -126,7 +126,7 @@ class SubjectUpdatesMixin():
                     self.controlling_channel = event["sender_channel_name"]
 
                     if self.channel_name == self.controlling_channel:
-                        logger.info(f"update_connection_status: controller {self.channel_name}, session id {self.session_id}")
+                        # logger.info(f"update_connection_status: controller {self.channel_name}, session id {self.session_id}")
                         await Session.objects.filter(id=self.session_id).aupdate(controlling_channel=self.controlling_channel) 
                         await self.send_message(message_to_self=None, message_to_group={"controlling_channel" : self.controlling_channel},
                                                 message_type="set_controlling_channel", send_to_client=False, send_to_group=True)
@@ -210,7 +210,7 @@ class SubjectUpdatesMixin():
             target_location = event_data["target_location"]    
             current_location = event_data["current_location"]
         except KeyError:
-            logger.info(f"target_location_update: invalid location, {event['message_text']}")
+            logger.warning(f"target_location_update: invalid location, {event['message_text']}")
             return
             # result = {"value" : "fail", "result" : {"message" : "Invalid location."}}
         
@@ -283,7 +283,7 @@ class SubjectUpdatesMixin():
             period_id = message_text["period_id"]
             player_id = self.session_players_local[event["player_key"]]["id"]
         except:
-            logger.info(f"collect_token: invalid data, {event['message_text']}")
+            logger.warning(f"collect_token: invalid data, {event['message_text']}")
             status = "fail"
             error_message.append({"id":"collect_token", "message": "Invalid data, try again."})
         
@@ -351,7 +351,7 @@ class SubjectUpdatesMixin():
             player_id = self.session_players_local[event["player_key"]]["id"]
             target_player_id = event["message_text"]["target_player_id"]
         except:
-            logger.error(f"tractor_beam: invalid data, {event['message_text']}")
+            logger.warning(f"tractor_beam: invalid data, {event['message_text']}")
             status = "fail"
             error_message.append({"id":"tractor_beam", "message": "Invalid data, try again."})
         
@@ -450,7 +450,7 @@ class SubjectUpdatesMixin():
             interaction_type =  event["message_text"]["interaction_type"]
             interaction_amount =  event["message_text"]["interaction_amount"]
         except:
-            logger.info(f"interaction: invalid data, {event['message_text']}")
+            logger.warning(f"interaction: invalid data, {event['message_text']}")
             status = "fail"
             error_message.append({"id":"interaction", "message": "Invalid data, try again."})
 
@@ -580,7 +580,7 @@ class SubjectUpdatesMixin():
             target_player_id = source_player['tractor_beam_target']
             target_player = self.world_state_local['session_players'][str(target_player_id)]
         except:
-            logger.error(f"interaction: invalid data, {event['message_text']}")
+            logger.warning(f"interaction: invalid data, {event['message_text']}")
             status = "fail"
             error_message.append({"id":"cancel_interaction", "message": "Invalid data, try again."})
 

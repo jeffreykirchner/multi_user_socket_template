@@ -37,16 +37,16 @@ class StaffHomeConsumer(SocketConsumerMixin,
         delete specified session
         '''
         logger = logging.getLogger(__name__) 
-        logger.info(f"Delete Session {event}")
+        # logger.info(f"Delete Session {event}")
 
         self.user = self.scope["user"]
-        logger.info(f"User {self.user}")
+        # logger.info(f"User {self.user}")
 
         message_text = event["message_text"]
 
         status = await sync_to_async(delete_session)(message_text["id"], self.user)
 
-        logger.info(f"Delete Session success: {status}")
+        # logger.info(f"Delete Session success: {status}")
 
         #build response
         result = await sync_to_async(get_session_list_json)(self.user)
@@ -59,10 +59,10 @@ class StaffHomeConsumer(SocketConsumerMixin,
         create a new session
         '''
         logger = logging.getLogger(__name__) 
-        logger.info(f"Create Session {event}")
+        #logger.info(f"Create Session {event}")
 
         self.user = self.scope["user"]
-        logger.info(f"User {self.user}")
+        #logger.info(f"User {self.user}")
 
         await sync_to_async(create_new_session)(self.user)
         
@@ -77,10 +77,10 @@ class StaffHomeConsumer(SocketConsumerMixin,
         return a list of sessions
         '''
         logger = logging.getLogger(__name__) 
-        logger.info(f"Get Sessions {event}")   
+        #logger.info(f"Get Sessions {event}")   
 
         self.user = self.scope["user"]
-        logger.info(f"User {self.user}")     
+        #logger.info(f"User {self.user}")     
 
         #build response
         result = await sync_to_async(get_session_list_json)(self.user)
@@ -93,10 +93,10 @@ class StaffHomeConsumer(SocketConsumerMixin,
         return a list of all sessions
         '''
         logger = logging.getLogger(__name__) 
-        logger.info(f"Get Sessions Admin {event}")   
+        #logger.info(f"Get Sessions Admin {event}")   
 
         self.user = self.scope["user"]
-        logger.info(f"User {self.user}")     
+        #logger.info(f"User {self.user}")     
 
         #build response
         result = await sync_to_async(get_session_list_admin_json)(self.user)
@@ -109,10 +109,10 @@ class StaffHomeConsumer(SocketConsumerMixin,
         return a list of all sessions
         '''
         logger = logging.getLogger(__name__) 
-        logger.info(f"Get Sessions Admin {event}")   
+        #logger.info(f"Get Sessions Admin {event}")   
 
         self.user = self.scope["user"]
-        logger.info(f"User {self.user}")     
+        #logger.info(f"User {self.user}")     
 
         #build response
         result = await sync_to_async(get_session_list_admin_json)(self.user)
@@ -152,7 +152,7 @@ def create_new_session(auth_user):
     session.setup_world_state()
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"Create New Session {session}")
+    # logger.info(f"Create New Session {session}")
 
     return session
 
@@ -205,7 +205,7 @@ def delete_session(id_, user):
             session.soft_delete=True
             session.save()
 
-        logger.info(f"Delete Session {id_}")
+        # logger.info(f"Delete Session {id_}")
         return True
     except ObjectDoesNotExist:
         logger.warning(f"Delete Session, not found: {id}")

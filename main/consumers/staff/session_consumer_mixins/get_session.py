@@ -18,7 +18,7 @@ class GetSessionMixin():
         '''
 
         logger = logging.getLogger(__name__)
-        logger.info(f"get_session, thread sensitive {self.thread_sensitive}")
+        # logger.info(f"get_session, thread sensitive {self.thread_sensitive}")
 
         self.connection_uuid = event["message_text"]["session_key"]
         self.connection_type = "staff"

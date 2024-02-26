@@ -42,7 +42,7 @@ def send_mass_email_service(user_list, message_subject, message_text, message_te
             "message_text_html" : message_text_html,
             "memo" : memo}
     
-    logger.info(f"ESI mass email API: users: {user_list}, message_subject : {message_subject}, message_text : {message_text}")
+    # logger.info(f"ESI mass email API: users: {user_list}, message_subject : {message_subject}, message_text : {message_text}")
 
     headers = {'Content-Type' : 'application/json', 'Accept' : 'application/json'}
 
@@ -56,5 +56,5 @@ def send_mass_email_service(user_list, message_subject, message_text, message_te
         logger.warning(f'send_mass_email_service error: {request_result}')
         return {"mail_count":0, "error_message":"Mail service error"}
    
-    logger.info(f"ESI mass email API response: {request_result.json()}")
+    # logger.info(f"ESI mass email API response: {request_result.json()}")
     return request_result.json()

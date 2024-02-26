@@ -88,7 +88,7 @@ def login_function(request,data):
 
             redirect_path = request.session.get('redirect_path','/')
 
-            logger.info(f"Login user {username} success , redirect {redirect_path}")
+            # logger.info(f"Login user {username} success , redirect {redirect_path}")
 
             return JsonResponse({"status":"success", "redirect_path" : redirect_path}, safe=False)
         else:
@@ -96,7 +96,7 @@ def login_function(request,data):
 
             return JsonResponse({"status" : "error"}, safe=False)
     else:
-        logger.info("Login user form validation error")
+        logger.warning("Login user form validation error")
         return JsonResponse({"status":"validation", "errors":dict(form.errors.items())}, safe=False)
 
 def login_function_esi_auth(username, password):
@@ -132,7 +132,7 @@ def login_function_esi_auth(username, password):
             logger.warning(f'ESI auth error: {request_result}')
             return None
 
-        logger.info(f"ESI auth response: {request_result_json}")
+        # logger.info(f"ESI auth response: {request_result_json}")
 
         profile = request_result_json['profile']
         
@@ -150,7 +150,7 @@ def login_function_esi_auth(username, password):
                                                 first_name=profile['first_name'],
                                                 last_name=profile['last_name'])
             
-            logger.info(f"ESI auth user not found, create new user: {user}")
+            logger.warning(f"ESI auth user not found, create new user: {user}")
         else:
             user = users.first()
             user.email = profile['email']
@@ -159,7 +159,7 @@ def login_function_esi_auth(username, password):
 
             user.save()
 
-            logger.info(f"ESI auth user found, update user: {user}")
+            logger.warning(f"ESI auth user found, update user: {user}")
 
         return user
     except Exception  as e: 

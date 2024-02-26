@@ -58,7 +58,7 @@ def take_update_parameter_set_ground(data):
     update parameterset ground
     '''   
     logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset ground: {data}")
+    # logger.info(f"Update parameterset ground: {data}")
 
     session_id = data["session_id"]
     parameterset_ground_id = data["parameterset_ground_id"]
@@ -72,7 +72,7 @@ def take_update_parameter_set_ground(data):
     
     form_data_dict = form_data
 
-    logger.info(f'form_data_dict : {form_data_dict}')
+    # logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetGroundForm(form_data_dict, instance=parameter_set_ground)
 
@@ -82,7 +82,7 @@ def take_update_parameter_set_ground(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid parameterset ground form")
+    logger.warning("Invalid parameterset ground form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 @sync_to_async
@@ -91,7 +91,7 @@ def take_remove_parameterset_ground(data):
     remove the specifed parmeterset ground
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Remove parameterset ground: {data}")
+    # logger.info(f"Remove parameterset ground: {data}")
 
     session_id = data["session_id"]
     parameterset_ground_id = data["parameterset_ground_id"]
@@ -115,7 +115,7 @@ def take_add_parameterset_ground(data):
     add a new parameter ground to the parameter set
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"Add parameterset ground: {data}")
+    # logger.info(f"Add parameterset ground: {data}")
 
     session_id = data["session_id"]
 
