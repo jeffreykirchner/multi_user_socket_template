@@ -124,38 +124,27 @@ process_replay_events: function process_replay_events(update_current_location = 
     {   
         let event =  app.session_events[current_period][time_remaining][i];
 
-        if(event.type == "time")
+        if(event.type == "target_location_update")
         {
-            for(i in event.data.current_locations)
+            for(i in event.data.target_locations)
             {
+                app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.target_locations[i]));
+
                 if(update_current_location)
                 {
                     app.session.world_state.session_players[i].current_location = JSON.parse(JSON.stringify(event.data.current_locations[i]));
                 }
-                
-                app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.target_locations[i]));
-                app.session.world_state.session_players[i].current_location.x-=1;
-                app.session.world_state.session_players[i].current_location.y-=1;
             }
         }
-        else if(event.type == "world_state" && update_current_location)
+        else
         {
-            for(i in event.data.session_players)
-            {
-                app.session.world_state.session_players[i].current_location = JSON.parse(JSON.stringify(event.data.session_players[i].current_location));
-                app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.session_players[i].target_location)); 
-                app.session.world_state.session_players[i].current_location.x-=1;
-                app.session.world_state.session_players[i].current_location.y-=1;  
-            }
-
-            continue;
+            let data = {message:{message_data:JSON.parse(JSON.stringify(event.data)),
+                                 message_type:"update_" + event.type},}
+            app.take_message(data);
         }
-
-        let data = {message:{message_data:JSON.parse(JSON.stringify(event.data)),
-                                message_type:"update_" + event.type},}
-        app.take_message(data);
         
     }
+
     app.session.world_state["current_experiment_phase"] = "Done";
     app.session.world_state["time_remaining"] = app.replay_time_remaining;
     app.session.world_state["current_period"] = app.replay_current_period;
