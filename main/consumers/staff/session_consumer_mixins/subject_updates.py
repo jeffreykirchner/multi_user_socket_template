@@ -287,6 +287,7 @@ class SubjectUpdatesMixin():
             status = "fail"
             error_message.append({"id":"collect_token", "message": "Invalid data, try again."})
         
+        player_id_s = str(player_id)
         target_list = [player_id]
 
         if status == "success":
@@ -298,9 +299,14 @@ class SubjectUpdatesMixin():
 
         if status == "success":
             self.world_state_local['tokens'][str(period_id)][str(token_id)]['status'] = player_id
-            self.world_state_local['session_players'][str(player_id)]['inventory'][str(period_id)]+=1
+            self.world_state_local['session_players'][player_id_s]['inventory'][str(period_id)]+=1
 
-            inventory = self.world_state_local['session_players'][str(player_id)]['inventory'][str(period_id)]
+            inventory = self.world_state_local['session_players'][player_id_s]['inventory'][str(period_id)]
+
+            session = await Session.objects.aget(id=self.session_id)
+            current_period = await session.aget_current_session_period()
+            current_period.summary_data[player_id_s]["cherries_harvested"] += 1
+            await current_period.asave()
 
             await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
@@ -318,8 +324,6 @@ class SubjectUpdatesMixin():
             
             target_list = self.world_state_local["session_players_order"]
 
-       
-                 
         #logger.warning(f'collect_token: {message_text}, token {token_id}')
 
         await self.send_message(message_to_self=None, message_to_group=result,
@@ -483,9 +487,12 @@ class SubjectUpdatesMixin():
 
             target_player = self.world_state_local['session_players'][str(target_player_id)]
 
+            target_player_id_s = str(target_player_id)
+            player_id_s = str(player_id)
+
             session = await Session.objects.aget(id=self.session_id)
-            current_session = await session.aget_current_session_period()
-            current_period_id = str(current_session.id)
+            current_period = await session.aget_current_session_period()
+            current_period_id = str(current_period.id)
 
             if interaction_type == 'take':
                 #take from target
@@ -497,7 +504,10 @@ class SubjectUpdatesMixin():
                     source_player["inventory"][current_period_id] += interaction_amount
 
                     result["target_player_change"] = f"-{interaction_amount}"
-                    result["source_player_change"] = f"+{interaction_amount}"             
+                    result["source_player_change"] = f"+{interaction_amount}"       
+
+                    current_period.summary_data[player_id_s]["interactions"][target_player_id_s]["cherries_i_took"] += interaction_amount    
+                    current_period.summary_data[target_player_id_s]["interactions"][player_id_s]["cherries_they_took"] += interaction_amount  
             else:
                 #give to target
                 if source_player["inventory"][current_period_id] < interaction_amount:
@@ -509,6 +519,9 @@ class SubjectUpdatesMixin():
 
                     result["source_player_change"] = f"-{interaction_amount}"
                     result["target_player_change"] = f"+{interaction_amount}"
+
+                    current_period.summary_data[player_id_s]["interactions"][target_player_id_s]["cherries_i_sent"] += interaction_amount    
+                    current_period.summary_data[target_player_id_s]["interactions"][player_id_s]["cherries_they_sent"] += interaction_amount  
 
         result["status"] = status
         result["error_message"] = error_message
@@ -535,6 +548,7 @@ class SubjectUpdatesMixin():
 
             source_player['tractor_beam_target'] = None
 
+            await current_period.asave()
             await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
 
             self.session_events.append(SessionEvent(session_id=self.session_id, 

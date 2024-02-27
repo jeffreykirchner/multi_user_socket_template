@@ -120,6 +120,36 @@ class Session(models.Model):
             i.start()
 
         self.setup_world_state()
+        self.setup_summary_data()
+
+    def setup_summary_data(self):
+        '''
+        setup summary data
+        '''
+
+        session_players = self.session_players.values('id','parameter_set_player__id').all()
+
+        summary_data = {}
+        
+        for i in session_players:
+            i_s = str(i["id"])
+            summary_data[i_s] = {}
+
+            summary_data_player = summary_data[i_s]
+            summary_data_player["earnings"] = 0
+            summary_data_player["cherries_harvested"] = 0
+
+            summary_data_interactions = {}
+            for j in session_players:
+                j_s = str(j["id"])
+                summary_data_interactions[j_s] = {"cherries_i_took":0, 
+                                                  "cherries_i_sent":0,
+                                                  "cherries_they_took":0, 
+                                                  "cherries_they_sent":0,}
+            
+            summary_data_player["interactions"] = summary_data_interactions
+                
+        self.session_periods.all().update(summary_data=summary_data)
 
     def setup_world_state(self):
         '''
@@ -267,7 +297,18 @@ class Session(models.Model):
 
             writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-            writer.writerow(["Session ID", "Period", "Client #", "Label", "Earnings ¢"])
+            session_players_list = self.session_players.all().values('id','parameter_set_player__id_label')
+           
+            top_row = ["Session ID", "Period", "Client #", "Label", "Earnings ¢"]
+            for i in session_players_list:
+
+                top_row.append(f'Cherries I Sent To {i["parameter_set_player__id_label"]}')
+                top_row.append(f'Cherries I Took From {i["parameter_set_player__id_label"]}')
+
+                top_row.append(f'Cherries {i["parameter_set_player__id_label"]} Sent To Me')
+                top_row.append(f'Cherries {i["parameter_set_player__id_label"]} Took From Me')
+
+            writer.writerow(top_row)
 
             world_state = self.world_state
             parameter_set_players = {}
@@ -276,13 +317,13 @@ class Session(models.Model):
 
             # logger.info(parameter_set_players)
 
-            for period_number, period in enumerate(world_state["session_periods"]):
-                for player_number, player in enumerate(world_state["session_players"]):
-                    writer.writerow([self.id, 
-                                    period_number+1, 
-                                    player_number+1,
-                                    parameter_set_players[str(player)]["parameter_set_player__id_label"], 
-                                    world_state["session_players"][player]["inventory"][period]])
+            # for period_number, period in enumerate(world_state["session_periods"]):
+            #     for player_number, player in enumerate(world_state["session_players"]):
+            #         writer.writerow([self.id, 
+            #                         period_number+1, 
+            #                         player_number+1,
+            #                         parameter_set_players[str(player)]["parameter_set_player__id_label"], 
+            #                         world_state["session_players"][player]["inventory"][period]])
                     
             v = output.getvalue()
             output.close()

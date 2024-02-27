@@ -163,7 +163,8 @@ class TimerMixin():
                 #check if period over
                 if period_is_over:
 
-                    # current_period_id = str(self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1])
+                    session = await Session.objects.aget(id=self.session_id)
+                    current_period = await session.aget_current_session_period()
 
                     last_period["consumption_completed"] = True
                     
@@ -173,6 +174,10 @@ class TimerMixin():
                         result["earnings"][i] = {}
                         result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]
                         result["earnings"][i]["period_earnings"] = self.world_state_local["session_players"][i]["inventory"][last_period_id_s]
+                        
+                        current_period.summary_data[i]["earnings"] = result["earnings"][i]["period_earnings"]
+
+                    await current_period.asave()
 
         if send_update:
             #session status
