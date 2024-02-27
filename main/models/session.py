@@ -317,13 +317,20 @@ class Session(models.Model):
 
             # logger.info(parameter_set_players)
 
-            # for period_number, period in enumerate(world_state["session_periods"]):
-            #     for player_number, player in enumerate(world_state["session_players"]):
-            #         writer.writerow([self.id, 
-            #                         period_number+1, 
-            #                         player_number+1,
-            #                         parameter_set_players[str(player)]["parameter_set_player__id_label"], 
-            #                         world_state["session_players"][player]["inventory"][period]])
+            for period_number, period in enumerate(world_state["session_periods"]):
+                summary_data = self.session_periods.get(id=period).summary_data
+
+                for player_number, player in enumerate(world_state["session_players"]):
+                    player_s = str(player)
+                    summary_data_player = summary_data[player_s]
+                    temp_row = [self.id, 
+                                period_number+1, 
+                                player_number+1,
+                                parameter_set_players[player_s]["parameter_set_player__id_label"],
+                                summary_data_player["earnings"],
+                                ]
+                    
+                    writer.writerow(temp_row)
                     
             v = output.getvalue()
             output.close()
