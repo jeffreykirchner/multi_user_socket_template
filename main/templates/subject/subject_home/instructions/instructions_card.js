@@ -87,7 +87,7 @@ process_instruction_page: function process_instruction_page(){
     switch(app.session_player.current_instruction){
         case app.instructions.action_page_1:            
             break; 
-        case app.instructions.action_page_2
+        case app.instructions.action_page_2:
             break;
         case app.instructions.action_page_3:
             break;
