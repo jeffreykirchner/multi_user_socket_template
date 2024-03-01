@@ -132,7 +132,7 @@
                             <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
                                 [[temp_p.student_id=="" ? "---" : temp_p.student_id]]
                             </td>
-                            <td class="player_table_cell text-nowrap">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
                                 <span v-if="session.parameter_set.prolific_mode=='False'" v-on:click="show_edit_subject(p.id)">
                                     [[(!temp_p.email || temp_p.email=="") ? "---" : temp_p.email]]
                                 </span>
