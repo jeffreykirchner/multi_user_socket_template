@@ -330,6 +330,13 @@ class Session(models.Model):
                                 summary_data_player["earnings"],
                                 ]
                     
+                    for p in world_state["session_players"]:
+                        p_s = str(p)
+                        temp_row.append(summary_data_player["interactions"][p_s]["cherries_i_sent"])
+                        temp_row.append(summary_data_player["interactions"][p_s]["cherries_i_took"])
+                        temp_row.append(summary_data[p_s]["interactions"][player_s]["cherries_i_sent"])
+                        temp_row.append(summary_data[p_s]["interactions"][player_s]["cherries_i_took"])
+                    
                     writer.writerow(temp_row)
                     
             v = output.getvalue()
