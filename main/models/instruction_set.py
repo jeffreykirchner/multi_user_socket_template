@@ -14,6 +14,13 @@ class InstructionSet(models.Model):
     '''
 
     label = models.CharField(max_length = 100, default="Name Here", verbose_name="Label")                 #label text
+
+    action_page_1 = models.IntegerField(verbose_name='Required Action: 1', default=1)
+    action_page_2 = models.IntegerField(verbose_name='Required Action: 2', default=2)
+    action_page_3 = models.IntegerField(verbose_name='Required Action: 3', default=3)
+    action_page_4 = models.IntegerField(verbose_name='Required Action: 4', default=4)
+    action_page_5 = models.IntegerField(verbose_name='Required Action: 5', default=5)
+    action_page_6 = models.IntegerField(verbose_name='Required Action: 6', default=6)
         
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -62,6 +69,14 @@ class InstructionSet(models.Model):
             "id" : self.id,         
 
             "label" : self.label,
+
+            "action_page_1" : self.action_page_1,
+            "action_page_2" : self.action_page_2,
+            "action_page_3" : self.action_page_3,
+            "action_page_4" : self.action_page_4,
+            "action_page_5" : self.action_page_5,
+            "action_page_6" : self.action_page_6,
+
             "instruction_pages" : [i.json() for i in self.instructions.all()],
         }
     

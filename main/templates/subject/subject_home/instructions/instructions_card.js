@@ -85,17 +85,17 @@ process_instruction_page: function process_instruction_page(){
 
     //update view when instructions changes
     switch(app.session_player.current_instruction){
-        case 1:            
+        case app.instructions.action_page_1:            
             break; 
-        case 2:
+        case app.instructions.action_page_2
             break;
-        case 3:            
+        case app.instructions.action_page_3:
             break;
-        case 4:
-            break; 
-        case 5:           
+        case app.instructions.action_page_4:
             break;
-        case 6:
+        case app.instructions.action_page_5:
+            break;
+        case app.instructions.action_page_6:
             break;
     }
 
