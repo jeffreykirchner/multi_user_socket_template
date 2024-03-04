@@ -79,23 +79,37 @@ take_finish_instructions: function take_finish_instructions(message_data){
 },
 
 /**
+ * send_current_instruction_complete
+ */
+send_current_instruction_complete: function current_instruction_complete()
+{
+    app.send_message("current_instruction_complete", {"page_number" : app.session_player.current_instruction_complete});
+},
+
+/**
  * process instruction page
  */
 process_instruction_page: function process_instruction_page(){
 
     //update view when instructions changes
     switch(app.session_player.current_instruction){
-        case app.instructions.action_page_1:            
+        case app.instructions.action_page_1:    
+            return;        
             break; 
         case app.instructions.action_page_2:
+            return; 
             break;
         case app.instructions.action_page_3:
+            return; 
             break;
         case app.instructions.action_page_4:
+            return; 
             break;
         case app.instructions.action_page_5:
+            return; 
             break;
         case app.instructions.action_page_6:
+            return; 
             break;
     }
 
@@ -138,21 +152,24 @@ scroll_update: function scroll_update()
     }
 },
 
-/**
- * simulate goods transfer on page 4
- */
-simulate_chat_instructions: function simulate_chat_instructions(){
 
-    if(app.chat_text.trim() == "") return;
-    if(app.chat_text.trim().length > 200) return;
+/*
+* send chat instructions
+*/
+send_chat_instructions: function send_chat_instructions()
+{
 
-    message_data = {chat: {text : app.chat_text.trim(),
-                            sender_label : app.session_player.parameter_set_player.id_label,
-                            sender_id : app.session_player.id,
-                            id : random_number(1, 1000000),},
-                    chat_type:chat_type}
-   
+    if(app.session_player.current_instruction != app.instructions.action_page_1) return;
+
+    let message_data = {
+        "status": "success",
+        "text": app.chat_text.trim(),
+        "sender_id": app.session_player.id,       
+        "nearby_players": [],
+    };
+
     app.take_update_chat(message_data);
 
-    app.chat_text="";
+    app.session_player.current_instruction_complete = app.instructions.action_page_1;
+    app.send_current_instruction_complete();
 },

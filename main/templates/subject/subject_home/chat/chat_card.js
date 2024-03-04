@@ -6,7 +6,7 @@ send_chat: function send_chat(){
     
     if(app.session.world_state.current_experiment_phase == 'Instructions')
     {
-        
+        app.send_chat_instructions();
     }
     else
     {
