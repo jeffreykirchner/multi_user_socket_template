@@ -65,6 +65,8 @@ send_finish_instructions: function send_finish_instructions(){
  * finish instructions
  */
 take_finish_instructions: function take_finish_instructions(message_data){
+    app.working = false;
+    
     if(message_data.value == "success")
     {
         result = message_data.result;       
