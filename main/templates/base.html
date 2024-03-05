@@ -15,20 +15,20 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
         
         <!-- Styles -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js" integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ==" crossorigin="anonymous"></script>
        
         {%if DEBUG%}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.40/vue.global.min.js" integrity="sha512-petS3Gitq8CSs2gVnfDUxYptoNUCbvCaFcMvro7D27Fvf/MmXPuwS3bgYuYGszcYdIswra8JGkE19ckvFzPuZQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js" integrity="sha512-Wbf9QOX8TxnLykSrNGmAc5mDntbpyXjOw9zgnKql3DgQ7Iyr5TCSPWpvpwDuo+jikYoSNMD9tRRH854VfPpL9A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         {%else%}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.40/vue.global.prod.min.js" integrity="sha512-8/jAx3J9HeEfyNRszg0WpsZJqr2WiQO5sJHbcXZUmZGD/JazUs8167SEZH1mQ1fVeC86Vk1rrqA5swiEPynj7w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js" integrity="sha512-39BSQXI5q1XlvVhLfFRidKG8KM6Tr6VS/XSnNo6N/A0ZXexHCeoUI/s+ulujQy3UREjoLNrMnFat8VI0mMugWA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         {%endif%}
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.js" integrity="sha512-a5U0Pz9DDuV1x+WqNnbUPNJsbzhAdHZtzLrYHHxEm2Ol7wBMzCoizd/arbJd1wqMpwlzXTlBYm+zX/mtVdiz2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.4.0/pixi.js" integrity="sha512-DI35SktlV4arMkRaiggNRpgD/uh8/Oz8uyEI/7BBIn5DA044Gh8izWH1/08lCIuoM+hQnN4Ex9Lj90a565Sveg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <script type="text/javascript">                        
@@ -48,7 +48,7 @@
         {%endblock head%}        
     </head>
     <body style="font-size:16px"> 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js" integrity="sha512-i9cEfJwUwViEPFKdC1enz4ZRGBj8YQo6QByFTF92YXHi7waCqyexvRD75S5NVTsSiTv7rKWqG9Y5eFxmRsOn0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js" integrity="sha512-X/YkDZyjTf4wyc2Vy16YGCPHwAY8rZJY+POgokZjQB2mhIRFJCckEGc6YyX9eNsPfn0PzThEuNs+uaomE5CO6A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         {% if user.is_authenticated %}
         <nav class="navbar navbar-expand-lg navbar-light bg-light p-1 d-print-none">
