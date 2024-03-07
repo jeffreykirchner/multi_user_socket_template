@@ -22,7 +22,7 @@ class SubjectHomeAutoConnectView(View):
         handle get requests
         '''
         try:
-            session = Session.objects.get(session_key=kwargs['session_key'])
+            session = Session.objects.get(id_string=kwargs['id_string'])
         except ObjectDoesNotExist:
             raise Http404("Session not found.")
         

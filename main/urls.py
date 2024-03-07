@@ -27,9 +27,9 @@ urlpatterns = [
     
     path('subject-home/<uuid:player_key>', views.SubjectHomeView.as_view(), name='subject_home'),
 
-    path('auto-login/<uuid:session_key>/', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect'),
-    path('auto-login/<uuid:session_key>/<int:player_number>/', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect_player_number'),
-    path('auto-login-prolific/<uuid:session_key>/', views.SubjectHomeAutoConnectProlificView.as_view(), name='subject_home_auto_connect_prolific'),
+    re_path(r'^auto-login/(?P<id_string>[a-z]{6})/$', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect'),
+    re_path(r'^auto-login/(?P<id_string>[a-z]{6})/(?P<player_number>[0-9]+)/$', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect_player_number'),
+    re_path(r'^auto-login-prolific/(?P<id_string>[a-z]{6})/$', views.SubjectHomeAutoConnectProlificView.as_view(), name='subject_home_auto_connect_prolific'),
 
     path('survey-complete/<uuid:player_key>', views.SubjectSurveyCompleteView.as_view(), name='subject_survey_complete'),
 

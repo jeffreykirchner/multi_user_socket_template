@@ -41,7 +41,7 @@ class SubjectHomeAutoConnectProlificView(View):
             with transaction.atomic():
 
                 try:
-                    session = Session.objects.get(session_key=kwargs['session_key'])
+                    session = Session.objects.get(id_string=kwargs['id_string'])
                 except ObjectDoesNotExist:
                     return HttpResponse("<br><br><center><h1>Session not found.</h1></center>")
                 
