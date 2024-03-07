@@ -33,6 +33,19 @@ get_offset:function get_offset()
                             null);
             return;
         }
+
+        //can't move ontop of other players
+        for(i in app.session.world_state.session_players)
+        {
+            let obj = app.session.world_state.session_players[i];
+        
+            if(obj.id == app.session_player.id) continue;
+
+            if(app.get_distance(obj.current_location, local_pos) < 100)
+            {            
+                return;
+            }
+        }
         
         local_player.target_location.x = local_pos.x;
         local_player.target_location.y = local_pos.y;
