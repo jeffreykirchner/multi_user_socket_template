@@ -339,3 +339,26 @@ take_rescue_subject: function take_rescue_subject(message_data)
 
     app.edit_subject_modal.hide();
 },
+
+/**
+ * get average subject earnings
+ */
+get_average_earnings: function get_average_earnings()
+{
+    let total_earnings = 0;
+    let count = 0;
+
+    for(i in app.session.world_state.session_players)
+    {
+        total_earnings += app.session.world_state.session_players[i].earnings;
+        count++;
+    }
+
+    let v = Math.ceil(total_earnings/count)/100
+
+    if (isNaN(v)) {
+        return "---";
+    }
+    
+    return "$" + v.toFixed(2);
+},

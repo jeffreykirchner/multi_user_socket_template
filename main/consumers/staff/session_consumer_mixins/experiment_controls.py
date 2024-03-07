@@ -2,7 +2,6 @@ import logging
 
 from asgiref.sync import sync_to_async
 
-from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 
 from main.models import Session
