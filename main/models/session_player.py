@@ -114,8 +114,14 @@ class SessionPlayer(models.Model):
         process instruction text
         '''
 
-        text = text.replace("#player_number#", self.parameter_set_player.id_label)
-        text = text.replace("#player_count-1#", str(self.parameter_set_player.parameter_set.parameter_set_players.count()-1))
+        parameter_set = self.parameter_set_player.parameter_set.json()
+        parameter_set_player = parameter_set["parameter_set_players"][str(self.parameter_set_player.id)]
+
+        for i in parameter_set:
+            text = text.replace(f'#{i}#', str(parameter_set[i]))
+
+        text = text.replace("#player_count-1#", str(len(parameter_set["parameter_set_players"])-1))
+        text = text.replace("#id_label#", str(parameter_set_player["id_label"]))
         
         return text
     
