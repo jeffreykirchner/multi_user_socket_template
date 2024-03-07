@@ -10,6 +10,7 @@ class EndGameForm(forms.Form):
     '''
     name =  forms.CharField(label='Enter your full name',
                             widget=forms.TextInput(attrs={"v-model":"session_player.name",
+                                                          "autocomplete":"off",
                             }))
 
     student_id =  forms.CharField(label='Student ID', 

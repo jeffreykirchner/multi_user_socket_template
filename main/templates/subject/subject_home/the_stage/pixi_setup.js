@@ -6,13 +6,13 @@
 setup_pixi: function setup_pixi(){    
     app.reset_pixi_app();
 
-    PIXI.Assets.add('sprite_sheet', '{% static "gear_3_animated.json" %}');
-    PIXI.Assets.add('sprite_sheet_2', '{% static "sprite_sheet.json" %}');
-    PIXI.Assets.add('bg_tex', '{% static "background_tile_low.jpg"%}');
-    PIXI.Assets.add('cherry_token', '{% static "cherry_1_animated.json"%}');
-    PIXI.Assets.add('wall_tex', '{% static "wall.png"%}');
-    PIXI.Assets.add('barrier_tex', '{% static "barrier.png"%}');
-    PIXI.Assets.add('bridge_tex', '{% static "bridge.jpg"%}');
+    PIXI.Assets.add({alias:'sprite_sheet', src:'{% static "gear_3_animated.json" %}'});
+    PIXI.Assets.add({alias:'sprite_sheet_2', src:'{% static "sprite_sheet.json" %}'});
+    PIXI.Assets.add({alias:'bg_tex', src:'{% static "background_tile_low.jpg"%}'});
+    PIXI.Assets.add({alias:'cherry_token', src:'{% static "cherry_1_animated.json"%}'});
+    PIXI.Assets.add({alias:'wall_tex', src:'{% static "wall.png"%}'});
+    PIXI.Assets.add({alias:'barrier_tex', src:'{% static "barrier.png"%}'});
+    PIXI.Assets.add({alias:'bridge_tex', src:'{% static "bridge.jpg"%}'});
 
     const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 
                                                'cherry_token', 'wall_tex', 'barrier_tex', 'bridge_tex']);
@@ -129,7 +129,7 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
         
     }
 
-    {%if DEBUG%}
+    {%if DEBUG or session.parameter_set.test_mode%}
     //fps counter
     let text_style = {
         fontFamily: 'Arial',
