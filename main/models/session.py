@@ -47,7 +47,7 @@ class Session(models.Model):
     channel_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Channel Key')     #unique channel to communicate on
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
 
-    id_string = models.CharField(max_length=6, unique=True, null=True, blank=True)                     #unique string for session to auto login subjects by id
+    id_string = models.CharField(max_length=6, unique=True, null=True, blank=True)                       #unique string for session to auto login subjects by id
 
     controlling_channel = models.CharField(max_length = 300, default="")         #channel controlling session
 
