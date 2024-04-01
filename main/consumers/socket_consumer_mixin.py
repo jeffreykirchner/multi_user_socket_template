@@ -20,10 +20,8 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
     core socket communication functions
     '''
     room_name = None
-    room_group_name = None           #channel that consumer listens on
-    channel_session_user = True
-    http_user = True
-    player_key = ""                  #SessionPlayer.player_key
+    room_group_name = None            #channel that consumer listens on
+    player_key = ""                   #SessionPlayer.player_key
     thread_sensitive = False   
     controlling_channel = None        #channel that is controlling the session
 
@@ -101,6 +99,14 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         message_type = text_data_json['message_type']    #name of child method to be called
         message_text = text_data_json['message_text']    #data passed to above method
         message_target = text_data_json.get('message_target', None)  #group or individual channel
+
+        # Check if staff users are logged in
+        if not self.scope["user"].id:
+            if self.player_key == self.room_name:
+                await self.send(text_data=json.dumps({"message":{"message_type":message_type,
+                                                      "status": "fail", 
+                                                      "message_text": "You must log in."}}))
+                return
 
         # Send message to target
         if not message_target or message_target == "self":
