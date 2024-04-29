@@ -115,12 +115,12 @@ def login_function_esi_auth(username, password):
 
         data = {"app_name" : settings.ESI_AUTH_APP,
                 "username" : username,
-                "password" :password }
+                "password" : password }
 
         request_result = requests.get(f'{settings.ESI_AUTH_URL}/get-auth/',
-                                    json=data,
-                                    auth=(str(settings.ESI_AUTH_USERNAME), str(settings.ESI_AUTH_PASS)),
-                                    headers=headers)
+                                        json=data,
+                                        auth=(str(settings.ESI_AUTH_USERNAME), str(settings.ESI_AUTH_PASS)),
+                                        headers=headers)
         
         if request_result.status_code != 200:        
             logger.warning(f'ESI auth error: {request_result}')
@@ -129,7 +129,7 @@ def login_function_esi_auth(username, password):
         request_result_json = request_result.json()
 
         if request_result_json['status'] == 'fail':        
-            logger.warning(f'ESI auth error: {request_result}')
+            logger.warning(f'ESI auth error: Request {request_result}, result {request_result_json}')
             return None
 
         # logger.info(f"ESI auth response: {request_result_json}")
