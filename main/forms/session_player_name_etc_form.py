@@ -20,16 +20,19 @@ class StaffEditNameEtcForm(forms.Form):
     name = forms.CharField(label='Full Name',
                            required=False,
                            widget=forms.TextInput(attrs={"v-model":"staff_edit_name_etc_form.name",
+                                                         "autocomplete":"off",
                                                          "v-on:keyup.enter":"send_update_subject()"}))
 
     student_id = forms.CharField(label='Student ID',
                                  required=False,
                                  widget=forms.TextInput(attrs={"v-model":"staff_edit_name_etc_form.student_id",
+                                                               "autocomplete":"off",
                                                                "v-on:keyup.enter":"send_update_subject()"}))
 
     email =  forms.EmailField(label='Email',
                               required=False,
                               widget=forms.EmailInput(attrs={"v-model":"staff_edit_name_etc_form.email",
+                                                             "autocomplete":"off",
                                                              "v-on:keyup.enter":"send_update_subject()"}))
     
 
