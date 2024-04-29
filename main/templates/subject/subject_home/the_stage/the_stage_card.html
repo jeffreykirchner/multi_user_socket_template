@@ -6,26 +6,30 @@
             <span v-show="reconnecting" class="me-1">
                 Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
             </span>
+        </span>
 
-            {%if session.parameter_set.test_mode%}
-                <div class="form-check" v-if="is_subject">
-                    <input class="form-check-input"
-                           type="checkbox" 
-                           value="" 
-                           id="testModeCheckBox" 
-                           v-model="test_mode"
-                           >
-                    <label class="form-check-label" for="testModeCheckBox">
-                    Test Mode On
-                    </label>
-                </div>
-            {%endif%}
-
+        <span class="float-end">
             <button type="button" class="btn btn-link" title="Show Help" v-on:click="send_load_help_doc_subject('subject_stage')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>
 
+                    
+        {%if session.parameter_set.test_mode%}
+        <span class="float-end">
+            <span class="form-check" v-if="is_subject">
+                <input class="form-check-input"
+                        type="checkbox" 
+                        value="" 
+                        id="testModeCheckBox" 
+                        v-model="test_mode">
+                <label class="form-check-label" for="testModeCheckBox">
+                Test Mode On
+                </label>
+            </span>
+        </span>
+        {%endif%}
+        
     </div>
     <div class="card-body">
         

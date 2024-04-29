@@ -39,7 +39,7 @@
                     v-on:click="show_send_email_list()"
                     v-if="session.started">
                 
-                <span v-if="session.parameter_set.prolific_mode=='False'">
+                <span v-if="!session.parameter_set.prolific_mode">
                     Upload Email List <i class="fas fa-upload"></i>
                 </span>
                 <span v-else>
@@ -71,7 +71,7 @@
                                 ID Label
                             </th>
                             <th scope="col" class = "">
-                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                <span v-if="!session.parameter_set.prolific_mode">
                                     Name
                                 </span>
                                 <span v-else>
@@ -79,7 +79,7 @@
                                 </span>
                             </th>                            
                             <th scope="col" class = "text-center">
-                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                <span v-if="!session.parameter_set.prolific_mode">
                                     Student ID
                                 </span>
                                 <span v-else>
@@ -87,7 +87,7 @@
                                 </span>
                             </th>
                             <th scope="col" class = "">
-                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                <span v-if="!session.parameter_set.prolific_mode">
                                     Email
                                 </span>
                                 <span v-else>
@@ -95,7 +95,7 @@
                                 </span>
                             </th>
                             <th scope="col" class = "text-center">
-                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                <span v-if="!session.parameter_set.prolific_mode">
                                     Earnings
                                 </span>
                                 <span v-else>
@@ -133,7 +133,7 @@
                                 [[temp_p.student_id=="" ? "---" : temp_p.student_id]]
                             </td>
                             <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
-                                <span v-if="session.parameter_set.prolific_mode=='False'" v-on:click="show_edit_subject(p.id)">
+                                <span v-if="!session.parameter_set.prolific_mode" v-on:click="show_edit_subject(p.id)">
                                     [[(!temp_p.email || temp_p.email=="") ? "---" : temp_p.email]]
                                 </span>
                                 <span v-else>
@@ -187,7 +187,7 @@
         </div>  
         
         <!-- private links -->
-        <div v-if="session.parameter_set.prolific_mode=='False'">
+        <div v-if="!session.parameter_set.prolific_mode">
             <div class="row justify-content-center">            
                 <div class="col-md-auto text-center">
                     Private Login Links (do not share with subjects)

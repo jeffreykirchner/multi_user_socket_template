@@ -34,7 +34,7 @@ post_session_link: function post_session_link(){
     {
         location.href = app.session_player.survey_link;
     }
-    else if(app.session.parameter_set.prolific_mode=='True')
+    else if(app.session.parameter_set.prolific_mode)
     {
         location.href = app.session.parameter_set.prolific_completion_link;
     }

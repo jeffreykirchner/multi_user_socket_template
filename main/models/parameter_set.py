@@ -85,7 +85,7 @@ class ParameterSet(models.Model):
             self.survey_required = True if new_ps.get("survey_required") else False
             self.survey_link = new_ps.get("survey_link")
 
-            self.prolific_mode = True if new_ps.get("prolific_mode", False) == "True" else False
+            self.prolific_mode = True if new_ps.get("prolific_mode", False) else False
             self.prolific_completion_link = new_ps.get("prolific_completion_link", None)
 
             self.tokens_per_period = new_ps.get("tokens_per_period", 100)
@@ -253,7 +253,7 @@ class ParameterSet(models.Model):
         self.json_for_session["survey_required"] = 1 if self.survey_required else 0
         self.json_for_session["survey_link"] = self.survey_link
 
-        self.json_for_session["prolific_mode"] = "True" if self.prolific_mode else "False"
+        self.json_for_session["prolific_mode"] = 1 if self.prolific_mode else 0
         self.json_for_session["prolific_completion_link"] = self.prolific_completion_link
 
         self.json_for_session["tokens_per_period"] = self.tokens_per_period
@@ -271,7 +271,7 @@ class ParameterSet(models.Model):
 
         self.json_for_session["reconnection_limit"] = self.reconnection_limit
 
-        self.json_for_session["test_mode"] = "True" if self.test_mode else "False"
+        self.json_for_session["test_mode"] = 1 if self.test_mode else 0
 
         self.save()
     

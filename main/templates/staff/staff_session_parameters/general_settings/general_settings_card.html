@@ -90,17 +90,9 @@
                 {{parameter_set_form.prolific_mode.label}}:                
             </div>
             <div class="col text-start">
-                <span v-if="parameter_set.prolific_mode=='True'">Yes</span><span v-else>No</span>                
+                <span v-if="parameter_set.prolific_mode">Yes</span><span v-else>No</span>                
             </div>  
-        </div>
-        <div class="row">
-            <div class="col-7 text-end">
-                {{parameter_set_form.test_mode.label}}:                
-            </div>
-            <div class="col text-start">
-                <span v-if="parameter_set.test_mode=='True'">Yes</span><span v-else>No</span>                
-            </div>  
-        </div>   
+        </div>  
         <div class="row">
             <div class="col-7 text-end">
                 {{parameter_set_form.tokens_per_period.label}}:                
@@ -163,6 +155,14 @@
             </div>
             <div class="col text-start">
                 [[parameter_set.world_height]]                          
+            </div>  
+        </div> 
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.test_mode.label}}:                
+            </div>
+            <div class="col text-start">
+                <span v-if="parameter_set.test_mode">Yes</span><span v-else>No</span>                
             </div>  
         </div> 
         <div class="row justify-content-center">
