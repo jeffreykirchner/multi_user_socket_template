@@ -45,7 +45,8 @@ add_transfer_beam: function add_transfer_beam(source_location, target_location, 
             
             let beam_texture = elements[element_index].texture;
 
-            let token_graphic = PIXI.Sprite.from(beam_texture); //app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]
+            let token_graphic = PIXI.Sprite.from(beam_texture); 
+            if(elements[element_index].hasOwnProperty('tint')) token_graphic.tint = elements[element_index].tint;
             token_graphic.anchor.set(0.5);
             token_graphic.eventMode = 'passive';
             token_graphic.scale.set(tempScale);
