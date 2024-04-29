@@ -245,8 +245,10 @@ var app = Vue.createApp({
                 target: document.getElementById('id_invitation_subject'),
                 height : "400",
                 theme: "silver",
-                plugins: "directionality,paste,searchreplace,code",
-                directionality: "{{ directionality }}",
+                convert_urls: false,
+                promotion: false,
+                plugins: "searchreplace,code,link",
+                toolbar: "undo redo | styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link | code",
             });
     
             // Prevent Bootstrap dialog from blocking focusin
