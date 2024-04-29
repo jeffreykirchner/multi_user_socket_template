@@ -37,29 +37,29 @@ class ParameterSetForm(forms.ModelForm):
                                                                       "min":"1"}))
 
     show_instructions = forms.ChoiceField(label='Show Instructions',
-                                       choices=((True, 'Yes'), (False,'No' )),
-                                       widget=forms.Select(attrs={"v-model":"parameter_set.show_instructions",}))
-    
+                                          choices=((1, 'Yes'), (0,'No' )),
+                                          widget=forms.Select(attrs={"v-model":"parameter_set.show_instructions",}))
+      
     instruction_set = forms.ModelChoiceField(label='Instruction Set',
-                                            empty_label=None,
-                                            queryset=main.models.InstructionSet.objects.all(),
-                                            widget=forms.Select(attrs={"v-model":"parameter_set.instruction_set.id"}))
+                                             empty_label=None,
+                                             queryset=main.models.InstructionSet.objects.all(),
+                                             widget=forms.Select(attrs={"v-model":"parameter_set.instruction_set.id"}))
 
     survey_required = forms.ChoiceField(label='Show Survey',
-                                       choices=((True, 'Yes'), (False,'No' )),
-                                       widget=forms.Select(attrs={"v-model":"parameter_set.survey_required",}))
+                                        choices=((1, 'Yes'), (0,'No' )),
+                                        widget=forms.Select(attrs={"v-model":"parameter_set.survey_required",}))
 
     survey_link =  forms.CharField(label='Survey Link',
                                    required=False,
                                    widget=forms.TextInput(attrs={"v-model":"parameter_set.survey_link",}))
     
     prolific_mode = forms.ChoiceField(label='Prolific Mode',
-                                       choices=((True, 'Yes'), (False,'No' )),
-                                       widget=forms.Select(attrs={"v-model":"parameter_set.prolific_mode",}))
+                                      choices=((True, 'Yes'), (False,'No' )),
+                                      widget=forms.Select(attrs={"v-model":"parameter_set.prolific_mode",}))
 
     prolific_completion_link =  forms.CharField(label='After Session, Forward Subjects to URL',
-                                   required=False,
-                                   widget=forms.TextInput(attrs={"v-model":"parameter_set.prolific_completion_link",}))
+                                                required=False,
+                                                widget=forms.TextInput(attrs={"v-model":"parameter_set.prolific_completion_link",}))
     
     reconnection_limit = forms.IntegerField(label='Re-connection Limit',
                                     min_value=1,
@@ -157,7 +157,7 @@ class ParameterSetForm(forms.ModelForm):
            survey_link = self.data.get('survey_link')
            survey_required = self.data.get('survey_required')
 
-           if survey_required == 'True' and not "http" in survey_link:
+           if survey_required=="1" and not "http" in survey_link:
                raise forms.ValidationError('Invalid link')
             
         except ValueError:

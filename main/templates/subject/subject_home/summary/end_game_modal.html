@@ -53,7 +53,7 @@
                         v-on:click = "post_session_link()"
                         title="Press to continue"
                         v-else-if="(session.parameter_set.prolific_mode == 'True') || 
-                                   (session.parameter_set.survey_required == 'True' && 
+                                   (session.parameter_set.survey_required && 
                                     session_player.survey_complete == false && 
                                     session_player.name_submitted)"
                         v-bind:disabled="reconnecting || working">

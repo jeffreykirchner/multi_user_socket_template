@@ -334,7 +334,7 @@ var app = Vue.createApp({
             }
             else if(app.session.started && !app.session.world_state.finished)
             {
-                if(app.session.world_state.current_experiment_phase == "Selection" && app.session.parameter_set.show_instructions == "True")
+                if(app.session.world_state.current_experiment_phase == "Selection" && app.session.parameter_set.show_instructions)
                 {
                     app.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
                 }

@@ -12,7 +12,8 @@ class ParameterSetGroupForm(forms.ModelForm):
     '''
     
     name = forms.CharField(label='Name',
-                           widget=forms.TextInput(attrs={"v-model":"current_parameter_set_group.name",}))
+                           widget=forms.TextInput(attrs={"v-model":"current_parameter_set_group.name",
+                                                         "autocomplete":"off",}))
 
 
 

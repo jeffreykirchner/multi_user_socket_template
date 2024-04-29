@@ -215,7 +215,7 @@ var app = Vue.createApp({
                 app.show_end_game_modal();
             }
             else if(app.session.world_state.current_experiment_phase == 'Done' && 
-                    app.session.parameter_set.survey_required=='True' && 
+                    app.session.parameter_set.survey_required && 
                     !app.session_player.survey_complete)
             {
                 window.location.replace(app.session_player.survey_link);
@@ -493,7 +493,7 @@ var app = Vue.createApp({
             }
             
             if(app.session.world_state.current_experiment_phase == 'Done' && 
-                    app.session.parameter_set.survey_required=='True' && 
+                    app.session.parameter_set.survey_required && 
                     !app.session_player.survey_complete)
             {
                 window.location.replace(app.session_player.survey_link);

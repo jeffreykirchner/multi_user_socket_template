@@ -28,7 +28,6 @@ class ParameterSet(models.Model):
     break_frequency = models.IntegerField(verbose_name='Break Frequency', default=7)                          #frequency of breaks
     break_length = models.IntegerField(verbose_name='Break Length', default=100)                              #length of breaks in seconds
 
-    private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                             #if true subjects can privately chat one on one
     show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                   #if true show instructions
 
     survey_required = models.BooleanField(default=False, verbose_name="Survey Required")                      #if true show the survey below
@@ -81,11 +80,9 @@ class ParameterSet(models.Model):
             self.break_frequency = new_ps.get("break_frequency", 7)
             self.break_length = new_ps.get("break_length", 100)
 
-            self.private_chat = False
+            self.show_instructions = True if new_ps.get("show_instructions") else False
 
-            self.show_instructions = True if new_ps.get("show_instructions") == "True" else False
-
-            self.survey_required = True if new_ps.get("survey_required") == "True" else False
+            self.survey_required = True if new_ps.get("survey_required") else False
             self.survey_link = new_ps.get("survey_link")
 
             self.prolific_mode = True if new_ps.get("prolific_mode", False) == "True" else False
@@ -250,11 +247,10 @@ class ParameterSet(models.Model):
         self.json_for_session["break_frequency"] = self.break_frequency
         self.json_for_session["break_length"] = self.break_length
 
-        self.json_for_session["private_chat"] = "False"
-        self.json_for_session["show_instructions"] = "True" if self.show_instructions else "False"
+        self.json_for_session["show_instructions"] = 1 if self.show_instructions else 0
         self.json_for_session["instruction_set"] = self.instruction_set.json_min()
 
-        self.json_for_session["survey_required"] = "True" if self.survey_required else "False"
+        self.json_for_session["survey_required"] = 1 if self.survey_required else 0
         self.json_for_session["survey_link"] = self.survey_link
 
         self.json_for_session["prolific_mode"] = "True" if self.prolific_mode else "False"

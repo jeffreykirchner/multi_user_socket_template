@@ -25,11 +25,11 @@ take_name: function take_name(message_data){
 },
 
 /**
- * 
+ * after session link
  */
 post_session_link: function post_session_link(){
 
-    if(app.session.parameter_set.survey_required == 'True' && 
+    if(app.session.parameter_set.survey_required && 
        app.session_player.survey_complete == false)
     {
         location.href = app.session_player.survey_link;

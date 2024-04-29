@@ -111,7 +111,7 @@
                             <th scope="col" class = "text-center" v-show="session.world_state.current_experiment_phase == 'Instructions'">
                                 Instructions
                             </th>
-                            <th scope="col" class = "text-center" v-if="session.parameter_set.survey_required=='True'">
+                            <th scope="col" class = "text-center" v-if="session.parameter_set.survey_required">
                                 Survey Complete
                             </th>                            
                         </tr>
@@ -162,7 +162,7 @@
                             <td class="player_table_cell text-nowrap" v-show="session.world_state.current_experiment_phase == 'Instructions'">
                                 [[temp_p.instructions_finished ? "Finished" : "Page " + temp_p.current_instruction.toString()]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-if="session.parameter_set.survey_required=='True'">
+                            <td class="player_table_cell text-nowrap" v-if="session.parameter_set.survey_required">
                                 <span v-if="temp_p.survey_complete">Yes</span>
                                 <span v-else>No</span>
                             </td>                           
