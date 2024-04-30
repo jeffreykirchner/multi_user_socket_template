@@ -48,7 +48,6 @@ add_transfer_beam: function add_transfer_beam(source_location, target_location, 
             let token_graphic = PIXI.Sprite.from(beam_texture); 
             if(elements[element_index].hasOwnProperty('tint')) token_graphic.tint = elements[element_index].tint;
             token_graphic.anchor.set(0.5);
-            token_graphic.eventMode = 'passive';
             token_graphic.scale.set(tempScale);
             token_graphic.position.set(temp_x, temp_y);
             token_graphic.zIndex = 10000;
@@ -148,7 +147,6 @@ animate_transfer_beams: function animate_transfer_beams(delta)
                 let token_graphic_1 = PIXI.Sprite.from(beam_texture);
                 token_graphic_1.animationSpeed =  app.session.parameter_set.avatar_animation_speed;
                 token_graphic_1.anchor.set(1, 0.5)
-                token_graphic_1.eventMode = 'none';
                 token_graphic_1.scale.set(0.4);
                 token_graphic_1.alpha = 0.7;
 
@@ -167,7 +165,6 @@ animate_transfer_beams: function animate_transfer_beams(delta)
                 let token_graphic_2 = PIXI.Sprite.from(beam_texture);
                 token_graphic_2.animationSpeed =  app.session.parameter_set.avatar_animation_speed;
                 token_graphic_2.anchor.set(1, 0.5)
-                token_graphic_2.eventMode = 'none';
                 token_graphic_2.scale.set(0.4);
                 token_graphic_2.alpha = 0.7;
 

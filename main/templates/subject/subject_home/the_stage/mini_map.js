@@ -20,7 +20,6 @@ setup_pixi_minimap: function setup_pixi_minimap()
     let obj = app.session.world_state.session_players[app.session_player.id]
 
     pixi_mini_map.container = new PIXI.Container();
-    pixi_mini_map.container.eventMode = 'none';
     pixi_mini_map.container.zIndex = 9998;
 
     //mini map background
@@ -28,10 +27,10 @@ setup_pixi_minimap: function setup_pixi_minimap()
     
     pixi_mini_map_bg.width = app.stage_width * scale;
     pixi_mini_map_bg.height =  app.stage_height * scale;
-    pixi_mini_map_bg.lineStyle(1, 0x000000);
-    pixi_mini_map_bg.beginFill('BDB76B');
-    pixi_mini_map_bg.drawRect(0, 0, app.stage_width * scale, app.stage_height * scale);
-    pixi_mini_map_bg.endFill();
+    
+    pixi_mini_map_bg.rect(0, 0, app.stage_width * scale, app.stage_height * scale);
+    pixi_mini_map_bg.fill('BDB76B');
+    pixi_mini_map_bg.stroke({color:0x000000, width:1});
     
     pixi_mini_map.container.addChild(pixi_mini_map_bg);
 
@@ -40,8 +39,9 @@ setup_pixi_minimap: function setup_pixi_minimap()
         const ground = app.session.parameter_set.parameter_set_grounds[i];
 
         let temp_ground = new PIXI.Graphics();
-        temp_ground.beginFill(ground.tint);
-        temp_ground.drawRect(ground.x * scale, ground.y * scale, ground.width * scale, ground.height * scale);
+        
+        temp_ground.rect(ground.x * scale, ground.y * scale, ground.width * scale, ground.height * scale);
+        temp_ground.fill(ground.tint);
 
         pixi_mini_map.container.addChild(temp_ground);
     }
@@ -53,8 +53,9 @@ setup_pixi_minimap: function setup_pixi_minimap()
         const wall = app.session.parameter_set.parameter_set_walls[i];
 
         let temp_wall = new PIXI.Graphics();
-        temp_wall.beginFill('DEB887');
-        temp_wall.drawRect(wall.start_x * scale, wall.start_y * scale, wall.width * scale, wall.height * scale);
+        
+        temp_wall.rect(wall.start_x * scale, wall.start_y * scale, wall.width * scale, wall.height * scale);
+        temp_wall.fill('DEB887');
 
         pixi_mini_map.container.addChild(temp_wall);
     }
@@ -70,9 +71,10 @@ setup_pixi_minimap: function setup_pixi_minimap()
 
         let token_graphic = new PIXI.Graphics();
 
-        token_graphic.beginFill(0xFFFFFF);
-        token_graphic.drawRect(0, 0, 2, 2);
-        token_graphic.endFill();
+        
+        token_graphic.rect(0, 0, 2, 2);
+        token_graphic.fill(0xFFFFFF);
+        
         token_graphic.pivot.set(token_graphic.width/2, token_graphic.height/2);
         token_graphic.position.set(token.current_location.x * scale, token.current_location.y * scale);
 
@@ -84,10 +86,11 @@ setup_pixi_minimap: function setup_pixi_minimap()
     let pixi_mini_map_vp = new PIXI.Graphics();
     pixi_mini_map_vp.width = pixi_app.screen.width * scale;
     pixi_mini_map_vp.height = pixi_app.screen.height * scale;
-    pixi_mini_map_vp.lineStyle({width:2,color:0x000000,alignment:0});
-    pixi_mini_map_vp.beginFill(0xFFFFFF,0);
-    pixi_mini_map_vp.drawRect(0, 0, pixi_app.screen.width * scale, pixi_app.screen.height * scale);
-    pixi_mini_map_vp.endFill();    
+    
+    pixi_mini_map_vp.rect(0, 0, pixi_app.screen.width * scale, pixi_app.screen.height * scale);
+    pixi_mini_map_vp.fill({color:0xFFFFFF, alpha:0.5});
+    pixi_mini_map_bg.stroke({width:2,color:0x000000,alignment:0});
+
     pixi_mini_map_vp.pivot.set(pixi_mini_map_vp.width/2, pixi_mini_map_vp.height/2);
     pixi_mini_map_vp.position.set(obj.current_location.x * scale, obj.current_location.y * scale);
 

@@ -38,7 +38,6 @@
 
 //     let token_graphic = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
 //     token_graphic.anchor.set(1, 0.5)
-//     token_graphic.eventMode = 'none';
 //     token_graphic.scale.set(0.4);
 //     token_graphic.alpha = 0.7;
 

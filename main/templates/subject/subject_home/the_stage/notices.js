@@ -33,15 +33,14 @@ update_notices: function update_notices()
         }
         else
         {
-            let label = new PIXI.Text(notice.text, {
+            let label = new PIXI.Text({text:notice.text, style:{
                 fontFamily: 'Arial',
                 fontSize: 40,
                 fill: 'white',
                 align: 'center',
                 stroke: 'black',
                 strokeThickness: 2,
-            });
-            label.eventMode = 'passive';    
+            }});  
             label.anchor.set(0.5);
 
             container.addChild(label);        

@@ -44,23 +44,24 @@ setup_pixi: function setup_pixi(){
     pixi_transfer_beams_key = 0;
 },
 
-reset_pixi_app: function reset_pixi_app(){    
+reset_pixi_app: async function reset_pixi_app(){    
 
     app.stage_width = app.session.parameter_set.world_width;
     app.stage_height = app.session.parameter_set.world_height;
 
     let canvas = document.getElementById('sd_graph_id');
 
-    pixi_app = new PIXI.Application({resizeTo : canvas,
-                                        backgroundColor : 0xFFFFFF,
-                                        autoResize: true,
-                                        antialias: false,
-                                        resolution: 1,
-                                        view: canvas });
+    pixi_app = new PIXI.Application()
+
+    await pixi_app.init({resizeTo : canvas,
+                         backgroundColor : 0xFFFFFF,
+                         autoResize: true,
+                         antialias: false,
+                         resolution: 1,
+                         canvas: canvas });
 
     // The stage will handle the move events
-    pixi_app.stage.eventMode = 'static';
-    pixi_app.stage.hitArea = pixi_app.screen;
+    // pixi_app.stage.hitArea = pixi_app.screen;
 
     app.canvas_width = canvas.width;
     app.canvas_height = canvas.height;
@@ -77,15 +78,13 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
 
     pixi_container_main = new PIXI.Container();
     pixi_container_main.sortableChildren = true;
-    pixi_container_main.eventMode = 'passive';
 
     pixi_app.stage.addChild(pixi_container_main);
    
-    let tiling_sprite = new PIXI.TilingSprite(
-        textures.bg_tex,
-        app.stage_width,
-        app.stage_height,
-    );
+    let tiling_sprite = new PIXI.TilingSprite({texture : textures.bg_tex,
+                                               width : app.stage_width,
+                                               height : app.stage_height});
+
     tiling_sprite.position.set(0,0);
     pixi_container_main.addChild(tiling_sprite);
 
@@ -96,10 +95,12 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
         tiling_sprite.on("pointerup", app.subject_pointer_up);        
                
         pixi_target = new PIXI.Graphics();
-        pixi_target.lineStyle(3, 0x000000);
+        
         pixi_target.alpha = 0.33;
-        pixi_target.drawCircle(0, 0, 10);
+        pixi_target.circle(0, 0, 10);
+        pixi_target.stroke({width:3, color:0x000000});
         pixi_target.eventMode='static';
+        pixi_target.zIndex = 100;
 
         //pixi_target.scale.set(app.pixi_scale, app.pixi_scale);
         pixi_container_main.addChild(pixi_target)
@@ -134,11 +135,11 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
     let text_style = {
         fontFamily: 'Arial',
         fontSize: 14,
-        fill: 'black',
+        fill: {color:'black'},
         align: 'left',
     };
-    let fps_label = new PIXI.Text("0 fps", text_style);
-    fps_label.eventMode = 'none';
+    let fps_label = new PIXI.Text({text:"0 fps", 
+                                   style:text_style});
 
     pixi_fps_label = fps_label;
     pixi_fps_label.position.set(10, app.canvas_height-25);
@@ -154,21 +155,21 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
  */
 game_loop: function game_loop(delta)
 {
-    app.move_player(delta);
-    app.move_text_emitters(delta);
-    app.animate_transfer_beams(delta);
+    app.move_player(delta.deltaTime);
+    app.move_text_emitters(delta.deltaTime);
+    app.animate_transfer_beams(delta.deltaTime);
 
     if(app.pixi_mode=="subject" && app.session.started)
     {   
-        app.update_offsets_player(delta);
-        app.update_mini_map(delta);
+        app.update_offsets_player(delta.deltaTime);
+        app.update_mini_map(delta.deltaTime);
         app.check_for_collisions();
     }
     
     if(app.pixi_mode=="staff")
     {
-        app.update_offsets_staff(delta);
-        app.scroll_staff(delta);
+        app.update_offsets_staff(delta.deltaTime);
+        app.scroll_staff(delta.deltaTime);
     }  
     
     {%if DEBUG%}

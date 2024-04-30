@@ -245,10 +245,11 @@ search_for_path_around_walls: function search_for_path_around_walls(starting_rec
             let box = new PIXI.Graphics();
             let rect = search_grid.rect;
         
-            box.lineStyle(1, "black");
-            //bounding_box.beginFill(0xBDB76B);
-            box.drawRect(rect.x, rect.y, rect.width, rect.height);
-            // box.endFill();
+            
+
+            box.rect(rect.x, rect.y, rect.width, rect.height);
+            box.stroke({width:1, color:"black"});
+            // bounding_box.fill(0xBDB76B);
             
             wall_search_objects.push(box);
             pixi_container_main.addChild(box);
@@ -258,11 +259,13 @@ search_for_path_around_walls: function search_for_path_around_walls(starting_rec
             {
                 let line_to_parent = new PIXI.Graphics();
                 let search_grid_parent = wall_search.search_grid[search_grid.parent];
-                line_to_parent.lineStyle(1, "gray");
+               
 
                 line_to_parent.moveTo(rect.x + rect.width/2, rect.y + rect.height/2);
                 line_to_parent.lineTo(search_grid_parent.rect.x + search_grid_parent.rect.width/2, search_grid_parent.rect.y + search_grid_parent.rect.height/2);
                 
+                line_to_parent.stroke({width:1, color:"gray"});
+
                 wall_search_objects.push(line_to_parent);
                 pixi_container_main.addChild(line_to_parent);
             }
@@ -290,11 +293,12 @@ search_for_path_around_walls: function search_for_path_around_walls(starting_rec
 
             if(draw_grid)
             {
-                let line_to_parent = new PIXI.Graphics();
-                line_to_parent.lineStyle(2, "purple");                
+                let line_to_parent = new PIXI.Graphics();               
 
                 line_to_parent.moveTo(pt1.x, pt1.y);
                 line_to_parent.lineTo(pt2.x, pt2.y);
+
+                line_to_parent.stroke({width:2, color:"purple"});
 
                 wall_search_objects.push(line_to_parent);
                 pixi_container_main.addChild(line_to_parent);

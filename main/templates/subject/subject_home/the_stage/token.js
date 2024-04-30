@@ -22,7 +22,6 @@ setup_pixi_tokens_for_current_period: function setup_pixi_tokens_for_current_per
         let token_graphic = new PIXI.AnimatedSprite(app.pixi_textures.cherry_token.animations['walk']);
         token_graphic.animationSpeed = app.animation_speed;
         token_graphic.anchor.set(0.5)
-        token_graphic.eventMode = 'passive';
 
         if(token.status=="available")
         {
@@ -44,9 +43,10 @@ setup_pixi_tokens_for_current_period: function setup_pixi_tokens_for_current_per
 
             bounding_box.width = token_container.width;
             bounding_box.height = token_container.height;
-            bounding_box.lineStyle(1, 0x000000);
-            bounding_box.drawRect(0, 0, token_container.width, token_container.height);
-            bounding_box.endFill();
+           
+            bounding_box.rect(0, 0, token_container.width, token_container.height);
+            bounding_box.stroke(1, 0x000000);
+
             bounding_box.pivot.set(bounding_box.width/2, bounding_box.height/2);
             bounding_box.position.set(0, 0);
             token_container.addChild(bounding_box);
@@ -117,7 +117,6 @@ take_collect_token: function take_collect_token(message_data)
 
         let token_graphic = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
         token_graphic.anchor.set(1, 0.5)
-        token_graphic.eventMode = 'none';
         token_graphic.scale.set(0.4);
         token_graphic.alpha = 0.7;
 

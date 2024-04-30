@@ -19,46 +19,40 @@ setup_pixi_subjects: function setup_pixi_subjects(){
         avatar_container.position.set(subject.current_location.x, subject.current_location.y);
         avatar_container.height = 250;
         avatar_container.width = 250;
-        avatar_container.eventMode = 'passive';
-        avatar_container.name = {player_id : i};
+        avatar_container.label = {player_id : i};
         avatar_container.zIndex=200;
         // avatar_container.on("pointerup", app.subject_avatar_click);
 
         let gear_sprite = new PIXI.AnimatedSprite(app.pixi_textures.sprite_sheet.animations['walk']);
         gear_sprite.animationSpeed = app.session.parameter_set.avatar_animation_speed;
         gear_sprite.anchor.set(0.5)
-        gear_sprite.tint = parameter_set_player.hex_color;
-        gear_sprite.eventMode = 'passive';    
+        gear_sprite.tint = parameter_set_player.hex_color;  
 
         let face_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["face_1.png"]);
         face_sprite.anchor.set(0.5);
-        face_sprite.eventMode = 'passive';
 
         let text_style = {
             fontFamily: 'Arial',
-            fontSize: 20,
-            fill: 'white',
+            fontSize: 40,
+            fill: {color:'white'},
             align: 'left',
-            stroke: 'black',
-            strokeThickness: 2,
+            stroke: {color:'black', width: 3},
         };
 
-        let id_label = new PIXI.Text(parameter_set_player.id_label, text_style);
-        id_label.eventMode = 'passive';
+        let id_label = new PIXI.Text({text:parameter_set_player.id_label, 
+                                      style:text_style});
         id_label.anchor.set(0.5);
         
         let token_graphic = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]);
         token_graphic.anchor.set(1, 0.5)
-        token_graphic.eventMode = 'passive';
         token_graphic.scale.set(0.3);
         token_graphic.alpha = 0.7;
 
-        let inventory_label = new PIXI.Text(subject.inventory[current_period_id], text_style);
-        inventory_label.eventMode = 'passive';
+        let inventory_label = new PIXI.Text({text:subject.inventory[current_period_id], 
+                                             style:text_style});
         inventory_label.anchor.set(0, 0.5);
 
-        let status_label = new PIXI.Text("Working ... 10", text_style);
-        status_label.eventMode = 'passive';
+        let status_label = new PIXI.Text({text:"Working ... 10", style:text_style});
         status_label.anchor.set(0.5);
         status_label.visible = false;
 
@@ -84,10 +78,10 @@ setup_pixi_subjects: function setup_pixi_subjects(){
         //bounding box with avatar scaller        
         let bounding_box = new PIXI.Graphics();
     
-        bounding_box.lineStyle(2, "orchid");
-        bounding_box.drawRect(0, 0, avatar_container.width * app.session.parameter_set.avatar_bound_box_percent * app.session.parameter_set.avatar_scale, 
+
+        bounding_box.rect(0, 0, avatar_container.width * app.session.parameter_set.avatar_bound_box_percent * app.session.parameter_set.avatar_scale, 
                                     avatar_container.height * app.session.parameter_set.avatar_bound_box_percent * app.session.parameter_set.avatar_scale);
-        bounding_box.endFill();
+        bounding_box.stroke(2, "orchid");
         bounding_box.pivot.set(bounding_box.width/2, bounding_box.height/2);
         bounding_box.position.set(0, 0);
         bounding_box.visible = false;
@@ -98,10 +92,10 @@ setup_pixi_subjects: function setup_pixi_subjects(){
         //bound box view
         let bounding_box_view = new PIXI.Graphics();
     
-        bounding_box_view.lineStyle(2, "orchid");
-        bounding_box_view.drawRect(0, 0, avatar_container.width * app.session.parameter_set.avatar_bound_box_percent, 
+       
+        bounding_box_view.rect(0, 0, avatar_container.width * app.session.parameter_set.avatar_bound_box_percent, 
                                     avatar_container.height * app.session.parameter_set.avatar_bound_box_percent);
-        bounding_box_view.endFill();
+        bounding_box_view.stroke(2, "orchid");
         bounding_box_view.pivot.set(bounding_box_view.width/2, bounding_box_view.height/2);
         bounding_box_view.position.set(0, 0);
 
@@ -124,15 +118,13 @@ setup_pixi_subjects: function setup_pixi_subjects(){
         
         let chat_bubble_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["chat_bubble.png"]);
         chat_bubble_sprite.anchor.set(0.5);
-        chat_bubble_sprite.eventMode = 'none';
 
-        let chat_bubble_text = new PIXI.Text('', {
-                fontFamily: 'Arial',
-                fontSize: 18,
-                fill: 0x000000,
-                align: 'left',
-            });
-        chat_bubble_text.eventMode = 'none';    
+        let chat_bubble_text = new PIXI.Text({text:'',style: {
+            fontFamily: 'Arial',
+            fontSize: 18,
+            fill: 0x000000,
+            align: 'left',
+        }}); 
 
         chat_container.addChild(chat_bubble_sprite);
         chat_container.addChild(chat_bubble_text);
@@ -159,7 +151,6 @@ setup_pixi_subjects: function setup_pixi_subjects(){
         {
             let tractor_beam_sprite = PIXI.Sprite.from(app.pixi_textures.sprite_sheet_2.textures["particle2.png"]);
             tractor_beam_sprite.anchor.set(0.5);
-            tractor_beam_sprite.eventMode = 'passive';
             tractor_beam_sprite.visible = false;
             tractor_beam_sprite.zIndex = 1500;
             pixi_avatars[i].tractor_beam.push(tractor_beam_sprite);
@@ -173,10 +164,8 @@ setup_pixi_subjects: function setup_pixi_subjects(){
         let interaction_range = new PIXI.Graphics();
         let interaction_range_radius = app.session.parameter_set.interaction_range;
 
-        interaction_range.lineStyle({width:1, color:parameter_set_player.hex_color, alignment:0});
-        interaction_range.beginFill(0xFFFFFF,0);
-        interaction_range.drawCircle(0, 0, interaction_range_radius);
-        interaction_range.endFill();    
+        interaction_range.circle(0, 0, interaction_range_radius);
+        interaction_range.stroke({width:1, color:parameter_set_player.hex_color, alignment:0})
         interaction_range.zIndex = 100;
 
         interaction_container.addChild(interaction_range);
@@ -190,10 +179,10 @@ setup_pixi_subjects: function setup_pixi_subjects(){
             view_container.position.set(subject.current_location.x, subject.current_location.y);
 
             let view_range = new PIXI.Graphics();
-            // view_range.lineStyle({width:2, color:app.session.session_players[i].parameter_set_player.hex_color, alignment:0});
-            view_range.beginFill(parameter_set_player.hex_color,0.1);
-            view_range.drawRect(0, 0, 1850, 800);
-            view_range.endFill();    
+      
+            view_range.rect(0, 0, 1850, 800);
+            view_range.fill({color:parameter_set_player.hex_color, 
+                             alpha:0.1}); 
             view_range.zIndex = 75;
             view_range.pivot.set(1850/2, 800/2);
             view_range.position.set(0, 0);
