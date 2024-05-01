@@ -16,6 +16,8 @@ var pixi_notices_key = 0;
 //prevent right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+var worker = null;
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
