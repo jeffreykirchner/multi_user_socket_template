@@ -19,9 +19,10 @@ setup_pixi_ground: function setup_pixi_ground()
         let outline = new PIXI.Graphics();
         matrix = new PIXI.Matrix(ground.scale,0,0,ground.scale,0,0);
         matrix.rotate(ground.rotation);
-        outline.beginTextureFill({texture: app.pixi_textures[ground.texture], matrix:matrix});
+        
         outline.tint = ground.tint;
         outline.rect(0, 0, ground.width, ground.height);
+        outline.fill({texture: app.pixi_textures[ground.texture], matrix:matrix});
        
         ground_container.addChild(outline);
 

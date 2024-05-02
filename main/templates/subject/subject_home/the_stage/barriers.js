@@ -43,16 +43,15 @@ setup_pixi_barrier: function setup_pixi_barrier()
 
         matrix.rotate(rotation);
         
-        outline.beginTextureFill({texture: app.pixi_textures['barrier_tex'], matrix:matrix});  //, 
         outline.rect(0, 0, barrier.width, barrier.height);
+        outline.fill({texture: app.pixi_textures['barrier_tex'], matrix:matrix});
        
         let label = new PIXI.Text({text:barrier.text.replace('\\n', '\n'), style:{
             fontFamily: 'Arial',
             fontSize: 40,
             fill: 'white',
             align: 'center',
-            stroke: 'black',
-            strokeThickness: 2,
+            stroke: {color:'black',width:2},
         }});
            
         label.anchor.set(0.5);   

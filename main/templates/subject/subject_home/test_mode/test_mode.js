@@ -44,7 +44,7 @@ do_test_mode: function do_test_mode(){
     // setTimeout(app.do_test_mode, app.random_number(1000 , 1500));
     worker = new Worker("/static/js/worker_test_mode.js");
 
-    worker.onmessage = function (evt, app.random_number(500, 1500)) {   
+    worker.onmessage = function (evt) {   
         app.do_test_mode();
     };
 

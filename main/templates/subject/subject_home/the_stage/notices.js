@@ -38,8 +38,7 @@ update_notices: function update_notices()
                 fontSize: 40,
                 fill: 'white',
                 align: 'center',
-                stroke: 'black',
-                strokeThickness: 2,
+                stroke: {color:'black', windth:2},
             }});  
             label.anchor.set(0.5);
 
