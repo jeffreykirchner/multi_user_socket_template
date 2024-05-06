@@ -23,7 +23,7 @@ class ParameterSetPlayer(models.Model):
 
     start_x = models.IntegerField(verbose_name='Start Location X', default=50)                #starting location x and y
     start_y = models.IntegerField(verbose_name='Start Location Y', default=50)
-    hex_color = models.CharField(verbose_name='Hex Color', max_length = 8, default="0x000000") #color of player
+    hex_color = models.CharField(verbose_name='Hex Color', max_length = 30, default="0x000000") #color of player
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
