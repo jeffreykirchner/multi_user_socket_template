@@ -1,93 +1,91 @@
 
 
-      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-      axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
-      var app = Vue.createApp({
-      
-          delimiters: ["[[", "]]"],
+var app = Vue.createApp({
 
-          data() { return {
-              login_button_text : 'Submit <i class="fas fa-sign-in-alt"></i>',
-              login_error_text : "",
-              form_ids : {{form_ids|safe}},
-              username : null,
-              password : null,
-              }                          
-          },
+    delimiters: ["[[", "]]"],
 
-          methods:{
-              //get current, last or next month
+    data() { return {
+        login_button_text : 'Submit <i class="fas fa-sign-in-alt"></i>',
+        login_error_text : "",
+        form_ids : {{form_ids|safe}},
+        username : null,
+        password : null,
+        }                          
+    },
 
-              login:function(){
-                  app.login_button_text = '<i class="fas fa-spinner fa-spin"></i>';
-                  app.login_error_text = "";
-                  let form = document.querySelector('login_form');
+    methods:{
+    //get current, last or next month
 
-                  axios.post('/accounts/login/', {
-                          action :"login",
-                          form_data : {username:app.username, password:app.password},                              
-                      })
-                      .then(function (response) {     
-                          
-                        status=response.data.status;                               
+        login:function login(){
+            app.login_button_text = '<i class="fas fa-spinner fa-spin"></i>';
+            app.login_error_text = "";
+            let form = document.querySelector('login_form');
 
-                        app.clear_main_form_errors();
+            axios.post('/accounts/login/', {
+                    action :"login",
+                    form_data : {username:app.username, password:app.password},                              
+                })
+                .then(function (response) {     
+                    
+                status=response.data.status;                               
 
-                        if(status == "validation")
-                        {              
-                          //form validation error           
-                          app.display_errors(response.data.errors);
-                        }
-                        else if(status == "error")
-                        {
-                          app.login_error_text = "Username or Password is incorrect."
-                        }
-                        else
-                        {
-                          window.location = response.data.redirect_path;
-                        }
+                app.clear_main_form_errors();
 
-                        app.login_button_text = 'Submit <i class="fas fa-sign-in-alt"></i>';
+                if(status == "validation")
+                {              
+                    //form validation error           
+                    app.display_errors(response.data.errors);
+                }
+                else if(status == "error")
+                {
+                    app.login_error_text = "Username or Password is incorrect."
+                }
+                else
+                {
+                    window.location = response.data.redirect_path;
+                }
 
-                      })
-                      .catch(function (error) {
-                          console.log(error);                            
-                      });                        
-                  },
+                app.login_button_text = 'Submit <i class="fas fa-sign-in-alt"></i>';
 
-                  clear_main_form_errors(){
+                })
+                .catch(function (error) {
+                    console.log(error);                            
+                });                        
+        },
 
-                        s = app.form_ids;                    
-                        for(let i in s)
-                        {
-                            e = document.getElementById("id_errors_" + s[i]);
-                            if(e) e.remove();
-                        }
+        clear_main_form_errors: function clear_main_form_errors(){
 
-                    },
-              
-                //display form errors
-                display_errors(errors){
-                      for(let e in errors)
-                      {
-                          let str='<span id=id_errors_'+ e +' class="text-danger">';
-                          
-                          for(let i in errors[e])
-                          {
-                              str +=errors[e][i] + '<br>';
-                          }
+            s = app.form_ids;                    
+            for(let i in s)
+            {
+                e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
+            }
 
-                          str+='</span>';
+        },
+            
+        //display form errors
+        display_errors: function display_errors(errors){
+            for(let e in errors)
+            {
+                let str='<span id=id_errors_'+ e +' class="text-danger">';
+                
+                for(let i in errors[e])
+                {
+                    str +=errors[e][i] + '<br>';
+                }
 
-                          document.getElementById("div_id_" + e).insertAdjacentHTML('beforeend', str);
-                      }
-                  },
+                str+='</span>';
 
-              
-          },            
+                document.getElementById("div_id_" + e).insertAdjacentHTML('beforeend', str);
+            }
+        },
+    },            
 
-          mounted() {
-                                      
-          },
-      }).mount('#app');
+    mounted() {
+                                
+    },
+}).mount('#app');
