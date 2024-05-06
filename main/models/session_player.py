@@ -5,20 +5,17 @@ session player model
 #import logging
 import uuid
 import logging
+import math
 
 from decimal import Decimal
 
 from django.db import models
 from django.urls import reverse
 from django.db.models import Q
-from django.db.models.expressions import RawSQL
-from django.core.exceptions import ObjectDoesNotExist
 
 from main.models import Session
 from main.models import ParameterSetPlayer
 from main.models import Parameters
-
-from main.globals import round_half_away_from_zero
 
 import main
 
@@ -210,7 +207,9 @@ class SessionPlayer(models.Model):
         return earnings in dollar format
         '''
 
-        return f'${(self.earnings/100):.2f}'
+        earnings =  Decimal(math.ceil(float(self.session.world_state["session_players"][str(self.id)]["earnings"]))) / 100
+
+        return f'${earnings:.2f}'
 
 
         
