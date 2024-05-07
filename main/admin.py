@@ -6,6 +6,7 @@ from django.utils.translation import ngettext
 from django.contrib import admin
 from django.contrib import messages
 from django.conf import settings
+from django.core.cache import cache
 
 from main.forms import ParametersForm
 from main.forms import SessionFormAdmin
@@ -160,6 +161,7 @@ class SessionAdmin(admin.ModelAdmin):
 
         for i in queryset.all():
             i.reset_experiment()
+            cache.delete(f"session_{i.id}")
 
         self.message_user(request, ngettext(
                 '%d session is reset.',
@@ -171,6 +173,7 @@ class SessionAdmin(admin.ModelAdmin):
 
         for i in queryset.all():
             i.parameter_set.json(update_required=True)
+            cache.set(f"session_{i.id}", i.json())
 
         self.message_user(request, ngettext(
                 '%d session is refreshed.',

@@ -24,8 +24,14 @@ class WorldStateMixin():
 
         #only store if at least 1 second has passed since last store
         if not force_store:
-            last_store = self.world_state_local["last_store"]
+            last_store = self.world_state_local.get("last_store", None)
+
+            if not last_store:
+                return
             
+            if isinstance(last_store, str):
+                last_store = datetime.fromisoformat(last_store)
+
             if dt_now - last_store < timedelta(seconds=1):
                 return
         
