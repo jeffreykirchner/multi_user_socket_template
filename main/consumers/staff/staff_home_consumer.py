@@ -136,7 +136,7 @@ def create_new_session(auth_user):
 
     session = Session()
 
-    parameter_set = ParameterSet(instruction_set=main.models.InstructionSet.objects.first())
+    parameter_set = ParameterSet()
     parameter_set.save()
     parameter_set.setup()
 

@@ -12,6 +12,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import ObjectDoesNotExist
 
 from main import globals
+from main.models import InstructionSet
 
 import main
 
@@ -127,7 +128,7 @@ class ParameterSet(models.Model):
                     p.parameter_set_group_id=new_parameter_set_groups_map[str(v["parameter_set_group"])]
 
                 if v.get("instruction_set", None) != None:
-                    p.instruction_set = InstructionSet.objects.filter(label=v.get("instruction_set_label")).first()
+                    p.instruction_set = InstructionSet.objects.filter(label=v.get("instruction_set_label",None)).first()
                 
                 p.save()
 
