@@ -5,9 +5,6 @@
         </span>       
 
         <span class="float-end"> 
-            <a href='{%url "staff_session_instructions" session.id %}' class='link-primary me-4' title='Open print instructions'>
-                Print Instructions                
-            </a>
             
             <a href='{%url "staff_session_subject_earnings" session.id %}' class='link-primary me-4' title='Open print earnings' v-if="session.started">
                 Print Earnings                
@@ -113,7 +110,10 @@
                             </th>
                             <th scope="col" class = "text-center" v-if="session.parameter_set.survey_required">
                                 Survey Complete
-                            </th>                            
+                            </th>   
+                            <th scope="col" class = "text-center">
+                                Instructions
+                            </th>                         
                         </tr>
                     </thead>
                     <tbody id="player_list">
@@ -165,7 +165,10 @@
                             <td class="player_table_cell text-nowrap" v-if="session.parameter_set.survey_required">
                                 <span v-if="temp_p.survey_complete">Yes</span>
                                 <span v-else>No</span>
-                            </td>                           
+                            </td>    
+                            <td class="player_table_cell text-nowrap">
+                                <a v-bind:href="'/staff-session-instructions/' + p " target="_blank">View</a>
+                            </td>                       
                         </tr>
                     </tbody>
                     <tfoot>

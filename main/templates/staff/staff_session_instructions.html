@@ -16,17 +16,22 @@
 {%endblock head%}
 
 {% block content %}
-<div class="row d-print-none mb-4">
+<div class="row d-print-none mb-1">
     <div class="col">
         Instructions for session: <a href="/staff-session/{{session.id}}/">{{session.title}}</a>
+    </div>
+</div>
+<div class="row d-print-none mb-4">
+    <div class="col">
+        Player: {{session_player.parameter_set_player.id_label}}</a>
     </div>
 </div>
 
 {% for i in instruction_set.instruction_pages %}
           
-    <div class="mb-2" style="page-break-after: always;">
+    <div class="mb-2" {% if not forloop.last %}style="page-break-after: always;"{% endif %}>
         {{i.text_html|safe}}
-    </div>
+    </div>   
 
 {% endfor %}
 

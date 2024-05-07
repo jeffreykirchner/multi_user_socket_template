@@ -70,7 +70,6 @@ def take_update_parameter_set(data):
         return
     
     form_data_dict = form_data
-    form_data_dict["instruction_set"] = form_data_dict["instruction_set"]["id"]
 
     form = ParameterSetForm(form_data_dict, instance=session.parameter_set)
 

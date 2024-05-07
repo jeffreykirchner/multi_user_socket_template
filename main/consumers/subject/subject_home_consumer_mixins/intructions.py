@@ -74,7 +74,7 @@ def take_next_instruction(session_id, session_player_id, data):
             if session_player.current_instruction_complete < session_player.current_instruction:
                 session_player.current_instruction_complete = copy(session_player.current_instruction)
 
-            if session_player.current_instruction < session.parameter_set.instruction_set.instructions.count():
+            if session_player.current_instruction < session_player.parameter_set_player.instruction_set.instructions.count():
                 session_player.current_instruction += 1
         elif session_player.current_instruction > 1:
              session_player.current_instruction -= 1

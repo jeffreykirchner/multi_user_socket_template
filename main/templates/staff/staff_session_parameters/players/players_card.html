@@ -34,7 +34,10 @@
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
                                     Color
-                                </th>                    
+                                </th>      
+                                <th scope="col" class = "m-1 p-1">
+                                    Instructions
+                                </th>              
                             </tr>
                         </thead>
                         <tbody id="player_list">
@@ -65,6 +68,10 @@
                                     class="player_table_cell"
                                     v-bind:style="{color:temp_p.hex_color.replace('0x','#')}">
                                     [[temp_p.hex_color]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_player(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.instruction_set_label]]
                                 </td>
                             </tr>
                         </tbody>

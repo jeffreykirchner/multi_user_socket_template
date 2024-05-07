@@ -6,6 +6,7 @@ from django import forms
 
 from main.models import ParameterSetGroup
 from main.models import ParameterSetPlayer
+from main.models import InstructionSet
 
 class ParameterSetPlayerForm(forms.ModelForm):
     '''
@@ -33,8 +34,13 @@ class ParameterSetPlayerForm(forms.ModelForm):
     
     hex_color = forms.CharField(label='Hex Color (e.g. 0x00AABB)',
                                 widget=forms.TextInput(attrs={"v-model":"current_parameter_set_player.hex_color",}))
+    
+    instruction_set = forms.ModelChoiceField(label='instruction_set',
+                                             empty_label=None,
+                                             queryset=InstructionSet.objects.all(),
+                                             widget=forms.Select(attrs={"v-model":"current_parameter_set_player.instruction_set",}))
 
     class Meta:
         model=ParameterSetPlayer
-        fields =['id_label', 'parameter_set_group', 'start_x', 'start_y', 'hex_color']
+        fields =['id_label', 'parameter_set_group', 'start_x', 'start_y', 'hex_color','instruction_set']
     
