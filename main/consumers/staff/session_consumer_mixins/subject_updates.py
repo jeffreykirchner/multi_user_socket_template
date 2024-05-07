@@ -2,19 +2,12 @@
 import logging
 import math
 
-from asgiref.sync import sync_to_async
 from textwrap import TextWrapper
-
-from django.db import transaction
-from django.db.models.fields.json import KT
+from datetime import datetime, timedelta
 
 from main.models import SessionPlayer
 from main.models import Session
 from main.models import SessionEvent
-from django.utils.decorators import method_decorator
-
-
-from datetime import datetime, timedelta
 
 from main.globals import ExperimentPhase
 
@@ -229,7 +222,7 @@ class SubjectUpdatesMixin():
         if dt_now - last_update > timedelta(seconds=1):
             # logger.info("updating world state")
             self.world_state_local["last_update"] = str(dt_now)
-            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+            await self.store_world_state()
 
             target_locations = {}
             current_locations = {}
@@ -308,7 +301,7 @@ class SubjectUpdatesMixin():
             current_period.summary_data[player_id_s]["cherries_harvested"] += 1
             await current_period.asave()
 
-            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+            await self.store_world_state()
 
             result["token_id"] = token_id
             result["period_id"] = period_id
@@ -411,7 +404,7 @@ class SubjectUpdatesMixin():
             result["player_id"] = player_id
             result["target_player_id"] = target_player_id
 
-            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+            await self.store_world_state()
 
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     session_player_id=player_id,
@@ -549,7 +542,7 @@ class SubjectUpdatesMixin():
             source_player['tractor_beam_target'] = None
 
             await current_period.asave()
-            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+            await self.store_world_state()
 
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                        session_player_id=player_id,
@@ -612,7 +605,7 @@ class SubjectUpdatesMixin():
 
             source_player['tractor_beam_target'] = None
 
-            await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+            await self.store_world_state()
 
         result = {"source_player_id" : player_id, 
                   "target_player_id" : target_player_id, 

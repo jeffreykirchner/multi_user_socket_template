@@ -18,6 +18,7 @@ class StaffSessionConsumer(SocketConsumerMixin,
                            DataMixin,
                            SubjectUpdatesMixin,
                            InterfaceMixin,
+                           WorldStateMixin,
                            SendMessageMixin):
 
     has_timer_control = False         #this instance is controlling the timer           

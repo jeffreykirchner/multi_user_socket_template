@@ -73,6 +73,10 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         disconnect websockeet
         '''
 
+        #store world state if this channel is controlling the session
+        if self.controlling_channel == self.channel_name:
+            self.store_world_state(force_store=True)
+
         result = await sync_to_async(take_handle_dis_connect, thread_sensitive=False)(self.player_key, False)
 
         #send updated connection status to all users

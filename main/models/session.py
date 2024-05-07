@@ -159,6 +159,7 @@ class Session(models.Model):
         setup world state
         '''
         self.world_state = {"last_update":str(datetime.now()), 
+                            "last_store":str(datetime.now()),
                             "session_players":{},
                             "session_players_order":[],
                             "current_period":1,

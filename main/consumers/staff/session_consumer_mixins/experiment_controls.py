@@ -3,6 +3,7 @@ import logging
 from asgiref.sync import sync_to_async
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.cache import cache
 
 from main.models import Session
 from main.models import SessionEvent
@@ -22,15 +23,16 @@ class ExperimentControlsMixin():
         start experiment
         '''
         result = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
+        cache.set(f"session_{self.session_id}", result["session"])
 
         self.session_events = []
 
         #Send message to staff page
         if result["value"] == "fail":
-            await self.send_message(message_to_self=result, message_to_group=None,
+            await self.send_message(message_to_self={"world_state":result["session"]["world_state"]}, message_to_group=None,
                                     message_type=event['type'], send_to_client=True, send_to_group=False)
         else:
-            await self.send_message(message_to_self=None, message_to_group=result,
+            await self.send_message(message_to_self=None, message_to_group={"world_state":result["session"]["world_state"]},
                                     message_type=event['type'], send_to_client=False, send_to_group=True)
     
     async def update_start_experiment(self, event):
@@ -58,6 +60,7 @@ class ExperimentControlsMixin():
         reset experiment
         '''
         result = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
+        cache.delete(f"session_{self.session_id}")
 
         self.session_events = []
 
@@ -75,7 +78,7 @@ class ExperimentControlsMixin():
         '''
 
         result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
-
+        
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
             
@@ -107,6 +110,10 @@ class ExperimentControlsMixin():
         next phase
         '''
         result = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
+
+        self.world_state_local = result["world_state"]
+        
+        await self.store_world_state()
 
         #Send message to staff page
         if result["value"] == "fail":
@@ -182,7 +189,7 @@ def take_start_experiment(session_id, data):
     value = "success"
     
     return {"value" : value, 
-            "world_state" : session.world_state}
+            "session" : session.json()}
 
 def take_reset_experiment(session_id, data):
     '''
