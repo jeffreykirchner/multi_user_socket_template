@@ -5,6 +5,8 @@ import json
 import logging
 import requests
 
+from datetime import timedelta, datetime
+
 from django.contrib.auth import authenticate, login,logout
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -12,8 +14,11 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.crypto import get_random_string
+from django.contrib.auth.models import User
 
 from main.models import Parameters
+from main.models import ProfileLoginAttempt
+
 from main.forms import LoginForm
 
 class LoginView(TemplateView):
@@ -59,15 +64,9 @@ def login_function(request,data):
     handle login
     '''
     logger = logging.getLogger(__name__)
-    #logger.info(data)
 
-    #convert form into dictionary
     form_data_dict = {}
-
     form_data_dict = data["form_data"]
-
-    # for field in data["form_data"]:
-    #     form_data_dict[field["name"]] = field["value"]
 
     form = LoginForm(form_data_dict)
 
@@ -76,7 +75,13 @@ def login_function(request,data):
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
 
-        #logger.info(f"Login user {username}")
+        #check rate limit
+        user_rl = User.objects.filter(username=username.lower()).first()
+        if user_rl:
+            failed_login_attempts = user_rl.profile_login_attempts.filter(success=False, timestamp__gte=datetime.now()-timedelta(minutes=1)).count()
+
+            if failed_login_attempts > 5:
+                return JsonResponse({"status":"error", "message":"Login failed. Do you have access to this experiment?"}, safe=False)
 
         user = login_function_esi_auth(username=username.lower(), password=password)
 
@@ -85,6 +90,7 @@ def login_function(request,data):
 
         if user is not None:
             login(request, user)
+            ProfileLoginAttempt.objects.create(user=user, success=True)
 
             redirect_path = request.session.get('redirect_path','/')
 
@@ -94,7 +100,11 @@ def login_function(request,data):
         else:
             logger.warning(f"Login user {username} fail user / pass")
 
-            return JsonResponse({"status" : "error"}, safe=False)
+            user = User.objects.filter(username=username.lower()).first()
+            if user:
+                ProfileLoginAttempt.objects.create(user=user, success=False, note="Invalid Password")
+
+            return JsonResponse({"status" : "error", "message":"Invalid username or password"}, safe=False)
     else:
         logger.warning("Login user form validation error")
         return JsonResponse({"status":"validation", "errors":dict(form.errors.items())}, safe=False)

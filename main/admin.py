@@ -14,6 +14,8 @@ from main.forms import InstructionFormAdmin
 from main.forms import InstructionSetFormAdmin
 from main.forms import HelpDocSubjectFormAdmin
 
+from main.models import ProfileLoginAttempt
+
 from main.models import Parameters
 from main.models import ParameterSet
 from main.models import ParameterSetPlayer
@@ -245,4 +247,18 @@ class InstructionSetAdmin(admin.ModelAdmin):
       ]
     
     actions = [duplicate_set]
+
+@admin.register(ProfileLoginAttempt)
+class ProfileLoginAttemptAdmin(admin.ModelAdmin):
+    '''
+    profile login attempt admin
+    '''
+    list_display = ['user','success','timestamp','note']
+    readonly_fields=['success', 'note','user', 'success', 'timestamp', 'note']
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 

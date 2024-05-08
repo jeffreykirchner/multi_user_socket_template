@@ -3,6 +3,8 @@ build models
 '''
 from .parameters import Parameters
 
+from .profile_login_attempt import ProfileLoginAttempt
+
 from .help_docs import  HelpDocs
 
 from .instruction_set import InstructionSet

@@ -41,7 +41,7 @@ var app = Vue.createApp({
                 }
                 else if(status == "error")
                 {
-                    app.login_error_text = "Username or Password is incorrect."
+                    app.login_error_text = response.data.message;
                 }
                 else
                 {
