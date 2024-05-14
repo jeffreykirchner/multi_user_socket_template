@@ -1,4 +1,5 @@
 
+import json
 
 class InterfaceMixin():
     '''
@@ -16,7 +17,7 @@ class InterfaceMixin():
         update target location from subject screen
         '''
         
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         #don't send message to self
         if event_data["session_player_id"] == self.session_player_id:
@@ -35,7 +36,7 @@ class InterfaceMixin():
         '''
         subject collects token update
         '''
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -51,7 +52,7 @@ class InterfaceMixin():
         subject activates tractor beam update
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -67,7 +68,7 @@ class InterfaceMixin():
         a subject has submitted an interaction, update
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -83,7 +84,7 @@ class InterfaceMixin():
         a subject has canceled an interaction, update
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -93,7 +94,7 @@ class InterfaceMixin():
         update rescue subject
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

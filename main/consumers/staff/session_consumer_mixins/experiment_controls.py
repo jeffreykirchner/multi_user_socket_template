@@ -1,9 +1,11 @@
 import logging
+import json
 
 from asgiref.sync import sync_to_async
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
+from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import Session
 from main.models import SessionEvent
@@ -39,8 +41,8 @@ class ExperimentControlsMixin():
         '''
         start experiment on staff
         '''
-
-        self.world_state_local = event['group_data']['world_state']
+        group_data = json.loads(event['group_data'])
+        self.world_state_local = group_data['world_state']
 
         #store first tick
         if self.controlling_channel == self.channel_name:
@@ -128,7 +130,7 @@ class ExperimentControlsMixin():
         update session phase
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         self.world_state_local["finished"] = event_data["finished"]
         self.world_state_local["current_experiment_phase"] = event_data["current_experiment_phase"]

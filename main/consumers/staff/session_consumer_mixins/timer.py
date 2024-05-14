@@ -1,12 +1,8 @@
 import logging
-import asyncio
 import math
+import json
 
 from datetime import datetime
-
-from asgiref.sync import sync_to_async
-
-from django.db import transaction
 
 from main.models import Session
 from main.models import SessionEvent
@@ -110,6 +106,8 @@ class TimerMixin():
                 result["earnings"][i] = {}
                 result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]
                 result["earnings"][i]["period_earnings"] = self.world_state_local["session_players"][i]["inventory"][last_period_id_s]
+            
+            await self.store_world_state(force_store=True)
            
         if self.world_state_local["current_experiment_phase"] != ExperimentPhase.NAMES:
 
@@ -264,7 +262,7 @@ class TimerMixin():
         update time phase
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

@@ -30,7 +30,7 @@ class ChatMixin():
         '''
         send chat to clients, if clients can view it
         '''
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
         
         #format text for chat bubbles
         # wrapper = TextWrapper(width=15, max_lines=6)

@@ -1,5 +1,6 @@
 import logging
 import re
+import json
 
 from asgiref.sync import sync_to_async
 
@@ -65,7 +66,7 @@ class SubjectControlsMixin():
         send anonymize data update to staff sessions
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -107,7 +108,7 @@ class SubjectControlsMixin():
         move subject back to their starting position
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

@@ -53,7 +53,7 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         '''
         update controlling channel
         '''
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
         self.controlling_channel = event_data["controlling_channel"]
            
     #consumer calls to ignore

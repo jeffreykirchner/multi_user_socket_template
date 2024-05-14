@@ -1,4 +1,5 @@
 import logging
+import json
 
 from asgiref.sync import sync_to_async
 
@@ -15,7 +16,7 @@ class PhaseMixin():
         update session phase
         '''
 
-        result = event["group_data"]
+        result = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

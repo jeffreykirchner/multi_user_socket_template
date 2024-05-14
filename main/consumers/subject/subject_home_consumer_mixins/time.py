@@ -1,4 +1,4 @@
-from copy import deepcopy
+import json
 
 class TimeMixin():
     '''
@@ -10,7 +10,7 @@ class TimeMixin():
         update running, phase and time status
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         #remove other player earnings
         # for session_players_earnings in event_data["result"]["session_player_earnings"]:

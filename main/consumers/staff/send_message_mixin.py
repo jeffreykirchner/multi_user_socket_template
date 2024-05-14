@@ -26,7 +26,7 @@ class SendMessageMixin:
                 await self.channel_layer.group_send(
                     self.room_group_name,
                         {"type": f"update_{message_type}",
-                         "group_data": message_to_group,
+                         "group_data": json.dumps(message_to_group, cls=DjangoJSONEncoder),
                          "target_list": target_list,
                          "sender_channel_name": self.channel_name},
                     )

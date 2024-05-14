@@ -1,6 +1,7 @@
 
 import logging
 import math
+import json
 
 from textwrap import TextWrapper
 from datetime import datetime, timedelta
@@ -93,7 +94,7 @@ class SubjectUpdatesMixin():
         '''
         send chat to clients, if clients can view it
         '''
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -253,7 +254,7 @@ class SubjectUpdatesMixin():
         update target location from subject screen
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -327,7 +328,7 @@ class SubjectUpdatesMixin():
         '''
         subject collects token update
         '''
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -422,7 +423,7 @@ class SubjectUpdatesMixin():
         subject activates tractor beam update
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -562,7 +563,7 @@ class SubjectUpdatesMixin():
         subject send an interaction update
         '''
 
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -629,7 +630,7 @@ class SubjectUpdatesMixin():
         '''
         subject transfers tokens update
         '''
-        event_data = event["group_data"]
+        event_data = json.loads(event["group_data"])
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, 
