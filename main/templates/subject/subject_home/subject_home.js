@@ -1,6 +1,8 @@
 
 {% load static %}
 
+"use strict";
+
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
@@ -401,9 +403,9 @@ var app = Vue.createApp({
             }
 
             //update player states
-            for(p in message_data.session_player_status)
+            for(let p in message_data.session_player_status)
             {
-                session_player = message_data.session_player_status[p];
+                let session_player = message_data.session_player_status[p];
                 app.session.world_state.session_players[p].interaction = session_player.interaction;
                 app.session.world_state.session_players[p].frozen = session_player.frozen;
                 app.session.world_state.session_players[p].cool_down = session_player.cool_down;
@@ -411,7 +413,7 @@ var app = Vue.createApp({
             }
 
             //update player location
-            for(p in message_data.current_locations)
+            for(let p in message_data.current_locations)
             {
                 if(p != app.session_player.id)
                 {

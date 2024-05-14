@@ -61,7 +61,7 @@ var app = Vue.createApp({
             s = app.form_ids;                    
             for(let i in s)
             {
-                e = document.getElementById("id_errors_" + s[i]);
+                let e = document.getElementById("id_errors_" + s[i]);
                 if(e) e.remove();
             }
 

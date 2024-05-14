@@ -5,7 +5,7 @@ process_the_feed: function process_the_feed(message_type, message_data)
 {
     if(message_data.status != "success") return;
     
-    html_text = "";
+    let html_text = "";
     let sender_label = "";
     let receiver_label = "";
     let group_label = "";
@@ -15,10 +15,10 @@ process_the_feed: function process_the_feed(message_type, message_data)
         case "update_chat":
 
             sender_label = app.get_parameter_set_player_from_player_id(message_data.sender_id).id_label;
-            source_player_group_label = app.get_parameter_set_group_from_player_id(message_data.sender_id).name;
+            let source_player_group_label = app.get_parameter_set_group_from_player_id(message_data.sender_id).name;
             receiver_label = "";
 
-            for(i in message_data.nearby_players) {
+            for(let i in message_data.nearby_players) {
                 if(receiver_label != "") receiver_label += ", ";
                 group_label = app.get_parameter_set_group_from_player_id(message_data.nearby_players[i]).name;
                 receiver_label += "<b>" + app.get_parameter_set_player_from_player_id(message_data.nearby_players[i]).id_label + "</b>(" + group_label + ")";

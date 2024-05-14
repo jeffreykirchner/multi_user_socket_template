@@ -34,7 +34,7 @@ add_transfer_beam: function add_transfer_beam(source_location, target_location, 
     let xIncrement = Math.sqrt(Math.pow(myX - targetX, 2) + Math.pow(myY - targetY, 2)) / tractorCircles;
     let tempScale = 0;
     
-    element_index = 0;
+    let element_index = 0;
 
     try
     {
@@ -84,7 +84,7 @@ animate_transfer_beams: function animate_transfer_beams(delta)
     let speed = 0.05;
 
     //move the beams
-    for(i in pixi_transfer_beams)
+    for(let i in pixi_transfer_beams)
     {   
 
         let beam_images =  pixi_transfer_beams[i].beam_images;
@@ -133,7 +133,7 @@ animate_transfer_beams: function animate_transfer_beams(delta)
         for(let j in pixi_transfer_beams[completed[i]].elements)
         {
             let transfer_beam = pixi_transfer_beams[completed[i]];
-            element = transfer_beam.elements[j];
+            let element = transfer_beam.elements[j];
 
             let beam_texture = element.texture;
             let source_location = transfer_beam.source_location;

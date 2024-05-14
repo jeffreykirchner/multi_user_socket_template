@@ -33,7 +33,7 @@ send_next_instruction: function send_next_instruction(direction){
 take_next_instruction: function take_next_instruction(message_data){
     if(message_data.value == "success")
     {
-        result = message_data.result;       
+        let result = message_data.result;       
         
         app.session_player.current_instruction = result.current_instruction;
         app.session_player.current_instruction_complete = result.current_instruction_complete;
@@ -69,7 +69,7 @@ take_finish_instructions: function take_finish_instructions(message_data){
     
     if(message_data.value == "success")
     {
-        result = message_data.result;       
+        let result = message_data.result;       
         
         app.session_player.instructions_finished = result.instructions_finished;
         app.session_player.current_instruction_complete = result.current_instruction_complete;

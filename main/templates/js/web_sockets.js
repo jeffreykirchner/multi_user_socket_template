@@ -1,5 +1,5 @@
 //web sockets, needs should be included with companion vue.js app
-do_web_sockets = function()
+function do_web_sockets()
 {
         let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
         app.chat_socket = new WebSocket(            
@@ -30,7 +30,7 @@ do_web_sockets = function()
         };                
 };
 
-random_number = function(min, max){
+function random_number(min, max){
     //return a random number between min and max
     min = Math.ceil(min);
     max = Math.floor(max+1);

@@ -103,7 +103,7 @@ get_offset_staff: function get_offset_staff()
 {
     if(app.follow_subject != -1 && app.session.started)
     {
-        obj = app.session.world_state.session_players[app.follow_subject];
+        let obj = app.session.world_state.session_players[app.follow_subject];
         app.current_location = Object.assign({}, obj.current_location);
     }
 

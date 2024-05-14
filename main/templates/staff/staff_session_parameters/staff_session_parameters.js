@@ -1,6 +1,8 @@
 
 {% load static %}
 
+"use strict";
+
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
@@ -202,7 +204,7 @@ var app = Vue.createApp({
                 if(e) e.remove();
             }
 
-            s = app.parameterset_form_ids;
+            let s = app.parameterset_form_ids;
             for(let i in s)
             {
                 let e = document.getElementById("id_errors_" + s[i]);

@@ -22,7 +22,7 @@ update_notices: function update_notices()
 
     let y_offset = 0;
     let completed = [];
-    for(i in pixi_notices.notices)
+    for(let i in pixi_notices.notices)
     {
         let notice = pixi_notices.notices[i];
 
@@ -50,7 +50,7 @@ update_notices: function update_notices()
     }
 
     // remove completed notices
-    for(i in completed)
+    for(let i in completed)
     {
         delete pixi_notices.notices[completed[i]];
     }

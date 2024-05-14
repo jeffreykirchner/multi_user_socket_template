@@ -35,7 +35,7 @@ get_offset:function get_offset()
         }
 
         //can't move ontop of other players
-        for(i in app.session.world_state.session_players)
+        for(let i in app.session.world_state.session_players)
         {
             let obj = app.session.world_state.session_players[i];
         
@@ -80,7 +80,7 @@ get_offset:function get_offset()
             return;
         }
         
-        for(i in app.session.world_state.session_players)
+        for(let i in app.session.world_state.session_players)
         {
             let obj = app.session.world_state.session_players[i];
 
@@ -114,12 +114,12 @@ get_offset:function get_offset()
  */
 update_offsets_player: function update_offsets_player(delta)
 {
-    offset = app.get_offset();
+    let offset = app.get_offset();
 
     pixi_container_main.x = -offset.x;
     pixi_container_main.y = -offset.y;   
     
-    obj = app.session.world_state.session_players[app.session_player.id];
+    let obj = app.session.world_state.session_players[app.session_player.id];
 
     pixi_target.x = obj.target_location.x;
     pixi_target.y = obj.target_location.y;

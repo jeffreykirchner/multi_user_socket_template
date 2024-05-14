@@ -28,9 +28,9 @@ send_update_parameter_set: function send_update_parameter_set(){
 
     let form_data = {}
 
-    for(i=0;i<app.parameterset_form_ids.length;i++)
+    for(let i=0;i<app.parameterset_form_ids.length;i++)
     {
-        v=app.parameterset_form_ids[i];
+        let v=app.parameterset_form_ids[i];
         form_data[v]=app.parameter_set[v];
     }
 

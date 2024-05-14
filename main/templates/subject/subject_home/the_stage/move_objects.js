@@ -147,7 +147,7 @@ search_for_path_around_walls: function search_for_path_around_walls(starting_rec
              searched:false, shortest_path:0, parent:null, contact:false};
     wall_search.search_grid["x_" + starting_rect.x + "_y_" + starting_rect.y] = v;
 
-    for(a=0;a<15;a++)
+    for(let a=0;a<15;a++)
     {
         let new_search_grid = {};
         wall_search.counter += 1;
@@ -211,7 +211,7 @@ search_for_path_around_walls: function search_for_path_around_walls(starting_rec
 
         //add new grid to existing grid
         
-        for(i in new_search_grid)
+        for(let i in new_search_grid)
         {
             wall_search.search_grid[i] = new_search_grid[i];
 
@@ -231,14 +231,14 @@ search_for_path_around_walls: function search_for_path_around_walls(starting_rec
     //draw grid for testing
     if(draw_grid)
     {
-        for(i=0;i<wall_search_objects.length;i++)
+        for(let i=0;i<wall_search_objects.length;i++)
         {
             wall_search_objects[i].destroy({children:true, baseTexture:true});
         }
 
         wall_search_objects = [];
 
-        for(i in wall_search.search_grid)
+        for(let i in wall_search.search_grid)
         {
             //outline
             let search_grid = wall_search.search_grid[i];

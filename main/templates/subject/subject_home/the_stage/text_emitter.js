@@ -42,7 +42,7 @@ move_text_emitters: function move_text_emitters(delta)
     let completed = [];
 
     //move the emitters
-    for(i in pixi_text_emitter){
+    for(let i in pixi_text_emitter){
 
         let emitter = pixi_text_emitter[i];
         

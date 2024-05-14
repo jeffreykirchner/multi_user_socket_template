@@ -442,9 +442,9 @@ take_interaction: function take_interaction(message_data)
         if(message_data.direction == "send")
         {
             let elements = [];
-            element = {source_change: message_data.source_player_change,
-                       target_change: message_data.target_player_change, 
-                       texture:app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]}
+            let element = {source_change: message_data.source_player_change,
+                           target_change: message_data.target_player_change, 
+                           texture:app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]}
             elements.push(element);
             app.add_transfer_beam(source_player.current_location, 
                                   target_player.current_location,
@@ -453,9 +453,9 @@ take_interaction: function take_interaction(message_data)
         else
         {
             let elements = [];
-            element = {source_change: message_data.target_player_change,
-                       target_change: message_data.source_player_change, 
-                       texture:app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]}
+            let element = {source_change: message_data.target_player_change,
+                           target_change: message_data.source_player_change, 
+                           texture:app.pixi_textures.sprite_sheet_2.textures["cherry_small.png"]}
             elements.push(element);
             app.add_transfer_beam(target_player.current_location, 
                                   source_player.current_location,
@@ -613,7 +613,7 @@ setup_tractor_beam: function setup_tractor_beam(source_id, target_id)
         let temp_x = (myX - Math.cos(tempAngle) * xIncrement * i);
         let temp_y = (myY - Math.sin(tempAngle) * xIncrement * i);
 
-        tb_sprite = pixi_avatars[source_id].tractor_beam[i];
+        let tb_sprite = pixi_avatars[source_id].tractor_beam[i];
         tb_sprite.position.set(temp_x, temp_y)
         tb_sprite.scale.set(tempScale * i);
         tb_sprite.visible = true;
@@ -726,7 +726,7 @@ move_player: function move_player(delta)
 
             if(i != j)
             {
-                temp_distance = app.get_distance(obj1.current_location, obj2.current_location);
+                let temp_distance = app.get_distance(obj1.current_location, obj2.current_location);
 
                 if(!obj1.nearest_player)
                 {
@@ -786,7 +786,7 @@ move_player: function move_player(delta)
         {
             for (let j=0; j< pixi_avatars[i].tractor_beam.length; j++)
             {
-                tb_sprite = pixi_avatars[i].tractor_beam[j];
+                let tb_sprite = pixi_avatars[i].tractor_beam[j];
                 tb_sprite.visible = false;
             }
         }

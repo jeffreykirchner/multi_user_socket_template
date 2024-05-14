@@ -9,7 +9,7 @@
         let result = message_data.result;
         let session_players = app.session.session_players;
 
-        session_player = app.session.session_players[result.id];
+        let session_player = app.session.session_players[result.id];
 
         if(session_player)
         {
@@ -31,8 +31,7 @@ take_update_name: function take_update_name(message_data){
     if(message_data.value == "success")
     {
         let result = message_data.result;
-
-        session_player = app.session.session_players[result.id];
+        let session_player = app.session.session_players[result.id];
 
         if(session_player)
         {
@@ -86,7 +85,7 @@ take_finished_instructions: function take_finished_instructions(message_data){
   */
  take_update_earnings: function take_update_earnings(earnings){
 
-    for(i in earnings)
+    for(let i in earnings)
     {
         app.session.world_state.session_players[i].earnings = earnings[i].total_earnings;
     }
@@ -220,7 +219,7 @@ copy_earnings: function copy_earnings(){
 
     let text="";
  
-    for(i=0;i<app.session.session_players_order.length;i++)
+    for(let i=0;i<app.session.session_players_order.length;i++)
     {
        session_player = app.session.session_players[app.session.session_players_order[i]];
 
@@ -348,7 +347,7 @@ get_average_earnings: function get_average_earnings()
     let total_earnings = 0;
     let count = 0;
 
-    for(i in app.session.world_state.session_players)
+    for(let i in app.session.world_state.session_players)
     {
         total_earnings += app.session.world_state.session_players[i].earnings;
         count++;

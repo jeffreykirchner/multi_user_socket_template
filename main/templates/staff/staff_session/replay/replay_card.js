@@ -34,7 +34,7 @@ replay_load_world_state: function replay_load_world_state()
 {
     let events = app.session_events[app.replay_current_period][app.replay_time_remaining];
 
-    for(i in events)
+    for(let i in events)
     {
         if(events[i].type == "world_state")
         { 
@@ -120,13 +120,13 @@ process_replay_events: function process_replay_events(update_current_location = 
     let current_period = app.replay_current_period;
     let time_remaining = app.replay_time_remaining;
 
-    for(i in app.session_events[current_period][time_remaining])
+    for(let i in app.session_events[current_period][time_remaining])
     {   
         let event =  app.session_events[current_period][time_remaining][i];
 
         if(event.type == "target_location_update")
         {
-            for(i in event.data.target_locations)
+            for(let i in event.data.target_locations)
             {
                 app.session.world_state.session_players[i].target_location = JSON.parse(JSON.stringify(event.data.target_locations[i]));
 
@@ -160,7 +160,7 @@ move_avatars_to_current_location: function move_avatars_to_current_location()
 
     let event = app.session_events[current_period][time_remaining].target_locations;
 
-    for(i in event.data.current_locations)
+    for(let i in event.data.current_locations)
     {
         app.session.world_state.session_players[i].current_location = JSON.parse(JSON.stringify(event.data.current_locations[i]));
     }

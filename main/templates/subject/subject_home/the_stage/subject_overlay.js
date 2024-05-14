@@ -14,7 +14,7 @@ setup_subject_status_overlay: function setup_subject_status_overlay()
     subject_status_overlay.container = new PIXI.Container();
     subject_status_overlay.container.zIndex = 9999
 
-    temp_y = 0;
+    let temp_y = 0;
 
     let text_style = {
         fontFamily: 'Arial',
@@ -49,6 +49,7 @@ setup_subject_status_overlay: function setup_subject_status_overlay()
 
     //amounts
     temp_y = 0;
+
     //current period 
     let current_period_label = new PIXI.Text({text:'NN', style:text_style});
 
