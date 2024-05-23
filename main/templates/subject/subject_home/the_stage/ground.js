@@ -17,7 +17,7 @@ setup_pixi_ground: function setup_pixi_ground()
 
         //outline
         let outline = new PIXI.Graphics();
-        matrix = new PIXI.Matrix(ground.scale,0,0,ground.scale,0,0);
+        let matrix = new PIXI.Matrix(ground.scale,0,0,ground.scale,0,0);
         matrix.rotate(ground.rotation);
         
         outline.tint = ground.tint;

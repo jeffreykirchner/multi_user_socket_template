@@ -6,22 +6,22 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-//global variables
-var subject_status_overlay = {container:null, current_period_label:null, time_remaining_label:null, profit_label:null};
-var pixi_target = null;                        //target sprite for your avatar
-var pixi_mini_map = {container:null};               //mini map container
-var pixi_notices = {container:null, notices:{}};                         //notices
-var pixi_notices_key = 0;
+//global letiables
+let subject_status_overlay = {container:null, current_period_label:null, time_remaining_label:null, profit_label:null};
+let pixi_target = null;                        //target sprite for your avatar
+let pixi_mini_map = {container:null};               //mini map container
+let pixi_notices = {container:null, notices:{}};                         //notices
+let pixi_notices_key = 0;
 
 {%include "subject/subject_home/the_stage/pixi_globals.js"%}
 
 //prevent right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 
-var worker = null;
+let worker = null;
 
 //vue app
-var app = Vue.createApp({
+let app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
     data() {return {chat_socket : "",
@@ -587,7 +587,9 @@ var app = Vue.createApp({
     },
 
     mounted(){
-        window.addEventListener('resize', this.handleResize);
+        Vue.nextTick(() => {
+            window.addEventListener('resize', app.handleResize);
+        });
     },
 
 }).mount('#app');

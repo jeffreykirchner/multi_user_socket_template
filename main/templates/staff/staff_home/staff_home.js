@@ -4,11 +4,11 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 const { createApp, ref } = Vue
 //vue app
-var app = createApp({
+let app = createApp({
     delimiters: ["[[", "]]"],
 
     setup() {
-        //variables
+        //letiables
         const chat_socket = ref("");
         const reconnecting = ref(true);
         const working = ref(false);

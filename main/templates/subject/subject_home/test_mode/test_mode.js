@@ -63,7 +63,7 @@ do_test_mode_instructions: function do_test_mode_instructions()
     if(app.session_player.current_instruction == app.session_player.current_instruction_complete)
     {
 
-        if(app.session_player.current_instruction == app.instruction_pages.length)
+        if(app.session_player.current_instruction == app.instructions.instruction_pages.length)
             document.getElementById("instructions_start_id").click();
         else
             document.getElementById("instructions_next_id").click();

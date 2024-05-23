@@ -6,13 +6,13 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-//var app.session.world_state = {};
+//let app.session.world_state = {};
 {%include "subject/subject_home/the_stage/pixi_globals.js"%}
 
-var worker = null;
+let worker = null;
 
 //vue app
-var app = Vue.createApp({
+let app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
     data() {return {chat_socket : "",

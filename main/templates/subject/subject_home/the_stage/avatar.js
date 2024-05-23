@@ -326,7 +326,7 @@ update_player_inventory: function update_player_inventory()
  */
 take_tractor_beam: function take_tractor_beam(message_data)
 {
-    var source_player_id = message_data.source_player_id;
+    let source_player_id = message_data.source_player_id;
 
     if(message_data.status == "success")
     {
@@ -495,7 +495,7 @@ hide_interaction_start_modal: function hide_interaction_start_modal(){
  */
 cancel_interaction:function cancel_interaction()
 {
-    session_player = app.session.world_state.session_players[app.session_player.id];
+    let session_player = app.session.world_state.session_players[app.session_player.id];
 
     if(session_player.interaction == 0)
     {        
