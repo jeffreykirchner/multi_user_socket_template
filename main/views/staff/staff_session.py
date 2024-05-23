@@ -39,7 +39,7 @@ class StaffSessionView(SingleObjectMixin, View):
         
         parameters = Parameters.objects.first()
 
-        session = self.get_object()
+        session = Session.objects.only("id", "parameter_set").get(id=self.kwargs['pk'])
 
         staff_edit_name_etc_form_ids=[]
         for i in StaffEditNameEtcForm():

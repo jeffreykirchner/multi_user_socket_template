@@ -13,7 +13,7 @@ def user_is_owner(function):
         logger = logging.getLogger(__name__) 
         logger.info(f"user_is_owner {args} {kwargs}")
 
-        session = Session.objects.get(id=kwargs['pk'])
+        session = Session.objects.only("creator","collaborators").get(id=kwargs['pk'])
 
         if request.user == session.creator or \
            request.user.is_superuser or \

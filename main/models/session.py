@@ -61,6 +61,8 @@ class Session(models.Model):
 
     world_state = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session State")       #world state at this point in session
 
+    replay_data = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Replay Data")   
+
     soft_delete =  models.BooleanField(default=False)                             #hide session if true
 
     timestamp = models.DateTimeField(auto_now_add=True)

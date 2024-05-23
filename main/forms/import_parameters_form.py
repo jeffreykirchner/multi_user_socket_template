@@ -12,7 +12,8 @@ class ImportParametersForm(forms.Form):
         self.user = kwargs.pop('user', None)
         self.session_id = kwargs.pop('session_id', None)
         super(ImportParametersForm, self).__init__(*args, **kwargs)
-        self.fields['session'].queryset = Session.objects.filter(soft_delete=False) \
+        self.fields['session'].queryset = Session.objects.only('title','creator', 'shared', 'collaborators')\
+                                                         .filter(soft_delete=False) \
                                                          .exclude(id=self.session_id) \
                                                          .filter(Q(creator=self.user) | Q(shared=True) | Q(collaborators=self.user))\
                                                          .distinct() \
