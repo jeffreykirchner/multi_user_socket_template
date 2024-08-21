@@ -6,6 +6,8 @@ import json
 from textwrap import TextWrapper
 from datetime import datetime, timedelta
 
+from django.utils.html import strip_tags
+
 from main.models import SessionPlayer
 from main.models import Session
 from main.models import SessionEvent
@@ -60,7 +62,7 @@ class SubjectUpdatesMixin():
             session_player = self.world_state_local["session_players"][str(player_id)]
             session_player["current_location"] = current_location
             
-            result["text"] = event_data["text"]
+            result["text"] = strip_tags(event_data["text"])
             result["nearby_players"] = []
 
             #format text for chat bubbles
