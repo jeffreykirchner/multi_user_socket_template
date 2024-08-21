@@ -92,7 +92,10 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
     if(app.pixi_mode=="subject")
     {
         tiling_sprite.eventMode ='static';
-        tiling_sprite.on("pointerup", app.subject_pointer_up);        
+        
+        tiling_sprite.on("click", app.subject_pointer_click);     
+        tiling_sprite.on("rightclick", app.subject_pointer_right_click);   
+        tiling_sprite.on("tap", app.subject_pointer_tap);       
                
         pixi_target = new PIXI.Graphics();
         

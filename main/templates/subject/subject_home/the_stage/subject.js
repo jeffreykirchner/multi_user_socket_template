@@ -10,101 +10,129 @@ get_offset:function get_offset()
 },
 
 /**
- *pointer up on subject screen
- */
- subject_pointer_up: function subject_pointer_up(event)
+ *pointer click on subject screen
+*/
+subject_pointer_click: function subject_pointer_click(event)
 {
     if(!app.session.world_state.hasOwnProperty('started')) return;
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     let local_player = app.session.world_state.session_players[app.session_player.id];
 
-    if(event.button == 0)
+    if(event.data.detail>1)
     {
+        app.subject_pointer_right_click(event);
+        return;
+    }
 
-        if(local_player.frozen)
-        {
-            app.add_text_emitters("No movement while interacting.", 
-                            local_player.current_location.x, 
-                            local_player.current_location.y,
-                            local_player.current_location.x,
-                            local_player.current_location.y-100,
-                            0xFFFFFF,
-                            28,
-                            null);
+    if(local_player.frozen)
+    {
+        app.add_text_emitters("No movement while interacting.", 
+                        local_player.current_location.x, 
+                        local_player.current_location.y,
+                        local_player.current_location.x,
+                        local_player.current_location.y-100,
+                        0xFFFFFF,
+                        28,
+                        null);
+        return;
+    }
+
+    //can't move ontop of other players
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj = app.session.world_state.session_players[i];
+    
+        if(obj.id == app.session_player.id) continue;
+
+        if(app.get_distance(obj.current_location, local_pos) < 100)
+        {            
             return;
         }
+    }
+    
+    local_player.target_location.x = local_pos.x;
+    local_player.target_location.y = local_pos.y;
 
-        //can't move ontop of other players
-        for(let i in app.session.world_state.session_players)
+    app.target_location_update();
+
+},
+
+/**
+ * subect_pointer_tap
+ */
+subject_pointer_tap: function subject_pointer_tap(event)
+{
+    if(Date.now() - app.last_subject_pointer_tap > 200)
+    {
+        app.subject_pointer_click(event);
+    }
+    else
+    {
+        app.subject_pointer_right_click(event);
+    }   
+
+    app.last_subject_pointer_tap = Date.now();
+},
+
+/**
+ * pointer right click on subject screen
+ */
+subject_pointer_right_click: function subject_pointer_right_click(event)
+{
+    if(!app.session.world_state.hasOwnProperty('started')) return;
+    let local_pos = event.data.getLocalPosition(event.currentTarget);
+    let local_player = app.session.world_state.session_players[app.session_player.id];
+
+    if(local_player.frozen)
+    {
+        app.add_text_emitters("No actions while interacting.", 
+                        local_player.current_location.x, 
+                        local_player.current_location.y,
+                        local_player.current_location.x,
+                        local_player.current_location.y-100,
+                        0xFFFFFF,
+                        28,
+                        null);
+        return;
+    }
+
+    if(local_player.cool_down > 0)
+    {
+        app.add_text_emitters("No actions cooling down.", 
+                        local_player.current_location.x, 
+                        local_player.current_location.y,
+                        local_player.current_location.x,
+                        local_player.current_location.y-100,
+                        0xFFFFFF,
+                        28,
+                        null);
+        return;
+    }
+    
+    for(let i in app.session.world_state.session_players)
+    {
+        let obj = app.session.world_state.session_players[i];
+
+        if(app.get_distance(obj.current_location, local_pos) < 100 &&
+            app.get_distance(obj.current_location, local_player.current_location) <= app.session.parameter_set.interaction_range+125)
         {
-            let obj = app.session.world_state.session_players[i];
-        
-            if(obj.id == app.session_player.id) continue;
 
-            if(app.get_distance(obj.current_location, local_pos) < 100)
-            {            
+            if(app.session.world_state.time_remaining > app.session.parameter_set.period_length &&
+                app.session.world_state.current_period % app.session.parameter_set.break_frequency == 0)
+            {
+                app.add_text_emitters("No interactions while on break.", 
+                                        obj.current_location.x, 
+                                        obj.current_location.y,
+                                        obj.current_location.x,
+                                        obj.current_location.y-100,
+                                        0xFFFFFF,
+                                        28,
+                                        null);
                 return;
             }
-        }
-        
-        local_player.target_location.x = local_pos.x;
-        local_player.target_location.y = local_pos.y;
 
-        app.target_location_update();
-    }
-    else if(event.button == 2)
-    {
-        if(local_player.frozen)
-        {
-            app.add_text_emitters("No actions while interacting.", 
-                            local_player.current_location.x, 
-                            local_player.current_location.y,
-                            local_player.current_location.x,
-                            local_player.current_location.y-100,
-                            0xFFFFFF,
-                            28,
-                            null);
-            return;
-        }
-
-        if(local_player.cool_down > 0)
-        {
-            app.add_text_emitters("No actions cooling down.", 
-                            local_player.current_location.x, 
-                            local_player.current_location.y,
-                            local_player.current_location.x,
-                            local_player.current_location.y-100,
-                            0xFFFFFF,
-                            28,
-                            null);
-            return;
-        }
-        
-        for(let i in app.session.world_state.session_players)
-        {
-            let obj = app.session.world_state.session_players[i];
-
-            if(app.get_distance(obj.current_location, local_pos) < 100 &&
-               app.get_distance(obj.current_location, local_player.current_location) <= app.session.parameter_set.interaction_range+125)
-            {
-
-                if(app.session.world_state.time_remaining > app.session.parameter_set.period_length &&
-                    app.session.world_state.current_period % app.session.parameter_set.break_frequency == 0)
-                {
-                    app.add_text_emitters("No interactions while on break.", 
-                                            obj.current_location.x, 
-                                            obj.current_location.y,
-                                            obj.current_location.x,
-                                            obj.current_location.y-100,
-                                            0xFFFFFF,
-                                            28,
-                                            null);
-                    return;
-                }
-
-                app.subject_avatar_click(i);              
-                break;
-            }
+            app.subject_avatar_click(i);              
+            break;
         }
     }
 },

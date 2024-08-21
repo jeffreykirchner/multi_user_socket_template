@@ -54,6 +54,9 @@ let app = Vue.createApp({
                     help_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
+                    //last time screen was tapped
+                    last_subject_pointer_tap : Date.now(),
+
                     //pixi
                     canvas_width  : null,
                     canvas_height : null,
