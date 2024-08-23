@@ -13,12 +13,12 @@ let pixi_mini_map = {container:null};               //mini map container
 let pixi_notices = {container:null, notices:{}};                         //notices
 let pixi_notices_key = 0;
 
-{%include "subject/subject_home/the_stage/pixi_globals.js"%}
-
 //prevent right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 
 let worker = null;
+
+{%include "subject/subject_home/the_stage/pixi_globals.js"%}
 
 //vue app
 let app = Vue.createApp({

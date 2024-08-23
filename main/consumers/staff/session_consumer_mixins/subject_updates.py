@@ -66,8 +66,8 @@ class SubjectUpdatesMixin():
             result["nearby_players"] = []
 
             #format text for chat bubbles
-            wrapper = TextWrapper(width=13, max_lines=6)
-            result['text'] = wrapper.fill(text=result['text'])
+            # wrapper = TextWrapper(width=13, max_lines=6)
+            # result['text'] = wrapper.fill(text=result['text'])
 
             #find nearby players
             session_players = self.world_state_local["session_players"]

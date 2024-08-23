@@ -124,12 +124,15 @@ setup_pixi_subjects: function setup_pixi_subjects(){
             fontSize: 18,
             fill: 0x000000,
             align: 'left',
+            // wordWrap: true,
+            // wordWrapWidth: chat_bubble_sprite.width-40,
+            // breakWords: true,
         }}); 
 
         chat_container.addChild(chat_bubble_sprite);
         chat_container.addChild(chat_bubble_text);
 
-        chat_bubble_text.position.set(-14 * app.session.parameter_set.avatar_scale, -chat_container.height*.09)
+        chat_bubble_text.position.set(app.session.parameter_set.avatar_scale, -chat_container.height*.085)
         chat_bubble_text.anchor.set(0.5);
         
         pixi_avatars[i].chat = {};
