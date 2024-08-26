@@ -124,9 +124,6 @@ setup_pixi_subjects: function setup_pixi_subjects(){
             fontSize: 18,
             fill: 0x000000,
             align: 'left',
-            // wordWrap: true,
-            // wordWrapWidth: chat_bubble_sprite.width-40,
-            // breakWords: true,
         }}); 
 
         chat_container.addChild(chat_bubble_sprite);

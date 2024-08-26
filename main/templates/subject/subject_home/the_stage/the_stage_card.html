@@ -90,22 +90,33 @@
         </div>
 
         <div class="row justify-content-center mt-2" v-show="session.started" v-if="pixi_mode=='subject'">
-            <div class="col-md-4">                 
-                <div class="input-group">
-                    <input type="text" 
-                           id="chat_text_id" 
-                           class="form-control" 
-                           placeholder="Chat Text" 
-                           v-model="chat_text"
-                           aria-label="Chat Text"                           
-                           v-on:keyup.enter="send_chat()"
-                           aria-describedby="send_chat_id">
-                    <button class="btn btn-outline-primary"
-                            type="button" 
-                            id="send_chat_id" 
-                            v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
-                            v-on:click="send_chat()">Chat <i class="far fa-comments"></i></button>
-                  </div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group">
+                            <input type="text" 
+                                class="form-control form-control-lg" 
+                                placeholder="Chat Text" 
+                                v-model="chat_text"
+                                id="id_chat_text"
+                                aria-label="Chat Text"                           
+                                v-on:keyup.enter="send_chat()"
+                                maxlength="100"
+                                aria-describedby="send_chat_id">
+                            <button class="btn btn-outline-primary btn-lg"
+                                    type="button" 
+                                    id="send_chat_id" 
+                                    v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
+                                    v-on:click="send_chat()">Chat <i class="far fa-comments"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col text-end pe-4 text-secondary">
+                        [[chat_text.length]]/100
+                    </div>
+                </div>
             </div>
         </div>
        
