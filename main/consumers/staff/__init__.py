@@ -1,2 +1,3 @@
 from .staff_session_consumer import StaffSessionConsumer
 from .staff_session_parameters_consumer import StaffSessionParametersConsumer
+from .staff_instructions_consumer import StaffInstructionsConsumer
