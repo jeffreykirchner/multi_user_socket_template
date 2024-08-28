@@ -74,13 +74,14 @@ class StaffInstructionsConsumer(SocketConsumerMixin,
 
         #build response
 
-        result = InstructionSet.objects.values_list('id', 'label').order_by('label')
-
-        result_dict = {}
+        instructions = {}
         async for i in InstructionSet.objects.values('id', 'label').order_by('label'):
-            result_dict[i['id']] = i['label']
+            instructions[i['id']] = {'label':i['label'],
+                                     'id':i['id']}
 
-        await self.send_message(message_to_self=result_dict, message_to_group=None,
+        result = {'instructions': instructions}
+
+        await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
     
 
