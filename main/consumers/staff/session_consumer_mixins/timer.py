@@ -3,11 +3,13 @@ import math
 import json
 
 from datetime import datetime
+from decimal import Decimal
 
 from main.models import Session
 from main.models import SessionEvent
 
 from main.globals import ExperimentPhase
+from main.globals import round_up
 
 class TimerMixin():
     '''
@@ -101,11 +103,14 @@ class TimerMixin():
             last_period["consumption_completed"] = True
             
             for i in self.world_state_local["session_players"]:
-                self.world_state_local["session_players"][i]["earnings"] += self.world_state_local["session_players"][i]["inventory"][last_period_id_s]
+                period_earnings = (self.world_state_local["session_players"][i]["inventory"][last_period_id_s] * 
+                                           Decimal(self.parameter_set_local["token_cents_value"]))
+                
+                self.world_state_local["session_players"][i]["earnings"] += period_earnings
 
                 result["earnings"][i] = {}
-                result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]
-                result["earnings"][i]["period_earnings"] = self.world_state_local["session_players"][i]["inventory"][last_period_id_s]
+                result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]/100
+                result["earnings"][i]["period_earnings"] = period_earnings
             
             await self.store_world_state(force_store=True)
            
@@ -167,11 +172,15 @@ class TimerMixin():
                     last_period["consumption_completed"] = True
                     
                     for i in self.world_state_local["session_players"]:
-                        self.world_state_local["session_players"][i]["earnings"] += self.world_state_local["session_players"][i]["inventory"][last_period_id_s]
+
+                        period_earnings = (self.world_state_local["session_players"][i]["inventory"][last_period_id_s] * 
+                                           Decimal(self.parameter_set_local["token_cents_value"]))
+
+                        self.world_state_local["session_players"][i]["earnings"] += period_earnings
 
                         result["earnings"][i] = {}
                         result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]
-                        result["earnings"][i]["period_earnings"] = self.world_state_local["session_players"][i]["inventory"][last_period_id_s]
+                        result["earnings"][i]["period_earnings"] = period_earnings
                         
                         current_period.summary_data[i]["earnings"] = result["earnings"][i]["period_earnings"]
 
