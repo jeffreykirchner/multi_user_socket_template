@@ -30,17 +30,15 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         inital connection from websocket
         '''
         self.thread_sensitive = True if hasattr(sys, '_called_from_test') else False
-
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
         
         kwargs = self.scope['url_route']['kwargs']
-        room_name =  kwargs.get('room_name')
+        self.room_name =  kwargs.get('room_name')
         page_key =  kwargs.get('page_key',"")
         
         self.player_key =  kwargs.get('player_key',"")
 
         #self.room_group_name = room_name + page_key
-        self.room_group_name = f'{page_key}-{room_name}'
+        self.room_group_name = f'{page_key}-{self.room_name}'
 
         # Join room group
         await self.channel_layer.group_add(
@@ -50,7 +48,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
 
         result = await sync_to_async(take_handle_dis_connect, thread_sensitive=self.thread_sensitive)(self.player_key, True)
 
-        session = await Session.objects.filter(channel_key=room_name).afirst()
+        session = await Session.objects.filter(channel_key=self.room_name).afirst()
 
         #send updated connection status to all users
         await self.channel_layer.group_send(
