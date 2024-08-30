@@ -1,0 +1,62 @@
+<div class="card">                  
+    <div class="card-header">
+        <span v-show="reconnecting">
+            Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
+        </span>
+
+        <span class="float-end">
+            <button class="btn btn-outline-success" type="button" v-on:click = "send_create_instruction()" v-bind:disabled = "reconnecting || working">
+                Create New Instruction Set
+            </button>
+        </span>
+                                                        
+    </div>
+    <div class="card-body">                      
+                        
+        <!-- instruction list -->
+        <table class="table table-hover table-condensed table-responsive-md">                            
+
+            <caption style="caption-side:top;text-align: center;">Instructions</caption>
+
+            <thead>
+                <th scope="col">
+                    Title
+                </th> 
+                <th scope="col" class="text-center">
+                    Sessions                             
+                </th>                                                              
+                <th scope="col" class="text-center">
+                    Control
+                </th>
+            </thead>
+
+            <tbody id="instructionList">                                                  
+                <tr v-for="(s,index) in instructions" v-bind:key="s.id">                                                                          
+                    <td> 
+                        <a :href="'/staff-instruction-edit/' + s.id + '/' ">[[s.label]]</span></a>                                        
+                    </td>
+                    <td class="text-center"> 
+                                                     
+                    </td>
+                    <td class="text-center">
+                        <div v-if="s.locked">
+                            Locked
+                        </div>
+                        <div v-else>
+                            <button v-bind:id="'deleteInstruction' + s.id"
+                                    type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    v-on:click = "send_delete_instruction(s.id)"
+                                    title = "Delete instruction and its data."
+                                    v-bind:disabled = "reconnecting || working">
+                                Delete <i class="fas fa-user-minus fa-xs"></i>  
+                            </button>
+                        </div>                        
+                    </td>
+                </tr>                                                    
+            </tbody>
+            
+        </table>                 
+        
+    </div>                    
+</div>

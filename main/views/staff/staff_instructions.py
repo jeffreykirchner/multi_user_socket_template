@@ -3,7 +3,6 @@ staff instructions
 '''
 import uuid
 
-
 from django.views.generic import View
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
@@ -30,5 +29,5 @@ class StaffInstructionsView(View):
 
         return render(request, self.template_name, {"channel_key" : uuid.uuid4(),
                                                     "player_key" :  uuid.uuid4(),
-                                                    "page_key" : "staff-home",
+                                                    "page_key" : "staff-instructions",
                                                     "websocket_path" : self.websocket_path})

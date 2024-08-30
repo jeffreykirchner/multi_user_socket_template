@@ -21,6 +21,7 @@ urlpatterns = [
     path('', views.StaffHomeView.as_view(), name='home'),
     path('staff-home/', views.StaffHomeView.as_view(), name='staff-home'),
     path('staff-instructions/', views.StaffInstructionsView.as_view(), name='staff-instructions'),
+     path('staff-instruction-edit/<int:pk>/', views.StaffInstructionEditView.as_view(), name='staff-instruction-edit'),
     path('staff-session/<int:pk>/', views.StaffSessionView.as_view(), name='staff_session'),
     path('staff-session/<int:pk>/parameters', views.StaffSessionParametersView.as_view(), name='staff_session_parameters'),
     path('staff-session-subject-earnings/<int:pk>/', views.StaffSessionSubjectEarnings.as_view(), name='staff_session_subject_earnings'),
