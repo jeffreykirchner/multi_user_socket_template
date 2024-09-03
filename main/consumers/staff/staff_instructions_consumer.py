@@ -13,6 +13,9 @@ from .send_message_mixin import SendMessageMixin
 import main
 
 from main.models import InstructionSet
+from main.models import ParameterSetPlayer
+from main.models import ParameterSet
+from main.models import Session
 
 # from main.globals import create_new_instructions_parameterset
 
@@ -72,12 +75,20 @@ class StaffInstructionsConsumer(SocketConsumerMixin,
         self.user = self.scope["user"]
         #logger.info(f"User {self.user}")     
 
-        #build response
-
         instructions = {}
-        async for i in InstructionSet.objects.values('id', 'label').order_by('label'):
+        async for i in InstructionSet.objects.values('id', 'label', 'parameter_set_players_c').order_by('label'):
+
+            parameter_set_ids = ParameterSetPlayer.objects.filter(instruction_set_id=i['id']).values_list('parameter_set_id', flat=True)
+            parameter_sets = ParameterSet.objects.filter(id__in=parameter_set_ids).values_list('id', flat=True)
+            sessions = Session.objects.filter(parameter_set_id__in=parameter_sets).values('id', 'title').order_by('title')
+
+            sessions_dict = {}
+            async for s in sessions:
+                sessions_dict[s['id']] = s['title']
+
             instructions[i['id']] = {'label':i['label'],
-                                     'id':i['id']}
+                                     'id':i['id'],
+                                     'sessions_dict' : sessions_dict}
 
         result = {'instructions': instructions}
 

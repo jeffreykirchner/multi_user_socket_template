@@ -39,12 +39,12 @@ class Session(models.Model):
     '''
     session model
     '''
-    parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE)
+    parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="sessions_c")
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sessions_a")
     collaborators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="sessions_b")
 
     title = models.CharField(max_length=300, default="*** New Session ***")    #title of session
-    start_date = models.DateField(default=now)                                   #date of session start
+    start_date = models.DateField(default=now)                                 #date of session start
 
     channel_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Channel Key')     #unique channel to communicate on
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
