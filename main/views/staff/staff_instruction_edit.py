@@ -33,5 +33,6 @@ class StaffInstructionEditView(SingleObjectMixin, View):
                                "channel_key" : uuid.uuid4(),
                                "player_key" :  uuid.uuid4(),
                                "page_key" : "staff-instructions",
+                               "instrution_set_id" : instruction_set.id,
                                "websocket_path" : self.websocket_path
                                })

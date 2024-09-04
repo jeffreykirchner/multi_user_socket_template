@@ -62,7 +62,7 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
     
-    async def get_instruction(self, event):
+    async def get_instruction_set(self, event):
         '''
         return a list of instructions
         '''
@@ -70,16 +70,12 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         #logger.info(f"Get instructions {event}")   
 
         self.user = self.scope["user"]
-        #logger.info(f"User {self.user}")     
+        message_text = event["message_text"] 
 
         #build response
+        instruction_set = await InstructionSet.objects.aget(id=message_text['id'])
 
-        instruction = {}
-        async for i in InstructionSet.objects.values('id', 'label').order_by('label'):
-            instruction[i['id']] = {'label':i['label'],
-                                     'id':i['id']}
-
-        result = {'instruction': instruction}
+        result = {'instruction_set': await instruction_set.ajson()}
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

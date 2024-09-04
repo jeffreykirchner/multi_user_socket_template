@@ -80,6 +80,24 @@ class InstructionSet(models.Model):
             "instruction_pages" : [i.json() for i in self.instructions.all()],
         }
     
+    async def ajson(self):
+        '''
+        json object of model
+        '''
+
+        return{
+            "id" : self.id,         
+
+            "label" : self.label,
+
+            "action_page_1" : self.action_page_1,
+            "action_page_2" : self.action_page_2,
+            "action_page_3" : self.action_page_3,
+            "action_page_4" : self.action_page_4,
+            "action_page_5" : self.action_page_5,
+            "action_page_6" : self.action_page_6,
+        }
+    
     #return json object of class
     def json_min(self):
         '''

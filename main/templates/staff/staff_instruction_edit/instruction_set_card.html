@@ -1,0 +1,78 @@
+<div class="card">                  
+    <div class="card-header">
+        <span v-show="reconnecting">
+            Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
+        </span>
+
+        <span class="float-end">
+            <button class="btn btn-outline-success" type="button" v-on:click = "" v-bind:disabled = "reconnecting || working">
+                Import Instruction Set
+            </button>
+        </span>
+                                                        
+    </div>
+    <div class="card-body fs-5" v-if="instruction_set">                      
+        <div class="row">
+            <div class="col text-end">
+                Name:
+            </div>
+            <div class="col">
+                [[instruction_set.label]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                Action Page 1:
+            </div>
+            <div class="col">
+                [[instruction_set.action_page_1]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                Action Page 2:
+            </div>
+            <div class="col">
+                [[instruction_set.action_page_2]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                Action Page 3:
+            </div>
+            <div class="col">
+                [[instruction_set.action_page_3]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                Action Page 4:
+            </div>
+            <div class="col">
+                [[instruction_set.action_page_4]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                Action Page 5:
+            </div>
+            <div class="col">
+                [[instruction_set.action_page_5]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                Action Page 6:
+            </div>
+            <div class="col">
+                [[instruction_set.action_page_6]]
+            </div>
+        </div>
+    </div>                    
+</div>
