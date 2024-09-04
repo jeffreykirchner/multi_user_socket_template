@@ -3,17 +3,16 @@
  */
 function send_create_instruction(){
     app.working = true;
-    app.create_instruction_button_text ='<i class="fas fa-spinner fa-spin"></i>';
     app.send_message("create_instruction",{});
 }
 
-/**
- * take crate a new instruction
- */
-function take_create_instruction(message_data){    
-    app.create_instruction_button_text ='Create instruction <i class="fas fa-plus"></i>';
-    app.take_get_instructions(message_data);
-}
+// /**
+//  * take crate a new instruction
+//  */
+// function take_create_instruction(message_data){    
+//     app.create_instruction_button_text ='Create instruction <i class="fas fa-plus"></i>';
+//     app.take_get_instructions(message_data);
+// }
 
 /**
  * send request to delete instruction

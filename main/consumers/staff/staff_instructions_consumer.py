@@ -13,6 +13,7 @@ from .send_message_mixin import SendMessageMixin
 import main
 
 from main.models import InstructionSet
+from main.models import Instruction
 from main.models import ParameterSetPlayer
 from main.models import ParameterSet
 from main.models import Session
@@ -47,7 +48,7 @@ class StaffInstructionsConsumer(SocketConsumerMixin,
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type='get_instructionss', send_to_client=True, send_to_group=False)
 
-    async def create_instructions(self, event):
+    async def create_instruction(self, event):
         '''
         create a new instructions
         '''
@@ -57,13 +58,21 @@ class StaffInstructionsConsumer(SocketConsumerMixin,
         self.user = self.scope["user"]
         #logger.info(f"User {self.user}")
 
-        await sync_to_async(create_new_instructions)(self.user)
+        c = await InstructionSet.objects.all().order_by('id').alast()
+
+        instruction_set = await InstructionSet.objects.acreate(label=f"** New Instruction Set {c.id+1} ***")
+        instruction = await Instruction.objects.acreate(instruction_set=instruction_set, 
+                                                 text_html="** New Instruction Page ***", 
+                                                 page_number=1)
         
         #build response
-        result = await sync_to_async(get_instructions_list_json)(self.user)
+        # result = await sync_to_async(get_instructions_list_json)(self.user)
 
-        await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
+        # await self.send_message(message_to_self=result, message_to_group=None,
+        #                         message_type=event['type'], send_to_client=True, send_to_group=False)
+
+        event['type'] = 'get_instructions'
+        await self.get_instructions(event)
     
     async def get_instructions(self, event):
         '''
@@ -80,38 +89,26 @@ class StaffInstructionsConsumer(SocketConsumerMixin,
 
             parameter_set_ids = ParameterSetPlayer.objects.filter(instruction_set_id=i['id']).values_list('parameter_set_id', flat=True)
             parameter_sets = ParameterSet.objects.filter(id__in=parameter_set_ids).values_list('id', flat=True)
-            sessions = Session.objects.filter(parameter_set_id__in=parameter_sets).values('id', 'title').order_by('title')
+            sessions = Session.objects.filter(parameter_set_id__in=parameter_sets)\
+                                      .filter(soft_delete=False)\
+                                      .values('id', 'title')\
+                                      .order_by('title')
 
             sessions_dict = {}
             async for s in sessions:
-                sessions_dict[s['id']] = s['title']
+                sessions_dict[s['id']] = {'title':s['title'],
+                                          'id':s['id']}
 
             instructions[i['id']] = {'label':i['label'],
                                      'id':i['id'],
-                                     'sessions_dict' : sessions_dict}
+                                     'locked': True if len(sessions_dict) > 0 else False,
+                                     'sessions' : sessions_dict}
 
         result = {'instructions': instructions}
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
     
-
-    async def get_instructionss_admin(self, event):
-        '''
-        return a list of all instructionss
-        '''
-        logger = logging.getLogger(__name__) 
-        #logger.info(f"Get instructionss Admin {event}")   
-
-        self.user = self.scope["user"]
-        #logger.info(f"User {self.user}")     
-
-        #build response
-        result = await sync_to_async(get_instructions_list_admin_json)(self.user)
-
-        await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
-   
     async def update_connection_status(self, event):
         '''
         handle connection status update from group member

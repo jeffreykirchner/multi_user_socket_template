@@ -31,22 +31,24 @@
             </thead>
 
             <tbody id="instructionList">                                                  
-                <tr v-for="(s,index) in instructions" v-bind:key="s.id">                                                                          
+                <tr v-for="(i, index) in instructions" v-bind:key="i.id">                                                                          
                     <td> 
-                        <a :href="'/staff-instruction-edit/' + s.id + '/' ">[[s.label]]</span></a>                                        
+                        <a :href="'/staff-instruction-edit/' + i.id + '/' ">[[i.label]]</span></a>                                        
                     </td>
                     <td class="text-center"> 
-                                                     
+                         <div v-for="(s, index2) in i.sessions" v-bind:key="s.id">
+                            <a v-bind:href=`/staff-session/${s.id}`>[[s.title]]</a>
+                         </div>                            
                     </td>
                     <td class="text-center">
-                        <div v-if="s.locked">
-                            Locked
+                        <div v-if="i.locked">
+                            In Use
                         </div>
                         <div v-else>
-                            <button v-bind:id="'deleteInstruction' + s.id"
+                            <button v-bind:id="'deleteInstruction' + i.id"
                                     type="button"
                                     class="btn btn-outline-danger btn-sm"
-                                    v-on:click = "send_delete_instruction(s.id)"
+                                    v-on:click = "send_delete_instruction(i.id)"
                                     title = "Delete instruction and its data."
                                     v-bind:disabled = "reconnecting || working">
                                 Delete <i class="fas fa-user-minus fa-xs"></i>  

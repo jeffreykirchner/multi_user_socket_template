@@ -43,9 +43,9 @@ let app = createApp({
             let message_data = data.message.message_data;
 
             switch(message_type) {
-                case "create_instruction":
-                    app.take_create_instruction(message_data);
-                    break;
+                // case "create_instruction":
+                //     app.take_create_instruction(message_data);
+                //     break;
                 case "get_instructions":
                     app.take_get_instructions(message_data);
                     break;
@@ -115,7 +115,7 @@ let app = createApp({
             sort_instructions_date,
             sort_instructions_title,
             send_create_instruction,
-            take_create_instruction,
+            // take_create_instruction,
             send_delete_instruction,
             sort_by_title,
             sort_by_date,
