@@ -9,6 +9,9 @@ from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
+from main.forms import InstructionSetFormAdmin
+from main.forms import InstructionFormAdmin
+
 from main.models import InstructionSet
 
 class StaffInstructionEditView(SingleObjectMixin, View):
@@ -27,6 +30,16 @@ class StaffInstructionEditView(SingleObjectMixin, View):
 
         instruction_set = self.get_object()
 
+        instruction_set_form = InstructionSetFormAdmin()
+        instruction_form = InstructionFormAdmin()
+
+        form_ids=[]
+        for i in InstructionSetFormAdmin():
+            form_ids.append(i.html_name)
+
+        for i in InstructionFormAdmin():
+            form_ids.append(i.html_name)
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"id" : instruction_set.id,
@@ -34,5 +47,8 @@ class StaffInstructionEditView(SingleObjectMixin, View):
                                "player_key" :  uuid.uuid4(),
                                "page_key" : "staff-instructions",
                                "instrution_set_id" : instruction_set.id,
+                               "instruction_set_form" : instruction_set_form,
+                               "instruction_form" : instruction_form,
+                               "form_ids" : form_ids,
                                "websocket_path" : self.websocket_path
                                })
