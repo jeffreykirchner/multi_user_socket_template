@@ -26,7 +26,7 @@ class StaffInstructionsConsumer(SocketConsumerMixin,
     websocket instructions list
     '''    
     
-    async def delete_instructions(self, event):
+    async def delete_instruction(self, event):
         '''
         delete specified instructions
         '''
@@ -38,15 +38,14 @@ class StaffInstructionsConsumer(SocketConsumerMixin,
 
         message_text = event["message_text"]
 
-        status = await sync_to_async(delete_instructions)(message_text["id"], self.user)
+        instruction_set = await InstructionSet.objects.aget(id=message_text["id"])
+        parameter_set_ids_count = await ParameterSetPlayer.objects.filter(instruction_set=instruction_set).acount()
 
-        # logger.info(f"Delete instructions success: {status}")
+        if parameter_set_ids_count == 0:
+            await instruction_set.adelete()
 
-        #build response
-        result = await sync_to_async(get_instructions_list_json)(self.user)
-
-        await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type='get_instructionss', send_to_client=True, send_to_group=False)
+        event['type'] = 'get_instructions'
+        await self.get_instructions(event)
 
     async def create_instruction(self, event):
         '''

@@ -117,8 +117,8 @@ let app = createApp({
             send_create_instruction,
             // take_create_instruction,
             send_delete_instruction,
-            sort_by_title,
-            sort_by_date,
+            // sort_by_title,
+            // sort_by_date,
         }
     }
 }).mount('#app');
