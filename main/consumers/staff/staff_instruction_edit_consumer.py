@@ -9,6 +9,7 @@ import logging
 from .. import SocketConsumerMixin
 from .send_message_mixin import SendMessageMixin
 
+from main.forms import InstructionSetForm
 
 import main
 
@@ -29,34 +30,14 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         logger = logging.getLogger(__name__) 
 
         self.user = self.scope["user"]
-
         message_text = event["message_text"]
+        form_data_dict = message_text["form_data"]
 
-      
-        
-        result = await sync_to_async(get_instruction_list_json)(self.user)
-
-        await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type='get_instructions', send_to_client=True, send_to_group=False)
-
-    async def create_instruction(self, event):
-        '''
-        create a new instruction
-        '''
-        logger = logging.getLogger(__name__) 
-        #logger.info(f"Create instruction {event}")
-
-        self.user = self.scope["user"]
-        #logger.info(f"User {self.user}")
-
-        await sync_to_async(create_new_instruction)(self.user)
-        
-        #build response
-        result = await sync_to_async(get_instruction_list_json)(self.user)
+        result = await take_update_instruction_set(form_data_dict)
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
-    
+        
     async def get_instruction_set(self, event):
         '''
         return a list of instructions
@@ -74,23 +55,6 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
-    
-
-    async def get_instructions_admin(self, event):
-        '''
-        return a list of all instructions
-        '''
-        logger = logging.getLogger(__name__) 
-        #logger.info(f"Get instructions Admin {event}")   
-
-        self.user = self.scope["user"]
-        #logger.info(f"User {self.user}")     
-
-        #build response
-        result = await sync_to_async(get_instruction_list_admin_json)(self.user)
-
-        await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
    
     async def update_connection_status(self, event):
         '''
@@ -98,3 +62,18 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         '''
         # logger = logging.getLogger(__name__) 
         # logger.info("Connection update")
+
+@sync_to_async        
+def take_update_instruction_set(form_data_dict):
+
+    instruction_set = InstructionSet.objects.get(id=form_data_dict['id'])
+    form = InstructionSetForm(form_data_dict, instance=instruction_set)
+
+    if form.is_valid():              
+        form.save()    
+        
+        return {"value" : "success",
+                "instruction_set": instruction_set.json()}
+    
+    return {"value" : "fail", 
+            "errors" : dict(form.errors.items())}

@@ -18,6 +18,7 @@ let app = createApp({
         let instrution_set_id = {{instrution_set_id}};
         let paramterset_before_edit = ref(null);
         let form_ids = {{form_ids|safe}};
+        let cancel_modal = ref(true);
 
         //modals
         let edit_instruction_set_modal = ref("");
@@ -58,6 +59,9 @@ let app = createApp({
                 case "get_instruction_set":
                     app.take_get_instruction_set(message_data);
                     break;
+                case "update_instruction_set":
+                    app.take_update_instruction_set(message_data);
+                    break;
             }
 
             app.working = false;
@@ -80,6 +84,7 @@ let app = createApp({
         function take_get_instruction_set(message_data){
             //process list of instruction
 
+            app.cancel_modal = false;
             app.instruction_set = message_data.instruction_set;
 
             if(!app.first_load_done)
@@ -91,6 +96,24 @@ let app = createApp({
             
         }
 
+        function take_update_instruction_set(message_data){
+            app.clear_main_form_errors();
+        
+            if(message_data.value == "success")
+            {
+
+                app.edit_instruction_set_modal.hide();
+
+                Vue.nextTick(() => {
+                    app.take_get_instruction_set(message_data);         
+                });       
+            } 
+            else
+            {                      
+                app.display_errors(message_data.errors);
+            } 
+        }
+
         {%include "staff/staff_instruction_edit/instruction_set_card.js"%}
 
         /** clear form error messages*/
@@ -98,7 +121,7 @@ let app = createApp({
     
             for(let item in app.form_ids)
             {
-                let e = document.getElementById("id_errors_" + item);
+                let e = document.getElementById("id_errors_" + app.form_ids[item]);
                 if(e) e.remove();
             }
 
@@ -145,6 +168,9 @@ let app = createApp({
             paramterset_before_edit,
             clear_main_form_errors,
             display_errors,
+            send_update_instruction_set,
+            take_update_instruction_set,
+            form_ids,
         }
     }
 }).mount('#app');
