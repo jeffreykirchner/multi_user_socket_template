@@ -27,11 +27,14 @@
 </div>
 
 <!-- modals -->
-{%include "staff/staff_session_parameters/general_settings/edit_parameterset_modal.html"%}
+{%include "staff/staff_instruction_edit/edit_instruction_set_modal.html"%}
 
-<div class="row justify-content-lg-center" v-cloak>
-    <div class="col col-md-8">
-        {%include "staff/staff_instruction_edit/instruction_set_card.html"%}                   
+<div v-if="first_load_done">
+    <div class="row justify-content-lg-center" v-cloak>
+        <div class="col col-md-8">
+            {%include "staff/staff_instruction_edit/instruction_set_card.html"%}                   
+        </div>
     </div>
 </div>
+
 {% endblock %}

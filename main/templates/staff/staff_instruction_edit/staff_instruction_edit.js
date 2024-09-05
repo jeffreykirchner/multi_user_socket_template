@@ -8,13 +8,24 @@ let app = createApp({
     delimiters: ["[[", "]]"],
 
     setup() {
-        //letiables
-        const chat_socket = ref("");
-        const reconnecting = ref(true);
-        const working = ref(false);
-        const help_text = ref("Loading ...");
-        const instruction_set = ref([]);
-        const instrution_set_id = {{instrution_set_id}};
+        //variables
+        let chat_socket = ref("");
+        let reconnecting = ref(true);
+        let first_load_done = ref(false);
+        let working = ref(false);
+        let help_text = ref("Loading ...");
+        let instruction_set = ref([]);
+        let instrution_set_id = {{instrution_set_id}};
+
+        //modals
+        let edit_instruction_set_modal = ref("");
+
+        function do_first_load()
+        {
+            app.edit_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_set_modal'), {keyboard: false})
+           
+            app.first_load_done = true;
+        }
 
         //methods
         function handle_socket_connected(){
@@ -66,6 +77,13 @@ let app = createApp({
             //process list of instruction
 
             app.instruction_set = message_data.instruction_set;
+
+            if(!app.first_load_done)
+            {
+                Vue.nextTick(() => {
+                    app.do_first_load();
+                });
+            }
             
         }
 
@@ -73,8 +91,9 @@ let app = createApp({
 
         //return                        
         return {
-            chat_socket , 
-            reconnecting, 
+            chat_socket, 
+            reconnecting,
+            first_load_done, 
             working, 
             help_text, 
             handle_socket_connected,
@@ -84,6 +103,8 @@ let app = createApp({
             send_get_instruction_set,
             take_get_instruction_set,
             instruction_set,
+            edit_instruction_set_modal,
+            do_first_load,  
         }
     }
 }).mount('#app');
