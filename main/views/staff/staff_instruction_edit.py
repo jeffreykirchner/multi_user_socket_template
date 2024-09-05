@@ -9,7 +9,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from main.forms import InstructionSetFormAdmin
+from main.forms import InstructionSetForm
 from main.forms import InstructionFormAdmin
 
 from main.models import InstructionSet
@@ -30,11 +30,11 @@ class StaffInstructionEditView(SingleObjectMixin, View):
 
         instruction_set = self.get_object()
 
-        instruction_set_form = InstructionSetFormAdmin()
+        instruction_set_form = InstructionSetForm()
         instruction_form = InstructionFormAdmin()
 
         form_ids=[]
-        for i in InstructionSetFormAdmin():
+        for i in InstructionSetForm():
             form_ids.append(i.html_name)
 
         for i in InstructionFormAdmin():

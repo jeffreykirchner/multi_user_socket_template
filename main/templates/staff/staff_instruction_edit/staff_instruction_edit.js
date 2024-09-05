@@ -16,6 +16,8 @@ let app = createApp({
         let help_text = ref("Loading ...");
         let instruction_set = ref([]);
         let instrution_set_id = {{instrution_set_id}};
+        let paramterset_before_edit = ref(null);
+        let form_ids = {{form_ids|safe}};
 
         //modals
         let edit_instruction_set_modal = ref("");
@@ -24,6 +26,8 @@ let app = createApp({
         {
             app.edit_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_set_modal'), {keyboard: false})
            
+            document.getElementById('edit_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_set_modal);
+
             app.first_load_done = true;
         }
 
@@ -89,6 +93,37 @@ let app = createApp({
 
         {%include "staff/staff_instruction_edit/instruction_set_card.js"%}
 
+        /** clear form error messages*/
+        function clear_main_form_errors(){
+    
+            for(let item in app.form_ids)
+            {
+                let e = document.getElementById("id_errors_" + item);
+                if(e) e.remove();
+            }
+
+        }
+
+        /** display form error messages
+        */
+        function display_errors(errors){
+            for(let e in errors)
+                {
+                    //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")
+                    let str='<span id=id_errors_'+ e +' class="text-danger">';
+                    
+                    for(let i in errors[e])
+                    {
+                        str +=errors[e][i] + '<br>';
+                    }
+
+                    str+='</span>';
+
+                    document.getElementById("div_id_" + e).insertAdjacentHTML('beforeend', str);
+                    document.getElementById("div_id_" + e).scrollIntoView(); 
+                }
+        }
+
         //return                        
         return {
             chat_socket, 
@@ -105,6 +140,11 @@ let app = createApp({
             instruction_set,
             edit_instruction_set_modal,
             do_first_load,  
+            show_edit_instruction_set_modal,
+            hide_edit_instruction_set_modal,
+            paramterset_before_edit,
+            clear_main_form_errors,
+            display_errors,
         }
     }
 }).mount('#app');

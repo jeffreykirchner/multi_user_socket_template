@@ -74,5 +74,17 @@
                 Page [[instruction_set.action_page_6]]
             </div>
         </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md text-center mb-2 mt-2">
+                <button class="btn btn-outline-primary"
+                        type="button"
+                        title="General Settings"
+                        v-bind:disabled="reconnecting || working"
+                        v-on:click="show_edit_instruction_set_modal()">
+                    Edit <i class="far fa-edit"></i>
+                </button>
+            </div>
+        </div>
     </div>                    
 </div>
