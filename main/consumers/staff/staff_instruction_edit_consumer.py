@@ -17,28 +17,23 @@ from main.models import InstructionSet
 # from main.globals import create_new_instruction_parameterset
 
 class StaffInstructionEditConsumer(SocketConsumerMixin,
-                                SendMessageMixin):
+                                   SendMessageMixin):
     '''
     websocket instruction list
     '''    
     
-    async def delete_instruction(self, event):
+    async def update_instruction_set(self, event):
         '''
-        delete specified instruction
+        update instruction set
         '''
         logger = logging.getLogger(__name__) 
-        # logger.info(f"Delete instruction {event}")
 
         self.user = self.scope["user"]
-        # logger.info(f"User {self.user}")
 
         message_text = event["message_text"]
 
-        status = await sync_to_async(delete_instruction)(message_text["id"], self.user)
-
-        # logger.info(f"Delete instruction success: {status}")
-
-        #build response
+      
+        
         result = await sync_to_async(get_instruction_list_json)(self.user)
 
         await self.send_message(message_to_self=result, message_to_group=None,
