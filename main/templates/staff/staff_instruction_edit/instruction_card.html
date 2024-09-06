@@ -1,0 +1,43 @@
+
+<div class="row justify-content-lg-center mt-4" 
+     v-for="(i, index) in instruction_set.instruction_pages"
+            v-bind:key="i"
+            :set="instruction=instruction_set.instruction_pages[i]">
+    <div class="col col-md-12">
+        <div class="card">
+                      
+            <div class="card-header">
+
+                <span class="fs-5">Page [[i.page_number]]</span> 
+
+                <span class="float-end ">
+                    <button class="btn btn-outline-danger" type="button" v-on:click = "" v-bind:disabled = "reconnecting || working">
+                        Delete
+                    </button>
+                </span>
+
+                <span class="float-end me-2">
+                    <button class="btn btn-outline-primary" type="button" v-on:click = "" v-bind:disabled = "reconnecting || working">
+                        Edit
+                    </button>
+                </span>
+                                                                
+            </div>
+            <div class="card-body" >                      
+                <div v-html="i.text_html">
+                </div>
+            </div>                    
+        </div>                   
+    </div>
+</div>
+
+<div class="row justify-content-lg-center mt-4">
+    <div class="col col-md-12 text-center">
+        
+        <button class="btn btn-outline-primary" type="button" v-on:click = "" v-bind:disabled = "reconnecting || working">
+            Add Page
+        </button>
+       
+    </div>
+</div>
+

@@ -29,12 +29,14 @@
 <!-- modals -->
 {%include "staff/staff_instruction_edit/edit_instruction_set_modal.html"%}
 
-<div v-if="first_load_done">
+<div v-if="first_load_done && instruction_set">
     <div class="row justify-content-lg-center" v-cloak>
         <div class="col col-md-8">
             {%include "staff/staff_instruction_edit/instruction_set_card.html"%}                   
         </div>
     </div>
+    
+    {%include "staff/staff_instruction_edit/instruction_card.html"%}
 </div>
 
 {% endblock %}

@@ -96,6 +96,8 @@ class InstructionSet(models.Model):
             "action_page_4" : self.action_page_4,
             "action_page_5" : self.action_page_5,
             "action_page_6" : self.action_page_6,
+
+            "instruction_pages" : [await i.ajson() async for i in self.instructions.all()],
         }
     
     #return json object of class

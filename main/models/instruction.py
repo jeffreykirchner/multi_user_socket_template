@@ -44,4 +44,17 @@ class Instruction(models.Model):
             "page_number" : self.page_number,
             "text_html" : self.text_html,
         }
+    
+    #return json object of class
+    async def ajson(self):
+        '''
+        json object of model
+        '''
+
+        return{
+            "id" : self.id,         
+
+            "page_number" : self.page_number,
+            "text_html" : self.text_html,
+        }
         
