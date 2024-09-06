@@ -173,6 +173,7 @@ let app = createApp({
             take_update_instruction_set,
             form_ids,
             send_add_instruction,
+            send_delete_instruction,
         }
     }
 }).mount('#app');

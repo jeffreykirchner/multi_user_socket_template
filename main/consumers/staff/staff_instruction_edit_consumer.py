@@ -62,13 +62,30 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         add instruction page
         '''
         logger = logging.getLogger(__name__)
-        logger.info(f"Add instruction page {event}")
+        # logger.info(f"Add instruction page {event}")
 
         self.user = self.scope["user"]
         message_text = event["message_text"]
 
         instruction_set = await InstructionSet.objects.aget(id=message_text['id'])
         instruction = await Instruction.objects.acreate(instruction_set=instruction_set, page_number=await instruction_set.instructions.acount()+1)
+
+        event['type'] = 'get_instruction_set'
+        await self.get_instruction_set(event)
+
+    async def delete_instruction_page(self, event):
+        '''
+        delete instruction page
+        '''
+        logger = logging.getLogger(__name__)
+        # logger.info(f"Delete instruction page {event}")
+
+        self.user = self.scope["user"]
+        message_text = event["message_text"]
+
+        instruction = await Instruction.objects.aget(id=message_text['instruction_id'])
+
+        await instruction.adelete()
 
         event['type'] = 'get_instruction_set'
         await self.get_instruction_set(event)

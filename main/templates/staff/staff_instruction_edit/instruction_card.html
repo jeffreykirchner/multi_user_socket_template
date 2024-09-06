@@ -11,14 +11,20 @@
                 <span class="fs-5">Page [[i.page_number]]</span> 
 
                 <span class="float-end ">
-                    <button class="btn btn-outline-danger" type="button" v-on:click = "" v-bind:disabled = "reconnecting || working">
-                        Delete
+                    <button class="btn btn-outline-danger" 
+                            type="button" 
+                            v-on:click = "send_delete_instruction(i.id)" 
+                            v-bind:disabled = "reconnecting || working">
+                        Delete <i class="fas fa-trash-alt"></i>
                     </button>
                 </span>
 
                 <span class="float-end me-2">
-                    <button class="btn btn-outline-primary" type="button" v-on:click = "" v-bind:disabled = "reconnecting || working">
-                        Edit
+                    <button class="btn btn-outline-primary" 
+                            type="button" 
+                            v-on:click = "" 
+                            v-bind:disabled = "reconnecting || working">
+                        Edit <i class="far fa-edit"></i>
                     </button>
                 </span>
                                                                 
@@ -34,8 +40,8 @@
 <div class="row justify-content-lg-center mt-4">
     <div class="col col-md-12 text-center">
         
-        <button class="btn btn-outline-primary" type="button" v-on:click = "send_add_instruction()" v-bind:disabled = "reconnecting || working">
-            Add Page
+        <button class="btn btn-outline-success" type="button" v-on:click = "send_add_instruction()" v-bind:disabled = "reconnecting || working">
+            Add Page <i class="fas fa-plus"></i>
         </button>
        
     </div>
