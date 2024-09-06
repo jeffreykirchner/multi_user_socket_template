@@ -14,6 +14,7 @@ from main.forms import InstructionSetForm
 import main
 
 from main.models import InstructionSet
+from main.models import Instruction
 
 # from main.globals import create_new_instruction_parameterset
 
@@ -55,7 +56,23 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
-   
+        
+    async def add_instruction_page(self, event):
+        '''
+        add instruction page
+        '''
+        logger = logging.getLogger(__name__)
+        logger.info(f"Add instruction page {event}")
+
+        self.user = self.scope["user"]
+        message_text = event["message_text"]
+
+        instruction_set = await InstructionSet.objects.aget(id=message_text['id'])
+        instruction = await Instruction.objects.acreate(instruction_set=instruction_set, page_number=await instruction_set.instructions.acount()+1)
+
+        event['type'] = 'get_instruction_set'
+        await self.get_instruction_set(event)
+
     async def update_connection_status(self, event):
         '''
         handle connection status update from group member

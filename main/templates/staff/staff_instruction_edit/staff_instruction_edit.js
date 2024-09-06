@@ -115,6 +115,7 @@ let app = createApp({
         }
 
         {%include "staff/staff_instruction_edit/instruction_set_card.js"%}
+        {%include "staff/staff_instruction_edit/instruction_card.js"%}
 
         /** clear form error messages*/
         function clear_main_form_errors(){
@@ -171,6 +172,7 @@ let app = createApp({
             send_update_instruction_set,
             take_update_instruction_set,
             form_ids,
+            send_add_instruction,
         }
     }
 }).mount('#app');
