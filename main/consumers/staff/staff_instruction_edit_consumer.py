@@ -10,6 +10,7 @@ from .. import SocketConsumerMixin
 from .send_message_mixin import SendMessageMixin
 
 from main.forms import InstructionSetForm
+from main.forms import InstructionForm
 
 import main
 
@@ -90,12 +91,27 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         event['type'] = 'get_instruction_set'
         await self.get_instruction_set(event)
 
+    async def update_instruction(self, event):
+        '''
+        update instruction
+        '''
+        logger = logging.getLogger(__name__) 
+
+        self.user = self.scope["user"]
+        message_text = event["message_text"]
+        form_data_dict = message_text["form_data"]
+
+        result = await take_update_instruction(form_data_dict)
+
+        event['type'] = 'update_instruction_set'
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+
     async def update_connection_status(self, event):
         '''
         handle connection status update from group member
         '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Connection update")
+        pass
 
 @sync_to_async        
 def take_update_instruction_set(form_data_dict):
@@ -108,6 +124,21 @@ def take_update_instruction_set(form_data_dict):
         
         return {"value" : "success",
                 "instruction_set": instruction_set.json()}
+    
+    return {"value" : "fail", 
+            "errors" : dict(form.errors.items())}
+
+@sync_to_async        
+def take_update_instruction(form_data_dict):
+
+    instruction = Instruction.objects.get(id=form_data_dict['id'])
+    form = InstructionForm(form_data_dict, instance=instruction)
+
+    if form.is_valid():              
+        form.save()    
+        
+        return {"value" : "success",
+                "instruction_set": instruction.instruction_set.json()}
     
     return {"value" : "fail", 
             "errors" : dict(form.errors.items())}

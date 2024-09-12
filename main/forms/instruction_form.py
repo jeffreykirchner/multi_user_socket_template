@@ -9,9 +9,9 @@ class InstructionForm(forms.ModelForm):
                                 widget=TinyMCE(attrs={"rows":"12",
                                                       "v-model":"current_instruction.text_html",}))
     
-    page_number = forms.CharField(label='Order in pages appear',
-                                   widget=forms.NumberInput(attrs={"min":"1",
-                                                                   "v-model":"current_instruction.page_number",}))
+    page_number = forms.CharField(label='Order in which pages appear',
+                                  widget=forms.NumberInput(attrs={"min":"1",                                                                   
+                                                                  "v-model":"current_instruction.page_number",}))
 
     class Meta:
         model=Instruction

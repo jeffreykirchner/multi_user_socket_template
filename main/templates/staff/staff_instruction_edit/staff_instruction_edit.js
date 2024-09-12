@@ -128,6 +128,7 @@ let app = createApp({
             {
 
                 app.edit_instruction_set_modal.hide();
+                app.edit_instruction_modal.hide();
 
                 Vue.nextTick(() => {
                     app.take_get_instruction_set(message_data);         
@@ -202,6 +203,7 @@ let app = createApp({
             edit_instruction_modal,
             current_instruction,
             show_edit_instruction_modal,
+            send_update_instruction,
         }
     }
 }).mount('#app');
