@@ -26,6 +26,8 @@ function show_edit_instruction_modal(id){
     app.cancel_modal = true;
 
     let instruction = app.instruction_set.instruction_pages[id];
+
+    tinymce.get("id_text_html").setContent(instruction.text_html);
     
     app.current_instruction = Object.assign({}, instruction);
     app.edit_instruction_modal.show();
@@ -36,6 +38,7 @@ function show_edit_instruction_modal(id){
  */
 function send_update_instruction(){
     app.working = true;
+    app.current_instruction.text_html = tinymce.get("id_text_html").getContent();
     app.send_message("update_instruction", {form_data:app.current_instruction});
 }
 

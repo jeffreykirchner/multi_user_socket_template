@@ -29,6 +29,25 @@ let app = createApp({
         //methods
         function do_first_load()
         {
+            tinyMCE.init({
+                target: document.getElementById('id_text_html'),
+                height : "400",
+                theme: "silver",
+                convert_urls: false,
+                promotion: false,
+                auto_focus: 'id_text_html',
+                plugins: "directionality,searchreplace,code,link",
+                    toolbar: "undo redo | styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link | code",
+                directionality: "{{ directionality }}",
+            });
+
+             // Prevent Bootstrap dialog from blocking focusin
+             document.addEventListener('focusin', (e) => {
+                if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                    e.stopImmediatePropagation();
+                }
+            });
+
             app.edit_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_set_modal'), {keyboard: false})
             app.edit_instruction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_modal'), {keyboard: false})
 
