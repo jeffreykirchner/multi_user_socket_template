@@ -1,5 +1,5 @@
 /**
- * send request to create new instruction
+ * send request to update instruction set
  */
 function send_update_instruction_set(){
     app.working = true;

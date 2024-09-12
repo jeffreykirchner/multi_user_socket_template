@@ -22,12 +22,18 @@ let app = createApp({
 
         //modals
         let edit_instruction_set_modal = ref("");
+        let edit_instruction_modal = ref("");
 
+        let current_instruction = ref({id:0});
+        
+        //methods
         function do_first_load()
         {
             app.edit_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_set_modal'), {keyboard: false})
-           
+            app.edit_instruction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_modal'), {keyboard: false})
+
             document.getElementById('edit_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_set_modal);
+            document.getElementById('edit_instruction_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_modal);
 
             app.first_load_done = true;
         }
@@ -174,6 +180,9 @@ let app = createApp({
             form_ids,
             send_add_instruction,
             send_delete_instruction,
+            edit_instruction_modal,
+            current_instruction,
+            show_edit_instruction_modal,
         }
     }
 }).mount('#app');
