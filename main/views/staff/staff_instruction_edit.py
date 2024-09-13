@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 
 from main.forms import InstructionSetForm
 from main.forms import InstructionForm
+from main.forms import ImportInstructionSetForm
 
 from main.models import InstructionSet
 
@@ -32,12 +33,16 @@ class StaffInstructionEditView(SingleObjectMixin, View):
 
         instruction_set_form = InstructionSetForm()
         instruction_form = InstructionForm()
+        import_instruction_set_form = ImportInstructionSetForm()
 
         form_ids=[]
         for i in InstructionSetForm():
             form_ids.append(i.html_name)
 
         for i in InstructionForm():
+            form_ids.append(i.html_name)
+
+        for i in ImportInstructionSetForm():
             form_ids.append(i.html_name)
 
         return render(request=request,
@@ -49,6 +54,7 @@ class StaffInstructionEditView(SingleObjectMixin, View):
                                "instrution_set_id" : instruction_set.id,
                                "instruction_set_form" : instruction_set_form,
                                "instruction_form" : instruction_form,
+                               "import_instruction_set_form" : import_instruction_set_form,
                                "form_ids" : form_ids,
                                "websocket_path" : self.websocket_path
                                })

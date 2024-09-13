@@ -26,3 +26,18 @@ function hide_edit_instruction_set_modal(){
     
 }
 
+/**
+ * send request to import instruction set
+ */
+function send_import_instruction_set(){
+    app.working = true;
+    app.send_message("import_instruction_set", {form_data:app.instruction_set_import});
+}
+
+/**
+ * show import instruction set modal
+ */
+function show_import_instruction_set_modal(){
+    app.clear_main_form_errors();
+    app.import_instruction_set_modal.show();
+}

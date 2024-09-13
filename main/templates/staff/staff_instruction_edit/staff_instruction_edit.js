@@ -23,8 +23,10 @@ let app = createApp({
         //modals
         let edit_instruction_set_modal = ref("");
         let edit_instruction_modal = ref("");
+        let import_instruction_set_modal = ref("");
 
         let current_instruction = ref({id:0});
+        let instruction_set_import = ref(null);
         
         //methods
         function do_first_load()
@@ -50,6 +52,7 @@ let app = createApp({
 
             app.edit_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_set_modal'), {keyboard: false})
             app.edit_instruction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_modal'), {keyboard: false})
+            app.import_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('import_instruction_set_modal'), {keyboard: false})
 
             document.getElementById('edit_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_set_modal);
             document.getElementById('edit_instruction_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_modal);
@@ -129,6 +132,7 @@ let app = createApp({
 
                 app.edit_instruction_set_modal.hide();
                 app.edit_instruction_modal.hide();
+                app.import_instruction_set_modal.hide();
 
                 Vue.nextTick(() => {
                     app.take_get_instruction_set(message_data);         
@@ -204,6 +208,8 @@ let app = createApp({
             current_instruction,
             show_edit_instruction_modal,
             send_update_instruction,
+            instruction_set_import,
+            show_import_instruction_set_modal,
         }
     }
 }).mount('#app');

@@ -1,0 +1,32 @@
+{% load crispy_forms_tags %}
+<!--Edit Instruction Set Modal -->
+<div class="modal fade" id="import_instruction_set_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="import_instruction_set_modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="instruction_form">
+                    {% for i in import_instruction_set_form %}
+                    <div class="row">
+                        <div class = "col">  
+                            {{ i|as_crispy_field }}         
+                        </div>            
+                    </div> 
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="modal-footer">
+                
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "send_import_instruction_set()"
+                        v-bind:disabled="reconnecting || working">
+                    Import <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

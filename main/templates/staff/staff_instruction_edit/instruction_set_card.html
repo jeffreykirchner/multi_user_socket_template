@@ -5,7 +5,10 @@
         </span>
 
         <span class="float-end">
-            <button class="btn btn-outline-success" type="button" v-on:click = "" v-bind:disabled = "reconnecting || working">
+            <button class="btn btn-outline-success" 
+                    type="button" 
+                    v-on:click = "show_import_instruction_set_modal()" 
+                    v-bind:disabled = "reconnecting || working">
                 Import Instruction Set
             </button>
         </span>

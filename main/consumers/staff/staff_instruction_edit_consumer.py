@@ -11,6 +11,7 @@ from .send_message_mixin import SendMessageMixin
 
 from main.forms import InstructionSetForm
 from main.forms import InstructionForm
+from main.forms import ImportInstructionSetForm
 
 import main
 
@@ -106,6 +107,22 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         event['type'] = 'update_instruction_set'
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+    async def import_instruction_set(self, event):
+        '''
+        import instruction set
+        '''
+
+        self.user = self.scope["user"]
+        message_text = event["message_text"]
+        form_data_dict = message_text["form_data"]
+
+        result = await take_import_instruction_set(form_data_dict)
+
+        event['type'] = 'update_instruction_set'
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+
 
     async def update_connection_status(self, event):
         '''
@@ -142,3 +159,13 @@ def take_update_instruction(form_data_dict):
     
     return {"value" : "fail", 
             "errors" : dict(form.errors.items())}
+
+@sync_to_async
+def take_import_instruction_set(form_data_dict):
+    '''
+    import instruction set
+    '''
+    
+    
+
+    

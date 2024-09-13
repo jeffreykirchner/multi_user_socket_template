@@ -9,7 +9,7 @@ class ImportInstructionSetForm(forms.Form):
     instruction_set =  forms.ModelChoiceField(label="Select Instruction Set to import.",
                                               queryset=InstructionSet.objects.all(),
                                               empty_label=None,
-                                              widget=forms.Select(attrs={"v-model":"instruction_set"}))
+                                              widget=forms.Select(attrs={"v-model":"instruction_set_import"}))
 
 
 
