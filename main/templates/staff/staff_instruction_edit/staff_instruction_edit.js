@@ -26,7 +26,7 @@ let app = createApp({
         let import_instruction_set_modal = ref("");
 
         let current_instruction = ref({id:0});
-        let instruction_set_import = ref(null);
+        let instruction_set_import = ref({instruction_set:0});
         
         //methods
         function do_first_load()
@@ -56,6 +56,7 @@ let app = createApp({
 
             document.getElementById('edit_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_set_modal);
             document.getElementById('edit_instruction_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_modal);
+            document.getElementById('import_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_import_instruction_set_modal);
 
             app.first_load_done = true;
         }
@@ -210,6 +211,8 @@ let app = createApp({
             send_update_instruction,
             instruction_set_import,
             show_import_instruction_set_modal,
+            send_import_instruction_set,
+            hide_import_instruction_set_modal,
         }
     }
 }).mount('#app');

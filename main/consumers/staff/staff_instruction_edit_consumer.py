@@ -113,11 +113,15 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         import instruction set
         '''
 
+        logger = logging.getLogger(__name__)
+        logger.info(f"Import instruction set {event}")
+
         self.user = self.scope["user"]
         message_text = event["message_text"]
         form_data_dict = message_text["form_data"]
+        target_instruction_set = message_text["instruction_set_id"]
 
-        result = await take_import_instruction_set(form_data_dict)
+        result = await take_import_instruction_set(form_data_dict, target_instruction_set)
 
         event['type'] = 'update_instruction_set'
         await self.send_message(message_to_self=result, message_to_group=None,
@@ -161,10 +165,29 @@ def take_update_instruction(form_data_dict):
             "errors" : dict(form.errors.items())}
 
 @sync_to_async
-def take_import_instruction_set(form_data_dict):
+def take_import_instruction_set(form_data_dict, target_instruction_set):
     '''
     import instruction set
     '''
+    
+    form = ImportInstructionSetForm(form_data_dict)
+
+    if form.is_valid():              
+        try:
+            source_instruction_set = form.cleaned_data['instruction_set']
+            target_instruction_set = InstructionSet.objects.get(id=target_instruction_set)
+        except:
+            return {"value" : "fail", 
+                    "errors" : {"instruction_set": ["Instruction Set not found."]}}    
+        
+        target_instruction_set.from_dict(source_instruction_set.json())
+        target_instruction_set.copy_pages(source_instruction_set.instructions.all())
+        
+        return {"value" : "success",
+                "instruction_set": target_instruction_set.json()}
+    
+    return {"value" : "fail", 
+            "errors" : dict(form.errors.items())}
     
     
 

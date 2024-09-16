@@ -37,11 +37,33 @@ class InstructionSet(models.Model):
             models.UniqueConstraint(fields=['label', ], name='unique_instruction_set'),
         ]
 
+    def from_dict(self, new_ps):
+        '''
+        copy source values into this period
+        source : dict object of parameterset player
+        '''
+        # self.label = new_ps.get("label")
+        
+        self.action_page_1 = new_ps.get("action_page_1")
+        self.action_page_2 = new_ps.get("action_page_2")
+        self.action_page_3 = new_ps.get("action_page_3")
+        self.action_page_4 = new_ps.get("action_page_4")
+        self.action_page_5 = new_ps.get("action_page_5")
+        self.action_page_6 = new_ps.get("action_page_6")
+
+        self.save()
+        
+        message = "Parameters loaded successfully."
+
+        return message
+
     def copy_pages(self, i_set):
         '''
         copy instruction pages
         '''
         
+        self.instructions.all().delete()  # Clear existing instructions
+
         #session player periods
         instructions = []
 

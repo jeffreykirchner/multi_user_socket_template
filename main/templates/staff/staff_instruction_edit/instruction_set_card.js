@@ -31,7 +31,8 @@ function hide_edit_instruction_set_modal(){
  */
 function send_import_instruction_set(){
     app.working = true;
-    app.send_message("import_instruction_set", {form_data:app.instruction_set_import});
+    app.send_message("import_instruction_set", {form_data:app.instruction_set_import,
+                                                instruction_set_id:app.instruction_set.id});
 }
 
 /**
@@ -40,4 +41,12 @@ function send_import_instruction_set(){
 function show_import_instruction_set_modal(){
     app.clear_main_form_errors();
     app.import_instruction_set_modal.show();
+}
+
+/**
+ * hide import instruction set modal
+ */
+function hide_import_instruction_set_modal(){
+    app.cancel_modal = false;
+    app.clear_main_form_errors();
 }
