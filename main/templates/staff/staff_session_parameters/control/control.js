@@ -84,7 +84,7 @@ upload_parameter_set:function upload_parameter_set(){
             )
             .then(function (response) {     
 
-                app.upload_parameter_set_messaage = response.data.message.message;
+                app.upload_parameter_set_message = response.data.message.message;
                 app.session = response.data.session;
                 app.upload_parameter_set_button_text= 'Upload <i class="fas fa-upload"></i>';
                 location.reload();
@@ -101,7 +101,7 @@ upload_action:function upload_action(){
     if(app.upload_file == null)
         return;
 
-    app.upload_parameter_set_messaage = "";
+    app.upload_parameter_set_message = "";
     app.upload_parameter_set_button_text = '<i class="fas fa-spinner fa-spin"></i>';
 
     if(app.upload_mode == "parameters")
@@ -125,7 +125,7 @@ handle_file_upload:function handle_file_upload(){
 */
 show_upload_parameters:function show_upload_parameters(upload_mode){
     app.upload_mode = upload_mode;
-    app.upload_parameter_set_messaage = "";
+    app.upload_parameter_set_message = "";
 
     app.upload_parameter_set_modal.toggle();
 },

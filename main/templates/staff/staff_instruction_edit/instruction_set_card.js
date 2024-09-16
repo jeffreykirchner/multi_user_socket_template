@@ -50,3 +50,97 @@ function hide_import_instruction_set_modal(){
     app.cancel_modal = false;
     app.clear_main_form_errors();
 }
+
+/** send request to download instructions to a file 
+*/
+send_download_instruction_set: function send_download_instruction_set(){
+    
+    app.working = true;
+    app.send_message("download_instruction_set", {});
+}
+
+/** download parameter set into a file 
+ @param message_data {json} result of file request, either sucess or fail with errors
+*/
+take_download_instruction_set: function take_download_instruction_set(message_data){
+
+    if(message_data.status == "success")
+    {                  
+        console.log(message_data.instruction_set);
+
+        let download_link = document.createElement("a");
+        let jsonse = JSON.stringify(message_data.instruction_set);
+        let blob = new Blob([jsonse], {type: "application/json"});
+        let url = URL.createObjectURL(blob);
+        download_link.href = url;
+        download_link.download = "Instruction_Set_" + app.instruction_set.id + ".json";
+
+        document.body.appendChild(download_link);
+        download_link.click();
+        document.body.removeChild(download_link);                     
+    } 
+
+    app.working = false;
+}
+
+/**upload a parameter set file
+*/
+upload_instruction_set:function upload_instruction_set(){  
+
+    let form_data = new FormData();
+    form_data.append('file', app.upload_file);
+
+    axios.post('/staff-instruction-edit/{{id}}/', form_data,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                    }
+                } 
+            )
+            .then(function (response) {     
+
+                // app.upload_instruction_set_message = response.data.message.message;
+                // app.session = response.data.session;
+                // app.upload_instruction_set_button_text= 'Upload <i class="fas fa-upload"></i>';
+                location.reload();
+
+            })
+            .catch(function (error) {
+                console.log(error);
+                app.searching=false;
+            });                        
+}
+
+//direct upload button click
+upload_action:function upload_action(){
+    if(app.upload_file == null)
+        return;
+
+    app.upload_instruction_set_message = "";
+    app.upload_instruction_set_button_text = '<i class="fas fa-spinner fa-spin"></i>';
+
+    if(app.upload_mode == "instruction_set")
+    {
+        app.upload_instruction_set();
+    }
+    else
+    {
+        
+    }
+
+}
+
+//file upload
+handle_file_upload:function handle_file_upload(){
+    app.upload_file = app.$refs.file.files[0];
+    app.upload_file_name = app.upload_file.name;
+}
+
+/** show upload instruction_set modal
+*/
+show_upload_instruction_set:function show_upload_instruction_set(upload_mode){
+    app.upload_mode = upload_mode;
+    app.upload_instruction_set_message = "";
+
+    app.upload_instruction_set_modal.toggle();
+}

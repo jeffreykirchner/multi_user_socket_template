@@ -27,6 +27,12 @@ let app = createApp({
 
         let current_instruction = ref({id:0});
         let instruction_set_import = ref({instruction_set:0});
+
+        //upload instruction set
+        let upload_file = ref(null);
+        let upload_file_name = ref('Choose File');
+        let upload_instruction_set_button_text = ref('Upload  <i class="fas fa-upload"></i>');
+        let upload_instruction_set_message = ref('');
         
         //methods
         function do_first_load()
@@ -213,6 +219,16 @@ let app = createApp({
             show_import_instruction_set_modal,
             send_import_instruction_set,
             hide_import_instruction_set_modal,
+            upload_file,
+            upload_file_name,
+            upload_instruction_set_button_text,
+            upload_instruction_set_message,
+            send_download_instruction_set,
+            take_download_instruction_set,
+            upload_instruction_set,
+            upload_action,
+            handle_file_upload,
+            show_upload_instruction_set,
         }
     }
 }).mount('#app');

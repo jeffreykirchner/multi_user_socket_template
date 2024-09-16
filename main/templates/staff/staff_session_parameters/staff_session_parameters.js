@@ -53,7 +53,7 @@ let app = Vue.createApp({
                     upload_file: null,
                     upload_file_name:'Choose File',
                     upload_parameter_set_button_text:'Upload  <i class="fas fa-upload"></i>',
-                    upload_parameter_set_messaage:'',
+                    upload_parameter_set_message:'',
                     import_parameters_message : "",
 
                     //modals
