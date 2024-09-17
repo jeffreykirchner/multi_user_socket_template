@@ -56,7 +56,7 @@ function hide_import_instruction_set_modal(){
 send_download_instruction_set: function send_download_instruction_set(){
     
     app.working = true;
-    app.send_message("download_instruction_set", {});
+    app.send_message("download_instruction_set", {instruction_set_id:app.instruction_set.id});
 }
 
 /** download parameter set into a file 
@@ -64,7 +64,7 @@ send_download_instruction_set: function send_download_instruction_set(){
 */
 take_download_instruction_set: function take_download_instruction_set(message_data){
 
-    if(message_data.status == "success")
+    if(message_data.value == "success")
     {                  
         console.log(message_data.instruction_set);
 

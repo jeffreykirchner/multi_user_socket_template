@@ -97,6 +97,9 @@ let app = createApp({
                 case "update_instruction_set":
                     app.take_update_instruction_set(message_data);
                     break;
+                case "download_instruction_set":
+                    app.take_download_instruction_set(message_data);
+                    break;
             }
 
             app.working = false;

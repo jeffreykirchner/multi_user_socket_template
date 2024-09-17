@@ -126,6 +126,21 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         event['type'] = 'update_instruction_set'
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def download_instruction_set(self, event):
+        '''
+        download instruction set
+        '''
+        result = await take_download_instruction_set(event["message_text"])
+
+        await self.send_message(message_to_self=result, message_to_group=None,
+                               message_type=event['type'], send_to_client=True, send_to_group=False)
+
+    async def upload_instruction_set(self, event):
+        '''
+        upload instruction set
+        '''
+        pass
 
 
     async def update_connection_status(self, event):
@@ -188,6 +203,17 @@ def take_import_instruction_set(form_data_dict, target_instruction_set):
     
     return {"value" : "fail", 
             "errors" : dict(form.errors.items())}
+
+@sync_to_async
+def take_download_instruction_set(data):
+    '''
+    download instruction set
+    '''
+    
+    instruction_set = InstructionSet.objects.get(id=data['instruction_set_id'])
+    
+    return {"value" : "success", 
+            "instruction_set": instruction_set.json()}
     
     
 
