@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async
 from asgiref.sync import sync_to_async
 
 import logging
+import json
 
 from .. import SocketConsumerMixin
 from .send_message_mixin import SendMessageMixin
@@ -140,7 +141,11 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         '''
         upload instruction set
         '''
-        pass
+        result = await take_upload_instruction_set(event["message_text"])
+
+        event['type'] = 'update_instruction_set'
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
 
     async def update_connection_status(self, event):
@@ -211,6 +216,21 @@ def take_download_instruction_set(data):
     '''
     
     instruction_set = InstructionSet.objects.get(id=data['instruction_set_id'])
+    
+    return {"value" : "success", 
+            "instruction_set": instruction_set.json()}
+
+@sync_to_async
+def take_upload_instruction_set(data):
+    '''
+    upload instruction set
+    '''
+        
+    instruction_set = InstructionSet.objects.get(id=data['id'])
+
+    instruction_set_text = json.loads(data['instruction_set_text'])
+
+    instruction_set.from_dict(dict(instruction_set_text))
     
     return {"value" : "success", 
             "instruction_set": instruction_set.json()}

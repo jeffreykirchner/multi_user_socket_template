@@ -17,7 +17,7 @@
                 <div class="row mt-2">
                     <div class = "col" style="text-align: center;">
                         <button class="btn btn-outline-primary"
-                                v-on:click="upload_action()"
+                                v-on:click="send_upload_instruction_set()"
                                 v-bind:disabled= "reconnecting || working">
                             <span v-html="upload_instruction_set_button_text"></span>
                         </button>

@@ -24,6 +24,7 @@ let app = createApp({
         let edit_instruction_set_modal = ref("");
         let edit_instruction_modal = ref("");
         let import_instruction_set_modal = ref("");
+        let upload_instruction_set_modal = ref("");
 
         let current_instruction = ref({id:0});
         let instruction_set_import = ref({instruction_set:0});
@@ -31,6 +32,7 @@ let app = createApp({
         //upload instruction set
         let upload_file = ref(null);
         let upload_file_name = ref('Choose File');
+        let upload_file_text = ref('');
         let upload_instruction_set_button_text = ref('Upload  <i class="fas fa-upload"></i>');
         let upload_instruction_set_message = ref('');
         
@@ -59,10 +61,12 @@ let app = createApp({
             app.edit_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_set_modal'), {keyboard: false})
             app.edit_instruction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_modal'), {keyboard: false})
             app.import_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('import_instruction_set_modal'), {keyboard: false})
+            app.upload_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_instruction_set_modal'), {keyboard: false})
 
             document.getElementById('edit_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_set_modal);
             document.getElementById('edit_instruction_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_modal);
             document.getElementById('import_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_import_instruction_set_modal);
+            document.getElementById('upload_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_upload_instruction_set);
 
             app.first_load_done = true;
         }
@@ -143,6 +147,7 @@ let app = createApp({
                 app.edit_instruction_set_modal.hide();
                 app.edit_instruction_modal.hide();
                 app.import_instruction_set_modal.hide();
+                app.upload_instruction_set_modal.hide();
 
                 Vue.nextTick(() => {
                     app.take_get_instruction_set(message_data);         
@@ -228,10 +233,10 @@ let app = createApp({
             upload_instruction_set_message,
             send_download_instruction_set,
             take_download_instruction_set,
-            upload_instruction_set,
-            upload_action,
+            send_upload_instruction_set,
             handle_file_upload,
             show_upload_instruction_set,
+            upload_file_text,
         }
     }
 }).mount('#app');

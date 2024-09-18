@@ -85,55 +85,48 @@ take_download_instruction_set: function take_download_instruction_set(message_da
 
 /**upload a parameter set file
 */
-upload_instruction_set:function upload_instruction_set(){  
+// upload_instruction_set:function upload_instruction_set(){  
 
-    let form_data = new FormData();
-    form_data.append('file', app.upload_file);
+//     let form_data = new FormData();
+//     form_data.append('file', app.upload_file);
 
-    axios.post('/staff-instruction-edit/{{id}}/', form_data,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                    }
-                } 
-            )
-            .then(function (response) {     
+//     axios.post('/staff-instruction-edit/{{id}}/', form_data,
+//             {
+//                 headers: {
+//                     'Content-Type': 'multipart/form-data'
+//                     }
+//                 } 
+//             )
+//             .then(function (response) {     
 
-                // app.upload_instruction_set_message = response.data.message.message;
-                // app.session = response.data.session;
-                // app.upload_instruction_set_button_text= 'Upload <i class="fas fa-upload"></i>';
-                location.reload();
+//                 // app.upload_instruction_set_message = response.data.message.message;
+//                 // app.session = response.data.session;
+//                 // app.upload_instruction_set_button_text= 'Upload <i class="fas fa-upload"></i>';
+//                 location.reload();
 
-            })
-            .catch(function (error) {
-                console.log(error);
-                app.searching=false;
-            });                        
-}
+//             })
+//             .catch(function (error) {
+//                 console.log(error);
+//                 app.searching=false;
+//             });                        
+// }
 
 //direct upload button click
-upload_action:function upload_action(){
-    if(app.upload_file == null)
-        return;
+send_upload_instruction_set:function send_upload_instruction_set(){
+    app.working = true;
 
-    app.upload_instruction_set_message = "";
-    app.upload_instruction_set_button_text = '<i class="fas fa-spinner fa-spin"></i>';
-
-    if(app.upload_mode == "instruction_set")
-    {
-        app.upload_instruction_set();
-    }
-    else
-    {
-        
-    }
-
+    app.send_message("upload_instruction_set", {id:app.instruction_set.id,
+                                                instruction_set_text: app.upload_file_text});
 }
 
 //file upload
 handle_file_upload:function handle_file_upload(){
     app.upload_file = app.$refs.file.files[0];
     app.upload_file_name = app.upload_file.name;
+
+    let reader = new FileReader();
+    reader.onload = e => app.upload_file_text = e.target.result;
+    reader.readAsText(app.upload_file);
 }
 
 /** show upload instruction_set modal

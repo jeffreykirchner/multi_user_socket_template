@@ -27,7 +27,7 @@
             <button class="btn btn-outline-primary " 
                     type="button" 
                     v-bind:disabled="reconnecting || working" 
-                    v-on:click="send_upload_instruction_set('parameters')"
+                    v-on:click="show_upload_instruction_set()"
                     title = "Upload from a file.">
                 Upload Instruction Set  <i class="fas fa-upload"></i>
             </button>
