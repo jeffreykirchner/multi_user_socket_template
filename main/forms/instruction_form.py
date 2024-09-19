@@ -10,9 +10,10 @@ class InstructionForm(forms.ModelForm):
                                                       "v-model":"current_instruction.text_html",}))
     
     page_number = forms.CharField(label='Order in which pages appear',
-                                  widget=forms.NumberInput(attrs={"min":"1",                                                                   
+                                  widget=forms.NumberInput(attrs={"min":"1",
+                                                                  "class":"w-25",                                                                   
                                                                   "v-model":"current_instruction.page_number",}))
 
     class Meta:
         model=Instruction
-        fields = ('text_html', 'page_number')
+        fields = ('page_number','text_html')

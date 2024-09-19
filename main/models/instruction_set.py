@@ -39,8 +39,7 @@ class InstructionSet(models.Model):
 
     def from_dict(self, new_ps):
         '''
-        copy source values into this period
-        source : dict object of parameterset player
+        copy source values into this instruction set
         '''
         # self.label = new_ps.get("label")
         
@@ -64,7 +63,6 @@ class InstructionSet(models.Model):
         
         self.instructions.all().delete()  # Clear existing instructions
 
-        #session player periods
         instructions = []
 
         for i in i_set.all():
@@ -72,6 +70,22 @@ class InstructionSet(models.Model):
         
         main.models.Instruction.objects.bulk_create(instructions)
     
+    def copy_pages_from_dict(self, instruction_pages):
+        '''
+        copy instruction pages from dict
+        '''
+        
+        self.instructions.all().delete()
+
+        instructions = []
+
+        for instruction_page in instruction_pages:
+            instructions.append(main.models.Instruction(instruction_set=self, 
+                                                        text_html=instruction_page['text_html'], 
+                                                        page_number=instruction_page['page_number']))
+
+        main.models.Instruction.objects.bulk_create(instructions)
+
     def copy_help_docs_subject(self, i_set):
         
         help_docs_subject = []

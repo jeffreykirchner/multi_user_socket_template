@@ -229,8 +229,8 @@ def take_upload_instruction_set(data):
     instruction_set = InstructionSet.objects.get(id=data['id'])
 
     instruction_set_text = json.loads(data['instruction_set_text'])
-
     instruction_set.from_dict(dict(instruction_set_text))
+    instruction_set.copy_pages_from_dict(instruction_set_text['instruction_pages'])
     
     return {"value" : "success", 
             "instruction_set": instruction_set.json()}

@@ -31,6 +31,15 @@ class Instruction(models.Model):
         verbose_name = 'Instruction Page'
         verbose_name_plural = 'Instruction Pages'
         ordering = ['page_number']
+
+    def from_dict(self, new_ps):
+        '''
+        copy source values into this instruction
+        '''
+        self.text_html = new_ps.get("text_html")
+        self.page_number = new_ps.get("page_number")
+
+        self.save()
         
     #return json object of class
     def json(self):
