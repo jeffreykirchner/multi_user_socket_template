@@ -11,7 +11,6 @@ from django.db.utils import IntegrityError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import ObjectDoesNotExist
 
-from main import globals
 from main.models import InstructionSet
 
 import main
