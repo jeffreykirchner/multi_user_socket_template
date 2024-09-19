@@ -103,22 +103,6 @@ class StaffHomeConsumer(SocketConsumerMixin,
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
-
-    async def get_sessions_admin(self, event):
-        '''
-        return a list of all sessions
-        '''
-        logger = logging.getLogger(__name__) 
-        #logger.info(f"Get Sessions Admin {event}")   
-
-        self.user = self.scope["user"]
-        #logger.info(f"User {self.user}")     
-
-        #build response
-        result = await sync_to_async(get_session_list_admin_json)(self.user)
-
-        await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
    
     async def update_connection_status(self, event):
         '''

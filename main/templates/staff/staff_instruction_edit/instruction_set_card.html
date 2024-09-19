@@ -1,0 +1,113 @@
+<div class="card">                  
+    <div class="card-header">
+        <span v-show="reconnecting">
+            Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
+        </span>
+
+        <span class="float-end">
+            <button class="btn btn-outline-primary" 
+                    type="button" 
+                    v-on:click = "show_import_instruction_set_modal()" 
+                    v-bind:disabled = "reconnecting || working">
+                Import Instruction Set <i class="fas fa-file-import"></i>
+            </button>
+        </span>
+
+        <span class="float-end me-2">
+            <button class="btn btn-outline-primary "
+                    type="button"
+                    v-bind:disabled="reconnecting || working" 
+                    v-on:click="send_download_instruction_set()" 
+                    title="Download to a file.">
+                Download Instruction Set <i class="fas fa-download"></i>
+            </button>            
+        </span>
+
+        <span class="float-end me-2">
+            <button class="btn btn-outline-primary " 
+                    type="button" 
+                    v-bind:disabled="reconnecting || working" 
+                    v-on:click="show_upload_instruction_set()"
+                    title = "Upload from a file.">
+                Upload Instruction Set  <i class="fas fa-upload"></i>
+            </button>
+        </span>
+                                                        
+    </div>
+    <div class="card-body fs-5" v-if="instruction_set">                      
+        <div class="row">
+            <div class="col text-end">
+                {{instruction_set_form.label.label}}:
+            </div>
+            <div class="col">
+                [[instruction_set.label]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                {{instruction_set_form.action_page_1.label}}:
+            </div>
+            <div class="col">
+                Page [[instruction_set.action_page_1]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                {{instruction_set_form.action_page_2.label}}:
+            </div>
+            <div class="col">
+                Page [[instruction_set.action_page_2]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                {{instruction_set_form.action_page_3.label}}:
+            </div>
+            <div class="col">
+                Page [[instruction_set.action_page_3]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                {{instruction_set_form.action_page_4.label}}:
+            </div>
+            <div class="col">
+                Page [[instruction_set.action_page_4]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                {{instruction_set_form.action_page_5.label}}:
+            </div>
+            <div class="col">
+                Page [[instruction_set.action_page_5]]
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end">
+                {{instruction_set_form.action_page_6.label}}:
+            </div>
+            <div class="col">
+                Page [[instruction_set.action_page_6]]
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md text-center mb-2 mt-2">
+                <button class="btn btn-outline-primary"
+                        type="button"
+                        title="General Settings"
+                        v-bind:disabled="reconnecting || working"
+                        v-on:click="show_edit_instruction_set_modal()">
+                    Edit <i class="far fa-edit"></i>
+                </button>
+            </div>
+        </div>
+    </div>                    
+</div>

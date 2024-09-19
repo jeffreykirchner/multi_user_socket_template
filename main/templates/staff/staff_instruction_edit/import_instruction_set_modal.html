@@ -1,6 +1,6 @@
 {% load crispy_forms_tags %}
-<!--Edit Parameter Set Modal -->
-<div class="modal fade" id="edit_parameterset_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit_parameterset_modal" aria-hidden="true">
+<!--Edit Instruction Set Modal -->
+<div class="modal fade" id="import_instruction_set_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="import_instruction_set_modal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,10 +8,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="parameter_set_form" v-on:submit.prevent="onSubmit">
-                    {% for i in parameter_set_form %}
+                <form id="instruction_form">
+                    {% for i in import_instruction_set_form %}
                     <div class="row">
-                        <div class = "col col-md-10 offset-md-1">  
+                        <div class = "col">  
                             {{ i|as_crispy_field }}         
                         </div>            
                     </div> 
@@ -22,9 +22,9 @@
                 
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "send_update_parameter_set()"
+                        v-on:click = "send_import_instruction_set()"
                         v-bind:disabled="reconnecting || working">
-                    Update <i class="fas fa-sign-in-alt"></i>
+                    Import <i class="fas fa-sign-in-alt"></i>
                 </button>
             </div>
         </div>

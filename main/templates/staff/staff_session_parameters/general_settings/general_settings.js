@@ -5,7 +5,7 @@
 show_edit_parameter_set:function show_edit_parameter_set(){
     app.clear_main_form_errors();
     app.cancel_modal=true;
-    app.paramtersetBeforeEdit = Object.assign({}, app.parameter_set);
+    app.paramterset_before_edit = Object.assign({}, app.parameter_set);
 
     app.edit_parameterset_modal.toggle();
 },
@@ -15,8 +15,8 @@ show_edit_parameter_set:function show_edit_parameter_set(){
 hide_edit_parameter_set:function hide_edit_parameter_set(){
     if(app.cancel_modal)
     {
-        Object.assign(app.parameter_set, app.paramtersetBeforeEdit);
-        app.paramtersetBeforeEdit=null;
+        Object.assign(app.parameter_set, app.paramterset_before_edit);
+        app.paramterset_before_edit=null;
     }
 },
 

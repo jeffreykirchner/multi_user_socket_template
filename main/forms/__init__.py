@@ -22,6 +22,10 @@ from .session_form_admin import SessionFormAdmin
 
 from .instruction_set_form_admin import InstructionSetFormAdmin
 from .instruction_form_admin import InstructionFormAdmin
+from .instruction_set_form import InstructionSetForm
+from .instruction_form import InstructionForm
+from .import_instruction_set_form import ImportInstructionSetForm
+
 from .help_doc_subject_form_admin import HelpDocSubjectFormAdmin
 
 from .end_game_form import EndGameForm

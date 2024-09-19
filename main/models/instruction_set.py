@@ -37,12 +37,32 @@ class InstructionSet(models.Model):
             models.UniqueConstraint(fields=['label', ], name='unique_instruction_set'),
         ]
 
+    def from_dict(self, new_ps):
+        '''
+        copy source values into this instruction set
+        '''
+        # self.label = new_ps.get("label")
+        
+        self.action_page_1 = new_ps.get("action_page_1")
+        self.action_page_2 = new_ps.get("action_page_2")
+        self.action_page_3 = new_ps.get("action_page_3")
+        self.action_page_4 = new_ps.get("action_page_4")
+        self.action_page_5 = new_ps.get("action_page_5")
+        self.action_page_6 = new_ps.get("action_page_6")
+
+        self.save()
+        
+        message = "Parameters loaded successfully."
+
+        return message
+
     def copy_pages(self, i_set):
         '''
         copy instruction pages
         '''
         
-        #session player periods
+        self.instructions.all().delete()  # Clear existing instructions
+
         instructions = []
 
         for i in i_set.all():
@@ -50,6 +70,22 @@ class InstructionSet(models.Model):
         
         main.models.Instruction.objects.bulk_create(instructions)
     
+    def copy_pages_from_dict(self, instruction_pages):
+        '''
+        copy instruction pages from dict
+        '''
+        
+        self.instructions.all().delete()
+
+        instructions = []
+
+        for instruction_page in instruction_pages:
+            instructions.append(main.models.Instruction(instruction_set=self, 
+                                                        text_html=instruction_page['text_html'], 
+                                                        page_number=instruction_page['page_number']))
+
+        main.models.Instruction.objects.bulk_create(instructions)
+
     def copy_help_docs_subject(self, i_set):
         
         help_docs_subject = []
@@ -78,6 +114,26 @@ class InstructionSet(models.Model):
             "action_page_6" : self.action_page_6,
 
             "instruction_pages" : [i.json() for i in self.instructions.all()],
+        }
+    
+    async def ajson(self):
+        '''
+        json object of model
+        '''
+
+        return{
+            "id" : self.id,         
+
+            "label" : self.label,
+
+            "action_page_1" : self.action_page_1,
+            "action_page_2" : self.action_page_2,
+            "action_page_3" : self.action_page_3,
+            "action_page_4" : self.action_page_4,
+            "action_page_5" : self.action_page_5,
+            "action_page_6" : self.action_page_6,
+
+            "instruction_pages" : [await i.ajson() async for i in self.instructions.all()],
         }
     
     #return json object of class

@@ -1,0 +1,45 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+
+{%block head%}
+<script>
+
+    document.addEventListener("DOMContentLoaded", function(){
+        {%include "staff/staff_instruction_edit/staff_instruction_edit.js"%}
+    });
+
+</script>
+
+<style>
+    .table_header{
+        font-weight:bold;
+        font-size: 16px;
+    }
+</style>
+
+{%endblock head%}
+
+{% block content %}
+<div class="row justify-content-lg-center" v-if="!first_load_done">
+    <div class="col text-end mb-4">
+        <i class="fas fa-cog fa-spin fa-2x"></i>
+    </div>
+</div>
+
+<!-- modals -->
+{%include "staff/staff_instruction_edit/edit_instruction_set_modal.html"%}
+{%include "staff/staff_instruction_edit/edit_instruction_modal.html"%}
+{%include "staff/staff_instruction_edit/import_instruction_set_modal.html"%}
+{%include "staff/staff_instruction_edit/upload_instruction_set_modal.html"%}
+
+<div v-if="first_load_done && instruction_set">
+    <div class="row justify-content-lg-center" v-cloak>
+        <div class="col col-md-6">
+            {%include "staff/staff_instruction_edit/instruction_set_card.html"%}                   
+        </div>
+    </div>
+    
+    {%include "staff/staff_instruction_edit/instruction_card.html"%}
+</div>
+
+{% endblock %}

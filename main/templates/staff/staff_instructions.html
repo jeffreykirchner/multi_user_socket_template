@@ -1,0 +1,28 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+
+{%block head%}
+<script>
+
+    document.addEventListener("DOMContentLoaded", function(){
+        {%include "staff/staff_instructions/staff_instructions.js"%}
+    });
+
+</script>
+
+<style>
+    .table_header{
+        font-weight:bold;
+        font-size: 16px;
+    }
+</style>
+
+{%endblock head%}
+
+{% block content %}
+<div class="row justify-content-lg-center" v-cloak>
+    <div class="col col-md-8">
+        {%include "staff/staff_instructions/instructions_card.html"%}                   
+    </div>
+</div>
+{% endblock %}

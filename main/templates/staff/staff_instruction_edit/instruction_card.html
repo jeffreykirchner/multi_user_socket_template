@@ -1,0 +1,49 @@
+
+<div class="row justify-content-lg-center mt-4" 
+     v-for="(i, index) in instruction_set.instruction_pages"
+            v-bind:key="i"
+            :set="instruction=instruction_set.instruction_pages[i]">
+    <div class="col col-md-12">
+        <div class="card">
+                      
+            <div class="card-header">
+
+                <span class="fs-5">Page [[i.page_number]]</span> 
+
+                <span class="float-end ">
+                    <button class="btn btn-outline-danger" 
+                            type="button" 
+                            v-on:click = "send_delete_instruction(i.id)" 
+                            v-bind:disabled = "reconnecting || working">
+                        Delete <i class="fas fa-trash-alt"></i>
+                    </button>
+                </span>
+
+                <span class="float-end me-2">
+                    <button class="btn btn-outline-primary" 
+                            type="button" 
+                            v-on:click = "show_edit_instruction_modal(index)" 
+                            v-bind:disabled = "reconnecting || working">
+                        Edit <i class="far fa-edit"></i>
+                    </button>
+                </span>
+                                                                
+            </div>
+            <div class="card-body" >                      
+                <div v-html="i.text_html">
+                </div>
+            </div>                    
+        </div>                   
+    </div>
+</div>
+
+<div class="row justify-content-lg-center mt-4">
+    <div class="col col-md-12 text-center">
+        
+        <button class="btn btn-outline-success" type="button" v-on:click = "send_add_instruction()" v-bind:disabled = "reconnecting || working">
+            Add Page <i class="fas fa-plus"></i>
+        </button>
+       
+    </div>
+</div>
+

@@ -5,53 +5,51 @@
         </span>
 
         <span class="float-end">
-            <button class="btn btn-outline-success" type="button" v-on:click = "send_create_session()" v-bind:disabled = "reconnecting || working">
-                <span v-html="create_session_button_text"></span>
+            <button class="btn btn-outline-success" type="button" v-on:click = "send_create_instruction()" v-bind:disabled = "reconnecting || working">
+                Create New Instruction Set
             </button>
         </span>
                                                         
     </div>
     <div class="card-body">                      
                         
-        <!-- instructions list -->
+        <!-- instruction list -->
         <table class="table table-hover table-condensed table-responsive-md">                            
 
-            <caption style="caption-side:top;text-align: center;">Sessions</caption>
+            <caption style="caption-side:top;text-align: center;">Instructions</caption>
 
             <thead>
                 <th scope="col">
-                    <button type="button" class="btn btn-outline-link btn-sm" v-on:click = "sort_by_title()">
-                        <span v-html="title_sort_button_text" class="table_header"></span>
-                    </button>
+                    Title
                 </th> 
                 <th scope="col" class="text-center">
-                    <button type="button" class="btn btn-outline-link btn-sm" v-on:click = "sort_by_date()">
-                        <span v-html="date_sort_button_text" class="table_header"></span>
-                    </button>                             
+                    Sessions                             
                 </th>                                                              
                 <th scope="col" class="text-center">
                     Control
                 </th>
             </thead>
 
-            <tbody id="sessionList">                                                  
-                <tr v-for="(s,index) in sessions" v-bind:key="s.id">                                                                          
+            <tbody id="instructionList">                                                  
+                <tr v-for="(i, index) in instructions" v-bind:key="i.id">                                                                          
                     <td> 
-                        <a :href="'/staff-session/' + s.id + '/' "><span v-html="s.title"></span></a>                                        
+                        <a :href="'/staff-instruction-edit/' + i.id + '/' ">[[i.label]]</span></a>                                        
                     </td>
                     <td class="text-center"> 
-                        [[format_date(s.start_date)]]                             
+                         <div v-for="(s, index2) in i.sessions" v-bind:key="s.id">
+                            <a v-bind:href=`/staff-session/${s.id}`>[[s.title]]</a>
+                         </div>                            
                     </td>
                     <td class="text-center">
-                        <div v-if="s.locked">
-                            Locked
+                        <div v-if="i.locked">
+                            In Use
                         </div>
                         <div v-else>
-                            <button v-bind:id="'deleteSession' + s.id"
+                            <button v-bind:id="'deleteInstruction' + i.id"
                                     type="button"
                                     class="btn btn-outline-danger btn-sm"
-                                    v-on:click = "send_delete_session(s.id)"
-                                    title = "Delete session and its data."
+                                    v-on:click = "send_delete_instruction(i.id)"
+                                    title = "Delete instruction and its data."
                                     v-bind:disabled = "reconnecting || working">
                                 Delete <i class="fas fa-user-minus fa-xs"></i>  
                             </button>
