@@ -47,7 +47,7 @@ class ParameterSet(models.Model):
     avatar_move_speed = models.DecimalField(verbose_name='Move Speed', decimal_places=1, max_digits=3, default=5.0)            #move speed
     avatar_animation_speed = models.DecimalField(verbose_name='Animation Speed', decimal_places=2, max_digits=3, default=1.0)  #animation speed
 
-    reconnection_limit = models.IntegerField(verbose_name='Age Warning', default=25)       #age cut that issues a warning for invalid age range
+    reconnection_limit = models.IntegerField(verbose_name='Limit Subject Screen Reconnection Trys', default=25)       #limit subject screen reconnection trys
 
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
 
