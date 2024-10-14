@@ -115,7 +115,7 @@ class ExperimentControlsMixin():
 
         self.world_state_local = result["world_state"]
         
-        await self.store_world_state()
+        await self.store_world_state(force_store=True)
 
         #Send message to staff page
         if result["value"] == "fail":

@@ -35,7 +35,7 @@ class TimerMixin():
         self.world_state_local["timer_history"].append({"time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
                                                         "count": 0})
         
-        await self.store_world_state()
+        await self.store_world_state(force_store=True)
 
         # if self.world_state_local["timer_running"]:
         #     result = {"timer_running" : True}
@@ -244,7 +244,7 @@ class TimerMixin():
             if stop_timer:
                 self.world_state_local["timer_running"] = False
 
-            await self.store_world_state()
+            await self.store_world_state(force_store=True)
             
             await self.send_message(message_to_self=False, message_to_group=result,
                                     message_type="time", send_to_client=False, send_to_group=True)
