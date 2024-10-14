@@ -29,11 +29,12 @@ class TimerMixin():
 
         if event["message_text"]["action"] == "start":            
             self.world_state_local["timer_running"] = True
+
+            self.world_state_local["timer_history"].append({"time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+                                                        "count": 0})
         else:
             self.world_state_local["timer_running"] = False
 
-        self.world_state_local["timer_history"].append({"time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
-                                                        "count": 0})
         
         await self.store_world_state(force_store=True)
 
@@ -248,23 +249,6 @@ class TimerMixin():
             
             await self.send_message(message_to_self=False, message_to_group=result,
                                     message_type="time", send_to_client=False, send_to_group=True)
-
-        #if session is not over continue
-        #stop_timer = True
-        # if not stop_timer:
-
-        #     loop = asyncio.get_event_loop()
-
-        #     loop.call_later(0.33, asyncio.create_task, 
-        #                     self.channel_layer.send(
-        #                         self.channel_name,
-        #                         {
-        #                             'type': "continue_timer",
-        #                             'message_text': {},
-        #                         }
-        #                     ))
-        
-        # logger.info(f"continue_timer end")
 
     async def update_time(self, event):
         '''
