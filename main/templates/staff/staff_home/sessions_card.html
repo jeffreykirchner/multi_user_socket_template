@@ -13,7 +13,7 @@
     </div>
     <div class="card-body">                      
                         
-        <!-- instructions list -->
+        <!-- sessions list -->
         <table class="table table-hover table-condensed table-responsive-md">                            
 
             <caption style="caption-side:top;text-align: center;">Sessions</caption>
@@ -24,6 +24,9 @@
                         <span v-html="title_sort_button_text" class="table_header"></span>
                     </button>
                 </th> 
+                <th scope="col" class="text-center">
+                    Collaborators
+                </th>
                 <th scope="col" class="text-center">
                     <button type="button" class="btn btn-outline-link btn-sm" v-on:click = "sort_by_date()">
                         <span v-html="date_sort_button_text" class="table_header"></span>
@@ -38,6 +41,11 @@
                 <tr v-for="(s,index) in sessions" v-bind:key="s.id">                                                                          
                     <td> 
                         <a :href="'/staff-session/' + s.id + '/' "><span v-html="s.title"></span></a>                                        
+                    </td>
+                    <td class="text-center"> 
+                        <div v-for="c in s.collaborators_field">
+                            [[c]]
+                        </div>
                     </td>
                     <td class="text-center"> 
                         [[format_date(s.start_date)]]                             

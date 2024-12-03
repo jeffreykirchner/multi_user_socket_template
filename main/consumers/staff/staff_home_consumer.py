@@ -13,6 +13,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.contrib.postgres.aggregates import ArrayAgg
 
 from .. import SocketConsumerMixin
 from .send_message_mixin import SendMessageMixin
@@ -150,7 +151,8 @@ def get_session_list_json(usr):
 
     session_list = list(Session.objects.filter(soft_delete=False) \
                                .filter(Q(id__in=session_list_1) | Q(id__in=session_list_2)) \
-                               .values('title', 'id', 'locked', 'start_date'))
+                               .annotate(collaborators_field=ArrayAgg('collaborators__email')) \
+                               .values('title', 'id', 'locked', 'start_date', 'collaborators_field'))
 
     return {"sessions" : session_list}
 
