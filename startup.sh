@@ -1,4 +1,5 @@
 echo "*** Startup.sh ***"
+apt-get update
 echo "Run Migrations:"
 python manage.py migrate
 echo "Install htop:"
