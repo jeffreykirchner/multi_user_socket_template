@@ -33,7 +33,20 @@
                     ---
                 </span>
             </div>
-        </div>                    
+        </div>    
+        <div class="row">
+            <div class="col-md-4" style="text-align: right;">
+                Collaborators:
+            </div>
+            <div class="col-md-8" v-if="session.collaborators.length > 0">
+                <div v-for="c in session.collaborators">
+                    [[c]] <button title="Remove Collaborator" class="remove_collaborator_button text-danger" v-on:click="send_remove_collaborator(c)">x</button>
+                </div>
+            </div>
+            <div class="col-md-8" v-else>
+                ---
+            </div>
+        </div>                
         
     </div>                    
 </div>

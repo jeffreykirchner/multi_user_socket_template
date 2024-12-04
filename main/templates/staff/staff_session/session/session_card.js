@@ -43,3 +43,14 @@ hide_edit_session:function hide_edit_session(){
         app.session_before_edit=null;
     }
 },
+
+/**
+ * remove collaborator from session
+ */
+send_remove_collaborator: function send_remove_collaborator(collaborator_id){
+    if (!confirm('Remove collaborator from the session?')) {
+        return;
+    }
+
+    app.send_message("remove_collaborator",{"collaborator_id" : collaborator_id});
+},

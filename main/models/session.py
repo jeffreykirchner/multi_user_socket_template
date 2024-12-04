@@ -482,6 +482,8 @@ class Session(models.Model):
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
             "world_state" : self.world_state,
+            "collaborators" : [i.email for i in self.collaborators.all()],
+            "creator" : self.creator.id,
         }
     
     def json_for_subject(self, session_player):
