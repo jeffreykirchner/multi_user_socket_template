@@ -39,10 +39,15 @@
                 Collaborators:
             </div>
             <div class="col-md-8" v-if="session.collaborators_order.length > 0">
-                <div v-for="(c,index) in session.collaborators_order" :set="temp_p=session.collaborators[c]">
-                    [[temp_p]]<button title="Remove Collaborator" class="remove_collaborator_button text-danger" v-on:click="send_remove_collaborator(c)">x</button>
+                <div v-for="(c,index) in session.collaborators_order" 
+                     v-bind:key = "c"
+                     :set="temp_p=session.collaborators[c]">
+                    [[temp_p]]<button title="Remove Collaborator" 
+                                      class="remove_collaborator_button text-danger" 
+                                      v-on:click="send_remove_collaborator(c)"
+                                      v-if="session.creator==user_id">x</button>
 
-                    <span v-if="index+1==session.collaborators_order.length">
+                    <span v-if="index+1==session.collaborators_order.length && session.creator==user_id">
                         <button class="add_collaborator_button text-success" type="button" v-on:click = "show_upload_collaborators_list_modal()" title="Add Collaborators">+</button> 
                     </span>
                 </div>

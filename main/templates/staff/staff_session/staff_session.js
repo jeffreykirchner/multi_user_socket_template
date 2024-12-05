@@ -42,6 +42,7 @@ let app = Vue.createApp({
                     email_default_text : `{{parameters.invitation_text|safe}}`,
 
                     email_list_error : "",
+                    collaborators_list_error : "",
 
                     csv_email_list : "",           //csv email list
                     csv_collaborators_list : "",   //csv collaborators list
@@ -53,6 +54,7 @@ let app = Vue.createApp({
                     edit_session_modal : null,
                     send_message_modal : null,
                     upload_email_modal : null,
+                    upload_collaborators_modal : null,
 
                     //pixi
                     canvas_width  : null,
@@ -212,6 +214,9 @@ let app = Vue.createApp({
                 case "update_rescue_subject":
                     app.take_rescue_subject(message_data);
                     break;
+                case "add_collaborators":
+                    app.take_add_collaborators(message_data);
+                    break;
             }
             app.working = false;
             app.process_the_feed(message_type, message_data);
@@ -239,11 +244,13 @@ let app = Vue.createApp({
             app.edit_session_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_session_modal'), {keyboard: false});;           
             app.send_message_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('send_message_modal'), {keyboard: false});           
             app.upload_email_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_email_modal'), {keyboard: false});
+            app.upload_collaborators_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_collaborators_modal'), {keyboard: false});
 
             document.getElementById('edit_subject_modal').addEventListener('hidden.bs.modal', app.hide_edit_subject);
             document.getElementById('edit_session_modal').addEventListener('hidden.bs.modal', app.hide_edit_session);
             document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
             document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
+            document.getElementById('upload_collaborators_modal').addEventListener('hidden.bs.modal', app.hide_send_collaborators_list);
 
             tinyMCE.init({
                 target: document.getElementById('id_invitation_subject'),

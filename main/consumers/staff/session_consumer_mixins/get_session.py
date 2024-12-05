@@ -47,7 +47,7 @@ class GetSessionMixin():
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
-
+        
 #local sync functions    
 def take_get_session(session_key):
     '''

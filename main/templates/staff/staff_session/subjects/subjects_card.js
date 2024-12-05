@@ -92,7 +92,7 @@ take_finished_instructions: function take_finished_instructions(message_data){
     
  },
 
-/** send session update form   
+/** send list of subjects emails to server
 */
 send_email_list: function send_email_list(){
     app.cancel_modal = false;

@@ -44,6 +44,35 @@ hide_edit_session:function hide_edit_session(){
     }
 },
 
+/** send session update form   
+*/
+send_add_collaborators: function send_add_collaborators(){
+    app.cancel_modal = false;
+    app.working = true;
+
+    app.send_message("add_collaborators",
+                    {"csv_data" : app.csv_collaborators_list});
+},
+
+/**
+ * take add collaborators response
+ */
+take_add_collaborators: function take_add_collaborators(message_data){
+    app.clear_main_form_errors();
+
+    if(message_data.status == "success")
+    {
+        app.upload_collaborators_modal.hide(); 
+        app.session.collaborators = message_data.collaborators;
+        app.session.collaborators_order = message_data.collaborators_order;
+        app.collaborators_list_error = "";
+    } 
+    else
+    {
+        app.collaborators_list_error = message_data.error_message;
+    }
+},
+
 /**
  * remove collaborator from session
  */
@@ -53,4 +82,28 @@ send_remove_collaborator: function send_remove_collaborator(collaborator_id){
     }
 
     app.send_message("remove_collaborator",{"collaborator_id" : collaborator_id});
+},
+
+/** show edit subject modal
+*/
+show_upload_collaborators_list_modal : function show_upload_collaborators_list_modal (){
+    app.clear_main_form_errors();
+    app.cancel_modal=true;
+
+    app.email_list_error = "";
+
+    app.collaborators_list_error = "";
+
+    app.upload_collaborators_modal.toggle();
+},
+
+/** hide edit subject modal
+*/
+hide_send_collaborators_list: function hide_send_collaborators_list(){
+    app.csv_collaborators_list = "";
+
+    if(app.cancel_modal)
+    {      
+       
+    }
 },
