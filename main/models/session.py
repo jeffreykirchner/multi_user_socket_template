@@ -482,7 +482,8 @@ class Session(models.Model):
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
             "world_state" : self.world_state,
-            "collaborators" : [i.email for i in self.collaborators.all()],
+            "collaborators" : {str(i.id):i.email for i in self.collaborators.all()},
+            "collaborators_order" : list(self.collaborators.all().values_list('id', flat=True)),
             "creator" : self.creator.id,
         }
     

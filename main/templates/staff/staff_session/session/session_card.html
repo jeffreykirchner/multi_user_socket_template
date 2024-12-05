@@ -38,15 +38,18 @@
             <div class="col-md-4" style="text-align: right;">
                 Collaborators:
             </div>
-            <div class="col-md-8" v-if="session.collaborators.length > 0">
-                <div v-for="c in session.collaborators">
-                    [[c]] <button title="Remove Collaborator" class="remove_collaborator_button text-danger" v-on:click="send_remove_collaborator(c)">x</button>
+            <div class="col-md-8" v-if="session.collaborators_order.length > 0">
+                <div v-for="(c,index) in session.collaborators_order" :set="temp_p=session.collaborators[c]">
+                    [[temp_p]]<button title="Remove Collaborator" class="remove_collaborator_button text-danger" v-on:click="send_remove_collaborator(c)">x</button>
+
+                    <span v-if="index+1==session.collaborators_order.length">
+                        <button class="add_collaborator_button text-success" type="button" v-on:click = "show_upload_collaborators_list_modal()" title="Add Collaborators">+</button> 
+                    </span>
                 </div>
             </div>
             <div class="col-md-8" v-else>
-                ---
+                <button class="add_collaborator_button text-success" type="button" v-on:click = "show_upload_collaborators_list_modal()" title="Add Collaborators">+</button> 
             </div>
-        </div>                
-        
+        </div>               
     </div>                    
 </div>

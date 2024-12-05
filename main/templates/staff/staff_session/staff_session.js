@@ -44,6 +44,7 @@ let app = Vue.createApp({
                     email_list_error : "",
 
                     csv_email_list : "",           //csv email list
+                    csv_collaborators_list : "",   //csv collaborators list
 
                     last_world_state_update : null,
 

@@ -19,10 +19,26 @@ class UpdateSessionMixin():
         update session and return it
         '''
 
-        result =  await sync_to_async(take_update_session_form, thread_sensitive=self.thread_sensitive)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_update_session_form, thread_sensitive=self.thread_sensitive)(self.session_id, event["message_text"])
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+    
+    async def remove_collaborator(self, event):
+        '''
+        remove collaborator from session
+        '''
+
+        message = event["message_text"]
+
+        session = await Session.objects.aget(id=self.session_id)
+        await session.collaborators.aremove(message["collaborator_id"])
+        # await session.asave()
+
+        result = {"status":"success", "result" : await sync_to_async(session.json, thread_sensitive=self.thread_sensitive)()}
+
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type="update_session", send_to_client=True, send_to_group=False)
 
 def take_update_session_form(session_id, data):
     '''
