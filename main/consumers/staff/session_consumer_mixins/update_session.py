@@ -119,7 +119,13 @@ class UpdateSessionMixin():
         lock session
         '''
 
-        session = await Session.objects.aget(id=self.session_id)
+        user = self.scope["user"]
+        session = await Session.objects.prefetch_related("creator").aget(id=self.session_id)
+
+        #only creator can add collaborators
+        if session.creator != user:
+            return
+
         session.locked = not session.locked
         await session.asave()
 

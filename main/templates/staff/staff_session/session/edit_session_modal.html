@@ -25,6 +25,7 @@
                 class="btn btn-outline-primary"
                 v-bind:disabled="reconnecting || working"
                 v-on:click = "send_lock_session()"
+                v-if="session.creator == user_id"
                 title="Lock/Unlock Session">
             
             <span v-if="session.locked">Unlock <i class="fas fa-lock-open"></i></i></span>
