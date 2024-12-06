@@ -43,10 +43,14 @@ class UpdateSessionMixin():
         await session.collaborators.aremove(message["collaborator_id"])
         # await session.asave()
 
-        result = {"status":"success", "result" : await sync_to_async(session.json, thread_sensitive=self.thread_sensitive)()}
+        collaborators = {str(i.id):i.email async for i in session.collaborators.all()}
+
+        result = {"status":"success", 
+                  "collaborators" : collaborators,
+                  "collaborators_order" : [i for i in collaborators],}
 
         await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type="update_session", send_to_client=True, send_to_group=False)
+                                message_type="add_collaborators", send_to_client=True, send_to_group=False)
     
     async def add_collaborators(self, event):
         '''
@@ -107,6 +111,20 @@ class UpdateSessionMixin():
         if status == "fail":
             result = {"status":"fail", "error_message" : error_message}
 
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+    async def lock_session(self, event):
+        '''
+        lock session
+        '''
+
+        session = await Session.objects.aget(id=self.session_id)
+        session.locked = not session.locked
+        await session.asave()
+
+        result = {"status":"success", "locked":session.locked}
+        
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 

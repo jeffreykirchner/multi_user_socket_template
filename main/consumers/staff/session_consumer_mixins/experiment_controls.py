@@ -25,7 +25,7 @@ class ExperimentControlsMixin():
         start experiment
         '''
         result = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
-        cache.set(f"session_{self.session_id}", result["session"])
+        # cache.set(f"session_{self.session_id}", result["session"])
 
         self.session_events = []
 

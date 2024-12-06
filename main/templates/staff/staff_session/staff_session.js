@@ -217,6 +217,9 @@ let app = Vue.createApp({
                 case "add_collaborators":
                     app.take_add_collaborators(message_data);
                     break;
+                case "lock_session":
+                    app.take_lock_session(message_data);
+                    break;
             }
             app.working = false;
             app.process_the_feed(message_type, message_data);

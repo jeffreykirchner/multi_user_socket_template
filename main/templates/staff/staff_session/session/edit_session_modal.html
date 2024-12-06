@@ -20,6 +20,16 @@
         </form>
     </div>
     <div class="modal-footer">
+
+        <button type="button"
+                class="btn btn-outline-primary"
+                v-bind:disabled="reconnecting || working"
+                v-on:click = "send_lock_session()"
+                title="Lock/Unlock Session">
+            
+            <span v-if="session.locked">Unlock <i class="fas fa-lock-open"></i></i></span>
+            <span v-else>Lock <i class="fas fa-lock"></i></i></span>
+        </button>
         
         <button type="button"
                 class="btn btn-outline-primary"

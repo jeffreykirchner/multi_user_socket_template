@@ -107,3 +107,25 @@ hide_send_collaborators_list: function hide_send_collaborators_list(){
        
     }
 },
+
+/**
+ * send lock session
+ */
+send_lock_session: function send_lock_session(){
+    app.cancel_modal = false;
+    app.working = true;
+
+    app.send_message("lock_session",{"session_id" : app.session.id});
+},
+
+/**
+ * take lock session response
+ */
+take_lock_session: function take_lock_session(message_data){
+    app.working=false;
+    if(message_data.status == "success")
+    {
+        app.edit_session_modal.hide();
+        app.session.locked = message_data.locked;
+    }
+},
