@@ -1,19 +1,18 @@
-//az login
-//az deployment group create --resource-group RG_ESI_VMs --template-file main.bicep
-//az webapp config set -g RG_ESI_VMs -n chapman-experiments-template --startup-file startup.sh
 
-var webSiteName = 'chapman-experiments-template'
-var location = resourceGroup().location
-var linuxFxVersion = 'PYTHON|3.12'
+param webapp_name string
+param app_service_plan string
+
+var linux_fx_version = 'PYTHON|3.12'
 
 resource appService 'Microsoft.Web/sites@2020-06-01' = {
-    name: webSiteName
-    location: location
+    name: webapp_name
+    location:  resourceGroup().location
     properties: {
-      serverFarmId: 'chapman-esi-asp'
+      serverFarmId: app_service_plan
       siteConfig: {
-        linuxFxVersion: linuxFxVersion
+        linuxFxVersion: linux_fx_version
       }
       httpsOnly: true
+      clientAffinityEnabled: false
     }
   }
