@@ -1,0 +1,92 @@
+[
+    {
+      "name": "CSRF_TRUSTED_ORIGINS",
+      "value": "https://experiment_name.azurewebsites.net",
+      "slotSetting": true
+    },
+    {
+      "name": "DBHOST",
+      "value": "db_name.postgres.database.azure.com",
+      "slotSetting": true
+    },
+    {
+      "name": "DBNAME",
+      "value": "experiment_name",
+      "slotSetting": true
+    },
+    {
+      "name": "DBPASS",
+      "value": "password_here",
+      "slotSetting": true
+    },
+    {
+      "name": "DBUSER",
+      "value": "experimentnameadmin",
+      "slotSetting": true
+    },
+    {
+      "name": "EMAIL_MS_HOST",
+      "value": "https://email_host.azurewebsites.net",
+      "slotSetting": true
+    },
+    {
+      "name": "EMAIL_MS_PASSWORD",
+      "value": "password_here",
+      "slotSetting": true
+    },
+    {
+      "name": "EMAIL_MS_USER_NAME",
+      "value": "experiment_name",
+      "slotSetting": true
+    },
+    {
+      "name": "ESI_AUTH_ACCOUNT_URL",
+      "value": "https://portal_name.edu/account/",
+      "slotSetting": true
+    },
+    {
+      "name": "ESI_AUTH_APP",
+      "value": "Experient Name",
+      "slotSetting": true
+    },
+    {
+      "name": "ESI_AUTH_PASS",
+      "value": "password_here",
+      "slotSetting": true
+    },
+    {
+      "name": "ESI_AUTH_PASSWORD_RESET_URL",
+      "value": "http://portal_name.edu/password-reset/",
+      "slotSetting": true
+    },
+    {
+      "name": "ESI_AUTH_URL",
+      "value": "https://portal_name.edu",
+      "slotSetting": true
+    },
+    {
+      "name": "ESI_AUTH_USERNAME",
+      "value": "experiment_name",
+      "slotSetting": true
+    },
+    {
+      "name": "LOG_LOCATION",
+      "value": "/logs/experiment-name/debug.log",
+      "slotSetting": true
+    },
+    {
+      "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+      "value": "1",
+      "slotSetting": false
+    },
+    {
+      "name": "SECRET_KEY",
+      "value": "secect_key_here",
+      "slotSetting": true
+    },
+    {
+      "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+      "value": "10",
+      "slotSetting": true
+    }
+  ]

@@ -4,3 +4,4 @@ _multi_user_socket_template_env/*
 *.pyc
 local_settings.py
 database_dumps/*
+environment_variables.json
