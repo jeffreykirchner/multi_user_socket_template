@@ -1,11 +1,18 @@
+#!/bin/bash
 # az login
 
-webapp_name="chapman-experiments-template"
-resource_group="RG_ESI_VMs"
-resouce_group_db="Experiments"
-app_service_plan='chapman-esi-asp'
-storage_account='chapmanexperimentsstor'
-postgres_server='chapman-experiments-db-v13'
+webapp_name=$(jq . "secrets.json" |  jq -r '.webapp_name')
+resource_group=$(jq . "secrets.json" |  jq -r '.resource_group')
+resouce_group_db=$(jq . "secrets.json" |  jq -r '.resouce_group_db')
+app_service_plan=$(jq . "secrets.json" |  jq -r '.app_service_plan')
+storage_account=$(jq . "secrets.json" |  jq -r '.storage_account')
+postgres_server=$(jq . "secrets.json" |  jq -r '.postgres_server')
+db_admin_user=$(jq . "secrets.json" |  jq -r '.db_admin_user')
+db_admin_password=$(jq . "secrets.json" | jq -r '.db_admin_password')
+sa_access_key=$(jq . "secrets.json" |  jq -r '.sa_access_key' )
+db_name=$(jq . "secrets.json" |  jq -r '.db_name')
+db_pass=$(jq . "secrets.json" |  jq -r '.db_pass')
+db_user=$(jq . "secrets.json" |  jq -r '.db_user')
 
 echo "Starting deployment ..."
 
@@ -19,9 +26,6 @@ az webapp config set \
     --name $webapp_name \
     --startup-file startup.sh
 
-echo "Enter connection access key for storage account:"
-read access_key
-
 az webapp config storage-account add \
   --resource-group $resource_group \
   --name $webapp_name \
@@ -29,14 +33,14 @@ az webapp config storage-account add \
   --storage-type AzureFiles \
   --account-name $storage_account \
   --share-name logs \
-  --access-key $access_key \
+  --access-key $sa_access_key \
   --mount-path /logs
 
 az storage directory create \
     --name $webapp_name \
     --share-name logs \
     --account-name $storage_account \
-    --account-key $access_key
+    --account-key $sa_access_key
 
 az webapp log config \
     --name $webapp_name \
@@ -52,15 +56,46 @@ az webapp config appsettings set \
     --resource-group $resource_group \
     --settings "@environment_variables.json"
 
-echo "Enter database admin username:"
-read admin_user
+az webapp config appsettings list \
+    --name $webapp_name \
+    --resource-group $resource_group
 
-echo "Enter database admin password:"
-read admin_password
-
-az postgres flexible-server execute --admin-user $admin_user \
-                                    --admin-password $admin_password \
+az postgres flexible-server execute --admin-user $db_admin_user \
+                                    --admin-password $db_admin_password \
                                     --name $postgres_server \
                                     --output table \
-                                    --querytext "SELECT datname FROM pg_database;"
+                                    --querytext "CREATE USER ${db_user} WITH ENCRYPTED PASSWORD '${db_pass}';"
+
+az postgres flexible-server execute --admin-user $db_admin_user \
+                                    --admin-password $db_admin_password \
+                                    --name $postgres_server \
+                                    --output table \
+                                    --querytext "CREATE DATABASE ${db_name};"
+
+az postgres flexible-server execute --admin-user $db_admin_user \
+                                    --admin-password $db_admin_password \
+                                    --name $postgres_server \
+                                    --output table \
+                                    --querytext "GRANT CONNECT ON DATABASE ${db_name} TO ${db_user};"
+
+az postgres flexible-server execute --admin-user $db_admin_user \
+                                    --admin-password $db_admin_password \
+                                    --name $postgres_server \
+                                    --database-name $db_name \
+                                    --output table \
+                                    --querytext "GRANT USAGE ON SCHEMA public TO ${db_user};"
+
+az postgres flexible-server execute --admin-user $db_admin_user \
+                                    --admin-password $db_admin_password \
+                                    --name $postgres_server \
+                                    --database-name $db_name \
+                                    --output table \
+                                    --querytext "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${db_user};"
+
+az postgres flexible-server execute --admin-user $db_admin_user \
+                                    --admin-password $db_admin_password \
+                                    --name $postgres_server \
+                                    --database-name $db_name \
+                                    --output table \
+                                    --querytext "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${db_user};"
 
