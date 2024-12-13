@@ -100,4 +100,4 @@ az postgres flexible-server execute --admin-user $db_admin_user \
                                     --querytext "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${db_user};"
 
 echo "Deployment completed successfully, manually setup source code in the Deployment Center."
-echo "Once the source code is setup, run script_post_deployment.sh to complete the deployment."
+echo "Once the source code is setup, run iac/script_post_deployment.sh in ssh to complete the deployment."
