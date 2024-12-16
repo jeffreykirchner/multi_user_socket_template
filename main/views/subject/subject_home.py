@@ -66,13 +66,21 @@ class SubjectHomeView(View):
                                })
 
         if session.arr_affinity_cookie and session.arr_affinity_cookie != "":
-            response.set_cookie("ARRAffinity", 
+            domain = request.get_host()
+            domain = domain.split(":")[0]
+
+            # response.delete_cookie("ARRAffinity")
+            # response.delete_cookie("ARRAffinitySameSite")
+
+            response.set_cookie("ARRAffinity",
                                 value=session.arr_affinity_cookie,
+                                domain="."+domain,
                                 secure=True, 
                                 httponly=True)
 
             response.set_cookie("ARRAffinitySameSite", 
                                 value=session.arr_affinity_cookie,
+                                domain="."+domain,
                                 secure=True, 
                                 httponly=True,
                                 samesite='None')
