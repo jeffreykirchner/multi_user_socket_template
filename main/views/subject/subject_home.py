@@ -47,7 +47,9 @@ class SubjectHomeView(View):
 
         parameters = Parameters.objects.first()
 
-        return render(request=request,
+       
+            
+        response = render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
                                "player_key" :  session_player.player_key,
@@ -60,7 +62,22 @@ class SubjectHomeView(View):
                                "instructions" : json.dumps(session_player.get_instruction_set(), cls=DjangoJSONEncoder),
                                "session_player" : session_player,
                                "parameters" : parameters,
+                               "arr_affinity_cookie" : session.arr_affinity_cookie,
                                })
+
+        if session.arr_affinity_cookie and session.arr_affinity_cookie != "":
+            response.set_cookie("ARRAffinity", 
+                                value=session.arr_affinity_cookie,
+                                secure=True, 
+                                httponly=True)
+
+            response.set_cookie("ARRAffinitySameSite", 
+                                value=session.arr_affinity_cookie,
+                                secure=True, 
+                                httponly=True,
+                                samesite='None')
+
+        return response
     
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):

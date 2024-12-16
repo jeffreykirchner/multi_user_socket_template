@@ -45,6 +45,9 @@ class StaffSessionView(SingleObjectMixin, View):
         for i in StaffEditNameEtcForm():
             staff_edit_name_etc_form_ids.append(i.html_name)
 
+        arr_affinity_cookie = request.COOKIES.get('ARRAffinity', None)
+        Session.objects.filter(id=session.id).update(arr_affinity_cookie=arr_affinity_cookie)
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
@@ -58,6 +61,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "page_key" : f'session-{session.id}',
                                "parameters" : parameters,
                                "session" : session,
+                               "arr_affinity_cookie" : arr_affinity_cookie,
                                })
     
     @method_decorator(login_required)
