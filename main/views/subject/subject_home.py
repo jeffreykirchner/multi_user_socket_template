@@ -72,15 +72,15 @@ class SubjectHomeView(View):
             # response.delete_cookie("ARRAffinity")
             # response.delete_cookie("ARRAffinitySameSite")
 
+            response["Arr-Disable-Session-Affinity"] = True
+
             response.set_cookie("ARRAffinity",
                                 value=session.arr_affinity_cookie,
-                                domain="."+domain,
                                 secure=True, 
                                 httponly=True)
 
             response.set_cookie("ARRAffinitySameSite", 
                                 value=session.arr_affinity_cookie,
-                                domain="."+domain,
                                 secure=True, 
                                 httponly=True,
                                 samesite='None')
