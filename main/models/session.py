@@ -64,7 +64,7 @@ class Session(models.Model):
     world_state = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session State")       #world state at this point in session
     replay_data = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Replay Data")   
 
-    arr_affinity_cookie = models.CharField(max_length=300, default="", verbose_name="ARR Affinity Cookie")            #cookie for azure load balancer
+    arr_affinity_cookie = models.CharField(max_length=300, default="", verbose_name="ARR Affinity Cookie", null=True, blank=True)            #cookie for azure load balancer
 
     soft_delete =  models.BooleanField(default=False)                             #hide session if true
 
