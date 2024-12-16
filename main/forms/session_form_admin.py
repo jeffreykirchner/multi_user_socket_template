@@ -38,6 +38,10 @@ class SessionFormAdmin(forms.ModelForm):
     
     id_string = forms.CharField(label='ID String',
                             widget=forms.TextInput(attrs={"size":"6"}))
+    
+    arr_affinity_cookie = forms.CharField(label='ARR Affinity Cookie',
+                                          widget=forms.TextInput(attrs={"size":"100"}))
+    
 
     
     shared = forms.BooleanField(label='Share parameterset with all.', required=False)
