@@ -76,14 +76,16 @@ class SubjectHomeView(View):
 
             response.set_cookie("ARRAffinity",
                                 value=session.arr_affinity_cookie,
+                                path="/subject-home/",
                                 secure=True, 
                                 httponly=True)
 
             response.set_cookie("ARRAffinitySameSite", 
                                 value=session.arr_affinity_cookie,
+                                path="/subject-home/",
                                 secure=True, 
                                 httponly=True,
-                                samesite='None')
+                                samesite="None")
 
         return response
     
