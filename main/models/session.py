@@ -65,6 +65,8 @@ class Session(models.Model):
 
     replay_data = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Replay Data")   
 
+    website_instance_id = models.CharField(max_length=300, default="", verbose_name="Website Instance ID", null=True, blank=True)           #website instance from azure
+
     soft_delete =  models.BooleanField(default=False)                             #hide session if true
 
     timestamp = models.DateTimeField(auto_now_add=True)
