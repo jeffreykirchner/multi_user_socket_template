@@ -30,6 +30,9 @@ class SubjectHomeView(View):
         '''
         handle get requests
         '''
+
+        logger = logging.getLogger(__name__)
+
         try:
             session_player = SessionPlayer.objects.get(player_key=kwargs['player_key'])
             session = session_player.session
@@ -69,10 +72,12 @@ class SubjectHomeView(View):
             domain = request.get_host()
             domain = domain.split(":")[0]
 
+            logger.info(f"setting cookies for domain {domain}")
+
             # response.delete_cookie("ARRAffinity")
             # response.delete_cookie("ARRAffinitySameSite")
 
-            response["Arr-Disable-Session-Affinity"] = "true"
+            #response["Arr-Disable-Session-Affinity"] = "true"
 
             response.set_cookie("ARRAffinity",
                                 value=session.arr_affinity_cookie,
