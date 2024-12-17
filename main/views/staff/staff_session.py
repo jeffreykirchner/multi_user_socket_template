@@ -4,6 +4,7 @@ staff view
 import logging
 import uuid
 import json
+import os
 
 from django.views import View
 from django.shortcuts import render
@@ -36,7 +37,7 @@ class StaffSessionView(SingleObjectMixin, View):
         '''
         handle get requests
         '''
-        
+
         parameters = Parameters.objects.first()
 
         session = Session.objects.only("id", "parameter_set").get(id=self.kwargs['pk'])
@@ -44,6 +45,8 @@ class StaffSessionView(SingleObjectMixin, View):
         staff_edit_name_etc_form_ids=[]
         for i in StaffEditNameEtcForm():
             staff_edit_name_etc_form_ids.append(i.html_name)
+
+        website_instance_id = os.environ.get('WEBSITE_INSTANCE_ID', None)
 
         return render(request=request,
                       template_name=self.template_name,
@@ -58,6 +61,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "page_key" : f'session-{session.id}',
                                "parameters" : parameters,
                                "session" : session,
+                               "website_instance_id" : website_instance_id,
                                })
     
     @method_decorator(login_required)
