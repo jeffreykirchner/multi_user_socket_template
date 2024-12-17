@@ -60,15 +60,16 @@ class SubjectHomeView(View):
                                "instructions" : json.dumps(session_player.get_instruction_set(), cls=DjangoJSONEncoder),
                                "session_player" : session_player,
                                "parameters" : parameters,
+                               "website_instance_id" : session.website_instance_id,
                                })
         
-        reponse.set_cookie('ARRAffinity', 
+        reponse.set_signed_cookie('ARRAffinity', 
                            value=session.website_instance_id, 
                            domain='.chapman-experiments-template.azurewebsites.net',
                            path='/',
                            httponly=True, 
                            secure=True)
-        reponse.set_cookie('ARRAffinitySameSite', 
+        reponse.set_signed_cookie('ARRAffinitySameSite', 
                            value=session.website_instance_id, 
                            domain='.chapman-experiments-template.azurewebsites.net',
                            path='/',
