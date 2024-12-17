@@ -62,8 +62,17 @@ class SubjectHomeView(View):
                                "parameters" : parameters,
                                })
         
-        reponse.set_cookie('ARRAffinity', value=session.website_instance_id, httponly=True, secure=True)
-        reponse.set_cookie('ARRAffinitySameSite', value=session.website_instance_id, httponly=True, secure=True, samesite='None')
+        reponse.set_cookie('ARRAffinity', 
+                           value=session.website_instance_id, 
+                           domain='.chapman-experiments-template.azurewebsites.net',
+                           httponly=True, 
+                           secure=True)
+        reponse.set_cookie('ARRAffinitySameSite', 
+                           value=session.website_instance_id, 
+                           domain='.chapman-experiments-template.azurewebsites.net',
+                           httponly=True, 
+                           secure=True, 
+                           samesite='None')
     
         return reponse
     
