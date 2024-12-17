@@ -34,6 +34,7 @@ let app = Vue.createApp({
                     player_key : "{{session_player.player_key}}",
                     session_player : null, 
                     session : null,
+                    website_instance_id : "{{website_instance_id}}",
 
                     form_ids: {{form_ids|safe}},
 
@@ -241,7 +242,7 @@ let app = Vue.createApp({
                 app.scroll_update();
             }
 
-            app.setup_pixi();
+            app.setup_pixi();            
 
         },
 
