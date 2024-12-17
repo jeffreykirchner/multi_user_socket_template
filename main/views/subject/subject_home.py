@@ -74,25 +74,21 @@ class SubjectHomeView(View):
 
             logger.info(f"setting cookies for domain {domain}")
 
-            # response.delete_cookie("ARRAffinity")
-            # response.delete_cookie("ARRAffinitySameSite")
+            # response.delete_cookie("ARRAffinity", domain="."+domain)
+            # response.delete_cookie("ARRAffinitySameSite", domain="."+domain)
 
-            #response["Arr-Disable-Session-Affinity"] = "true"
+            response["Arr-Disable-Session-Affinity"] = True
 
-            response.set_cookie("ARRAffinity",
-                                value=session.arr_affinity_cookie,
-                                path="/",
-                                domain="." + domain,
-                                secure=True, 
-                                httponly=True)
+            # response.set_cookie("ARRAffinity",
+            #                     value=session.arr_affinity_cookie,
+            #                     secure=True, 
+            #                     httponly=True)
 
-            response.set_cookie("ARRAffinitySameSite", 
-                                value=session.arr_affinity_cookie,
-                                path="/",
-                                domain="." + domain,
-                                secure=True, 
-                                httponly=True,
-                                samesite="None")
+            # response.set_cookie("ARRAffinitySameSite", 
+            #                     value=session.arr_affinity_cookie,
+            #                     secure=True, 
+            #                     httponly=True,
+            #                     samesite="None")
 
         return response
     
