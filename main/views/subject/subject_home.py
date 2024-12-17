@@ -47,7 +47,7 @@ class SubjectHomeView(View):
 
         parameters = Parameters.objects.first()
 
-        return render(request=request,
+        reponse =  render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
                                "player_key" :  session_player.player_key,
@@ -61,6 +61,11 @@ class SubjectHomeView(View):
                                "session_player" : session_player,
                                "parameters" : parameters,
                                })
+        
+        reponse.set_cookie('ARRAffinity', value=session.website_instance_id, httponly=True, secure=True)
+        reponse.set_cookie('ARRAffinitySameSite', value=session.website_instance_id, httponly=True, secure=True, samesite='None')
+    
+        return reponse
     
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):

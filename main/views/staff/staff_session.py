@@ -47,6 +47,7 @@ class StaffSessionView(SingleObjectMixin, View):
             staff_edit_name_etc_form_ids.append(i.html_name)
 
         website_instance_id = os.environ.get('WEBSITE_INSTANCE_ID', None)
+        Session.objects.filter(id=session.id).update(website_instance_id=website_instance_id)
 
         return render(request=request,
                       template_name=self.template_name,
