@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 
 from main.models import Parameters
 from main.models import ProfileLoginAttempt
+from main.models import Profile
 
 from main.forms import LoginForm
 
@@ -78,7 +79,7 @@ def login_function(request,data):
         #check rate limit
         user_rl = User.objects.filter(username=username.lower()).first()
         if user_rl:
-            failed_login_attempts = user_rl.profile_login_attempts.filter(success=False, timestamp__gte=datetime.now()-timedelta(minutes=1)).count()
+            failed_login_attempts = user_rl.profile.profile_login_attempts.filter(success=False, timestamp__gte=datetime.now()-timedelta(minutes=1)).count()
 
             if failed_login_attempts > 5:
                 return JsonResponse({"status":"error", "message":"Login failed. Do you have access to this experiment?"}, safe=False)
@@ -90,7 +91,7 @@ def login_function(request,data):
 
         if user is not None:
             login(request, user)
-            ProfileLoginAttempt.objects.create(user=user, success=True)
+            ProfileLoginAttempt.objects.create(profile=user.profile, success=True)
 
             redirect_path = request.session.get('redirect_path','/')
 
@@ -102,7 +103,7 @@ def login_function(request,data):
 
             user = User.objects.filter(username=username.lower()).first()
             if user:
-                ProfileLoginAttempt.objects.create(user=user, success=False, note="Invalid Password")
+                ProfileLoginAttempt.objects.create(profile=user.profile, success=False, note="Invalid Password")
 
             return JsonResponse({"status" : "error", "message":"Invalid username or password"}, safe=False)
     else:
@@ -159,6 +160,8 @@ def login_function_esi_auth(username, password):
                                                 password=get_random_string(22),                                         
                                                 first_name=profile['first_name'],
                                                 last_name=profile['last_name'])
+            
+            profile = Profile.objects.create(user=user)
             
             logger.warning(f"ESI auth user not found, create new user: {user}")
         else:

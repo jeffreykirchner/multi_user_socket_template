@@ -1,12 +1,16 @@
 '''
 admin interface
 '''
-from django.utils.translation import ngettext
+import logging
+import datetime
 
+from django.utils.translation import ngettext
+from django.db.backends.postgresql.psycopg_any import DateTimeTZRange
 from django.contrib import admin
 from django.contrib import messages
 from django.conf import settings
 from django.core.cache import cache
+from django.utils import timezone
 
 from main.forms import ParametersForm
 from main.forms import SessionFormAdmin
@@ -14,6 +18,7 @@ from main.forms import InstructionFormAdmin
 from main.forms import InstructionSetFormAdmin
 from main.forms import HelpDocSubjectFormAdmin
 
+from main.models import Profile
 from main.models import ProfileLoginAttempt
 
 from main.models import Parameters
@@ -253,12 +258,48 @@ class ProfileLoginAttemptAdmin(admin.ModelAdmin):
     '''
     profile login attempt admin
     '''
-    list_display = ['user','success','timestamp','note']
-    readonly_fields=['success', 'note','user', 'success', 'timestamp', 'note']
+    list_display = ['profile','success','timestamp','note']
+    readonly_fields=['success', 'note','profile', 'success', 'timestamp', 'note']
 
     def has_add_permission(self, request, obj=None):
         return False
 
     def has_delete_permission(self, request, obj=None):
         return False
+    
+#profile login attempt inline
+class ProfileLoginAttemptInline(admin.TabularInline):
+      '''
+      profile login attempt inline
+      '''
+      def get_queryset(self, request):
+            qs = super().get_queryset(request)
+            
+            return qs.filter(timestamp__contained_by=DateTimeTZRange(timezone.now() - datetime.timedelta(days=30), timezone.now()))
+      
+      def has_add_permission(self, request, obj=None):
+            return False
+
+      def has_change_permission(self, request, obj=None):
+            return False
+
+      extra = 0  
+      model = ProfileLoginAttempt
+      can_delete = True
+      show_change_link = True
+      fields=('id','success','note')
+      readonly_fields = ('timestamp',)
+    
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    '''
+    profile admin
+    '''
+
+    ordering = ['user__last_name', 'user__first_name']
+    search_fields = ['user__last_name', 'user__first_name', 'user__email']
+
+    list_display = ['__str__']
+    inlines = [ProfileLoginAttemptInline]
+
 
