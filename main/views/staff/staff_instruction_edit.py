@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseForbidden
 
 from main.forms import InstructionSetForm
 from main.forms import InstructionForm
@@ -28,6 +29,12 @@ class StaffInstructionEditView(SingleObjectMixin, View):
         '''
         handle get requests
         '''
+
+        user = request.user
+
+        if not user.is_staff:
+            if not user.profile.can_edit_instructions:
+                return HttpResponseForbidden("You don't have permission to access this page.")
 
         instruction_set = self.get_object()
 

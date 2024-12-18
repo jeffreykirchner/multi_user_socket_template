@@ -299,7 +299,7 @@ class ProfileAdmin(admin.ModelAdmin):
     ordering = ['user__last_name', 'user__first_name']
     search_fields = ['user__last_name', 'user__first_name', 'user__email']
 
-    list_display = ['__str__']
+    list_display = ['__str__', 'can_edit_instructions']
     inlines = [ProfileLoginAttemptInline]
 
 
