@@ -3,11 +3,12 @@ from django.db import models
 
 from django.conf import settings
 
+from .profile import Profile
 
 #profile login attempts
 class ProfileLoginAttempt(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile_login_attempts")  #user model
-    
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="profile_login_attempts", blank=True, null=True)    #profile that note is attached to
+
     success = models.BooleanField(verbose_name="Login Success", default=False)                                  #was the login successful
     note = models.TextField(verbose_name="Note", blank=True, null=True)                                         #note about the login attempt
 

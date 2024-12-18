@@ -7,6 +7,7 @@ from django.views.generic import View
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
 from main.models import Parameters
 
@@ -23,9 +24,11 @@ class StaffInstructionsView(View):
         handle get requests
         '''
 
-        #logger = logging.getLogger(__name__) 
+        user = request.user
 
-        # parameters = Parameters.objects.first()
+        if not user.is_staff:
+            if not user.profile.can_edit_instructions:
+                return HttpResponseForbidden("You don't have permission to access this page.")
 
         return render(request, self.template_name, {"channel_key" : uuid.uuid4(),
                                                     "player_key" :  uuid.uuid4(),
