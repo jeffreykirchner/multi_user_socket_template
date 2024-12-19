@@ -162,6 +162,9 @@ def take_update_instruction_set(form_data_dict):
 
     if form.is_valid():              
         form.save()    
+
+        for parameter_set_player in instruction_set.parameter_set_players_c.all():
+            parameter_set_player.update_json_local()
         
         return {"value" : "success",
                 "instruction_set": instruction_set.json()}
