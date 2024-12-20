@@ -59,7 +59,12 @@ class StaffInstructionsConsumer(SocketConsumerMixin,
 
         c = await InstructionSet.objects.all().order_by('id').alast()
 
-        instruction_set = await InstructionSet.objects.acreate(label=f"** New Instruction Set {c.id+1} ***")
+        #get the next id
+        new_id = 1
+        if c:
+            new_id = c.id + 1
+
+        instruction_set = await InstructionSet.objects.acreate(label=f"** New Instruction Set {new_id} ***")
         instruction = await Instruction.objects.acreate(instruction_set=instruction_set, 
                                                  text_html="** New Instruction Page ***", 
                                                  page_number=1)

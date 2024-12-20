@@ -38,13 +38,13 @@ class WorldStateMixin():
         self.world_state_local["last_store"] = dt_now
 
         #update cache
-        c = cache.get(f"session_{self.session_id}")
-        if c:
-            c["world_state"] = self.world_state_local
-        else:
-            logger.warning(f"store_world_state, session {self.session_id} not found in cache")
+        # c = cache.get(f"session_{self.session_id}")
+        # if c:
+        #     c["world_state"] = self.world_state_local
+        # else:
+        #     logger.warning(f"store_world_state, session {self.session_id} not found in cache")
 
-        cache.set(f"session_{self.session_id}", c)
+        # cache.set(f"session_{self.session_id}", c)
 
         #update database
         await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
