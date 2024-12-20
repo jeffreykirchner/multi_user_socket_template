@@ -257,7 +257,7 @@ let app = Vue.createApp({
             document.getElementById('upload_collaborators_modal').addEventListener('hidden.bs.modal', app.hide_send_collaborators_list);
 
             tinyMCE.init({
-                target: document.getElementById('id_invitation_subject'),
+                target: document.getElementById('id_invitation_text'),
                 height : "400",
                 theme: "silver",
                 convert_urls: false,
