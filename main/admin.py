@@ -262,10 +262,7 @@ class ProfileLoginAttemptAdmin(admin.ModelAdmin):
     readonly_fields=['success', 'note','profile', 'success', 'timestamp', 'note']
 
     def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
+        return True
     
 #profile login attempt inline
 class ProfileLoginAttemptInline(admin.TabularInline):
