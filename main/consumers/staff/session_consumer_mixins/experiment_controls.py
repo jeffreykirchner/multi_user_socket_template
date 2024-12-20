@@ -159,8 +159,11 @@ class ExperimentControlsMixin():
         '''
 
         result = await sync_to_async(take_refresh_screens, thread_sensitive=self.thread_sensitive)(self.session_id,  event["message_text"])
-
-        cache.set(f"session_{self.session_id}", result["session"])
+        
+        session = await Session.objects.select_related("parameter_set").aget(id=self.session_id)
+        self.parameter_set_local = await sync_to_async(session.parameter_set.json)()
+        
+        # cache.set(f"session_{self.session_id}", result["session"])
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)

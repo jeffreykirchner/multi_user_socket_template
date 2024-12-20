@@ -166,9 +166,9 @@ take_end_early: function take_end_early(message_data){
 */
 send_send_invitations: function send_send_invitations(){
 
-    app.send_message_modal_form.text = tinymce.get("id_invitation_subject").getContent();
+    app.send_message_modal_form.text = tinymce.get("id_invitation_text").getContent();
 
-    if(app.send_message_modal_form.subject == "" || app.send_message_modal_form.text == "")
+    if(app.send_message_modal_form.subject == "" || app.send_message_modal_form.subject == "")
     {
         app.email_result = "Error: Please enter a subject and email body.";
         return;
@@ -210,7 +210,7 @@ show_send_invitations: function show_send_invitations(){
     app.send_message_modal_form.subject = app.session.invitation_subject;
     app.send_message_modal_form.text = app.session.invitation_text;
 
-    tinymce.get("id_invitation_subject").setContent(app.send_message_modal_form.text);
+    tinymce.get("id_invitation_text").setContent(app.send_message_modal_form.text);
 
     app.send_message_modal.toggle();
 },
