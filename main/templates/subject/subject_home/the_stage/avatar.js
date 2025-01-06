@@ -553,6 +553,7 @@ take_cancel_interaction: function take_cancel_interaction(message_data)
  */
 target_location_update: function target_location_update()
 {
+    app.last_location_update = Date.now();
 
     let session_player = app.session.world_state.session_players[app.session_player.id];
 

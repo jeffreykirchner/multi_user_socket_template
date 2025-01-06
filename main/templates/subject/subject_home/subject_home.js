@@ -13,6 +13,8 @@ let pixi_mini_map = {container:null};               //mini map container
 let pixi_notices = {container:null, notices:{}};                         //notices
 let pixi_notices_key = 0;
 
+let last_location_update = Date.now();          //last time location was updated
+
 //prevent right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 
@@ -244,7 +246,20 @@ let app = Vue.createApp({
             }
 
             app.setup_pixi();            
+            app.auto_update_avatar_location();
+        },
 
+        /**
+         * if more than 5 seconds have passed since last location update, send location to server
+         */
+        auto_update_avatar_location: function auto_update_avatar_location()
+        {
+            if(Date.now() - app.last_location_update > 5000)
+            {
+                app.target_location_update();
+            }
+
+            setTimeout(app.auto_update_avatar_location, 5000);
         },
 
         /**
