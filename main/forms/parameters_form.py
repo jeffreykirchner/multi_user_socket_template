@@ -7,6 +7,7 @@ from django import forms
 from tinymce.widgets import TinyMCE
 
 from main.models import Parameters
+from main.models import ParameterSet
 
 class ParametersForm(forms.ModelForm):
     '''
@@ -26,6 +27,10 @@ class ParametersForm(forms.ModelForm):
     
     invitation_text = forms.CharField(label='Invitation Text',
                                       widget=TinyMCE(attrs={"rows":20, "cols":200, "plugins": "link image code"}))
+    
+    default_parameter_set = forms.ModelChoiceField(queryset=ParameterSet.objects.all(), 
+                                                   label='Default Parameter Set', 
+                                                   required=False)
 
 
     class Meta:
