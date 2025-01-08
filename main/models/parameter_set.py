@@ -57,7 +57,7 @@ class ParameterSet(models.Model):
     updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.id)
+        return self.session.title
 
     class Meta:
         verbose_name = 'Parameter Set'

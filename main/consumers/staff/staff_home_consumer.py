@@ -133,8 +133,14 @@ def create_new_session(auth_user):
     session.invitation_text = p.invitation_text
 
     session.save()
+
     session.update_player_count()
     session.setup_world_state()
+
+    if p.default_parameter_set:
+        session.parameter_set.json()
+        session.parameter_set.from_dict(p.default_parameter_set.json())
+        session.update_player_count()
 
     logger = logging.getLogger(__name__) 
     # logger.info(f"Create New Session {session}")
