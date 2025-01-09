@@ -28,7 +28,7 @@ class ParametersForm(forms.ModelForm):
     invitation_text = forms.CharField(label='Invitation Text',
                                       widget=TinyMCE(attrs={"rows":20, "cols":200, "plugins": "link image code"}))
     
-    default_parameter_set = forms.ModelChoiceField(queryset=ParameterSet.objects.all(), 
+    default_parameter_set = forms.ModelChoiceField(queryset=ParameterSet.objects.filter(session__soft_delete=False), 
                                                    label='Default Parameter Set', 
                                                    required=False)
 
