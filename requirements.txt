@@ -29,6 +29,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
 pyOpenSSL==24.2.1
+pyotp==2.9.0
 pytest==7.2.2
 pytest-asyncio==0.21.0
 pytest-django==4.5.2
