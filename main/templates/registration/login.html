@@ -2,6 +2,8 @@
 {% load crispy_forms_tags %}
 
 {%block head%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script>
   document.addEventListener("DOMContentLoaded", function(){  
     {%include "registration/login.js"%}
@@ -44,20 +46,46 @@
 
       <div class="card-body">
 
-        <form id="login_form" onsubmit="event.preventDefault();">
-          {% csrf_token %}        
-          <div class="row">
-            <div class = "col-md-8 offset-md-2">  
-              {{form.username|as_crispy_field}}          
-            </div>            
-          </div>  
+        <div>
+          <form id="login_form">
+            {% csrf_token %}        
+            <div class="row">
+              <div class = "col col-lg-8 offset-lg-2">  
+                {{form.username|as_crispy_field}}          
+              </div>            
+            </div>  
 
-          <div class="row">
-            <div class = "col-md-8 offset-md-2">
-              {{form.password|as_crispy_field}}
+            <div class="row">
+              <div class = "col col-lg-8 offset-lg-2">
+                {{form.password|as_crispy_field}}
+              </div>
+            </div>            
+          </form>
+        </div>
+
+        <div class="row mt-2 mb-4" v-show="show_two_factor" v-cloak>
+            <div class="col col-lg-8 offset-lg-2">
+              <div class="form-group">
+                <label for="idtwofactorcode">Six digit code from your authenticator app*</label>
+                <input v-model="two_factor_code" 
+                       maxlength="6"
+                       class="form-control" 
+                       id="idtwofactorcode" 
+                       aria-describedby="sixdigitcode"
+                       v-on:keyup.enter="login()">
+              </div>
             </div>
-          </div>            
-        </form>
+        </div>
+
+        <div class="row mt-2 mb-4" v-show="show_two_factor_setup" v-cloak>
+            <div class="col col-lg-8 offset-lg-2">
+              <p>Two factor authentication is required for this account. Please set up your authenticator app using the QR code below.</p>
+              <span id="qrcode"></span>
+              <br>
+              Code for manual setup:<br> 
+              [[two_factor_hash]]
+            </div>
+        </div>
 
         <div class="row mt-3">
             <div class="col-md-8 offset-sm-2">
