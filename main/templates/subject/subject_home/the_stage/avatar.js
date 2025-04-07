@@ -650,7 +650,7 @@ setup_tractor_beam: function setup_tractor_beam(source_id, target_id)
  */
 move_player: function move_player(delta)
 {
-    if(!app.session.world_state.started) return;
+    if(!app.session.started) return;
 
     //move players
     for(let i in app.session.world_state.session_players){

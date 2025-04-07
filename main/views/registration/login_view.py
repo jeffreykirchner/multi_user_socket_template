@@ -114,7 +114,7 @@ def login_function(request,data):
             elif user.profile.mfa_required and two_factor != "":
                 totp = pyotp.TOTP(user.profile.mfa_hash)
 
-                if not totp.verify(two_factor,valid_window=1):
+                if not totp.verify(two_factor, valid_window=1):
                     ProfileLoginAttempt.objects.create(profile=user.profile, success=False, note="Invalid Two Factor Code")
                     return JsonResponse({"status":"error", "message":"Invalid Code"}, safe=False)
                 else:

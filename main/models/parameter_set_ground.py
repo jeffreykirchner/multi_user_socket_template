@@ -11,7 +11,7 @@ import main
 
 class ParameterSetGround(models.Model):
     '''
-    parameter set wall
+    parameter set ground
     '''
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_grounds")
