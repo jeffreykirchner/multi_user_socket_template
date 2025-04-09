@@ -25,9 +25,11 @@ let app = createApp({
         let edit_instruction_modal = ref("");
         let import_instruction_set_modal = ref("");
         let upload_instruction_set_modal = ref("");
+        let edit_help_doc_modal = ref("");
 
         let current_instruction = ref({id:0});
         let instruction_set_import = ref({instruction_set:0});
+        let current_help_doc_subject = ref({id:0});
 
         //upload instruction set
         let upload_file = ref(null);
@@ -51,6 +53,18 @@ let app = createApp({
                 directionality: "{{ directionality }}",
             });
 
+            tinyMCE.init({
+                target: document.getElementById('id_text'),
+                height : "400",
+                theme: "silver",
+                convert_urls: false,
+                promotion: false,
+                auto_focus: 'id_text',
+                plugins: "directionality,searchreplace,code,link",
+                    toolbar: "undo redo | styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link | code",
+                directionality: "{{ directionality }}",
+            });
+
              // Prevent Bootstrap dialog from blocking focusin
              document.addEventListener('focusin', (e) => {
                 if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
@@ -62,11 +76,13 @@ let app = createApp({
             app.edit_instruction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_instruction_modal'), {keyboard: false})
             app.import_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('import_instruction_set_modal'), {keyboard: false})
             app.upload_instruction_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_instruction_set_modal'), {keyboard: false})
+            app.edit_help_doc_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_help_doc_modal'), {keyboard: false})
 
             document.getElementById('edit_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_set_modal);
             document.getElementById('edit_instruction_modal').addEventListener('hidden.bs.modal', app.hide_edit_instruction_modal);
             document.getElementById('import_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_import_instruction_set_modal);
             document.getElementById('upload_instruction_set_modal').addEventListener('hidden.bs.modal', app.hide_upload_instruction_set);
+            document.getElementById('edit_help_doc_modal').addEventListener('hidden.bs.modal', app.hide_edit_help_doc_modal);
 
             app.first_load_done = true;
         }
@@ -146,6 +162,7 @@ let app = createApp({
 
                 app.edit_instruction_set_modal.hide();
                 app.edit_instruction_modal.hide();
+                app.edit_help_doc_modal.hide();
                 app.import_instruction_set_modal.hide();
                 app.upload_instruction_set_modal.hide();
 
@@ -161,6 +178,7 @@ let app = createApp({
 
         {%include "staff/staff_instruction_edit/instruction_set_card.js"%}
         {%include "staff/staff_instruction_edit/instruction_card.js"%}
+        {%include "staff/staff_instruction_edit/help_doc_subject_card.js"%}
 
         /** clear form error messages*/
         function clear_main_form_errors(){
@@ -237,6 +255,14 @@ let app = createApp({
             handle_file_upload,
             show_upload_instruction_set,
             upload_file_text,
+            edit_help_doc_modal,
+            current_help_doc_subject,
+            show_edit_help_doc_modal,
+            hide_edit_help_doc_modal,
+            send_update_help_doc,
+            send_add_help_doc,
+            send_delete_help_doc,
+
         }
     }
 }).mount('#app');

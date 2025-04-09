@@ -22,15 +22,31 @@
     </div>
 </div>
 <div class="row d-print-none mb-4">
-    <div class="col">
+    <div class="col-auto mr-4">
         Player: {{session_player.parameter_set_player.id_label}}</a>
+    </div>
+    <div class="col">
+        {%if filled%}
+            <a href="/staff-session-instructions/{{session_player.id}}/0/">Clear Variables</a>       
+        {%else%}
+            <a href="/staff-session-instructions/{{session_player.id}}/1/">Fill Variables</a>       
+        {%endif%}
     </div>
 </div>
 
 {% for i in instruction_set.instruction_pages %}
           
-    <div class="mb-2" {% if not forloop.last %}style="page-break-after: always;"{% endif %}>
+    <div class="mb-2" {% if not forloop.last or instruction_set.help_docs_subject %}style="page-break-after: always;"{% endif %}>
         {{i.text_html|safe}}
+    </div>   
+
+{% endfor %}
+
+{% for i in instruction_set.help_docs_subject %}
+          
+    <div class="mb-2" {% if not forloop.last %}style="page-break-after: always;"{% endif %}>
+        <span class="fs-5 text-text-secondary fst-italic">Help Doc: {{i.title|safe}}</span>
+        {{i.text|safe}}
     </div>   
 
 {% endfor %}

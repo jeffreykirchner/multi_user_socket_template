@@ -66,7 +66,9 @@ class ParameterSetPlayer(models.Model):
         '''
         update parameter set json
         '''
-        self.parameter_set.json_for_session["parameter_set_players"][self.id] = self.json()
+        json_for_session = self.parameter_set.json_for_session
+        
+        json_for_session["parameter_set_players"][self.id] = self.json()
 
         self.parameter_set.save()
 

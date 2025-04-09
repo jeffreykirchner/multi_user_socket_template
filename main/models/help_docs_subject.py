@@ -35,3 +35,10 @@ class HelpDocsSubject(models.Model):
             "title":self.title,
             "text":self.text,
         }
+    
+    async def ajson(self):
+        return{
+            "id":self.id,
+            "title":self.title,
+            "text":self.text,
+        }

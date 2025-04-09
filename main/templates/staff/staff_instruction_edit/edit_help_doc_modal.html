@@ -1,6 +1,6 @@
 {% load crispy_forms_tags %}
-<!--Edit Instruction Set Modal -->
-<div class="modal fade" id="edit_instruction_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit_instruction_modal" >
+<!--Edit help_doc Set Modal -->
+<div class="modal fade" id="edit_help_doc_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit_help_doc_modal" >
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,8 +8,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="instruction_form">
-                    {% for i in instruction_form %}
+                <form id="help_doc_form">
+                    {% for i in help_doc_subject_form %}
                     <div class="row">
                         <div class = "col">  
                             {{ i|as_crispy_field }}         
@@ -22,7 +22,7 @@
                 
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "send_update_instruction()"
+                        v-on:click = "send_update_help_doc()"
                         v-bind:disabled="reconnecting || working">
                     Update <i class="fas fa-sign-in-alt"></i>
                 </button>

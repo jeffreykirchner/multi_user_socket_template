@@ -1,25 +1,25 @@
 
 <div class="row justify-content-lg-center mt-4 fs-4">
     <div class="col">
-        Instruction Pages
+       Help Docs
     </div>
 </div>
 
 <div class="row justify-content-lg-center mt-4" 
-     v-for="(i, index) in instruction_set.instruction_pages"
+     v-for="(i, index) in instruction_set.help_docs_subject"
             v-bind:key="i"
-            :set="instruction=instruction_set.instruction_pages[i]">
+            :set="help_doc=instruction_set.help_docs_subject[i]">
     <div class="col col-md-12">
         <div class="card">
                       
             <div class="card-header">
 
-                <span class="fs-5">Page [[i.page_number]]</span> 
+                <span class="fs-5">[[i.title]]</span> 
 
                 <span class="float-end ">
                     <button class="btn btn-outline-danger" 
                             type="button" 
-                            v-on:click = "send_delete_instruction(i.id)" 
+                            v-on:click = "send_delete_help_doc(i.id)" 
                             v-bind:disabled = "reconnecting || working">
                         Delete <i class="fas fa-trash-alt"></i>
                     </button>
@@ -28,7 +28,7 @@
                 <span class="float-end me-2">
                     <button class="btn btn-outline-primary" 
                             type="button" 
-                            v-on:click = "show_edit_instruction_modal(index)" 
+                            v-on:click = "show_edit_help_doc_modal(index)" 
                             v-bind:disabled = "reconnecting || working">
                         Edit <i class="far fa-edit"></i>
                     </button>
@@ -36,7 +36,7 @@
                                                                 
             </div>
             <div class="card-body" >                      
-                <div v-html="i.text_html">
+                <div v-html="i.text">
                 </div>
             </div>                    
         </div>                   
@@ -46,8 +46,8 @@
 <div class="row justify-content-lg-center mt-4">
     <div class="col col-md-12 text-center">
         
-        <button class="btn btn-outline-success" type="button" v-on:click = "send_add_instruction()" v-bind:disabled = "reconnecting || working">
-            Add Page <i class="fas fa-plus"></i>
+        <button class="btn btn-outline-success" type="button" v-on:click = "send_add_help_doc()" v-bind:disabled = "reconnecting || working">
+            Add Doc <i class="fas fa-plus"></i>
         </button>
        
     </div>

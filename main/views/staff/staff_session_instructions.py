@@ -8,10 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 from main.models import Parameters
-from main.models import Session
 from main.models import SessionPlayer
-
-from main.decorators import user_is_owner
 
 class StaffSessionInstructions(SingleObjectMixin, View):
     '''
@@ -33,7 +30,7 @@ class StaffSessionInstructions(SingleObjectMixin, View):
         instruction_set = []
 
         if session_player:
-            instruction_set = session_player.get_instruction_set()
+            instruction_set = session_player.get_instruction_set(fill=kwargs["fill"])
 
         return render(request=request,
                       template_name=self.template_name,
@@ -41,4 +38,5 @@ class StaffSessionInstructions(SingleObjectMixin, View):
                                "id" : session_player.session.id,
                                "instruction_set" : instruction_set,
                                "session_player" : session_player,
+                               "filled" : kwargs["fill"],
                                "session" : session_player.session})
