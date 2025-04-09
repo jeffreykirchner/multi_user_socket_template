@@ -24,8 +24,8 @@ class GetHelpDocSubjectMixin():
             message_text = event["message_text"]
             title = message_text["title"]
 
-            session_player = await SessionPlayer.objects.select_related('session','session__parameter_set', 'session__parameter_set__instruction_set').aget(player_key=self.connection_uuid)
-            instruction_set = session_player.session.parameter_set.instruction_set
+            session_player = await SessionPlayer.objects.select_related('parameter_set_player__instruction_set','session').aget(player_key=self.connection_uuid)
+            instruction_set = session_player.parameter_set_player.instruction_set
             help_doc_subject = await instruction_set.help_docs_subject.all().aget(title=title)
             text =  await sync_to_async(session_player.process_instruction_text, thread_sensitive=False)(help_doc_subject.text)
 
