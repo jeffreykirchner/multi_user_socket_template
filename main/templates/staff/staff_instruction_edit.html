@@ -31,6 +31,7 @@
 {%include "staff/staff_instruction_edit/edit_instruction_modal.html"%}
 {%include "staff/staff_instruction_edit/import_instruction_set_modal.html"%}
 {%include "staff/staff_instruction_edit/upload_instruction_set_modal.html"%}
+{%include "staff/staff_instruction_edit/edit_help_doc_modal.html"%}
 
 <div v-if="first_load_done && instruction_set">
     <div class="row justify-content-lg-center" v-cloak>
@@ -40,6 +41,7 @@
     </div>
     
     {%include "staff/staff_instruction_edit/instruction_card.html"%}
+    {%include "staff/staff_instruction_edit/help_doc_subject_card.html"%}
 </div>
 
 {% endblock %}

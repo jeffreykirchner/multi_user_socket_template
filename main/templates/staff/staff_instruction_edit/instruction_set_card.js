@@ -53,7 +53,7 @@ function hide_import_instruction_set_modal(){
 
 /** send request to download instructions to a file 
 */
-send_download_instruction_set: function send_download_instruction_set(){
+function send_download_instruction_set(){
     
     app.working = true;
     app.send_message("download_instruction_set", {instruction_set_id:app.instruction_set.id});
@@ -62,7 +62,7 @@ send_download_instruction_set: function send_download_instruction_set(){
 /** download parameter set into a file 
  @param message_data {json} result of file request, either sucess or fail with errors
 */
-take_download_instruction_set: function take_download_instruction_set(message_data){
+function take_download_instruction_set(message_data){
 
     if(message_data.value == "success")
     {                  
@@ -112,7 +112,7 @@ take_download_instruction_set: function take_download_instruction_set(message_da
 // }
 
 //direct upload button click
-send_upload_instruction_set:function send_upload_instruction_set(){
+function send_upload_instruction_set(){
     app.working = true;
 
     app.send_message("upload_instruction_set", {id:app.instruction_set.id,
@@ -120,7 +120,7 @@ send_upload_instruction_set:function send_upload_instruction_set(){
 }
 
 //file upload
-handle_file_upload:function handle_file_upload(){
+function handle_file_upload(){
     app.upload_file = app.$refs.file.files[0];
     app.upload_file_name = app.upload_file.name;
 
@@ -131,7 +131,7 @@ handle_file_upload:function handle_file_upload(){
 
 /** show upload instruction_set modal
 */
-show_upload_instruction_set:function show_upload_instruction_set(upload_mode){
+function show_upload_instruction_set(upload_mode){
     app.upload_mode = upload_mode;
     app.upload_instruction_set_message = "";
 

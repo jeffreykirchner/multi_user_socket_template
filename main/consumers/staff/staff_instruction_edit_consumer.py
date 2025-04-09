@@ -13,11 +13,13 @@ from .send_message_mixin import SendMessageMixin
 from main.forms import InstructionSetForm
 from main.forms import InstructionForm
 from main.forms import ImportInstructionSetForm
+from main.forms import HelpDocSubjectForm
 
 import main
 
 from main.models import InstructionSet
 from main.models import Instruction
+from main.models import HelpDocsSubject
 
 # from main.globals import create_new_instruction_parameterset
 
@@ -109,6 +111,62 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
         
+    async def add_help_doc_page(self, event):
+        '''
+        add instruction page
+        '''
+        logger = logging.getLogger(__name__)
+        # logger.info(f"Add instruction page {event}")
+
+        self.user = self.scope["user"]
+        message_text = event["message_text"]
+
+        #last help doc subject
+        last_help_doc_subject_id = await HelpDocsSubject.objects.order_by("id").alast()
+        if last_help_doc_subject_id:
+            last_help_doc_subject_id = last_help_doc_subject_id.id + 1
+        else:
+            last_help_doc_subject_id = 0
+
+        instruction_set = await InstructionSet.objects.aget(id=message_text['id'])
+        help_doc_subject = await HelpDocsSubject.objects.acreate(instruction_set=instruction_set, title=f"~~~New Help Doc {last_help_doc_subject_id}~~~", text="Help Doc Text Here")
+
+        event['type'] = 'get_instruction_set'
+        await self.get_instruction_set(event)
+
+    async def delete_help_doc_page(self, event):
+        '''
+        delete instruction page
+        '''
+        logger = logging.getLogger(__name__)
+        # logger.info(f"Delete instruction page {event}")
+
+        self.user = self.scope["user"]
+        message_text = event["message_text"]
+
+        help_doc_subject = await HelpDocsSubject.objects.aget(id=message_text['help_doc_id'])
+
+        await help_doc_subject.adelete()
+
+        event['type'] = 'get_instruction_set'
+        await self.get_instruction_set(event)
+
+    async def update_help_doc(self, event):
+        '''
+        update instruction
+        '''
+        logger = logging.getLogger(__name__) 
+
+        self.user = self.scope["user"]
+        message_text = event["message_text"]
+        form_data_dict = message_text["form_data"]
+
+        result = await take_update_help_doc(form_data_dict)
+
+        event['type'] = 'update_instruction_set'
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+        
     async def import_instruction_set(self, event):
         '''
         import instruction set
@@ -187,6 +245,21 @@ def take_update_instruction(form_data_dict):
     return {"value" : "fail", 
             "errors" : dict(form.errors.items())}
 
+@sync_to_async        
+def take_update_help_doc(form_data_dict):
+
+    help_doc_subject = HelpDocsSubject.objects.get(id=form_data_dict['id'])
+    form = HelpDocSubjectForm(form_data_dict, instance=help_doc_subject)
+
+    if form.is_valid():              
+        form.save()    
+        
+        return {"value" : "success",
+                "instruction_set": help_doc_subject.instruction_set.json()}
+    
+    return {"value" : "fail", 
+            "errors" : dict(form.errors.items())}
+
 @sync_to_async
 def take_import_instruction_set(form_data_dict, target_instruction_set):
     '''
@@ -205,6 +278,7 @@ def take_import_instruction_set(form_data_dict, target_instruction_set):
         
         target_instruction_set.from_dict(source_instruction_set.json())
         target_instruction_set.copy_pages(source_instruction_set.instructions.all())
+        target_instruction_set.copy_help_docs_subject(source_instruction_set.help_docs_subject.all())
         
         return {"value" : "success",
                 "instruction_set": target_instruction_set.json()}
@@ -234,6 +308,7 @@ def take_upload_instruction_set(data):
     instruction_set_text = json.loads(data['instruction_set_text'])
     instruction_set.from_dict(dict(instruction_set_text))
     instruction_set.copy_pages_from_dict(instruction_set_text['instruction_pages'])
+    instruction_set.copy_help_docs_subject_from_dict(instruction_set_text['help_docs_subject'])
     
     return {"value" : "success", 
             "instruction_set": instruction_set.json()}
