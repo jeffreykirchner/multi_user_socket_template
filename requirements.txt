@@ -22,13 +22,13 @@ iniconfig==2.0.0
 msgpack==1.0.5
 packaging==23.0
 pluggy==1.0.0
-psycopg==3.2.1
-psycopg-binary==3.2.1
-psycopg-pool==3.2.2
+psycopg==3.2.6
+psycopg-binary==3.2.6
+psycopg-pool==3.2.6
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
-pyOpenSSL==24.2.1
+pyOpenSSL==25.0.0
 pyotp==2.9.0
 pytest==7.2.2
 pytest-asyncio==0.21.0
@@ -41,7 +41,7 @@ six==1.16.0
 sqlparse==0.5.0
 Twisted==24.7.0
 txaio==23.1.1
-typing_extensions==4.8.0
+typing_extensions==4.13.2
 urllib3==2.2.2
 whitenoise==6.5.0
 zope.interface==6.0
