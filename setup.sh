@@ -14,5 +14,6 @@ else
     echo "Create Super User:"
     python manage.py setup_superuser_with_profile
     python manage.py setup_site_parameters
+    python manage.py loaddata main_sample.json
 fi
 echo "Setup complete."

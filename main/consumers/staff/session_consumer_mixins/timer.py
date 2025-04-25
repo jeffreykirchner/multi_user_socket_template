@@ -174,10 +174,10 @@ class TimerMixin():
                     
                     for i in self.world_state_local["session_players"]:
 
-                        period_earnings = (self.world_state_local["session_players"][i]["inventory"][last_period_id_s] * 
-                                           Decimal(self.parameter_set_local["token_cents_value"]))
+                        period_earnings = Decimal(self.world_state_local["session_players"][i]["inventory"][last_period_id_s]) * \
+                                          Decimal(self.parameter_set_local["token_cents_value"])
 
-                        self.world_state_local["session_players"][i]["earnings"] += period_earnings
+                        self.world_state_local["session_players"][i]["earnings"] = Decimal(self.world_state_local["session_players"][i]["earnings"]) + period_earnings
 
                         result["earnings"][i] = {}
                         result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]

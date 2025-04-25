@@ -151,14 +151,14 @@ def takeFileUpload(f, session):
 
     message = ""
 
-    try:
-        if v[0]=="{":
-            return upload_parameter_set(v, session)
-        else:
-            message = "Invalid file format."
-    except Exception as e:
-        message = f"Failed to load file: {e}"
-        logger.warning(message)       
+    # try:
+    if v[0]=="{":
+        return upload_parameter_set(v, session)
+    else:
+        message = "Invalid file format."
+    # except Exception as e:
+    #     message = f"Failed to load file: {e}"
+    #     logger.warning(message)       
 
     return JsonResponse({"session" : session.json(),
                          "message" : message,
@@ -173,7 +173,7 @@ def upload_parameter_set(v, session):
     ps = session.parameter_set
 
     logger.info(v)
-    v = eval(v.replace("null", "None"))
+    v = eval(v.replace("null", "None").replace("false", "False"))
     #logger.info(v)       
 
     message = ps.from_dict(v)
