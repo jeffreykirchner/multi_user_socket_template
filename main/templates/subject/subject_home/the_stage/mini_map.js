@@ -29,7 +29,7 @@ setup_pixi_minimap: function setup_pixi_minimap()
     pixi_mini_map_bg.height =  app.stage_height * scale;
     
     pixi_mini_map_bg.rect(0, 0, app.stage_width * scale, app.stage_height * scale);
-    pixi_mini_map_bg.fill('BDB76B');
+    pixi_mini_map_bg.fill({color:'00BFFF'});
     pixi_mini_map_bg.stroke({color:0x000000, width:1});
     
     pixi_mini_map.container.addChild(pixi_mini_map_bg);
@@ -88,8 +88,9 @@ setup_pixi_minimap: function setup_pixi_minimap()
     pixi_mini_map_vp.height = pixi_app.screen.height * scale;
     
     pixi_mini_map_vp.rect(0, 0, pixi_app.screen.width * scale, pixi_app.screen.height * scale);
-    pixi_mini_map_vp.fill({color:0xFFFFFF, alpha:0.5});
-    pixi_mini_map_bg.stroke({width:2,color:0x000000,alignment:0});
+
+    pixi_mini_map_vp.fill({color:0xFFFFFF, alpha:0});
+    pixi_mini_map_vp.stroke({width:2,color:0x000000,alignment:0});
 
     pixi_mini_map_vp.pivot.set( pixi_app.screen.width * scale / 2, pixi_app.screen.height * scale / 2);
     pixi_mini_map_vp.position.set(obj.current_location.x * scale, obj.current_location.y * scale);

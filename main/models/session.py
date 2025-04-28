@@ -205,6 +205,8 @@ class Session(models.Model):
             self.world_state["session_players"][str(i['id'])] = v
             self.world_state["session_players_order"].append(i['id'])
         
+        parameter_set  = self.parameter_set.json_for_session
+
         #tokens
         tokens = {}
         for i in self.session_periods.all():
@@ -212,10 +214,22 @@ class Session(models.Model):
 
             for j in range(self.parameter_set.tokens_per_period):
                 
-                token = {"current_location" : {
-                         "x":random.randint(25, self.parameter_set.world_width-25),
-                         "y":random.randint(25, self.parameter_set.world_height-25)},
-                         "status":"available",}
+                go = True
+
+                #place token in random location over a grass area
+                while go:
+                    token = {"current_location" : {
+                            "x":random.randint(25, self.parameter_set.world_width-25),
+                            "y":random.randint(25, self.parameter_set.world_height-25)},
+                            "status":"available",}
+                    
+                    for g in parameter_set["parameter_set_grounds"]:
+                        ground = parameter_set["parameter_set_grounds"][g]
+                        if ground["texture"] == "grass_tex":
+                            if (token["current_location"]["x"] > ground["x"] and token["current_location"]["x"] < ground["x"] + ground["width"]) and \
+                               (token["current_location"]["y"] > ground["y"] and token["current_location"]["y"] < ground["y"] + ground["height"]):
+                                go = False
+                                break
                 
                 tokens[str(i)][str(j)] = token
             

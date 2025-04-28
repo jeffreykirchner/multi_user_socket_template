@@ -158,9 +158,9 @@ class ParameterSetForm(forms.ModelForm):
         
         try:
            survey_link = self.data.get('survey_link')
-           survey_required = self.data.get('survey_required')
+           survey_required = int(self.data.get('survey_required'))
 
-           if survey_required and not "http" in survey_link:
+           if survey_required and (not survey_link or not "http" in survey_link):
                raise forms.ValidationError('Invalid link')
             
         except ValueError:
@@ -172,9 +172,9 @@ class ParameterSetForm(forms.ModelForm):
         
         try:
            prolific_completion_link = self.data.get('prolific_completion_link')
-           prolific_mode = self.data.get('prolific_mode')
+           prolific_mode = int(self.data.get('prolific_mode'))
 
-           if prolific_mode and not "http" in prolific_completion_link:
+           if prolific_mode and (not prolific_completion_link or not "http" in prolific_completion_link):
                raise forms.ValidationError('Enter Prolific completion URL')
             
         except ValueError:

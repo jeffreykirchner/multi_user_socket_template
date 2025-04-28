@@ -32,7 +32,7 @@ class ParameterSetPlayerForm(forms.ModelForm):
                                                                  "step":"1",
                                                                  "min":"0"}))
     
-    hex_color = forms.CharField(label='Hex Color (e.g. 0x00AABB)',
+    hex_color = forms.CharField(label='Color (e.g. 0x00AABB, Crimson)',
                                 widget=forms.TextInput(attrs={"v-model":"current_parameter_set_player.hex_color",}))
     
     instruction_set = forms.ModelChoiceField(label='instruction_set',

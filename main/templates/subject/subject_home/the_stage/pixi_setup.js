@@ -13,8 +13,10 @@ setup_pixi: function setup_pixi(){
     PIXI.Assets.add({alias:'wall_tex', src:'{% static "wall.png"%}'});
     PIXI.Assets.add({alias:'barrier_tex', src:'{% static "barrier.png"%}'});
     PIXI.Assets.add({alias:'bridge_tex', src:'{% static "bridge.jpg"%}'});
+    PIXI.Assets.add({alias:'grass_tex', src:'{% static "background_tile_low.jpg"%}'});
+    PIXI.Assets.add({alias:'water_tex', src:'{% static "water_tile.jpg"%}'});
 
-    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 
+    const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 'grass_tex', 'water_tex',
                                                'cherry_token', 'wall_tex', 'barrier_tex', 'bridge_tex']);
 
     textures_promise.then((textures) => {
@@ -81,7 +83,7 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
 
     pixi_app.stage.addChild(pixi_container_main);
    
-    let tiling_sprite = new PIXI.TilingSprite({texture : textures.bg_tex,
+    let tiling_sprite = new PIXI.TilingSprite({texture : app.pixi_textures["water_tex"],
                                                width : app.stage_width,
                                                height : app.stage_height});
 

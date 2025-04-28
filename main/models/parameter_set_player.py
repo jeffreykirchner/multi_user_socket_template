@@ -44,7 +44,7 @@ class ParameterSetPlayer(models.Model):
         source : dict object of parameterset player
         '''
 
-        self.id_label = new_ps.get("id_label")
+        self.id_label = new_ps.get("id_label")[:2]
         self.player_number = new_ps.get("player_number")
         self.start_x = new_ps.get("start_x")
         self.start_y = new_ps.get("start_y")

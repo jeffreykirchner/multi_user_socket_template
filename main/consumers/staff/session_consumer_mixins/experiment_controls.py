@@ -4,7 +4,6 @@ import json
 from asgiref.sync import sync_to_async
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.cache import cache
 from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import Session
@@ -25,7 +24,6 @@ class ExperimentControlsMixin():
         start experiment
         '''
         result = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
-        # cache.set(f"session_{self.session_id}", result["session"])
 
         self.session_events = []
 
@@ -62,9 +60,9 @@ class ExperimentControlsMixin():
         reset experiment
         '''
         result = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
-        cache.delete(f"session_{self.session_id}")
 
         self.session_events = []
+        self.world_state_local = result["world_state"]
 
         #Send message to staff page
         if result["value"] == "fail":
@@ -162,9 +160,7 @@ class ExperimentControlsMixin():
         
         session = await Session.objects.select_related("parameter_set").aget(id=self.session_id)
         self.parameter_set_local = await sync_to_async(session.parameter_set.json)()
-        
-        # cache.set(f"session_{self.session_id}", result["session"])
-
+    
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, send_to_group=True)
     
@@ -214,7 +210,9 @@ def take_reset_experiment(session_id, data):
 
     value = "success"
     
-    return {"value" : value, "started" : session.started}
+    return {"value" : value, 
+            "started" : session.started,
+            "world_state" : session.world_state,}
 
 def take_reset_connections(session_id, data):
     '''

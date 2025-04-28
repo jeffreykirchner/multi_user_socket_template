@@ -201,6 +201,9 @@ class SubjectUpdatesMixin():
         
         event_data =  event["message_text"]
 
+        if self.world_state_local["current_experiment_phase"] != ExperimentPhase.RUN:
+            return
+
         try:
             target_location = event_data["target_location"]    
             current_location = event_data["current_location"]
