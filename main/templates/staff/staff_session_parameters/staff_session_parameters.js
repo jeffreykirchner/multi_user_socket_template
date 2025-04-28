@@ -43,12 +43,6 @@ let app = Vue.createApp({
                     },
 
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
-                    parameter_set_player_form_ids: {{parameter_set_player_form_ids|safe}},
-                    parameter_set_notice_form_ids: {{parameter_set_notice_form_ids|safe}},
-                    parameter_set_wall_form_ids: {{parameter_set_wall_form_ids|safe}},
-                    parameter_set_group_form_ids: {{parameter_set_group_form_ids|safe}},
-                    parameter_set_barrier_form_ids: {{parameter_set_barrier_form_ids|safe}},
-                    parameter_set_ground_form_ids: {{parameter_set_ground_form_ids|safe}},
 
                     upload_file: null,
                     upload_file_name:'Choose File',
@@ -201,55 +195,6 @@ let app = Vue.createApp({
             for(let item in app.session)
             {
                 let e = document.getElementById("id_errors_" + item);
-                if(e) e.remove();
-            }
-
-            let s = app.parameterset_form_ids;
-            for(let i in s)
-            {
-                let e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
-
-            s = app.parameter_set_player_form_ids;
-            for(let i in s)
-            {
-                let e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
-
-            s = app.parameter_set_notice_form_ids;
-            for(let i in s)
-            {
-                let e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
-
-            s = app.parameter_set_wall_form_ids;
-            for(let i in s)
-            {
-                let e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
-
-            s = app.parameter_set_group_form_ids;
-            for(let i in s)
-            {
-                let e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
-
-            s = app.parameter_set_barrier_form_ids;
-            for(let i in s)
-            {
-                let e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
-
-            s = app.parameter_set_ground_form_ids;
-            for(let i in s)
-            {
-                let e = document.getElementById("id_errors_" + s[i]);
                 if(e) e.remove();
             }
         },
