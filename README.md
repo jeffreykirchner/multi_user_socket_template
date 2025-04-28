@@ -14,7 +14,7 @@ git clone https://github.com/jeffreykirchner/multi_user_socket_template.git .
 
 Install PostgreSQL and REDIS in WSL: https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-database<br>
 
-Setup PostgreSQL in WSL:
+Set up PostgreSQL in WSL:
 ```
 create user dbadmin with encrypted password 'password_here';
 create database multi_user_socket_template with owner dbadmin;
@@ -24,7 +24,7 @@ create database multi_user_socket_template with owner dbadmin;
 ### local_settings.py:
 Rename local_settings_sample.py to local_settings.py<br>
 local_settings.py is used for local development and is excluded from the repo<br>.
-Update the database section of this file with the info from your locally run instance of Postgresdb.
+Update the database section of this file with the info from your locally run instance of PostgreSQL.
 
 ### Python and Virtual Environment Setup:
 Install Python 3.12:
@@ -48,14 +48,14 @@ deactivate
 ```
 
 ### Setup Django Project:
-When asked to restore database, select "No".
+When asked to restore the database, select "No".
 ```
 sh setup.sh
 python manage.py runserver
 ```
 
 Navigate to http://localhost:8000 in your browser to see the project running.
-Login with email and password you created in the previous step.
+Log in with the email and password you created in the previous step.
 
 
 
