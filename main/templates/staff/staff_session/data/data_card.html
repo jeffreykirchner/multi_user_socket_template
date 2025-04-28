@@ -3,8 +3,12 @@
         <span class="align-middle">Data</span>       
             
         <span class="float-end">
-             <span v-if="data_downloading"><i class="fas fa-spinner fa-spin"></i></span>
-        </span>
+            <span v-if="data_downloading"><i class="fas fa-spinner fa-spin"></i></span>
+       
+           <button type="button" class="btn btn-link ms-1" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Data')">
+               <i class="far fa-question-circle"></i> 
+           </button>
+       </span>
         
     </div>
     <div class="card-body"> 
