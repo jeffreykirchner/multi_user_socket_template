@@ -1,8 +1,18 @@
-# multi_user_socket_template
-Template for multi user Django Channels experiment.
+# Multi-User Django Websocket Template
+Template for a multi-user Django Channels experiment.
 
-Setup Guide:
-https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-18-04
+## Local setup on Windows:
+
+<p>Install Visual Studio Code with WSL: https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode<br>
+Open VS Code, activate WSL, and create a new folder.<br>
+Clone this repo into the new folder using the command:
+	
+```
+git clone https://github.com/jeffreykirchner/multi_user_socket_template.git .
+```
+ 
+Install PostgreSQL and REDIS in WSL: https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-database<br>
+</p>
 
 local_settings.py:
     Copy local_settings_sample.py to local_settings.py
