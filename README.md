@@ -54,7 +54,7 @@ sh setup.sh
 python manage.py runserver
 ```
 
-Navigate to http://localhost:8000 in your browser to see the project running.<be>
+Navigate to http://localhost:8000 in your browser to see the project running.<br>
 Log in with the email and password you created in the previous step.
 
 
