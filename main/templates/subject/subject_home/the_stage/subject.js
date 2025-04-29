@@ -18,7 +18,8 @@ subject_pointer_click: function subject_pointer_click(event)
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     let local_player = app.session.world_state.session_players[app.session_player.id];
 
-    if(event.data.detail>1)
+    if(event.data.detail > 1 && 
+       local_player.cool_down == 0)
     {
         app.subject_pointer_right_click(event);
         return;
@@ -62,11 +63,13 @@ subject_pointer_click: function subject_pointer_click(event)
  */
 subject_pointer_tap: function subject_pointer_tap(event)
 {
+    let local_player = app.session.world_state.session_players[app.session_player.id];
+
     if(Date.now() - app.last_subject_pointer_tap > 200)
     {
         app.subject_pointer_click(event);
     }
-    else
+    else if (local_player.cool_down == 0)
     {
         app.subject_pointer_right_click(event);
     }   

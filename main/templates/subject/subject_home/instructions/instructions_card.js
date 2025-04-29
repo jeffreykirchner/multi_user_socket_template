@@ -161,7 +161,7 @@ scroll_update: function scroll_update()
 send_chat_instructions: function send_chat_instructions(chat_text_processed)
 {
 
-    if(app.session_player.current_instruction != app.instructions.action_page_1) return;
+    if(app.session_player.current_instruction != app.instructions.action_page_3) return;
 
     let message_data = {
         "status": "success",
@@ -171,7 +171,4 @@ send_chat_instructions: function send_chat_instructions(chat_text_processed)
     };
 
     app.take_update_chat(message_data);
-
-    app.session_player.current_instruction_complete = app.instructions.action_page_1;
-    app.send_current_instruction_complete();
 },
