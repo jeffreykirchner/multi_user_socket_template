@@ -48,8 +48,8 @@ let app = createApp({
                 convert_urls: false,
                 promotion: false,
                 auto_focus: 'id_text_html',
-                plugins: "directionality,searchreplace,code,link",
-                    toolbar: "undo redo | styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link | code",
+                plugins: "directionality,searchreplace,code,link,image,lists",
+                    toolbar: "undo redo | styleselect forecolor bold italic alignleft aligncenter alignright alignjustify outdent indent numlist bullist link code image",
                 directionality: "{{ directionality }}",
             });
 
@@ -60,8 +60,8 @@ let app = createApp({
                 convert_urls: false,
                 promotion: false,
                 auto_focus: 'id_text',
-                plugins: "directionality,searchreplace,code,link",
-                    toolbar: "undo redo | styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link | code",
+                plugins: "directionality,searchreplace,code,link,image,lists",
+                    toolbar: "undo redo | styleselect forecolor bold italic alignleft aligncenter alignright alignjustify outdent indent numlist bullist link code image",
                 directionality: "{{ directionality }}",
             });
 

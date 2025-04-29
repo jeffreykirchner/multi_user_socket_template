@@ -244,6 +244,18 @@ subject_avatar_click: function subject_avatar_click(target_player_id)
 {
     if(target_player_id == app.session_player.id) return;
 
+    if(app.session.world_state.current_experiment_phase == 'Instructions')
+    {
+        if(app.session_player.current_instruction == app.instructions.action_page_2)
+        {
+            if(app.session_player.current_instruction_complete < app.instructions.action_page_2)
+            {
+                app.session_player.current_instruction_complete = app.instructions.action_page_2;
+                app.send_current_instruction_complete();
+            }
+        }
+    }
+
     // console.log("subject avatar click", target_player_id);
 
     // app.send_message("tractor_beam", 
@@ -553,6 +565,18 @@ take_cancel_interaction: function take_cancel_interaction(message_data)
  */
 target_location_update: function target_location_update()
 {
+    if(app.session.world_state.current_experiment_phase == 'Instructions')
+    {
+        if(app.session_player.current_instruction == app.instructions.action_page_1)
+        {
+            if(app.session_player.current_instruction_complete < app.instructions.action_page_1)
+            {
+                app.session_player.current_instruction_complete=app.instructions.action_page_1;
+                app.send_current_instruction_complete();
+            }
+        }
+    }
+
     app.last_location_update = Date.now();
 
     let session_player = app.session.world_state.session_players[app.session_player.id];

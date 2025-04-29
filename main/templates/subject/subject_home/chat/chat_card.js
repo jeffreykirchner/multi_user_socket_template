@@ -32,6 +32,16 @@ send_chat: function send_chat(){
 
     if(app.session.world_state.current_experiment_phase == 'Instructions')
     {
+
+        if(app.session_player.current_instruction == app.instructions.action_page_3)
+        {
+            if(app.session_player.current_instruction_complete < app.instructions.action_page_3)
+            {
+                app.session_player.current_instruction_complete = app.instructions.action_page_3;
+                app.send_current_instruction_complete();
+            }
+        }
+            
         app.send_chat_instructions(chat_text_processed);
     }
     else

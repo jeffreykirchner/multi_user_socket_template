@@ -1,5 +1,6 @@
 echo "Setup multi user socket template"
 sudo service postgresql restart
+sudo service redis-server start
 echo "Drop template db: enter db password"
 dropdb multi_user_socket_template -U dbadmin -h localhost -i -p 5432
 echo "Create database: enter db password"

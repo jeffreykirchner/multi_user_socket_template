@@ -9,6 +9,8 @@ from main.models import ParameterSetPlayer
 
 from main.forms import ParameterSetPlayerForm
 
+import main
+
 from ..session_parameters_consumer_mixins.get_parameter_set import take_get_parameter_set
 
 class ParameterSetPlayersMixin():
@@ -120,12 +122,19 @@ def take_add_parameterset_player(data):
 
     try:        
         session = Session.objects.get(id=session_id)
+        parameter_set = session.parameter_set
     except ObjectDoesNotExist:
-        logger.warning(f"take_update_take_update_parameter_set session, not found ID: {session_id}")
+        logger.warning(f"take_update_take_update_parameter_set player, not found ID: {session_id}")
         return {"value" : "fail"}
 
-    session.parameter_set.add_player()
-    session.update_player_count()
+    parameter_set_player = main.models.ParameterSetPlayer()
+    parameter_set_player.parameter_set = parameter_set
+    parameter_set_player.player_number = parameter_set.parameter_set_players.count() + 1
+    parameter_set_player.id_label = parameter_set_player.player_number
+    parameter_set_player.save()
 
+    parameter_set.update_json_fk(update_players=True)
+    session.update_player_count()
+    
     return {"value" : "success"}
     

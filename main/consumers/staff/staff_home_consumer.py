@@ -136,6 +136,7 @@ def create_new_session(auth_user):
 
     session.update_player_count()
     session.setup_world_state()
+    session.reset_experiment()
 
     if p.default_parameter_set:
         session.parameter_set.json()
