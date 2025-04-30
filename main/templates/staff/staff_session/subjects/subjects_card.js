@@ -221,7 +221,7 @@ copy_earnings: function copy_earnings(){
  
     for(let i=0;i<app.session.session_players_order.length;i++)
     {
-       session_player = app.session.session_players[app.session.session_players_order[i]];
+       let session_player = app.session.session_players[app.session.session_players_order[i]];
 
        text += session_player.student_id + ",";
        text += Math.ceil(Number(app.session.world_state.session_players[session_player.id].earnings))/100;
