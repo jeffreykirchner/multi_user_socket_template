@@ -59,6 +59,7 @@ class SubjectHomeView(View):
                                "page_key" : f'session-{session.id}',
                                "instructions" : json.dumps(session_player.get_instruction_set(), cls=DjangoJSONEncoder),
                                "session_player" : session_player,
+                               "session" : session,
                                "parameters" : parameters,
                                "website_instance_id" : session.website_instance_id,
                                })
