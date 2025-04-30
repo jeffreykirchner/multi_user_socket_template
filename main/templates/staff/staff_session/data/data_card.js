@@ -24,7 +24,7 @@ take_download_summary_data: function take_download_summary_data(message_data){
     app.data_downloading = false;
 },
 
-/**send download summary data
+/**send download actions data
 */
 download_actions_data: function download_actions_data(){
     app.working = true;
@@ -32,7 +32,7 @@ download_actions_data: function download_actions_data(){
     app.send_message("download_action_data", {});
 },
 
-/** take download summary data
+/** take download action data
  * @param message_data {json}
 */
 take_download_action_data: function take_download_action_data(message_data){
