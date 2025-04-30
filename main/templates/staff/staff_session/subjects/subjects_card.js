@@ -349,7 +349,7 @@ get_average_earnings: function get_average_earnings()
 
     for(let i in app.session.world_state.session_players)
     {
-        total_earnings += app.session.world_state.session_players[i].earnings;
+        total_earnings += parseFloat(app.session.world_state.session_players[i].earnings);
         count++;
     }
 
