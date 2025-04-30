@@ -106,6 +106,7 @@
                             <button class="btn btn-outline-primary btn-lg"
                                     type="button" 
                                     id="send_chat_id" 
+                                    title="Send Chat"
                                     v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
                                     v-on:click="send_chat()">Chat <i class="far fa-comments"></i></button>
                         </div>

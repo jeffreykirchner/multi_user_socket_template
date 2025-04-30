@@ -141,8 +141,8 @@
                                 </span>
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                <span v-if="Object.keys(session.world_state).length>0 && session.started">
-                                    $[[(Math.ceil(Number(session.world_state.session_players[p].earnings))/100).toFixed(2)]]
+                                <span v-if="Object.keys(session.world_state).length > 0 && session.started">
+                                    [[get_earnings_display(session.world_state.session_players[p].earnings)]]
                                 </span>
                                 <span v-else>
                                     ---
