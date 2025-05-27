@@ -8,7 +8,7 @@ from main.models import ParameterSetGroup
 
 class ParameterSetGroupForm(forms.ModelForm):
     '''
-    parameterset field type edit form
+    parameterset group edit form
     '''
     
     name = forms.CharField(label='Name',
