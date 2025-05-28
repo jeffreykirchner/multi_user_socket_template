@@ -35,7 +35,7 @@ class GetSessionMixin():
                 await self.store_world_state(force_store=True)   
             else:         
                 result["started"] = False
-                Session.objects.filter(id=self.session_id).update(started=False)
+                Session.objects.filter(id=self.session_id).aupdate(started=False)
 
         for p in result["session_players"]:
             session_player = result["session_players"][p]
