@@ -196,6 +196,8 @@ class ParameterSet(models.Model):
         for i in self.parameter_set_players.all():
             i.setup()
 
+        self.json(update_required=True)
+
     def add_player(self):
         '''
         add a parameterset player

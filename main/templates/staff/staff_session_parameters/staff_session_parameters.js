@@ -190,11 +190,11 @@ let app = Vue.createApp({
     
         /** clear form error messages
         */
-        clear_main_form_errors: function clear_main_form_errors(){
+         clear_main_form_errors: function clear_main_form_errors(){
             
-            for(let item in app.session)
+            for(let item in app.parameterset_form_ids)
             {
-                let e = document.getElementById("id_errors_" + item);
+                let e = document.getElementById("id_errors_" + app.parameterset_form_ids[item]);
                 if(e) e.remove();
             }
         },
