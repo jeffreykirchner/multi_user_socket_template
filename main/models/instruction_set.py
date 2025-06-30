@@ -94,6 +94,16 @@ class InstructionSet(models.Model):
             help_docs_subject.append(main.models.HelpDocsSubject(instruction_set=self, title=i.title, text=i.text))
 
         main.models.HelpDocsSubject.objects.bulk_create(help_docs_subject)
+
+    def copy_help_docs_subject_from_dict(self, help_docs_subject):
+        self.help_docs_subject.all().delete()
+        
+        help_docs_subjects = []
+
+        for help_doc in help_docs_subject:
+            help_docs_subjects.append(main.models.HelpDocsSubject(instruction_set=self, 
+                                                        title=help_doc['title'], 
+                                                        text=help_doc['text']))
         
     #return json object of class
     def json(self):
