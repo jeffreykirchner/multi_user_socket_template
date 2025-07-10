@@ -1,4 +1,13 @@
 {%if session.parameter_set.test_mode%}
+/**
+ * return random number between min and max inclusive
+ */
+random_number: function random_number(min, max){
+    //return a random number between min and max
+    min = Math.ceil(min);
+    max = Math.floor(max+1);
+    return Math.floor(Math.random() * (max - min) + min);
+},
 
 do_test_mode: function do_test_mode(){
 
