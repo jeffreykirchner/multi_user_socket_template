@@ -225,9 +225,10 @@ hide_send_invitations: function hide_send_invitations(){
  * fill invitation with default values
  */
 fill_default_invitation: function fill_default_invitation(){
+    app.send_message_modal_form.text = app.email_default_text;
     app.send_message_modal_form.subject = app.email_default_subject;
-    
-    tinymce.get("id_invitation_subject").setContent(app.email_default_text);
+
+    tinymce.get("id_invitation_text").setContent(app.email_default_text);
 },
 
 send_refresh_screens: function send_refresh_screens(message_data){
