@@ -12,15 +12,17 @@ function do_web_sockets()
         };
     
         app.chat_socket.onclose = function(e) {
-            console.error('Socket closed, trying to connect ... ');
+            if (!e.wasClean) {
+                console.info('Socket closed, trying to connect ... ');
 
-            app.reconnecting=true;
-            if(!app.handle_socket_connection_try()) 
-            {
-                console.error('Socket re-connection limit reached.');
-                return;
-            } 
-            window.setTimeout(do_web_sockets(), random_number(500,1500));            
+                app.reconnecting=true;
+                if(!app.handle_socket_connection_try()) 
+                {
+                    console.error('Socket re-connection limit reached.');
+                    return;
+                } 
+                window.setTimeout(do_web_sockets(), random_number(1500,2000));          
+            }            
         }; 
 
         app.chat_socket.onopen = function(e) {
