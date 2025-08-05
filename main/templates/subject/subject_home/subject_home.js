@@ -187,8 +187,6 @@ let app = Vue.createApp({
             }
 
             app.first_load_done = true;
-
-            app.working = false;
         },
 
         /** send websocket message to server
