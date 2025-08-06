@@ -105,19 +105,20 @@ class TestSubjectConsumer(TestCase):
             self.assertEqual(message_data['value'],'success')
         
         # #advance past instructions
-        # message = {'message_type' : 'next_phase',
-        #            'message_text' : {},
-        #            'message_target' : 'self',}
+        message = {'message_type' : 'next_phase',
+                   'message_text' : {},
+                   'message_target' : 'self',}
 
-        # await communicator_staff.send_json_to(message)
-       
-        # for i in communicator_subjects:
-        #     response = await i.receive_json_from()
-        #     self.assertEqual(response['message']['message_type'],'update_next_phase')
-        #     message_data = response['message']['message_data']
-        #     self.assertEqual(message_data['value'],'success')
-           
-        # response = await communicator_staff.receive_json_from()
+        await communicator_staff.send_json_to(message)
+        
+        for j in communicator_subjects:
+            i = communicator_subjects[j]
+            response = await i.receive_json_from()
+            self.assertEqual(response['message']['message_type'],'update_next_phase')
+            message_data = response['message']['message_data']
+            self.assertEqual(message_data['value'],'success')
+
+        response = await communicator_staff.receive_json_from()
 
         return communicator_subjects, communicator_staff
     
@@ -133,60 +134,59 @@ class TestSubjectConsumer(TestCase):
         logger.info(f"called from test {sys._called_from_test}" )
 
         communicator_subjects, communicator_staff = await self.set_up_communicators(communicator_subjects, communicator_staff)
+        communicator_subjects, communicator_staff = await self.start_session(communicator_subjects, communicator_staff)
 
         await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
         response = await communicator_staff.receive_json_from()
         world_state = response['message']['message_data']
+
+        session = await Session.objects.prefetch_related('parameter_set').aget(id=self.session.id)
+
+        self.assertEqual(world_state['current_experiment_phase'], 'Run')
 
         player_id = next(iter(communicator_subjects))
         communicator_subject = communicator_subjects[player_id]
 
         #send chat
         message = {'message_type' : 'chat',
-                   'message_text' : {"recipients": 'all', 'text': 'How do you do?'}}
-                                
+                   'message_text' : {"text" : "How do you do now?",
+                                     "current_location" : {'x':1, 'y':2}},
+                   'message_target' : 'group',}
+
         await communicator_subject.send_json_to(message)
         response = await communicator_subject.receive_json_from()
-        self.assertEquals(response['message']['value'],'fail')
-        self.assertEquals(response['message']['result']['message'],'Session not started.')
-        #logger.info(response)
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'success')
 
         #start session
-        message = {'message_type' : 'start_experiment',
-                   'message_text' : {}}
+        # message = {'message_type' : 'start_experiment',
+        #            'message_text' : {}}
 
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
-        response = await communicator_subject.receive_json_from()
-        #logger.info(response)
+        # await communicator_staff.send_json_to(message)
+        # response = await communicator_staff.receive_json_from()
+        # response = await communicator_subject.receive_json_from()
+        # #logger.info(response)
 
-        #advance past instructions
-        message = {'message_type' : 'next_phase',
-                   'message_text' : {}}
+        # #advance past instructions
+        # message = {'message_type' : 'next_phase',
+        #            'message_text' : {}}
 
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
-        response = await communicator_subject.receive_json_from()
+        # await communicator_staff.send_json_to(message)
+        # response = await communicator_staff.receive_json_from()
+        # response = await communicator_subject.receive_json_from()
 
         #re-try chat to all
-        message = {'message_type' : 'chat',
-                   'message_text' : {'recipients': 'all', 'text': 'How do you do now?'}}
+        # message = {'message_type' : 'chat',
+        #            'message_text' : {'recipients': 'all', 'text': 'How do you do now?'}}
 
-        await communicator_subject.send_json_to(message)
-        response = await communicator_subject.receive_json_from()
-        self.assertEquals(response['message']['message_data']['value'],'success')
-        self.assertEquals(response['message']['message_data']['chat_type'],'All')
+        # await communicator_subject.send_json_to(message)
+        # response = await communicator_subject.receive_json_from()
+        # self.assertEquals(response['message']['message_data']['value'],'success')
+        # self.assertEquals(response['message']['message_data']['chat_type'],'All')
         #logger.info(response)
 
-        #try chat to one on one
-        message = {'message_type' : 'chat',
-                   'message_text' : {'recipients': player_id + 1, 'text': 'Word up.'}}
+        for j in communicator_subjects:
+            i = communicator_subjects[j]
+            await i.disconnect()
 
-        await communicator_subject.send_json_to(message)
-        response = await communicator_subject.receive_json_from()
-        self.assertEquals(response['message']['message_data']['value'],'success')
-        self.assertEquals(response['message']['message_data']['chat_type'],'Individual')
-        #logger.info(response)
-
-        await communicator_subject.disconnect()
         await communicator_staff.disconnect()
