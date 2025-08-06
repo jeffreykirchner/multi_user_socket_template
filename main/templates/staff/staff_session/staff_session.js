@@ -271,7 +271,7 @@ let app = Vue.createApp({
                 if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
                     e.stopImmediatePropagation();
                 }
-                });
+            });
             
             app.setup_pixi();
             app.first_load_done = true;
