@@ -158,33 +158,6 @@ class TestSubjectConsumer(TestCase):
         message_data = response['message']['message_data']
         self.assertEqual(message_data['status'],'success')
 
-        #start session
-        # message = {'message_type' : 'start_experiment',
-        #            'message_text' : {}}
-
-        # await communicator_staff.send_json_to(message)
-        # response = await communicator_staff.receive_json_from()
-        # response = await communicator_subject.receive_json_from()
-        # #logger.info(response)
-
-        # #advance past instructions
-        # message = {'message_type' : 'next_phase',
-        #            'message_text' : {}}
-
-        # await communicator_staff.send_json_to(message)
-        # response = await communicator_staff.receive_json_from()
-        # response = await communicator_subject.receive_json_from()
-
-        #re-try chat to all
-        # message = {'message_type' : 'chat',
-        #            'message_text' : {'recipients': 'all', 'text': 'How do you do now?'}}
-
-        # await communicator_subject.send_json_to(message)
-        # response = await communicator_subject.receive_json_from()
-        # self.assertEquals(response['message']['message_data']['value'],'success')
-        # self.assertEquals(response['message']['message_data']['chat_type'],'All')
-        #logger.info(response)
-
         for j in communicator_subjects:
             i = communicator_subjects[j]
             await i.disconnect()
