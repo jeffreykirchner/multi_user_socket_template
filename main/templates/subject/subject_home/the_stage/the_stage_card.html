@@ -22,7 +22,18 @@
                 </span>
             {%endif%}
 
-            <button type="button" class="btn btn-link" title="Show Help" v-on:click="send_load_help_doc_subject('main_screen')">
+            <button type="button" 
+                    class="btn btn-link" 
+                    title="Show Help" 
+                    v-on:click="send_load_help_doc_subject('main_screen')">
+                <i class="far fa-question-circle"></i> 
+            </button>
+
+            <button type="button" 
+                    class="btn btn-link" 
+                    title="Chat Bot" 
+                    v-if="session.parameter_set.chat_gpt_mode != 'Off' && is_subject"
+                    v-on:click="chat_gpt_modal.show()">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>

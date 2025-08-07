@@ -88,5 +88,10 @@
       "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
       "value": "10",
       "slotSetting": true
+    },
+    {
+      "name": "AZURE_OPENAI_API_KEY",
+      "value": "azure_openai_key_here",
+      "slotSetting": true
     }
   ]

@@ -55,6 +55,7 @@ let app = Vue.createApp({
                     interaction_modal : null,
                     insteration_start_modal : null,
                     help_modal : null,
+                    chat_gpt_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
                     //last time screen was tapped
@@ -89,6 +90,7 @@ let app = Vue.createApp({
                     //errors
                     interaction_start_error: null,
                     interaction_error: null,
+                    chat_gpt_error: null,
 
                     //open modals
                     interaction_start_modal_open : false,
@@ -211,7 +213,8 @@ let app = Vue.createApp({
             app.interaction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_modal'), {keyboard: false})
             app.interaction_start_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_start_modal'), {keyboard: false})          
             app.help_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('help_modal'), {keyboard: false})
-            
+            app.chat_gpt_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('chat_gpt_modal'), {keyboard: false})
+
             document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
             document.getElementById('interaction_modal').addEventListener('hidden.bs.modal', app.hide_interaction_modal);
             document.getElementById('interaction_start_modal').addEventListener('hidden.bs.modal', app.hide_interaction_start_modal);

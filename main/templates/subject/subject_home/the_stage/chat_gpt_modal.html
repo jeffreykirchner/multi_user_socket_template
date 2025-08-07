@@ -1,0 +1,39 @@
+{% load crispy_forms_tags %}
+<!--chat_gpt Modal -->
+<div class="modal fade " 
+     id="chat_gpt_modal" 
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false" 
+     tabindex="-1" 
+     aria-labelledby="chat_gpt_modal" 
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header fw-bold">
+                Chat Bot
+
+                <span class="float-end">
+                    <button type="button" 
+                            class="btn btn-link" 
+                            title="Show Help" 
+                            v-on:click="send_load_help_doc_subject('subject_chat_gpt')">
+                        <i class="far fa-question-circle"></i> 
+                    </button>                    
+                </span>
+            </div>
+            <div class="modal-body" v-if="selected_player && selected_player.session_player">
+                
+            </div>
+            <div class="modal-footer">
+                
+            </div>
+
+            <div class="row mt-2 mb-2 fw-bold" v-if="chat_gpt_error">
+                <div class="col text-center">                  
+                    Error: [[chat_gpt_error]]  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

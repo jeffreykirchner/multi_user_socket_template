@@ -6,6 +6,8 @@ from django import forms
 
 from main.models import ParameterSet
 
+from main.globals import ChatGPTMode
+
 import  main
 
 class ParameterSetForm(forms.ModelForm):
@@ -35,6 +37,10 @@ class ParameterSetForm(forms.ModelForm):
                                       widget=forms.NumberInput(attrs={"v-model":"parameter_set.break_length",
                                                                       "step":"1",
                                                                       "min":"1"}))
+    
+    chat_gpt_mode = forms.ChoiceField(label='ChatGPT Mode',
+                                      choices=ChatGPTMode.choices,
+                                      widget=forms.Select(attrs={"v-model":"parameter_set.chat_gpt_mode",}))
 
     show_instructions = forms.ChoiceField(label='Show Instructions',
                                           choices=((1, 'Yes'), (0,'No' )),
@@ -148,7 +154,7 @@ class ParameterSetForm(forms.ModelForm):
     class Meta:
         model=ParameterSet
         fields =['period_count', 'period_length', 'break_frequency', 'break_length', 'interaction_length', 'cool_down_length',
-                 'show_instructions', 
+                 'chat_gpt_mode', 'show_instructions', 
                  'survey_required', 'survey_link', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
                  'tokens_per_period', 'token_cents_value', 'interaction_range',
                  'avatar_scale', 'avatar_bound_box_percent', 'avatar_move_speed', 'avatar_animation_speed',
