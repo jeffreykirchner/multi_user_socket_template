@@ -94,6 +94,13 @@ let app = Vue.createApp({
 
                     //open modals
                     interaction_start_modal_open : false,
+
+                    //chat gpt
+                    chat_gpt_text : "",
+                    chat_gpt_history : {{session_player.get_chat_display_history|safe}},
+                    chat_gpt_button_text : 'Chat <i class="far fa-comments"></i>',
+                    last_scroll_chat_gpt_history_to_bottom : null,
+                    chat_gpt_working : false,
                 }},
     methods: {
 
@@ -185,6 +192,12 @@ let app = Vue.createApp({
                     break;
                 case "update_rescue_subject":
                     app.take_rescue_subject(message_data);
+                    break;
+                case "process_chat_gpt_prompt":
+                    app.take_process_chat_gpt_prompt(message_data);
+                    break;
+                case "clear_chat_gpt_history":
+                    app.take_clear_chat_gpt_history(message_data);
                     break;
             }
 
@@ -565,6 +578,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/barriers.js"%}
         {%include "subject/subject_home/the_stage/ground.js"%}
         {%include "subject/subject_home/help_doc_subject.js"%}
+        {%include "subject/subject_home/the_stage/chat_gpt.js"%}
 
         /** clear form error messages
         */
