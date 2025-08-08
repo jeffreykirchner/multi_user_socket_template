@@ -43,6 +43,8 @@ class SessionPlayer(models.Model):
 
     survey_complete = models.BooleanField(default=False, verbose_name="Survey Complete")                 #subject has completed the survey  
 
+    chat_gpt_prompt = models.JSONField(default=list, verbose_name='Chat GPT Prompt', blank=True, null=True)  #chat gpt prompt history for this subject
+    
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -132,6 +134,24 @@ class SessionPlayer(models.Model):
         text = text.replace("#id_label#", str(parameter_set_player["id_label"]))
         
         return text
+    
+    def get_chat_display_history(self):
+        '''
+        return chat gpt history for display
+        '''
+
+        chat_history = []
+
+        for i in self.chat_gpt_prompt:
+            
+            if i["role"] == "system":
+                continue
+
+            #add i to front of list 
+            chat_history.insert(0, i)
+
+
+        return chat_history
     
     def get_survey_link(self):
         '''
