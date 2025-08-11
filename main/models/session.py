@@ -18,6 +18,7 @@ import re
 import string
 
 from django.conf import settings
+from django.utils.html import strip_tags
 
 from django.dispatch import receiver
 from django.db import models
@@ -436,6 +437,8 @@ class Session(models.Model):
 
             temp_s = re.sub("\n", " ", data["text"])
             return f'{temp_s} @  {nearby_text}'
+        elif type == "chat_gpt_prompt":
+            return f'{data["prompt"]} | {strip_tags(data["response"])}'
         elif type == "help_doc":
             return data
 
@@ -517,6 +520,7 @@ class Session(models.Model):
             "collaborators" : {str(i.id):i.email for i in self.collaborators.all()},
             "collaborators_order" : list(self.collaborators.all().values_list('id', flat=True)),
             "creator" : self.creator.id,
+            "chat_gpt_history" : self.get_chat_display_history(),
         }
     
     def json_for_subject(self, session_player):

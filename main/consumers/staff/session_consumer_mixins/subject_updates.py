@@ -639,6 +639,36 @@ class SubjectUpdatesMixin():
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, 
                                 send_to_group=False)
+    
+    async def update_process_chat_gpt_prompt(self, event):
+        '''
+        process chat gpt prompt from subject consumer
+        '''
+        event_data = event["staff_data"]
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+
+    async def update_clear_chat_gpt_history(self, event):
+        '''
+        clear chat gpt history from subject consumer
+        '''
+        event_data = event["staff_data"]
+
+        player_id = event_data["session_player_id"]     
+        session_player = self.world_state_local["session_players"][str(player_id)]
+        parameter_set_player = self.parameter_set_local["parameter_set_players"][str(session_player["parameter_set_player_id"])]
+
+        # store event
+        self.session_events.append(SessionEvent(session_id=self.session_id, 
+                                    session_player_id=player_id,
+                                    type="clear_chat_gpt_history",
+                                    period_number=self.world_state_local["current_period"],
+                                    group_number=parameter_set_player["parameter_set_group"],
+                                    data=event_data,))
+        
+        await SessionEvent.objects.abulk_create(self.session_events, ignore_conflicts=True)
+        self.session_events = []
                                       
     
 

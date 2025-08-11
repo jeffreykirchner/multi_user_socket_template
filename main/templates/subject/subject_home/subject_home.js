@@ -301,7 +301,7 @@ let app = Vue.createApp({
         */
         take_get_session: function take_get_session(message_data){
             app.destroy_pixi_tokens_for_all_periods();
-            app.destory_setup_pixi_subjects();
+            app.destroy_setup_pixi_subjects();
             
             app.session = message_data.session;
             app.session_player = message_data.session_player;
@@ -542,7 +542,7 @@ let app = Vue.createApp({
             {
                 app.session.world_state = message_data.world_state;
                 
-                app.destory_setup_pixi_subjects();
+                app.destroy_setup_pixi_subjects();
                 app.do_reload();
                 app.remove_all_notices();
             }

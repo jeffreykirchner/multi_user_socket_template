@@ -63,6 +63,18 @@
         font-weight: bold;
     }
 
+    .assistant_chat_gpt{
+        text-align: left;
+        font-size: 14pt;
+    }
+
+    .user_chat_gpt{
+        text-align: right;
+        font-size: 14pt;
+        font-style: italic;
+        margin-bottom: 10px;
+    }
+
 </style>
 
 {%endblock head%}
@@ -138,6 +150,12 @@
     </div>    
     <div class="col-md-9">
         {%include "staff/staff_session/the_feed/the_feed_card.html"%}
+    </div>            
+</div>
+
+<div class="row mt-2" v-cloak v-if="session && session.parameter_set.chat_gpt_mode != 'Off'">      
+    <div class="col">
+        {%include "staff/staff_session/chat_gpt/chat_gpt_card.html"%}
     </div>            
 </div>
 
