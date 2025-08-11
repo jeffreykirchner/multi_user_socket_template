@@ -310,6 +310,22 @@ class Session(models.Model):
         
         return False
 
+    def get_chat_display_history(self):
+        '''
+        return chat gpt history for display
+        '''
+
+        chat_history = []
+
+        #return last 10 session events
+        for i in self.session_events.filter(type="chat_gpt_prompt").order_by('-timestamp').all()[:10]:
+
+            #add i to front of list 
+            chat_history.append(i.data)
+
+
+        return chat_history
+
     def get_download_summary_csv(self):
         '''
         return data summary in csv format

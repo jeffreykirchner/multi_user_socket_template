@@ -13,10 +13,12 @@
 
             <div class="modal-header fw-bold">
                 Chat Bot
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body" >
-                <div class="text-center text-secondary mb-4">
+                <div class="text-center text-secondary mb-2">
                     Hi, I am a chatbot and here to help you. Ask me anything, however, keep in mind that I cannot see your screen. This means you must explain what you see before asking me about it.   
                 </div> 
 
@@ -24,7 +26,7 @@
                         
                     <div v-for="(c, index) in chat_gpt_history" 
                         :key="c"
-                        v-bind:class="c.role=='user' ? 'user_chat' : 'assistant_chat' "
+                        v-bind:class="c.role=='user' ? 'user_chat_gpt' : 'assistant_chat_gpt' "
                         v-bind:id="'chat_gpt_message_' + index">
                         <div v-if="c.role=='user'">
                             [[c.content]]
@@ -36,10 +38,8 @@
                     </div>                       
                 </div>
 
-
-            
-                <div class="row justify-content-center">
-                    <div class="col-md-6 text-center">
+                <div class="row justify-content-center mt-2">
+                    <div class="col-md-10 text-center">
                         
                         <div class="input-group">
                             <input type="text" 
@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="row justify-content-center">
-                    <div class="col-md-6 text-end pe-4 text-secondary">
+                    <div class="col-md-10 text-end pe-4 text-secondary">
                         [[chat_gpt_text.length]]/100
                     </div>
                 </div>

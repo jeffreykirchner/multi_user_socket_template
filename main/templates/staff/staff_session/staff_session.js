@@ -79,6 +79,9 @@ let app = Vue.createApp({
                     replay_timeout : null,
                     replay_time_remaining : 0,
                     replay_current_period : 0,
+
+                    //chat gpt
+                    chat_history : {{session.get_chat_display_history|safe}},
                 }},
     methods: {
 
