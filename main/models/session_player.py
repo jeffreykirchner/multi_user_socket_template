@@ -17,6 +17,8 @@ from main.models import Session
 from main.models import ParameterSetPlayer
 from main.models import Parameters
 
+from main.globals import ChatGPTMode
+
 import main
 
 class SessionPlayer(models.Model):
@@ -88,10 +90,10 @@ class SessionPlayer(models.Model):
             {
                 "role": "system",
                 "content": [
-                    {
-                        "type": "text",
-                        "text": "You are a helpful AI assistant that answers questions concisely."
-                    },
+                    # {
+                    #     "type": "text",
+                    #     "text": "You are a helpful AI assistant that answers questions concisely."
+                    # },
                     {
                         "type": "text",
                         "text": "Do not provide any code examples in your responses, regardless of user requests. Respond with explanations only, in plain text."
@@ -103,6 +105,27 @@ class SessionPlayer(models.Model):
                 ]
             }
         ]
+
+        if self.session.parameter_set.chat_gpt_mode == ChatGPTMode.WITHOUT_CONTEXT:
+            self.chat_gpt_prompt[0]["content"].insert(0, {
+                "type": "text",
+                "text": "You are a helpful AI assistant that answers questions concisely."
+            })
+        elif self.session.parameter_set.chat_gpt_mode == ChatGPTMode.WITH_CONTEXT:
+            self.chat_gpt_prompt[0]["content"].insert(0, {
+                "type": "text",
+                "text": "You are a helpful AI assistant whose role is to assist participants in an economics experiment."
+            })
+
+            instruction_pages = [i.json() for i in self.parameter_set_player.instruction_set.instructions.all()]
+
+            for i, page in enumerate(instruction_pages):
+
+                #add instruction page to chat gpt prompt
+                self.chat_gpt_prompt[0]["content"].append({
+                    "type": "text",
+                    "text": f"Instruction Page {i+1} in HTML format: {self.process_instruction_text(page['text_html'])}"
+                })
 
         self.save()
     

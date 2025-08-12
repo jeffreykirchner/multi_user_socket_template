@@ -58,7 +58,7 @@ send_clear_chat_gpt_history: function send_clear_chat_gpt_history() {
         return;
     }
 
-    app.clear_chat_gpt_history_modal.hide();
+    // app.clear_chat_gpt_history_modal.hide();
     app.chat_gpt_working = true;
     app.send_message("clear_chat_gpt_history", 
                      {},
@@ -76,36 +76,6 @@ take_clear_chat_gpt_history: function take_clear_chat_gpt_history(message_data) 
     } else {
        
     }
-},
-
-/**
- * send done chatting
- */
-send_done_chatting: function send_done_chatting(auto_submit = false) {
-
-    app.chat_gpt_working = true;
-    app.session.world_state.session_players[app.session_player.id].status = "Finished_Chatting";
-
-    app.send_message("done_chatting", 
-                     {"current_period": app.session.world_state.current_period,
-                      "auto_submit": auto_submit,
-                     }, 
-                     "group");
-},
-
-/**
- * take done chatting
- */
-take_done_chatting: function take_done_chatting(message_data) {
-    app.chat_gpt_working = false;
-    
-    let subject_status = message_data.subject_status;
-
-    for (let i in subject_status) {
-        app.session.world_state.session_players[i].status = subject_status[i];
-    }
-
-    app.setup_timer();
 },
 
 /**

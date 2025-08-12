@@ -62,7 +62,7 @@
                                     id="clear_chat_gpt_id" 
                                     title="Clear chat history."
                                     v-bind:disabled="reconnecting || chat_gpt_working || session.started===false || session.world_state.finished"
-                                    v-on:click="clear_chat_gpt_history_modal.show()">Clear History <i class="fas fa-eraser"></i></button>
+                                    v-on:click="send_clear_chat_gpt_history()">Clear History <i class="fas fa-eraser"></i></button>
                         </div>
 
                     </div>

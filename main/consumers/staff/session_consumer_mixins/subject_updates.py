@@ -664,7 +664,6 @@ class SubjectUpdatesMixin():
                                     session_player_id=player_id,
                                     type="clear_chat_gpt_history",
                                     period_number=self.world_state_local["current_period"],
-                                    group_number=parameter_set_player["parameter_set_group"],
                                     data=event_data,))
         
         await SessionEvent.objects.abulk_create(self.session_events, ignore_conflicts=True)

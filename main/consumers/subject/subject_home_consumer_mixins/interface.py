@@ -185,7 +185,7 @@ class InterfaceMixin():
        
         result = {
             "status": "success",
-            "chat_history" : await sync_to_async(session_player.get_chat_display_history)(),
+            "chat_gpt_history" : await sync_to_async(session_player.get_chat_display_history)(),
         }
 
         result_staff = {"session_player_id": self.session_player_id}
