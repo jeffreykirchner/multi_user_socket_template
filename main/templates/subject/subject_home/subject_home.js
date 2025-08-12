@@ -55,6 +55,7 @@ let app = Vue.createApp({
                     interaction_modal : null,
                     insteration_start_modal : null,
                     help_modal : null,
+                    chat_gpt_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
                     //last time screen was tapped
@@ -89,9 +90,17 @@ let app = Vue.createApp({
                     //errors
                     interaction_start_error: null,
                     interaction_error: null,
+                    chat_gpt_error: null,
 
                     //open modals
                     interaction_start_modal_open : false,
+
+                    //chat gpt
+                    chat_gpt_text : "",
+                    chat_gpt_history : {{session_player.get_chat_display_history|safe}},
+                    chat_gpt_button_text : 'Chat <i class="far fa-comments"></i>',
+                    last_scroll_chat_gpt_history_to_bottom : null,
+                    chat_gpt_working : false,
                 }},
     methods: {
 
@@ -184,6 +193,12 @@ let app = Vue.createApp({
                 case "update_rescue_subject":
                     app.take_rescue_subject(message_data);
                     break;
+                case "process_chat_gpt_prompt":
+                    app.take_process_chat_gpt_prompt(message_data);
+                    break;
+                case "clear_chat_gpt_history":
+                    app.take_clear_chat_gpt_history(message_data);
+                    break;
             }
 
             app.first_load_done = true;
@@ -211,7 +226,8 @@ let app = Vue.createApp({
             app.interaction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_modal'), {keyboard: false})
             app.interaction_start_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_start_modal'), {keyboard: false})          
             app.help_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('help_modal'), {keyboard: false})
-            
+            app.chat_gpt_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('chat_gpt_modal'), {keyboard: false})
+
             document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
             document.getElementById('interaction_modal').addEventListener('hidden.bs.modal', app.hide_interaction_modal);
             document.getElementById('interaction_start_modal').addEventListener('hidden.bs.modal', app.hide_interaction_start_modal);
@@ -285,7 +301,7 @@ let app = Vue.createApp({
         */
         take_get_session: function take_get_session(message_data){
             app.destroy_pixi_tokens_for_all_periods();
-            app.destory_setup_pixi_subjects();
+            app.destroy_setup_pixi_subjects();
             
             app.session = message_data.session;
             app.session_player = message_data.session_player;
@@ -526,7 +542,7 @@ let app = Vue.createApp({
             {
                 app.session.world_state = message_data.world_state;
                 
-                app.destory_setup_pixi_subjects();
+                app.destroy_setup_pixi_subjects();
                 app.do_reload();
                 app.remove_all_notices();
             }
@@ -562,6 +578,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/barriers.js"%}
         {%include "subject/subject_home/the_stage/ground.js"%}
         {%include "subject/subject_home/help_doc_subject.js"%}
+        {%include "subject/subject_home/the_stage/chat_gpt.js"%}
 
         /** clear form error messages
         */

@@ -1,0 +1,28 @@
+<div class="card" v-show="first_load_done" id="chat_gpt_card">                  
+    <div class="card-header fw-bold" id="chat_gpt_card">                
+        <span class="align-middle">
+           Chat Bot
+        </span>       
+
+        <span class="float-end"> 
+       
+        </span>          
+    </div>
+    <div class="card-body" >        
+        <div class = "row justify-content-center">
+            <div class="col-md">
+               <div class="d-flex chat pe-4">    
+                    <div v-for="c in session.chat_gpt_history" 
+                        :key="c">
+                        <div class="user_chat_gpt">
+                            P[[get_parameter_set_player_from_player_id(c.session_player_id).player_number]]: [[c.prompt]]
+                        </div>                        
+                        <div class="assistant_chat_gpt">                            
+                            <span v-html="c.response"></span>
+                        </div>                       
+                    </div>                       
+                </div>
+            </div>
+        </div>        
+    </div>                    
+</div> 

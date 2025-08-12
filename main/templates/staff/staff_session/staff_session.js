@@ -79,6 +79,9 @@ let app = Vue.createApp({
                     replay_timeout : null,
                     replay_time_remaining : 0,
                     replay_current_period : 0,
+
+                    //chat gpt
+                    chat_gpt_history : [[]],
                 }},
     methods: {
 
@@ -221,6 +224,9 @@ let app = Vue.createApp({
                 case "lock_session":
                     app.take_lock_session(message_data);
                     break;
+                case "update_process_chat_gpt_prompt":
+                    app.take_process_chat_gpt_prompt(message_data);
+                    break;
             }
             app.working = false;
             app.process_the_feed(message_type, message_data);
@@ -298,11 +304,12 @@ let app = Vue.createApp({
         take_get_session: function take_get_session(message_data){
             
             app.destroy_pixi_tokens_for_all_periods();
-            app.destory_setup_pixi_subjects();
+            app.destroy_setup_pixi_subjects();
 
             app.session = message_data;
 
             app.session.world_state =  app.session.world_state;
+            app.chat_gpt_history = message_data.chat_gpt_history;
 
             if(app.session.started)
             {
@@ -446,6 +453,7 @@ let app = Vue.createApp({
         {%include "staff/staff_session/interface/interface_card.js"%}
         {%include "staff/staff_session/replay/replay_card.js"%}
         {%include "staff/staff_session/the_feed/the_feed_card.js"%}
+        {%include "staff/staff_session/chat_gpt/chat_gpt_card.js"%}
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
         {%include "subject/subject_home/the_stage/avatar.js"%}
         {%include "subject/subject_home/the_stage/token.js"%}
@@ -456,7 +464,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/wall.js"%}
         {%include "subject/subject_home/the_stage/move_objects.js"%}
         {%include "subject/subject_home/the_stage/barriers.js"%}
-        {%include "subject/subject_home/the_stage/ground.js"%}
+        {%include "subject/subject_home/the_stage/ground.js"%}        
         {%include "js/help_doc.js"%}
     
         /** clear form error messages

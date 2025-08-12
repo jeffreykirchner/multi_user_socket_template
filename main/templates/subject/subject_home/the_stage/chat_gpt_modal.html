@@ -1,0 +1,85 @@
+{% load crispy_forms_tags %}
+<!--chat_gpt Modal -->
+<div class="modal fade " 
+     id="chat_gpt_modal" 
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false" 
+     tabindex="-1" 
+     aria-labelledby="chat_gpt_modal" 
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header fw-bold">
+                Chat Bot
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body" >
+                <div class="text-center text-secondary mb-2">
+                    Hi, I am a chatbot and here to help you. Ask me anything, however, keep in mind that I cannot see your screen. This means you must explain what you see before asking me about it.   
+                </div> 
+
+                <div class="d-flex chat pe-4">
+                        
+                    <div v-for="(c, index) in chat_gpt_history" 
+                        :key="c"
+                        v-bind:class="c.role=='user' ? 'user_chat_gpt' : 'assistant_chat_gpt' "
+                        v-bind:id="'chat_gpt_message_' + index">
+                        <div v-if="c.role=='user'">
+                            [[c.content]]
+                        </div>
+                        <div v-else>                            
+                            <span v-html="c.content"></span>
+                        </div>
+                        <!-- <span v-if="index == 0">[[scroll_chat_gpt_history_to_bottom('chat_message_' + index)]]</span> -->
+                    </div>                       
+                </div>
+
+                <div class="row justify-content-center mt-2">
+                    <div class="col-md-10 text-center">
+                        
+                        <div class="input-group">
+                            <input type="text" 
+                                class="form-control form-control" 
+                                placeholder="Chat Text" 
+                                v-model="chat_gpt_text"
+                                id="id_chat_text"
+                                aria-label="Chat Text"                           
+                                v-on:keyup.enter="send_process_chat_gpt_prompt()"
+                                maxlength="100"
+                                aria-describedby="send_chat_gpt_id">
+                            <button class="btn btn-outline-primary"
+                                    type="button" 
+                                    id="send_chat_gpt_id" 
+                                    title="Send your chat message."
+                                    v-bind:disabled="reconnecting || chat_gpt_working || session.started===false || session.world_state.finished"
+                                    v-on:click="send_process_chat_gpt_prompt()"><span v-html="chat_gpt_button_text"></span></button>
+                            <button class="btn btn-outline-primary"
+                                    type="button" 
+                                    id="clear_chat_gpt_id" 
+                                    title="Clear chat history."
+                                    v-bind:disabled="reconnecting || chat_gpt_working || session.started===false || session.world_state.finished"
+                                    v-on:click="send_clear_chat_gpt_history()">Clear History <i class="fas fa-eraser"></i></button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-md-10 text-end pe-4 text-secondary">
+                        [[chat_gpt_text.length]]/100
+                    </div>
+                </div>
+
+                <div class="row mt-2 mb-2 fw-bold" v-if="chat_gpt_error">
+                    <div class="col text-center">                  
+                        Error: [[chat_gpt_error]]  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
