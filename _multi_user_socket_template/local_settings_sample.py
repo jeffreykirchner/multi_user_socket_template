@@ -102,3 +102,5 @@ ESI_AUTH_APP = 'auth_app_name'
 EMAIL_MS_HOST = 'https://chapman-experiments-mass-email-dev.azurewebsites.net'
 EMAIL_MS_USER_NAME = 'mail_server_username'
 EMAIL_MS_PASSWORD = 'mail_server_password'
+
+AZURE_OPENAI_API_KEY = 'azure_openai_api_key'
