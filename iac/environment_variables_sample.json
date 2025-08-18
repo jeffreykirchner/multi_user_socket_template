@@ -71,7 +71,7 @@
     },
     {
       "name": "LOG_LOCATION",
-      "value": "/logs/experiment-name/debug.log",
+      "value": "/logs/experiment-name-in-storage-account/debug.log",
       "slotSetting": true
     },
     {
