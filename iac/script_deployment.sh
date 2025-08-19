@@ -3,7 +3,7 @@
 
 webapp_name=$(jq . "secrets.json" |  jq -r '.webapp_name')
 resource_group=$(jq . "secrets.json" |  jq -r '.resource_group')
-resouce_group_db=$(jq . "secrets.json" |  jq -r '.resouce_group_db')
+resource_group_db=$(jq . "secrets.json" |  jq -r '.resource_group_db')
 app_service_plan=$(jq . "secrets.json" |  jq -r '.app_service_plan')
 storage_account=$(jq . "secrets.json" |  jq -r '.storage_account')
 postgres_server=$(jq . "secrets.json" |  jq -r '.postgres_server')
