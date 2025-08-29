@@ -51,6 +51,7 @@ let app = createApp({
                 plugins: "directionality,searchreplace,code,link,image,lists",
                     toolbar: "undo redo | styleselect forecolor bold italic alignleft aligncenter alignright alignjustify outdent indent numlist bullist link code image",
                 directionality: "{{ directionality }}",
+                license_key: 'gpl',
             });
 
             tinyMCE.init({
@@ -63,6 +64,7 @@ let app = createApp({
                 plugins: "directionality,searchreplace,code,link,image,lists",
                     toolbar: "undo redo | styleselect forecolor bold italic alignleft aligncenter alignright alignjustify outdent indent numlist bullist link code image",
                 directionality: "{{ directionality }}",
+                license_key: 'gpl',
             });
 
              // Prevent Bootstrap dialog from blocking focusin
