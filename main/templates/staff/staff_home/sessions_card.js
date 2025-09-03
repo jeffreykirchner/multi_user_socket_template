@@ -19,8 +19,8 @@ function take_create_session(message_data){
  * send request to delete session
  * @param id : int
  */
-function send_delete_session(id){
-    if (!confirm('Delete Session?')) {
+async function send_delete_session(id){
+    if (!await show_confirm_dialog('Delete Session?')) {
         return;
     }
     app.working = true;

@@ -76,8 +76,8 @@ take_add_collaborators: function take_add_collaborators(message_data){
 /**
  * remove collaborator from session
  */
-send_remove_collaborator: function send_remove_collaborator(collaborator_id){
-    if (!confirm('Remove collaborator from the session?')) {
+send_remove_collaborator: async function send_remove_collaborator(collaborator_id){
+    if (!await show_confirm_dialog('Remove collaborator from the session?')) {
         return;
     }
 
