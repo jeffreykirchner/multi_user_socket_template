@@ -266,9 +266,9 @@ copy_earnings: function copy_earnings()
 
  /** send request to anonymize the data
 */
-send_anonymize_data: function send_anonymize_data(){
-    
-    if (!confirm('Anonymize data? Identifying information will be permanent removed.')) {
+send_anonymize_data: async function send_anonymize_data(){
+
+    if (!await show_confirm_dialog('Anonymize data? Identifying information will be permanent removed.')) {
         return;
     }
 
@@ -316,9 +316,9 @@ take_update_survey_complete: function take_update_survey_complete(message_data){
 /**
  * rescue subject if stuck
  */
-send_rescue_subject: function send_rescue_subject()
+send_rescue_subject: async function send_rescue_subject()
 {
-    if (!confirm('Return subject to their starting location?')) {
+    if (!await show_confirm_dialog('Return subject to their starting location?')) {
         return;
     }
 

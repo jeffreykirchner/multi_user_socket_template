@@ -18,8 +18,8 @@ function send_create_instruction(){
  * send request to delete instruction
  * @param id : int
  */
-function send_delete_instruction(id){
-    if (!confirm('Delete instruction?')) {
+async function send_delete_instruction(id){
+    if (!await show_confirm_dialog('Delete instruction?')) {
         return;
     }
     app.working = true;

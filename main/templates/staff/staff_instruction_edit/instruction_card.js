@@ -9,8 +9,8 @@ function send_add_instruction(){
 /**
  * send request to delete instruction page
  */
-function send_delete_instruction(instruction_id){
-    if (!confirm('Delete Page?')) {
+async function send_delete_instruction(instruction_id){
+    if (!await show_confirm_dialog('Delete Page?')) {
         return;
     }
 

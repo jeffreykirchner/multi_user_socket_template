@@ -21,8 +21,8 @@ take_update_start_experiment: function take_update_start_experiment(message_data
 
 /**reset experiment, remove all bids, asks and trades
 */
-reset_experiment: function reset_experiment(){
-    if (!confirm('Reset session? All activity will be removed.')) {
+reset_experiment: async function reset_experiment(){
+    if (!await show_confirm_dialog('Reset session? All activity will be removed.')) {
         return;
     }
 
@@ -40,8 +40,8 @@ take_reset_experiment: function take_reset_experiment(message_data){
     app.take_get_session(message_data);
 },
 
-reset_connections(){
-    if (!confirm('Reset connection status?.')) {
+reset_connections: async function reset_connections(){
+    if (!await show_confirm_dialog('Reset connection status?.')) {
         return;
     }
 
@@ -65,9 +65,9 @@ take_reset_connections: function take_reset_connections(message_data){
 
 /**advance to next phase
 */
-next_experiment_phase: function next_experiment_phase(){
-   
-    if (!confirm('Continue to the next phase of the experiment?')) {
+next_experiment_phase: async function next_experiment_phase(){
+
+    if (!await show_confirm_dialog('Continue to the next phase of the experiment?')) {
         return;
     }    
 
@@ -146,8 +146,8 @@ take_stop_timer_pulse: function take_stop_timer_pulse(){
 
 /**reset experiment, remove all bids, asks and trades
 */
-end_early: function end_early(){
-    if (!confirm('End the experiment after this period completes?')) {
+end_early: async function end_early(){
+    if (!await show_confirm_dialog('End the experiment after this period completes?')) {
         return;
     }
 
@@ -231,8 +231,8 @@ fill_default_invitation: function fill_default_invitation(){
     tinymce.get("id_invitation_text").setContent(app.email_default_text);
 },
 
-send_refresh_screens: function send_refresh_screens(message_data){
-    if (!confirm('Refresh the client and server screens?')) {
+send_refresh_screens: async function send_refresh_screens(message_data){
+    if (!await show_confirm_dialog('Refresh the client and server screens?')) {
         return;
     }
 

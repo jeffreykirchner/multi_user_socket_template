@@ -9,8 +9,8 @@ function send_add_help_doc(){
 /**
  * send request to delete instruction page
  */
-function send_delete_help_doc(help_doc_id){
-    if (!confirm('Delete Help Doc?')) {
+async function send_delete_help_doc(help_doc_id){
+    if (!await show_confirm_dialog('Delete Help Doc?')) {
         return;
     }
 

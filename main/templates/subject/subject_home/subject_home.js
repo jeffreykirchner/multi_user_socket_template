@@ -630,5 +630,6 @@ let app = Vue.createApp({
 }).mount('#app');
 
 {%include "js/web_sockets.js"%}
+{%include "js/alert_dialog.js"%}
 
   

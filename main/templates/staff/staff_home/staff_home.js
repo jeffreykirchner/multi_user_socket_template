@@ -116,9 +116,10 @@ let app = createApp({
             app.sessions.sort((a, b) => (a.title > b.title) ? 1 : -1);
         }
 
+        
         {%include "staff/staff_home/sessions_card_full_admin.js"%}
         {%include "staff/staff_home/sessions_card.js"%}
-
+        
         //return                        
         return {
             chat_socket , 
@@ -153,8 +154,10 @@ let app = createApp({
             sort_by_title_all_sessions,
             sort_by_date_all_sessions,
             sort_by_owner_all_sessions,
+            show_confirm_dialog,
         }
     }
 }).mount('#app');
 
 {%include "js/web_sockets.js"%}
+{%include "js/alert_dialog.js"%}
