@@ -283,7 +283,7 @@ start_send: function start_send()
 },
 
 /**
- * start take seeds
+ * start take cherries
  */
 start_take: function start_take()
 {
@@ -301,7 +301,7 @@ start_take: function start_take()
 },
 
 /**
- * select all seeds
+ * select all cherries
  */
 select_all: function select_all()
 {
