@@ -41,7 +41,7 @@ take_reset_experiment: function take_reset_experiment(message_data){
 },
 
 reset_connections: async function reset_connections(){
-    if (!await show_confirm_dialog('Reset connection status?.')) {
+    if (!await show_confirm_dialog('Reset connection status?')) {
         return;
     }
 

@@ -202,6 +202,7 @@ class Session(models.Model):
             v['interaction'] = 0
             v['earnings'] = 0
             v['parameter_set_player_id'] = i['parameter_set_player__id']
+            v['id'] = i['id']
             
             self.world_state["session_players"][str(i['id'])] = v
             self.world_state["session_players_order"].append(i['id'])
