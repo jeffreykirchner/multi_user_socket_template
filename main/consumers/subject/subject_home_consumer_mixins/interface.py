@@ -17,11 +17,11 @@ class InterfaceMixin():
     interface actions from subject screen mixin
     '''
 
-    async def target_location_update(self, event):
-        '''
-        update target location from subject screen, handled by staff consumer
-        '''
-        pass
+    # async def target_location_update(self, event):
+    #     '''
+    #     update target location from subject screen, handled by staff consumer
+    #     '''
+    #     pass
     
     async def update_target_location_update(self, event):
         '''
