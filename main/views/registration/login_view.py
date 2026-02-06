@@ -79,7 +79,7 @@ def login_function(request,data):
         two_factor = data["two_factor_code"]
 
         #check rate limit
-        user_rl = User.objects.filter(username=username.lower()).first()
+        user_rl = User.objects.filter(email=username.lower()).first()
         if user_rl:
             failed_login_attempts = user_rl.profile.profile_login_attempts.filter(success=False, timestamp__gte=datetime.now()-timedelta(minutes=1)).count()
 
@@ -134,7 +134,7 @@ def login_function(request,data):
         else:
             logger.warning(f"Login user {username} fail user / pass")
 
-            user = User.objects.filter(username=username.lower()).first()
+            user = User.objects.filter(email=username.lower()).first()
             if user:
                 ProfileLoginAttempt.objects.create(profile=user.profile, success=False, note="Invalid Password")
 
