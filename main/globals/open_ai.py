@@ -4,7 +4,7 @@ import os
 import json
 
 from openai import AzureOpenAI
-from openai import AsyncOpenAI
+from openai import AsyncAzureOpenAI
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.conf import settings
@@ -21,9 +21,10 @@ client = AzureOpenAI(
     api_version="2025-01-01-preview",
 )
 
-client_async = AsyncOpenAI(
-    base_url="https://esi-open-ai.openai.azure.com/openai/v1/",
+client_async = AsyncAzureOpenAI(
+    azure_endpoint=endpoint,
     api_key=subscription_key,
+    api_version="2025-01-01-preview"
 )
 
 def chat_gpt_generate_completion(messages):
