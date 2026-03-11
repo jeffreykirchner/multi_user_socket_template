@@ -203,24 +203,6 @@ class SessionPlayer(models.Model):
 
 
         return chat_history
-
-    def get_chat_display_history(self):
-        '''
-        return chat gpt history for display
-        '''
-
-        chat_history = []
-
-        for i in self.chat_gpt_prompt:
-            
-            if i["role"] == "system":
-                continue
-
-            #add i to front of list 
-            chat_history.insert(0, i)
-
-
-        return chat_history
     
     def get_survey_link(self):
         '''
