@@ -164,6 +164,7 @@ class InterfaceMixin():
                             session_player_id=session_player.id,
                             type="chat_gpt_prompt",
                             period_number=event_data["current_period"],
+                            time_remaining=event_data["time_remaining"],
                             data=result_staff)
         
         # Send the response back to the client
