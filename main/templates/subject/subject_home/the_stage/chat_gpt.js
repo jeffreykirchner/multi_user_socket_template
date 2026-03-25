@@ -24,6 +24,7 @@ send_process_chat_gpt_prompt : function send_process_chat_gpt_prompt(message_dat
     app.send_message("process_chat_gpt_prompt", 
                      {"prompt": app.chat_gpt_text,
                       "current_period": app.session.world_state.current_period, 
+                      "time_remaining": app.session.world_state.time_remaining,
                      },
                       "self");
 

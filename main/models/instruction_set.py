@@ -104,6 +104,8 @@ class InstructionSet(models.Model):
             help_docs_subjects.append(main.models.HelpDocsSubject(instruction_set=self, 
                                                         title=help_doc['title'], 
                                                         text=help_doc['text']))
+            
+        main.models.HelpDocsSubject.objects.bulk_create(help_docs_subjects)
         
     #return json object of class
     def json(self):
