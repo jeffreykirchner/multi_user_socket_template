@@ -42,8 +42,8 @@ urlpatterns = [
     path('humans.txt', views.HumansTxt, name='humansTxt'),
 
     #icons
-    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico'), name='favicon'),
-    path('apple-touch-icon-precomposed.png', RedirectView.as_view(url='/static/apple-touch-icon-precomposed.png'), name='favicon'),
-    path('apple-touch-icon.png', RedirectView.as_view(url='/static/apple-touch-icon-precomposed.png'), name='favicon'),
-    path('apple-touch-icon-120x120-precomposed.png', RedirectView.as_view(url='/static/apple-touch-icon-precomposed.png'), name='favicon'),
+    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico'), name='favicon1'),
+    path('apple-touch-icon-precomposed.png', RedirectView.as_view(url='/static/apple-touch-icon-precomposed.png'), name='favicon2'),
+    path('apple-touch-icon.png', RedirectView.as_view(url='/static/apple-touch-icon-precomposed.png'), name='favicon3'),
+    path('apple-touch-icon-120x120-precomposed.png', RedirectView.as_view(url='/static/apple-touch-icon-precomposed.png'), name='favicon4'),
 ]

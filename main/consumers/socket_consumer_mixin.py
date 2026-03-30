@@ -75,7 +75,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         # if self.controlling_channel == self.channel_name:
         #     await self.store_world_state(force_store=True)
 
-        result = await sync_to_async(take_handle_dis_connect, thread_sensitive=False)(self.player_key, False)
+        result = await sync_to_async(take_handle_dis_connect, thread_sensitive=self.thread_sensitive)(self.player_key, False)
 
         #send updated connection status to all users
         await self.channel_layer.group_send(

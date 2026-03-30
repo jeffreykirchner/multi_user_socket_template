@@ -52,7 +52,7 @@ def chat_gpt_generate_completion(messages):
 
         return response.to_json()
     except Exception as e:
-        return json.dumps({ "error": str(e)}, cls=DjangoJSONEncoder)
+        return json.dumps({ "error": "The response could not be generated. Please try again, ask for help if the problem persists."}, cls=DjangoJSONEncoder)
 
 async def chat_gpt_generate_completion_async():
 
