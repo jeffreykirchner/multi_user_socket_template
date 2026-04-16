@@ -232,15 +232,19 @@ class TimerMixin():
             
             result["session_player_status"] = session_player_status
 
+           
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     type="time",
                                                     period_number=self.world_state_local["current_period"],
                                                     time_remaining=self.world_state_local["time_remaining"],
                                                     data=result))
             
-            await SessionEvent.objects.abulk_create(self.session_events, ignore_conflicts=True)
-
-            self.session_events = []
+            try:   
+                await SessionEvent.objects.abulk_create(self.session_events, ignore_conflicts=True)
+                self.session_events = []
+            except Exception as e:
+                logger.error(f"Error creating session events: {e}")                
+                self.session_events = []
 
             if stop_timer:
                 self.world_state_local["timer_running"] = False
