@@ -10,9 +10,9 @@ channels_redis==4.2.1
 charset-normalizer==3.4.2
 constantly==23.10.4
 crispy-bootstrap5==2025.4
-cryptography==46.0.5
+cryptography==46.0.7
 daphne==4.2.1
-Django==5.2.12
+Django==5.2.13
 django-crispy-forms==2.4
 django-tinymce==4.1.0
 h2==4.3.0
@@ -36,9 +36,9 @@ pyasn1_modules==0.4.2
 pycparser==2.22
 pyOpenSSL==26.0.0
 pyotp==2.9.0
-pytest==8.3.5
-pytest-asyncio==0.26.0
-pytest-django==4.11.1
+pytest==9.0.3
+pytest-asyncio==1.3.0
+pytest-django==4.12.0
 pytz==2025.2
 redis==6.1.0
 requests==2.33.0

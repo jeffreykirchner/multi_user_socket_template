@@ -587,3 +587,4 @@ def post_save_session(sender, instance, created, *args, **kwargs):
             id_string = ''.join(random.choices(string.ascii_lowercase, k=6))
 
         instance.id_string = id_string
+        instance.save()
