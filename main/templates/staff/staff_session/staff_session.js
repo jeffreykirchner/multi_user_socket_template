@@ -43,6 +43,7 @@ let app = Vue.createApp({
 
                     email_list_error : "",
                     collaborators_list_error : "",
+                    start_experiment_error : null,                //error message when starting experiment
 
                     csv_email_list : "",           //csv email list
                     csv_collaborators_list : "",   //csv collaborators list
