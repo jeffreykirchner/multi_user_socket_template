@@ -8,15 +8,36 @@ start_experiment: function start_experiment(){
 /** take start experiment response
  * @param message_data {json}
 */
-take_start_experiment: function take_start_experiment(message_data){
-    app.take_get_session(message_data);
-},
+// take_start_experiment: function take_start_experiment(message_data){
+
+//     app.working = false;
+
+//     if(message_data.value == "fail")
+//     {
+//         app.start_experiment_error = message_data.message;
+//     }
+//     else
+//     {
+//         app.start_experiment_error = "";
+//         app.take_get_session(message_data);
+//     }
+// },
 
 /** update start status
 *    @param message_data {json} session day in json format
 */
 take_update_start_experiment: function take_update_start_experiment(message_data){
-    app.take_get_session(message_data);
+    app.working = false;
+
+    if(message_data.value == "fail")
+    {
+        app.start_experiment_error = "Error: " + message_data.message;
+    }
+    else
+    {
+        app.start_experiment_error = null;
+        app.take_get_session(message_data);
+    }
 },
 
 /**reset experiment, remove all bids, asks and trades

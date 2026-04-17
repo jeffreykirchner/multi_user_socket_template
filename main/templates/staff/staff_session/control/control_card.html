@@ -24,6 +24,13 @@
             </div>
         </div>
 
+        <!-- start experiment error message -->
+        <div class="row mt-0" v-show="start_experiment_error">
+            <div class="col-md text-center">
+                <span class="text-danger">[[ start_experiment_error ]]</span>
+            </div>
+        </div>
+
         <!-- reset connection status -->
         <div class="row mt-2" v-show="session.started == false">
             <div class="col-md text-center">

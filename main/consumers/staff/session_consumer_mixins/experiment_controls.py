@@ -29,8 +29,8 @@ class ExperimentControlsMixin():
 
         #Send message to staff page
         if result["value"] == "fail":
-            await self.send_message(message_to_self={"world_state":result["session"]["world_state"]}, message_to_group=None,
-                                    message_type=event['type'], send_to_client=True, send_to_group=False)
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type="update_"+event['type'], send_to_client=True, send_to_group=False)
         else:
             await self.send_message(message_to_self=None, message_to_group={"world_state":result["session"]["world_state"]},
                                     message_type=event['type'], send_to_client=False, send_to_group=True)
@@ -179,6 +179,8 @@ def take_start_experiment(session_id, data):
     '''
     start experiment
     '''   
+    value = "success"
+    message = ""
 
     logger = logging.getLogger(__name__) 
     # logger.info(f"Start Experiment: session {session_id}, data {data}")
@@ -186,12 +188,16 @@ def take_start_experiment(session_id, data):
     #session_id = data["session_id"]   
     session = Session.objects.get(id=session_id)
 
-    if not session.started:
+    # Check if there are any ParameterSetPlayers
+    if session.parameter_set.parameter_set_players.count() == 0:
+        value = "fail"
+        message = "No Subjects Configured"
+        
+    if value=="success" and not session.started:
         session.start_experiment()
 
-    value = "success"
-    
     return {"value" : value, 
+            "message" : message,
             "session" : session.json()}
 
 def take_reset_experiment(session_id, data):
