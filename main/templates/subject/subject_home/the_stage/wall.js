@@ -20,7 +20,10 @@ setup_pixi_wall: function setup_pixi_wall()
         let scale = 100 / app.pixi_textures.wall_tex.width;
         
         outline.rect(0, 0, wall.width, wall.height);
-        outline.fill({texture: app.pixi_textures['wall_tex'], color:0xDEB887, matrix:new PIXI.Matrix(scale,0,0,scale,0,0)});
+        outline.fill({texture: app.pixi_textures['wall_tex'], 
+                      textureSpace: 'global',
+                      color:0xDEB887, 
+                      matrix:new PIXI.Matrix(scale,0,0,scale,0,0)});
        
         //outline.endFill();
 
