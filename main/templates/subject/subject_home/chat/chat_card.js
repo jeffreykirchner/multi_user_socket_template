@@ -1,3 +1,10 @@
+/*
+*  Chat card functions for subject home page
+*/
+
+/** send chat message to server to be relayed to other players
+*    checks for empty message and message length before sending
+*/  
 send_chat: function send_chat(){
 
     if(app.working) return;
@@ -85,5 +92,17 @@ take_update_chat: function take_update_chat(message_data){
         }
     }
 
+},
+
+/**
+ * show chat if chat enabled in parameters and stealing has not occured yet
+ */
+show_chat: function show_chat()
+{
+    if(!app.session) return false;
+    if(!app.session.started) return false;
+    if(!app.session.parameter_set.enable_chat) return false;    
+    
+    return true;
 },
 
