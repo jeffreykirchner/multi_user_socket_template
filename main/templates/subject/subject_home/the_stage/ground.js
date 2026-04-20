@@ -22,7 +22,9 @@ setup_pixi_ground: function setup_pixi_ground()
         
         outline.tint = ground.tint;
         outline.rect(0, 0, ground.width, ground.height);
-        outline.fill({texture: app.pixi_textures[ground.texture], matrix:matrix});
+        outline.fill({texture: app.pixi_textures[ground.texture], 
+                      textureSpace: 'global',
+                      matrix:matrix});
        
         ground_container.addChild(outline);
 
