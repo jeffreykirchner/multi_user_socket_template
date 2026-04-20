@@ -1,5 +1,8 @@
 /**
  * move the object towards its target location
+ * @param {Number} delta - the time delta since the last movement update, used to make movement frame rate independent
+ * @param {Object} obj - the object to move, should have current_location and target_location properties
+ * @param {Number} move_speed - the speed to move the object at, in pixels per second
  */
 move_object: function move_object(delta, obj, move_speed)
 {
@@ -29,6 +32,11 @@ move_object: function move_object(delta, obj, move_speed)
     
 },
 
+/**
+ * move the avatar towards its target location, checking for wall collisions and finding a path around if a wall is hit
+ * @param {Number} delta - the time delta since the last movement update, used to make movement frame rate independent
+ * @param {String} player_id - the id of the player avatar to move
+ */
 move_avatar: function move_avatar(delta, player_id)
 {
     
@@ -74,7 +82,8 @@ move_avatar: function move_avatar(delta, player_id)
                    height:container.height};  
         
         if(app.check_walls_intersection(rect1) || 
-           app.check_barriers_intersection(rect1, parameter_set_group, obj.parameter_set_player_id))
+           app.check_barriers_intersection(rect1, parameter_set_group, obj.parameter_set_player_id) ||
+           app.check_ground_intersection(rect1))
         {
             obj.current_location =  Object.assign({}, temp_current_location);  
             wall_limit_hit = true;
@@ -124,9 +133,16 @@ move_avatar: function move_avatar(delta, player_id)
 
 /**
  * seach for path around walls
+ * uses breadth first search to find the closest path around walls to the target location, then follows the parent nodes back to the starting location to find the next nav point
+ * returns the next nav point or null if no path is found
+ * @param {Object} starting_rect - the bounding rect of the object at its current location
+ * @param {Object} current_location - the current location of the object
+ * @param {Object} target_location - the target location of the object
+ * @param {Number} parameter_set_group - the parameter set group of the player, used to check for barriers
+ * @param {Number} parameter_set_player - the parameter set player object of the player, used to check for barriers
  */
 search_for_path_around_walls: function search_for_path_around_walls(starting_rect, current_location, 
-                                                         target_location, parameter_set_group, parameter_set_player)
+                                                                    target_location, parameter_set_group, parameter_set_player)
 {
     
     //target already in bounding rect
@@ -181,7 +197,8 @@ search_for_path_around_walls: function search_for_path_around_walls(starting_rec
                             }
                         }
                         else if(!app.check_walls_intersection(rect1) && 
-                                !app.check_barriers_intersection(rect1, parameter_set_group, parameter_set_player)) 
+                                !app.check_barriers_intersection(rect1, parameter_set_group, parameter_set_player) &&
+                                !app.check_ground_intersection(rect1)) 
                         {
                             new_search_grid[v] = {rect:rect1, 
                                                   searched:false, 

@@ -32,3 +32,29 @@ setup_pixi_ground: function setup_pixi_ground()
         pixi_container_main.addChild(pixi_grounds[i].ground_container);
     }
 },
+
+/**
+ * check ground intersection
+ */
+check_ground_intersection: function check_ground_intersection(rect1)
+{
+    for(let i in app.session.parameter_set.parameter_set_grounds)
+    {
+        let temp_ground = app.session.parameter_set.parameter_set_grounds[i];
+
+        if(temp_ground.enable_clipping)
+        {
+            let rect2={x:temp_ground.x,
+                       y:temp_ground.y,
+                       width:temp_ground.width,
+                       height:temp_ground.height};
+
+            if(app.check_for_rect_intersection(rect1, rect2))
+            {  
+                return true;
+            }
+        }
+    }
+
+    return false;
+},

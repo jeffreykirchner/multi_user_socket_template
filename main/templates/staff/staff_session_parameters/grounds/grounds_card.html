@@ -45,6 +45,9 @@
                                     Scale
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
+                                    Enable Clipping
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
                                     Render Order
                                 </th>             
                             </tr>
@@ -85,6 +88,10 @@
                                 <td v-on:click="show_edit_parameter_set_ground(p)" 
                                     class="player_table_cell">
                                     [[temp_p.scale]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_ground(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.enable_clipping ? 'Yes' : 'No']]
                                 </td>
                                 <td v-on:click="show_edit_parameter_set_ground(p)" 
                                     class="player_table_cell">
