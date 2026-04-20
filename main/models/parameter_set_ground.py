@@ -28,6 +28,8 @@ class ParameterSetGround(models.Model):
     texture = models.CharField(verbose_name='Texture Name', default="Name Here")                  #name of texture
     rotation = models.DecimalField(decimal_places=2, max_digits=3, default=0)                     #rotation of texture
     scale = models.DecimalField(decimal_places=2, max_digits=3, default=1)                        #scale of texture
+    enable_clipping = models.BooleanField(verbose_name='Enable Clipping', default=False)          #whether to clip the texture the player avatar or not
+    render_order = models.IntegerField(verbose_name='Render Order', default=0)                    #render order of the ground element, lower numbers render first (behind higher numbers)
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -57,6 +59,8 @@ class ParameterSetGround(models.Model):
         self.texture = new_ps.get("texture")
         self.rotation = new_ps.get("rotation")
         self.scale = new_ps.get("scale")
+        self.enable_clipping = new_ps.get("enable_clipping", self.enable_clipping)
+        self.render_order = new_ps.get("render_order", self.render_order)
 
         self.save()
         
@@ -97,6 +101,8 @@ class ParameterSetGround(models.Model):
             "texture" : self.texture,
             "rotation" : self.rotation,
             "scale" : self.scale,
+            "enable_clipping" : 1 if self.enable_clipping else 0,
+            "render_order" : self.render_order,
         }
     
     def get_json_for_subject(self, update_required=False):

@@ -42,6 +42,10 @@ class ParameterSetForm(forms.ModelForm):
                                       choices=ChatGPTMode.choices,
                                       widget=forms.Select(attrs={"v-model":"parameter_set.chat_gpt_mode",}))
 
+    enable_chat = forms.ChoiceField(label='Enable Chat',
+                                    choices=((1, 'Yes'), (0, 'No')),
+                                    widget=forms.Select(attrs={"v-model":"parameter_set.enable_chat",}))
+
     show_instructions = forms.ChoiceField(label='Show Instructions',
                                           choices=((1, 'Yes'), (0,'No' )),
                                           widget=forms.Select(attrs={"v-model":"parameter_set.show_instructions",}))
@@ -154,7 +158,7 @@ class ParameterSetForm(forms.ModelForm):
     class Meta:
         model=ParameterSet
         fields =['period_count', 'period_length', 'break_frequency', 'break_length', 'interaction_length', 'cool_down_length',
-                 'chat_gpt_mode', 'show_instructions', 
+                 'chat_gpt_mode', 'enable_chat', 'show_instructions', 
                  'survey_required', 'survey_link', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
                  'tokens_per_period', 'token_cents_value', 'interaction_range',
                  'avatar_scale', 'avatar_bound_box_percent', 'avatar_move_speed', 'avatar_animation_speed',

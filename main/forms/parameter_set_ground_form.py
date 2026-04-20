@@ -61,11 +61,19 @@ class ParameterSetGroundForm(forms.ModelForm):
                                                                "step":"0.01",
                                                                "min":"0",
                                                                "max":"1"}))
+
+    enable_clipping = forms.ChoiceField(label='Enable Clipping',
+                                  choices=((1, 'Yes'), (0, 'No')),
+                                  widget=forms.Select(attrs={"v-model":"current_parameter_set_ground.enable_clipping",}))
+
+    render_order = forms.IntegerField(label='Render Order',
+                                      widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_ground.render_order",
+                                                                      "step":"1"}))
     
     
     
 
     class Meta:
         model=ParameterSetGround
-        fields =['info', 'x', 'y', 'width', 'height', 'tint', 'texture', 'rotation', 'scale']
+        fields =['info', 'x', 'y', 'width', 'height', 'tint', 'texture', 'rotation', 'scale', 'enable_clipping', 'render_order']
     

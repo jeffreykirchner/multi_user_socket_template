@@ -27,6 +27,7 @@ class ParameterSet(models.Model):
     break_length = models.IntegerField(verbose_name='Break Length', default=100)                              #length of breaks in seconds
 
     chat_gpt_mode = models.CharField(max_length=20, choices=ChatGPTMode.choices, default=ChatGPTMode.OFF, verbose_name='ChatGPT Mode')
+    enable_chat = models.BooleanField(default=True, verbose_name='Enable Chat')
 
     show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                   #if true show instructions
 
@@ -83,6 +84,7 @@ class ParameterSet(models.Model):
             self.break_length = new_ps.get("break_length", 100)
 
             self.chat_gpt_mode = new_ps.get("chat_gpt_mode", ChatGPTMode.OFF)
+            self.enable_chat = True if new_ps.get("enable_chat", True) else False
 
             self.show_instructions = True if new_ps.get("show_instructions") else False
 
@@ -253,6 +255,7 @@ class ParameterSet(models.Model):
         self.json_for_session["break_frequency"] = self.break_frequency
         self.json_for_session["break_length"] = self.break_length
         self.json_for_session["chat_gpt_mode"] = self.chat_gpt_mode
+        self.json_for_session["enable_chat"] = 1 if self.enable_chat else 0
 
         self.json_for_session["show_instructions"] = 1 if self.show_instructions else 0
 
