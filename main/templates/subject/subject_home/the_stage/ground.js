@@ -11,7 +11,7 @@ setup_pixi_ground: function setup_pixi_ground()
         const ground = app.session.parameter_set.parameter_set_grounds[ground_id];
         
         let ground_container = new PIXI.Container();
-        ground_container.zIndex = 0;
+        ground_container.zIndex = Number(ground.render_order ?? 0);
         
         ground_container.position.set(ground.x, ground.y)
 
