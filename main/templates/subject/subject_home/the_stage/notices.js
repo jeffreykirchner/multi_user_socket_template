@@ -67,6 +67,6 @@ update_notices: function update_notices()
  */
 remove_all_notices: function remove_all_notices()
 {
-    pixi_notices.notices = [];
+    pixi_notices.notices = {};
     app.update_notices();
 },
