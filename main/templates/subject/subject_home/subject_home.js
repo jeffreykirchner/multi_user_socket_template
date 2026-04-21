@@ -8,12 +8,12 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 //global letiables
 let subject_status_overlay = {container:null, current_period_label:null, time_remaining_label:null, profit_label:null};
-let pixi_target = null;                        //target sprite for your avatar
+let pixi_target = null;                             //target sprite for your avatar
 let pixi_mini_map = {container:null};               //mini map container
-let pixi_notices = {container:null, notices:{}};                         //notices
+let pixi_notices = {container:null, notices:{}};    //notices
 let pixi_notices_key = 0;
 
-let last_location_update = Date.now();          //last time location was updated
+let last_location_update = Date.now();              //last time location was updated
 
 //prevent right click
 document.addEventListener('contextmenu', event => event.preventDefault());
