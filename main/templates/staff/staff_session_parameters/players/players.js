@@ -32,6 +32,16 @@ send_remove_parameter_set_player: function send_remove_parameter_set_player(){
                                                    
 },
 
+/** duplicate the selected parameterset player
+*/
+send_duplicate_parameter_set_player: function send_duplicate_parameter_set_player(){
+
+    app.working = true;
+    app.send_message("duplicate_parameterset_player", {"session_id" : app.session.id,
+                                                       "parameterset_player_id" : app.current_parameter_set_player.id,});
+
+},
+
 /** add a new parameterset player
 */
 send_add_parameter_set_player: function send_add_parameter_set_player(player_id){
