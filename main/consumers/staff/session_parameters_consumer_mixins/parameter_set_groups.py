@@ -107,6 +107,7 @@ def take_remove_parameterset_group(data):
     
     parameter_set_group.delete()
     session.parameter_set.update_json_fk(update_groups=True)
+    session.parameter_set.update_json_fk(update_barriers=True)
     
     return {"value" : "success"}
 
@@ -128,6 +129,7 @@ def take_add_parameterset_group(data):
 
     parameter_set_group = ParameterSetGroup.objects.create(parameter_set=session.parameter_set)
     session.parameter_set.update_json_fk(update_groups=True)
+    session.parameter_set.update_json_fk(update_barriers=True)
 
     return {"value" : "success"}
     

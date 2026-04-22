@@ -116,10 +116,12 @@ def take_remove_parameterset_player(data):
         session = Session.objects.get(id=session_id)
         session.parameter_set.remove_player(parameterset_player_id)
         session.update_player_count()
+
+        session.parameter_set.update_json_fk(update_barriers=True)
     except ObjectDoesNotExist:
         logger.warning(f"take_remove_parameterset_player paramterset_player, not found ID: {parameterset_player_id}")
         return
-    
+        
     return {"value" : "success"}
 
 @sync_to_async
