@@ -86,6 +86,8 @@ LOGGING = {
     },
 }
 
+SECURE_SSL_REDIRECT = True
+
 #esi portal
 ESI_AUTH_URL = os.environ['ESI_AUTH_URL']
 ESI_AUTH_ACCOUNT_URL = os.environ['ESI_AUTH_ACCOUNT_URL']
