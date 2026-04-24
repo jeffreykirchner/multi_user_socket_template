@@ -126,4 +126,4 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'auth.user'
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-SECURE_HSTS_SECONDS = 3600 
+SECURE_HSTS_SECONDS = 3600
