@@ -87,6 +87,7 @@ LOGGING = {
 }
 
 SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 #esi portal
 ESI_AUTH_URL = os.environ['ESI_AUTH_URL']
