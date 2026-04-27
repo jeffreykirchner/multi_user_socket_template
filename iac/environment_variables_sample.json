@@ -25,6 +25,11 @@
       "slotSetting": true
     },
     {
+      "name": "DEBUG",
+      "value": "False",
+      "slotSetting": true
+    },
+    {
       "name": "EMAIL_MS_HOST",
       "value": "https://email_host.azurewebsites.net",
       "slotSetting": true
