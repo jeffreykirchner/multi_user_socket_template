@@ -25,6 +25,9 @@ from main.models import Profile
 
 from main.forms import LoginForm
 
+from main.globals import esi_account_auth
+from main.globals import esi_account_action
+
 class LoginView(TemplateView):
     '''
     log in class view
@@ -156,27 +159,40 @@ def login_function_esi_auth(username, password):
     '''
 
     logger = logging.getLogger(__name__)
+    parameters = Parameters.objects.first()
 
     try:
-        headers = {'Content-Type' : 'application/json', 'Accept' : 'application/json'}
+        headers = {'Content-Type' : 'application/json', 
+                   'Accept' : 'application/json',
+                   'Authorization': f'Bearer {parameters.esi_auth_access_token}',}
 
         data = {"app_name" : settings.ESI_AUTH_APP,
                 "username" : username,
                 "password" : password }
 
-        request_result = requests.get(f'{settings.ESI_AUTH_URL}/get-auth/',
-                                        json=data,
-                                        auth=(str(settings.ESI_AUTH_USERNAME), str(settings.ESI_AUTH_PASS)),
-                                        headers=headers)
-        
-        if request_result.status_code != 200:        
-            logger.warning(f'ESI auth error: {request_result}')
-            return None
+        #username/password auth to esi auth server to check if user has access to the experiment, and get user profile information
+        # request_result = requests.get(f'{settings.ESI_AUTH_URL}/get-auth/',
+        #                                 json=data,
+        #                                 auth=(str(settings.ESI_AUTH_USERNAME), str(settings.ESI_AUTH_PASS)),
+        #                                 headers=headers)
 
-        request_result_json = request_result.json()
+        #oauth2 auth to esi auth server to check if user has access to the experiment, and get user profile information
+        # request_result = requests.get(f'{settings.ESI_AUTH_URL}/get-auth/',
+        #                                 json=data,
+        #                                 headers=headers)
+        
+
+        
+        # if request_result.status_code != 200:        
+        #     logger.warning(f'ESI auth error: {request_result}')
+        #     return None
+
+        # request_result_json = request_result.json()
+
+        request_result_json = esi_account_action(val="get-auth", mode="get", data=data)
 
         if request_result_json['status'] == 'fail':        
-            logger.warning(f'ESI auth error: Request {request_result}, result {request_result_json}')
+            logger.warning(f'ESI auth error: result {request_result_json}')
             return None
 
         # logger.info(f"ESI auth response: {request_result_json}")

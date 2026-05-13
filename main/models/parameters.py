@@ -22,6 +22,10 @@ class Parameters(models.Model):
 
     default_parameter_set = models.ForeignKey("main.ParameterSet", on_delete=models.DO_NOTHING, null=True, blank=True) #default parameter set for new sessions
 
+    esi_auth_access_token = models.CharField(max_length = 1000, default="", verbose_name="ESI Auth Access Token")            #access token for ESI auth service
+    esi_auth_refresh_token = models.CharField(max_length = 1000, default="", verbose_name="ESI Auth Refresh Token")          #refresh token for ESI auth service
+    esi_auth_token_expiration = models.DateTimeField(null=True, blank=True, verbose_name="ESI Auth Token Expiration")        #expiration time for ESI auth access token
+    
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
 
