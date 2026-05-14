@@ -75,6 +75,16 @@
       "slotSetting": true
     },
     {
+      "name": "ESI_AUTH_CLIENT_ID",
+      "value": "client_id_here",
+      "slotSetting": true
+    },
+    {
+      "name": "ESI_AUTH_CLIENT_SECRET",
+      "value": "client_secret_here",
+      "slotSetting": true
+    },
+    {
       "name": "LOG_LOCATION",
       "value": "/logs/experiment-name-in-storage-account/debug.log",
       "slotSetting": true
