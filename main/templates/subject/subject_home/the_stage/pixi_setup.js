@@ -16,9 +16,10 @@ setup_pixi: function setup_pixi(){
     PIXI.Assets.add({alias:'grass_tex', src:'{% static "background_tile_low.jpg"%}'});
     PIXI.Assets.add({alias:'water_tex', src:'{% static "water_tile.jpg"%}'});
     PIXI.Assets.add({alias:'dash_tex', src:'{% static "dash_1.png"%}'});
+    PIXI.Assets.add({alias:'help_tex', src:'{% static "help.png"%}'});
 
     const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 'grass_tex', 'water_tex',
-                                               'cherry_token', 'wall_tex', 'barrier_tex', 'bridge_tex', 'dash_tex']);
+                                               'cherry_token', 'wall_tex', 'barrier_tex', 'bridge_tex', 'dash_tex', 'help_tex']);
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
@@ -31,12 +32,13 @@ setup_pixi: function setup_pixi(){
         if(app.pixi_mode!="subject")
         {
             app.update_zoom();
-            app.fit_to_screen();
+            app.fit_to_screen();            
         }
         else
         {
             app.setup_pixi_minimap();
             app.setup_subject_status_overlay();
+            app.add_help_doc_button({x:300, y:300}, {x:200, y:300},"test_help_button");
         }
     });
 
