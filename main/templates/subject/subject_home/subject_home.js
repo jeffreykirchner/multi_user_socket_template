@@ -101,6 +101,9 @@ let app = Vue.createApp({
                     chat_gpt_button_text : 'Chat <i class="far fa-comments"></i>',
                     last_scroll_chat_gpt_history_to_bottom : null,
                     chat_gpt_working : false,
+
+                    //on screen help docs
+                    help_docs : {},
                 }},
     methods: {
 
@@ -198,6 +201,9 @@ let app = Vue.createApp({
                     break;
                 case "clear_chat_gpt_history":
                     app.take_clear_chat_gpt_history(message_data);
+                    break;
+                case "update_show_help_doc":
+                    app.take_update_show_help_doc(message_data);
                     break;
             }
 
@@ -479,6 +485,9 @@ let app = Vue.createApp({
 
             //update barriers
             app.update_barriers();
+
+            //update help doc buttons
+            app.clock_tick_help_doc_buttons();
         },
 
         /**
@@ -579,6 +588,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/ground.js"%}
         {%include "subject/subject_home/help_doc_subject.js"%}
         {%include "subject/subject_home/the_stage/chat_gpt.js"%}
+        {%include "subject/subject_home/the_stage/help_doc_buttons.js"%}
 
         /** clear form error messages
         */

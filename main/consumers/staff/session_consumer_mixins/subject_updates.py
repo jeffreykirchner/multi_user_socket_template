@@ -666,6 +666,44 @@ class SubjectUpdatesMixin():
                                     period_number=self.world_state_local["current_period"],
                                     time_remaining=self.world_state_local["time_remaining"],
                                     data=event_data,))
+    
+    async def show_help_doc(self, event):
+        '''
+        subject requests help doc from subject screen, also show on their group members screens
+        '''
+
+        logger = logging.getLogger(__name__)
+
+        event_data =  event["message_text"]
+        player_id = self.session_players_local[event["player_key"]]["id"]
+        world_state = self.world_state_local
+        
+        result = {"help_doc" : event_data["help_doc"],
+                  "session_player_id" : player_id,
+                  "value" : "success"}
+
+        self.session_events.append(SessionEvent(session_id=self.session_id,
+                                                    session_player_id=player_id,
+                                                    type=event['type'],
+                                                    period_number=world_state["current_period"],
+                                                    time_remaining=world_state["time_remaining"],
+                                                    data=result))
+
+        # logger.info(f"show_help_doc: player {player_id} requested help doc {event_data['help_doc']}")
+
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False,
+                                send_to_group=True, target_list=[player_id])
+    
+    async def update_show_help_doc(self, event):
+        '''
+        update show help doc from subject screen
+        '''
+
+        event_data = json.loads(event["group_data"])
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
                                       
     
 
