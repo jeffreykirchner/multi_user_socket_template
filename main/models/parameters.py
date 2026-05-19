@@ -25,9 +25,13 @@ class Parameters(models.Model):
     esi_auth_access_token = models.CharField(max_length = 1000, default="", verbose_name="ESI Auth Access Token")            #access token for ESI auth service
     esi_auth_refresh_token = models.CharField(max_length = 1000, default="", verbose_name="ESI Auth Refresh Token")          #refresh token for ESI auth service
     esi_auth_token_expiration = models.DateTimeField(null=True, blank=True, verbose_name="ESI Auth Token Expiration")        #expiration time for ESI auth access token
-    
+
+    email_ms_auth_access_token = models.CharField(max_length = 1000, default="", verbose_name="Email MS Auth Access Token")            #access token for Email MS auth service
+    email_ms_auth_refresh_token = models.CharField(max_length = 1000, default="", verbose_name="Email MS Auth Refresh Token")          #refresh token for Email MS auth service
+    email_ms_auth_token_expiration = models.DateTimeField(null=True, blank=True, verbose_name="Email MS Auth Token Expiration")        #expiration time for Email MS auth access token
+
     timestamp = models.DateTimeField(auto_now_add=True)
-    updated= models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return "Site Parameters"

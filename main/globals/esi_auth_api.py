@@ -85,7 +85,7 @@ def esi_account_action(val, mode, data) -> dict:
     check if esi account token needs refresh, and perform action with token
     '''
     logger = logging.getLogger(__name__)
-    logger.info(f"esi_account_action {val}")
+    # logger.info(f"esi_account_action {val}")
 
     prm = Parameters.objects.first()
 
@@ -108,7 +108,7 @@ def esi_account_action(val, mode, data) -> dict:
                            json = data,
                            timeout=20)
     else:
-        logger.info("post")
+        # logger.info("post")
         req = requests.post(f'{settings.ESI_AUTH_URL}/{val}/',
                             headers = headers,
                             json = data,
