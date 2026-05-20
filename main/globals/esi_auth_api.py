@@ -121,10 +121,10 @@ def esi_account_action(val, mode, data) -> dict:
              
         logger.info("esi account action: API authorization failed")
         return {"error":"Authorization failed", "status": "fail"}
-    
-    req_json = req.json()
-    req_json["status"] = "success" if req.status_code == 200 else "fail"
+    else:
+        req_json = req.json()
+        req_json["status"] = "success" if req.status_code == 200 else "fail"
 
-    logger.info(f'esi account action {req_json}')
+        logger.info(f'esi account action {req_json}')
 
-    return req_json
+        return req_json

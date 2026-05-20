@@ -45,6 +45,16 @@
       "slotSetting": true
     },
     {
+      "name": "EMAIL_MS_CLIENT_ID",
+      "value": "experiment_name",
+      "slotSetting": true
+    },
+    {
+      "name": "EMAIL_MS_CLIENT_SECRET",
+      "value": "experiment_name",
+      "slotSetting": true
+    },
+    {
       "name": "ESI_AUTH_ACCOUNT_URL",
       "value": "https://portal_name.edu/account/",
       "slotSetting": true
