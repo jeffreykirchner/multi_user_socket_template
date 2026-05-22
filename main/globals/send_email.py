@@ -61,17 +61,17 @@ def email_ms_auth() -> bool:
                               auth=(str(settings.EMAIL_MS_CLIENT_ID), str(settings.EMAIL_MS_CLIENT_SECRET)),
                               data = data)
 
-        req_json = req.json()
-        prm.email_ms_access_token = req_json.get("access_token", "")
-        prm.email_ms_refresh_token = req_json.get("refresh_token", "")
-        prm.email_ms_token_expiration = datetime.now() + timedelta(seconds=req_json.get("expires_in", 0))
-
-        prm.save()
-
         if req.status_code == 200:
             status = "success"
+
+            req_json = req.json()
+            prm.email_ms_access_token = req_json.get("access_token", "")
+            prm.email_ms_refresh_token = req_json.get("refresh_token", "")
+            prm.email_ms_token_expiration = datetime.now() + timedelta(seconds=req_json.get("expires_in", 0))
+
+            prm.save()
         else:
-            logger.info(f'email service auth failed with username/password: {req_json}')
+            logger.info(f'email service auth failed with username/password: {req.content}')
 
     # logger.info(f'email_service_auth status code: {req.status_code}')
 
