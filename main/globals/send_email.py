@@ -27,10 +27,10 @@ def email_ms_auth() -> bool:
                "Accept-Language": "en_US"}
 
     status = "fail"
-    if prm.esi_auth_access_token != "":
+    if prm.email_ms_access_token != "":
         #try to refresh token if it's expired
         data = {"grant_type":"refresh_token",
-                "refresh_token": prm.email_ms_auth_refresh_token,
+                "refresh_token": prm.email_ms_refresh_token,
                 "client_id": settings.EMAIL_MS_CLIENT_ID,
                 "client_secret": settings.EMAIL_MS_CLIENT_SECRET,}
 
@@ -39,9 +39,9 @@ def email_ms_auth() -> bool:
                               data = data)
 
         req_json = req.json()
-        prm.email_ms_auth_access_token = req_json.get("access_token", "")
-        prm.email_ms_auth_refresh_token = req_json.get("refresh_token", "")
-        prm.email_ms_auth_token_expiration = datetime.now() + timedelta(seconds=req_json.get("expires_in", 0))
+        prm.email_ms_access_token = req_json.get("access_token", "")
+        prm.email_ms_refresh_token = req_json.get("refresh_token", "")
+        prm.email_ms_token_expiration = datetime.now() + timedelta(seconds=req_json.get("expires_in", 0))
 
         prm.save()
 
@@ -62,9 +62,9 @@ def email_ms_auth() -> bool:
                               data = data)
 
         req_json = req.json()
-        prm.email_ms_auth_access_token = req_json.get("access_token", "")
-        prm.email_ms_auth_refresh_token = req_json.get("refresh_token", "")
-        prm.email_ms_auth_token_expiration = datetime.now() + timedelta(seconds=req_json.get("expires_in", 0))
+        prm.email_ms_access_token = req_json.get("access_token", "")
+        prm.email_ms_refresh_token = req_json.get("refresh_token", "")
+        prm.email_ms_token_expiration = datetime.now() + timedelta(seconds=req_json.get("expires_in", 0))
 
         prm.save()
 
@@ -106,14 +106,14 @@ def send_mass_email_service(user_list: list, message_subject: str, message_text:
     prm = Parameters.objects.first()
 
     #check for token expiration, refresh will expire in the next 5 minutes to avoid failed requests due to expired token
-    if prm.email_ms_auth_token_expiration is None or prm.email_ms_auth_token_expiration < datetime.now(ZoneInfo(prm.experiment_time_zone)) + timedelta(minutes=5):
+    if prm.email_ms_token_expiration is None or prm.email_ms_token_expiration < datetime.now(ZoneInfo(prm.experiment_time_zone)) + timedelta(minutes=5):
         logger.info("email service action: token expired, refreshing")
         if not email_ms_auth():
             logger.info("email service action: token refresh failed to refresh")
             return {"error":"Authorization failed", "status": "fail"}
 
     headers = {"Content-Type": "application/json",
-               "Authorization": f"Bearer {prm.email_ms_auth_access_token}"}
+               "Authorization": f"Bearer {prm.email_ms_access_token}"}
 
     data = {"user_list" : user_list,
             "message_subject" : message_subject,
