@@ -12,4 +12,7 @@ Remove references to model in the folder /main/templates/subject/subject_home/th
 Remove references to model in the folder /main/consumers/staff/session_consumer_mixins/subject_updates.py
 Remove references to model in the folder /main/consumers/staff/session_parameters_consumer_mixins
 Remove references to model in the folder /main/consumers/subject/subject_home_consumer_mixins/interface.py
-Remove references to model in the folder /main/templates/staff/staff_session_parameters/general_settings/take_update_parameter_set.js
+Remove references to model in the folder /main/templates/staff/staff_session_parameters/general_settings/take_update_parameter_set.
+Remove include statement in the file /main/templates/staff/staff_session_parameters/staff_session.js that references the model.
+Ignore fixtures.
+Do not create migration files.
