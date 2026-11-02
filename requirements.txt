@@ -3,7 +3,7 @@ async-timeout==5.0.1
 attrs==25.3.0
 autobahn==26.7.1
 Automat==25.4.16
-certifi==2025.4.26
+certifi==2026.10.18
 cffi==2.0.0
 channels==4.2.2
 channels_redis==4.2.1
@@ -12,7 +12,7 @@ constantly==23.10.4
 crispy-bootstrap5==2025.4
 cryptography==50.0.0
 daphne==4.2.2
-Django==5.2.16
+Django==5.2.18
 django-crispy-forms==2.4
 django-tinymce==4.1.0
 h2==4.4.1
@@ -43,13 +43,13 @@ pytz==2025.2
 redis==6.1.0
 requests==2.33.0
 service-identity==24.2.0
-setuptools==83.0.0
+setuptools==84.1.0
 six==1.17.0
 sqlparse==0.6.0
 tzdata==2026.1
-Twisted==26.4.0
+Twisted==26.10.0
 txaio==25.12.2
 typing_extensions==4.13.2
-urllib3==2.7.0
+urllib3==2.8.0
 whitenoise==6.10.0
-zope.interface==7.2
+zope.interface==8.7
