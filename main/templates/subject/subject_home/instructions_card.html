@@ -18,48 +18,76 @@
         </div>    
 
         <div class="row mt-2">
-            <div class="col-md text-center ">        
-                
+            <div class="col-md text-start">
+                <!-- quiz question with input and submit button -->
+
+                <div class="input-group w-75"
+                     v-show="show_quiz_question_answer_box()">
+                    <input type="text" 
+                           v-model="quiz_answer"
+                           v-on:input="show_quiz_error = false"
+                           class="form-control form-control-lg" 
+                           placeholder="Quiz Answer" 
+                           aria-label="Quiz Answer" 
+                           aria-describedby="basic-addon2">
+
+                    <button class="btn btn-outline-primary btn-lg" 
+                            v-on:click="check_quiz_question_answer()"
+                            v-bind:disabled="reconnecting || working"
+                            type="button">Submit <i class="fas fa-sign-in-alt"></i>
+                    </button>                    
+                </div>
+                <span class="text-danger" 
+                      v-show="show_quiz_error">
+                    Incorrect, please try again.
+                </span>
+                <div v-show="show_quiz_question_correct_answer()" 
+                     class="text-success fw-bold">
+                    [[get_quiz_answer_correct_label_text()]]
+                </div>
+            </div>
+            <div class="col-md text-center ">    
                 <span class="h5" v-if="instruction_pages_show_scroll">
                     <i class="fas fa-arrow-down"></i><i class="fas fa-arrow-down"></i> Scroll Instructions Down <i class="fas fa-arrow-down"></i><i class="fas fa-arrow-down"></i>
                 </span>
-
-                <span class="float-end">
-                    <span class="me-4 text-danger"
-                          v-show="session_player.current_instruction_complete<session_player.current_instruction">
-                        Please take the requested action.
-                    </span>
-
-                    <!-- previous button -->
-                    <button class="btn btn-outline-primary me-2"
-                            type="button" 
-                            title="Previous Instruction Page"
-                            id="instructions_previous_id"
-                            v-bind:disabled="reconnecting || working || session_player.current_instruction == 1"
-                            v-on:click="send_next_instruction(-1)"><i class="far fa-arrow-alt-circle-left"></i> Back</button>
-            
-                    <!-- next button -->
-                    <button class="btn btn-outline-primary"
-                            type="button" 
-                            title="Next Instruction Page"
-                            id="instructions_next_id"
-                            v-bind:disabled="reconnecting || working || session_player.current_instruction == instructions.instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction"
-                            v-on:click="send_next_instruction(1)">Next <i class="far fa-arrow-alt-circle-right"></i></button>
-                    
-                    <!-- start button -->
-                    <button class="btn btn-outline-success ms-2"
-                            type="button" 
-                            title="Finished with Instructions"
-                            id="instructions_start_id"
-                            v-show="!session_player.instructions_finished && session_player.current_instruction_complete == instructions.instruction_pages.length"
-                            v-bind:disabled="reconnecting || working"
-                            v-on:click="send_finish_instructions()">Start <i class="far fa-check-circle"></i></button>
-
-                    <!-- waiting -->
-                    <span class="ms-2" v-show="session_player.instructions_finished" tabindex="-1">
-                        Waiting for others.
-                    </span>
+            </div>
+            <div class="col-md text-end">
+                
+                <span class="me-4 text-danger"
+                        v-show="session_player.current_instruction_complete<session_player.current_instruction">
+                    Please take the requested action.
                 </span>
+
+                <!-- previous button -->
+                <button class="btn btn-outline-primary me-2"
+                        type="button" 
+                        title="Previous Instruction Page"
+                        id="instructions_previous_id"
+                        v-bind:disabled="reconnecting || working || session_player.current_instruction == 1"
+                        v-on:click="send_next_instruction(-1)"><i class="far fa-arrow-alt-circle-left"></i> Back</button>
+        
+                <!-- next button -->
+                <button class="btn btn-outline-primary"
+                        type="button" 
+                        title="Next Instruction Page"
+                        id="instructions_next_id"
+                        v-bind:disabled="reconnecting || working || session_player.current_instruction == instructions.instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction"
+                        v-on:click="send_next_instruction(1)">Next <i class="far fa-arrow-alt-circle-right"></i></button>
+                
+                <!-- start button -->
+                <button class="btn btn-outline-success ms-2"
+                        type="button" 
+                        title="Finished with Instructions"
+                        id="instructions_start_id"
+                        v-show="!session_player.instructions_finished && session_player.current_instruction_complete == instructions.instruction_pages.length"
+                        v-bind:disabled="reconnecting || working"
+                        v-on:click="send_finish_instructions()">Start <i class="far fa-check-circle"></i></button>
+
+                <!-- waiting -->
+                <span class="ms-2" v-show="session_player.instructions_finished" tabindex="-1">
+                    Waiting for others.
+                </span>
+               
             </div>
         </div>        
     </div>                    

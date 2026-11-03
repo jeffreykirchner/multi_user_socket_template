@@ -104,6 +104,10 @@ let app = Vue.createApp({
 
                     //on screen help docs
                     help_docs : {},
+
+                    //quiz
+                    quiz_answer:"",
+                    show_quiz_error:false,
                 }},
     methods: {
 

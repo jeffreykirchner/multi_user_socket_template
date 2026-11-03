@@ -85,13 +85,60 @@ take_finish_instructions: function take_finish_instructions(message_data){
  */
 send_current_instruction_complete: function current_instruction_complete()
 {
-    app.send_message("current_instruction_complete", {"page_number" : app.session_player.current_instruction_complete});
+    app.send_message("current_instruction_complete", 
+                     {"page_number" : app.session_player.current_instruction_complete,
+                      "quiz_answers" : app.session_player.quiz_answers
+                     });
 },
 
 /**
  * process instruction page
  */
 process_instruction_page: function process_instruction_page(){
+
+    //check for quiz question that needs to be answered
+    //check if current instructions is in quiz_answers and if it is not complete
+    if(app.session_player.current_instruction in app.session_player.quiz_answers && 
+       !app.session_player.quiz_answers[app.session_player.current_instruction].complete)
+    {
+        let instruction_page = app.instructions.instruction_pages[app.session_player.current_instruction-1];
+        let quiz_state = instruction_page.quiz_state;
+        let parameter_set_period = app.get_current_parameter_set_period();
+
+        if(quiz_state)
+        {
+            //check if quiz_state has keys "group" and "parameter_set_period"
+            if("group" in quiz_state)
+            {
+                //use keys from quiz_state["group"] to upate keys in group
+                for (const [key, value] of Object.entries(quiz_state["group"])) {
+
+                    if(value == "me")
+                    {
+                        group[key] = app.session_player.id;
+                    }
+                    else if(value == "counterpart")
+                    {
+                        group[key] = app.session_player.id+1;
+                    }
+                    else
+                    {
+                        group[key] = value;
+                    }
+                }
+            }
+            
+            if("parameter_set_period" in quiz_state)
+            {
+                //use keys from quiz_state["parameter_set_period"] to update keys in parameter_set_period
+                for (const [key, value] of Object.entries(quiz_state["parameter_set_period"])) {
+                    parameter_set_period[key] = value;
+                }
+            }
+        }
+
+        return;
+    }
 
     //update view when instructions changes
     switch(app.session_player.current_instruction){
@@ -171,4 +218,83 @@ send_chat_instructions: function send_chat_instructions(chat_text_processed)
     };
 
     app.take_update_chat(message_data);
+},
+
+/**
+ * show quiz question answer box
+ */
+show_quiz_question_answer_box: function show_quiz_question_answer_box()
+{
+    if(app.session_player.current_instruction in app.session_player.quiz_answers && 
+       !app.session_player.quiz_answers[app.session_player.current_instruction].complete)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+},
+
+/**
+ * show quiz question is answered correctly
+ */
+show_quiz_question_correct_answer: function show_quiz_question_correct_answer()
+{
+    if(app.session_player.current_instruction in app.session_player.quiz_answers && 
+       app.session_player.quiz_answers[app.session_player.current_instruction].complete)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+},
+
+/**
+ * check if quiz question is answered correctly
+ */
+check_quiz_question_answer: function check_quiz_question_answer()
+{
+    let instruction = app.instructions.instruction_pages[app.session_player.current_instruction-1];
+
+    app.show_quiz_error = false;
+
+    if(instruction.quiz_question)
+    {
+        let quiz_answers = instruction.quiz_answer.split(",");
+
+        app.session_player.quiz_answers[app.session_player.current_instruction].answers.push(app.quiz_answer);
+
+        if(quiz_answers.includes(app.quiz_answer.trim().toLowerCase()))
+        {
+            app.session_player.quiz_answers[app.session_player.current_instruction].complete = true;
+        
+            app.session_player.current_instruction_complete = app.session_player.current_instruction;
+            app.send_current_instruction_complete();
+            app.quiz_answer = "";
+        }
+        else
+        {
+            app.show_quiz_error = true;
+        }
+    }
+},
+
+//return a string that says quiz answer correct and what the correct answer
+get_quiz_answer_correct_label_text: function get_quiz_answer_correct_label_text()
+{
+    //check if current instruction is in quiz_answers and if it is complete
+    if(!(app.session_player.current_instruction in app.session_player.quiz_answers) || 
+       !app.session_player.quiz_answers[app.session_player.current_instruction].complete)
+    {
+        return "";
+    }
+    
+    //last answer in the array of answers for the current instruction
+    let answers_length = app.session_player.quiz_answers[app.session_player.current_instruction].answers.length;
+    let answer = app.session_player.quiz_answers[app.session_player.current_instruction].answers[answers_length-1];
+    let text = `Quiz answer correct (${answer}). Click Next to continue.`;
+    return text;
 },
