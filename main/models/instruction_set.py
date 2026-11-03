@@ -82,7 +82,10 @@ class InstructionSet(models.Model):
         for instruction_page in instruction_pages:
             instructions.append(main.models.Instruction(instruction_set=self, 
                                                         text_html=instruction_page['text_html'], 
-                                                        page_number=instruction_page['page_number']))
+                                                        page_number=instruction_page['page_number'],
+                                                        quiz_state=instruction_page['quiz_state'] if 'quiz_state' in instruction_page else {},
+                                                        quiz_question=True if instruction_page['quiz_question'] else False,
+                                                        quiz_answer=instruction_page['quiz_answer']))
 
         main.models.Instruction.objects.bulk_create(instructions)
 

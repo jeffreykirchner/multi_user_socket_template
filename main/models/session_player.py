@@ -42,6 +42,7 @@ class SessionPlayer(models.Model):
     current_instruction = models.IntegerField(verbose_name='Current Instruction', default=0)                     #current instruction page subject is on
     current_instruction_complete = models.IntegerField(verbose_name='Current Instruction Complete', default=0)   #furthest complete page subject has done
     instructions_finished = models.BooleanField(verbose_name='Instructions Finished', default=False)             #true once subject has completed instructions
+    quiz_answers = models.JSONField(default=dict, verbose_name='Quiz Answers', blank=True, null=True)            #quiz answers for this subject
 
     survey_complete = models.BooleanField(default=False, verbose_name="Survey Complete")                 #subject has completed the survey  
 
@@ -77,6 +78,11 @@ class SessionPlayer(models.Model):
         self.current_instruction = 1
         self.current_instruction_complete = 0
         self.instructions_finished = False
+
+        self.quiz_answers = {}
+        for i in self.parameter_set_player.instruction_set.instructions.all():
+            if i.quiz_question:
+                self.quiz_answers[str(i.page_number)] = {"complete": False, "answers": []}
 
         self.save()
         self.setup_chat_gpt_prompt()
@@ -254,6 +260,7 @@ class SessionPlayer(models.Model):
             "current_instruction" : self.current_instruction,
             "current_instruction_complete" : self.current_instruction_complete,
             "instructions_finished" : self.instructions_finished,
+            "quiz_answers" : self.quiz_answers,
 
             "survey_complete" : self.survey_complete,
             "survey_link" : self.get_survey_link(),

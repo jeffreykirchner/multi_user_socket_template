@@ -14,8 +14,9 @@
                       
             <div class="card-header">
 
-                <span class="fs-5">Page [[i.page_number]]</span> 
-
+                <span class="fs-5">Page [[i.page_number]]</span>
+                <span class="fs-5" v-if="i.quiz_question"> - Quiz Question</span>
+                
                 <span class="float-end ">
                     <button class="btn btn-outline-danger" 
                             type="button" 
@@ -52,4 +53,3 @@
        
     </div>
 </div>
-

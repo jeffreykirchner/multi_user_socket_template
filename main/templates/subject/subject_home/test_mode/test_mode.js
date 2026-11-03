@@ -77,7 +77,13 @@ do_test_mode_instructions: function do_test_mode_instructions()
         else
             document.getElementById("instructions_next_id").click();
 
-    }else
+    }
+    else if (app.instructions.instruction_pages[app.session_player.current_instruction-1].quiz_question)
+    {
+        app.quiz_answer = app.instructions.instruction_pages[app.session_player.current_instruction-1].quiz_answer.split(",")[0];
+        app.check_quiz_question_answer();
+    }
+    else
     {
         //take action if needed to complete page
         switch (app.session_player.current_instruction)
