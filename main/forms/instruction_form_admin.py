@@ -17,10 +17,12 @@ class InstructionFormAdmin(forms.ModelForm):
     text_html = forms.CharField(label='Page HTML Text',
                                 widget=TinyMCE(attrs={"rows":20, "cols":200, "plugins": "link image code"}))
 
+    script = forms.CharField(label='Screen Reader Script', required=False, widget=forms.Textarea(attrs={"rows":6}))
+
     quiz_question = forms.BooleanField(label='Quiz Question', required=False)
     quiz_state = forms.CharField(label='Quiz State', required=False)
     quiz_answer = forms.CharField(label='Quiz Answer', required=False)
 
     class Meta:
         model=Instruction
-        fields = ('page_number', 'text_html', 'quiz_question', 'quiz_answer')
+        fields = ('page_number', 'text_html', 'script', 'quiz_question', 'quiz_answer')

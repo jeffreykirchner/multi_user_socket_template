@@ -9,6 +9,7 @@ from .send_email import send_mass_email_service
 from .sessions import ChatTypes
 from .sessions import ExperimentPhase
 from .sessions import ChatGPTMode
+from .sessions import InstructionReadAloudMode
 
 from .validate_input import is_non_negative
 

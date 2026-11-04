@@ -7,6 +7,7 @@ from django import forms
 from main.models import ParameterSet
 
 from main.globals import ChatGPTMode
+from main.globals import InstructionReadAloudMode
 
 import  main
 
@@ -49,6 +50,10 @@ class ParameterSetForm(forms.ModelForm):
     show_instructions = forms.ChoiceField(label='Show Instructions',
                                           choices=((1, 'Yes'), (0,'No' )),
                                           widget=forms.Select(attrs={"v-model":"parameter_set.show_instructions",}))
+
+    instruction_read_aloud_mode = forms.ChoiceField(label='Instruction Read Aloud Mode',
+                                                        choices=InstructionReadAloudMode.choices,
+                                                        widget=forms.Select(attrs={"v-model":"parameter_set.instruction_read_aloud_mode",}))
 
     survey_required = forms.ChoiceField(label='Show Survey',
                                         choices=((1, 'Yes'), (0,'No' )),
@@ -158,7 +163,7 @@ class ParameterSetForm(forms.ModelForm):
     class Meta:
         model=ParameterSet
         fields =['period_count', 'period_length', 'break_frequency', 'break_length', 'interaction_length', 'cool_down_length',
-                 'chat_gpt_mode', 'enable_chat', 'show_instructions', 
+                 'chat_gpt_mode', 'enable_chat', 'show_instructions', 'instruction_read_aloud_mode',
                  'survey_required', 'survey_link', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
                  'tokens_per_period', 'token_cents_value', 'interaction_range',
                  'avatar_scale', 'avatar_bound_box_percent', 'avatar_move_speed', 'avatar_animation_speed',
