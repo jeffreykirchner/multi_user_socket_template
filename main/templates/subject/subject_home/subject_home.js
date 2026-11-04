@@ -50,6 +50,7 @@ let app = Vue.createApp({
                     instruction_speech_playing : false,
                     instruction_speech_error : "",
                     instruction_speech_request_id : 0,
+                    instruction_speech_completed : false,
 
                     notices_seen: [],
 

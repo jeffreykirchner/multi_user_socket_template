@@ -86,7 +86,7 @@
                         type="button" 
                         title="Next Instruction Page"
                         id="instructions_next_id"
-                        v-bind:disabled="reconnecting || working || session_player.current_instruction == instructions.instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction"
+                        v-bind:disabled="reconnecting || working || session_player.current_instruction == instructions.instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction || !is_instruction_speech_completed()"
                         v-on:click="send_next_instruction(1)">Next <i class="far fa-arrow-alt-circle-right"></i></button>
                 
                 <!-- start button -->

@@ -67,7 +67,10 @@ toggle_instruction_speech: function toggle_instruction_speech(){
     };
     utterance.onend = function(){
         if(app.instruction_speech_request_id === requestId)
+        {
             app.instruction_speech_playing = false;
+            app.instruction_speech_completed = true;
+        }
     };
     utterance.onerror = function(){
         if(app.instruction_speech_request_id === requestId)
@@ -90,6 +93,23 @@ stop_instruction_speech: function stop_instruction_speech(){
         window.speechSynthesis.cancel();
     app.instruction_speech_playing = false;
 },
+
+/**
+ * get the completetion status of the read-aloud script for the current instruction page.
+ */
+is_instruction_speech_completed: function is_instruction_speech_completed(){
+    if(app.session.parameter_set.instruction_read_aloud_mode != "Private") return true;
+    if(app.session_player.current_instruction_complete> app.session_player.current_instruction) return true;
+
+    const script = app.get_current_instruction_script();
+    if(!script) return true;
+
+
+    return app.instruction_speech_completed;
+},
+
+/**
+ */
 
 /**
  * advance to next instruction page
@@ -119,6 +139,7 @@ take_next_instruction: function take_next_instruction(message_data){
         app.instruction_display_scroll();
 
         app.working = false;
+        app.instruction_speech_completed = false;
     } 
     else
     {
