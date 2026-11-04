@@ -19,6 +19,21 @@
 
         <div class="row mt-2">
             <div class="col-md text-start">
+                <button class="btn btn-outline-secondary me-2"
+                        type="button"
+                        v-bind:aria-pressed="instruction_speech_playing"
+                        v-if="is_instruction_read_aloud_enabled() && get_current_instruction_script()"
+                        v-on:click="toggle_instruction_speech()">
+                    <i v-bind:class="instruction_speech_playing ? 'fas fa-stop' : 'fas fa-volume-up'"></i>
+                    [[instruction_speech_playing ? "Stop reading" : "Read aloud"]]
+                </button>
+                <span class="text-danger"
+                      role="status"
+                      aria-live="polite"
+                      v-show="instruction_speech_error">
+                    [[instruction_speech_error]]
+                </span>
+
                 <!-- quiz question with input and submit button -->
 
                 <div class="input-group w-75"

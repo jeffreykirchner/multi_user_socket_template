@@ -80,9 +80,10 @@ class SessionPlayer(models.Model):
         self.instructions_finished = False
 
         self.quiz_answers = {}
-        for i in self.parameter_set_player.instruction_set.instructions.all():
-            if i.quiz_question:
-                self.quiz_answers[str(i.page_number)] = {"complete": False, "answers": []}
+        if self.parameter_set_player.instruction_set:
+            for i in self.parameter_set_player.instruction_set.instructions.all():
+                if i.quiz_question:
+                    self.quiz_answers[str(i.page_number)] = {"complete": False, "answers": []}
 
         self.save()
         self.setup_chat_gpt_prompt()

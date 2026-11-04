@@ -17,11 +17,88 @@ get_instruction_page: function get_instruction_page(pageNumber){
 },
 
 /**
+ * Get the read-aloud script for the current instruction page.
+ */
+get_current_instruction_script: function get_current_instruction_script(){
+    const instruction = app.instructions.instruction_pages.find(
+        page => page.page_number == app.session_player.current_instruction
+    );
+
+    return instruction && instruction.script ? instruction.script.trim() : "";
+},
+
+/**
+ * Check whether read-aloud controls are enabled for this session.
+ */
+is_instruction_read_aloud_enabled: function is_instruction_read_aloud_enabled(){
+    return !!(app.session
+        && app.session.parameter_set
+        && app.session.parameter_set.instruction_read_aloud_mode
+        && app.session.parameter_set.instruction_read_aloud_mode !== "Off");
+},
+
+/**
+ * Read or stop the current instruction script using the browser's speech engine.
+ */
+toggle_instruction_speech: function toggle_instruction_speech(){
+    if(app.instruction_speech_playing)
+    {
+        app.stop_instruction_speech();
+        return;
+    }
+
+    const script = app.get_current_instruction_script();
+    if(!script) return;
+
+    app.instruction_speech_error = "";
+    if(!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined")
+    {
+        app.instruction_speech_error = "Read-aloud playback is not supported in this browser.";
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+    app.instruction_speech_request_id += 1;
+    const requestId = app.instruction_speech_request_id;
+    const utterance = new SpeechSynthesisUtterance(script);
+    utterance.onstart = function(){
+        if(app.instruction_speech_request_id === requestId)
+            app.instruction_speech_playing = true;
+    };
+    utterance.onend = function(){
+        if(app.instruction_speech_request_id === requestId)
+            app.instruction_speech_playing = false;
+    };
+    utterance.onerror = function(){
+        if(app.instruction_speech_request_id === requestId)
+        {
+            app.instruction_speech_playing = false;
+            app.instruction_speech_error = "Read-aloud playback could not be completed.";
+        }
+    };
+
+    app.instruction_speech_playing = true;
+    window.speechSynthesis.speak(utterance);
+},
+
+/**
+ * Stop any read-aloud playback started from the instructions card.
+ */
+stop_instruction_speech: function stop_instruction_speech(){
+    app.instruction_speech_request_id += 1;
+    if("speechSynthesis" in window)
+        window.speechSynthesis.cancel();
+    app.instruction_speech_playing = false;
+},
+
+/**
  * advance to next instruction page
  */
 send_next_instruction: function send_next_instruction(direction){
 
     if(app.working) return;
+
+    app.stop_instruction_speech();
     
     app.working = true;
     app.send_message("next_instruction", {"direction" : direction});
@@ -56,6 +133,8 @@ take_next_instruction: function take_next_instruction(message_data){
 send_finish_instructions: function send_finish_instructions(){
 
     if(app.working) return;
+
+    app.stop_instruction_speech();
     
     app.working = true;
     app.send_message("finish_instructions", {});
