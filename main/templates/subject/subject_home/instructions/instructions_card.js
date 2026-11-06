@@ -128,6 +128,8 @@ send_next_instruction: function send_next_instruction(direction){
  * advance to next instruction page
  */
 take_next_instruction: function take_next_instruction(message_data){
+    app.working = false;
+
     if(message_data.value == "success")
     {
         let result = message_data.result;       
@@ -137,12 +139,12 @@ take_next_instruction: function take_next_instruction(message_data){
 
         app.process_instruction_page();
         app.instruction_display_scroll();
-
-        app.working = false;
-        
-        if(app.session_player.current_instruction_complete < app.session_player.current_instruction)
+    
+        if(app.session_player.current_instruction_complete < app.session_player.current_instruction &&
+           app.session.parameter_set.instruction_read_aloud_mode != "Off")
         {
             app.instruction_speech_completed = false;
+            app.toggle_instruction_speech();
         }
         else
         {

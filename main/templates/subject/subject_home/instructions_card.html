@@ -69,8 +69,9 @@
             <div class="col-md text-end">
                 
                 <span class="me-4 text-danger"
-                        v-if="!instruction_speech_completed || 
-                               instruction_speech_playing">
+                        v-if="(!instruction_speech_completed || 
+                               instruction_speech_playing) &&
+                               is_instruction_read_aloud_enabled()">
                     Please listen to the instructions.
                 </span>
                 <span class="me-4 text-danger"
