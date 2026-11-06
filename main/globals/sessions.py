@@ -30,3 +30,11 @@ class ChatGPTMode(models.TextChoices):
     OFF = 'Off', _('Off')
     WITH_CONTEXT = 'With Context', _('With Context')
     WITHOUT_CONTEXT = 'Without Context', _('Without Context')
+
+class InstructionReadAloudMode(models.TextChoices):
+    '''
+    instruction read aloud modes
+    '''
+    OFF = 'Off', _('Off')
+    ON = 'Private', _('Private')
+    PUBLIC = 'Public', _('Public')

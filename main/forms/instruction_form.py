@@ -8,6 +8,11 @@ class InstructionForm(forms.ModelForm):
     text_html = forms.CharField(label='Text',
                                 widget=TinyMCE(attrs={"rows":"12",
                                                       "v-model":"current_instruction.text_html",}))
+
+    script = forms.CharField(label='Screen Reader Script',
+                              required=False,
+                              widget=forms.Textarea(attrs={"rows":"6",
+                                                           "v-model":"current_instruction.script",}))
     
     page_number = forms.CharField(label='Order in which pages appear',
                                   widget=forms.NumberInput(attrs={"min":"1",
@@ -28,7 +33,7 @@ class InstructionForm(forms.ModelForm):
 
     class Meta:
         model=Instruction
-        fields = ('page_number','text_html', 'quiz_question', 'quiz_answer', 'quiz_state')
+        fields = ('page_number','text_html', 'script', 'quiz_question', 'quiz_answer', 'quiz_state')
 
     def clean_quiz_answer(self):
             

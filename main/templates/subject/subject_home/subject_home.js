@@ -47,6 +47,10 @@ let app = Vue.createApp({
 
                     instructions : {{instructions|safe}},
                     instruction_pages_show_scroll : false,
+                    instruction_speech_playing : false,
+                    instruction_speech_error : "",
+                    instruction_speech_request_id : 0,
+                    instruction_speech_completed : false,
 
                     notices_seen: [],
 

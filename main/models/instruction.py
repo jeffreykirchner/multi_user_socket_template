@@ -21,6 +21,7 @@ class Instruction(models.Model):
     instruction_set = models.ForeignKey(InstructionSet, on_delete=models.CASCADE, related_name="instructions")
 
     text_html = HTMLField(default="Text here", verbose_name="Page HTML Text")
+    script = models.TextField(default="", blank=True, verbose_name="Screen Reader Script")
     page_number = models.IntegerField(verbose_name='Page Number', default=1)
     quiz_question = models.BooleanField(verbose_name='Quiz Question', default=False)
     quiz_answer = models.CharField(verbose_name='Quiz Answer (CSV)', max_length=255, default="")
@@ -43,6 +44,7 @@ class Instruction(models.Model):
         copy source values into this instruction
         '''
         self.text_html = new_ps.get("text_html")
+        self.script = new_ps.get("script", "")
         self.page_number = new_ps.get("page_number")
         self.quiz_question = True if new_ps.get("quiz_question", False) else False
         self.quiz_answer = new_ps.get("quiz_answer")
@@ -61,6 +63,7 @@ class Instruction(models.Model):
 
             "page_number" : self.page_number,
             "text_html" : self.text_html,
+            "script" : self.script,
             "quiz_question" : 1 if self.quiz_question else 0,
             "quiz_answer" :  self.quiz_answer,
             "quiz_state" :  json.dumps(self.quiz_state, indent=4) if quiz_state_in_string_format else self.quiz_state,
@@ -77,6 +80,7 @@ class Instruction(models.Model):
 
             "page_number" : self.page_number,
             "text_html" : self.text_html,
+            "script" : self.script,
             "quiz_question" : 1 if self.quiz_question else 0,
             "quiz_answer" : self.quiz_answer,
             "quiz_state" : json.dumps(self.quiz_state, indent=4) if quiz_state_in_string_format else self.quiz_state,

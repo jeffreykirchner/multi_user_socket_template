@@ -66,7 +66,7 @@ class InstructionSet(models.Model):
         instructions = []
 
         for i in i_set.all():
-            instructions.append(main.models.Instruction(instruction_set=self, text_html=i.text_html, page_number=i.page_number))
+            instructions.append(main.models.Instruction(instruction_set=self, text_html=i.text_html, script=i.script, page_number=i.page_number))
         
         main.models.Instruction.objects.bulk_create(instructions)
     
@@ -82,6 +82,7 @@ class InstructionSet(models.Model):
         for instruction_page in instruction_pages:
             instructions.append(main.models.Instruction(instruction_set=self, 
                                                         text_html=instruction_page['text_html'], 
+                                                        script=instruction_page.get('script', ''),
                                                         page_number=instruction_page['page_number'],
                                                         quiz_state=instruction_page['quiz_state'] if 'quiz_state' in instruction_page else {},
                                                         quiz_question=True if instruction_page['quiz_question'] else False,
