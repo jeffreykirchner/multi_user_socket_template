@@ -22,10 +22,10 @@
                 <button class="btn btn-outline-secondary me-2"
                         type="button"
                         v-bind:aria-pressed="instruction_speech_playing"
-                        v-if="is_instruction_read_aloud_enabled() && get_current_instruction_script()"
+                        v-if="is_instruction_read_aloud_enabled() && get_current_instruction_script() && !instruction_speech_playing"
                         v-on:click="toggle_instruction_speech()">
-                    <i v-bind:class="instruction_speech_playing ? 'fas fa-stop' : 'fas fa-volume-up'"></i>
-                    [[instruction_speech_playing ? "Stop reading" : "Read aloud"]]
+                    <i v-bind:class="'fas fa-volume-up'"></i>
+                     Read aloud
                 </button>
                 <span class="text-danger"
                       role="status"
@@ -69,10 +69,15 @@
             <div class="col-md text-end">
                 
                 <span class="me-4 text-danger"
-                        v-show="session_player.current_instruction_complete<session_player.current_instruction">
+                        v-if="!instruction_speech_completed || 
+                               instruction_speech_playing">
+                    Please listen to the instructions.
+                </span>
+                <span class="me-4 text-danger"
+                        v-else-if="session_player.current_instruction_complete<session_player.current_instruction">
                     Please take the requested action.
                 </span>
-
+            
                 <!-- previous button -->
                 <button class="btn btn-outline-primary me-2"
                         type="button" 

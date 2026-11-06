@@ -139,7 +139,15 @@ take_next_instruction: function take_next_instruction(message_data){
         app.instruction_display_scroll();
 
         app.working = false;
-        app.instruction_speech_completed = false;
+        
+        if(app.session_player.current_instruction_complete < app.session_player.current_instruction)
+        {
+            app.instruction_speech_completed = false;
+        }
+        else
+        {
+            app.instruction_speech_completed = true;
+        }
     } 
     else
     {
