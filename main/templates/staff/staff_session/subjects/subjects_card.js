@@ -268,7 +268,7 @@ copy_earnings: function copy_earnings()
 */
 send_anonymize_data: async function send_anonymize_data(){
 
-    if (!await show_confirm_dialog('Anonymize data? Identifying information will be permanent removed.')) {
+    if (!await show_confirm_dialog('Anonymize data? Identifying information will be permanently removed.')) {
         return;
     }
 
