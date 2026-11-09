@@ -12,22 +12,23 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/8.0.2/tinymce.min.js" integrity="sha512-YbDTlPzdxp1VYQ17ph0fU19QGLngv261Stp1ba+lxFlYEr2SVnTDUOtckOlciLssTjsxx9m7SKd4gMuT56MLig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <!-- Fonts -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        
-        <!-- Styles -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg==" crossorigin="anonymous" referrerpolicy="no-referrer">
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js" integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ==" crossorigin="anonymous"></script>
-       
+        <!-- Styles -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css" integrity="sha512-2bBQCjcnw658Lho4nlXJcc6WkV/UxpE/sAokbXPxQNGqmNdQrWqtw26Ns9kFF/yG792pKR1Sx8/Y1Lf1XN4GKA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.31.0/moment-with-locales.min.js" integrity="sha512-vxBTP9wWiOuNQSYa7HdYBMtWH19EcCdYWNW1yk0tgw9mUNi9CShzjjmkIVAmjNgylfdX+2f05zlXpdMeYF9qAg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
         {%if DEBUG%}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.13/vue.global.min.js" integrity="sha512-rgrFBaGRHjj2cy6RtcWr21S4oSicNV/Y3qACuRZZIVdi6hGIXOKZeFTtzFFZCJ7cI4OrwbY7/FGVvaJ5hXJdJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.45/vue.global.min.js" integrity="sha512-Mn6Hng4XBaFFWjtqK1ilH8e68ZKST6EJP227Ht9jiZB/sI+AkLaBqQqUQFmqm2TmAKH4sRDZzlNckpzMiWwmNw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         {%else%}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.13/vue.global.prod.min.js" integrity="sha512-66fV4MXSQdGN0KQxZ0Bw627HalhTQYQbOoF24EtMXN2FaAoKMgAZ7nDi77d9xWwrRjEEUfE+7rxjTt+cA2IuJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.45/vue.global.prod.js" integrity="sha512-qH2c00Ef3OeZIV6yZokzIOA/mSAGyrb87MebBgX1jGsLeYlY668qklu59pRKMYmItR2Ss5Br758x8vDPCbxI3Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         {%endif%}
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.8.4/axios.min.js" integrity="sha512-2A1+/TAny5loNGk3RBbk11FwoKXYOMfAK6R7r4CpQH7Luz4pezqEGcfphoNzB7SM4dixUoJsKkBsB6kg+dNE2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.21.0/axios.min.js" integrity="sha512-rkmuDakn+ReKUldYgX7/3ebXxDkFm2OzcVoes1uvLFLdhVa85DKlU2KwkUDNJE5bx+uCo50aQzxYxjTCJj17rw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-        <script src="/static/js/pixi_min_8_17_1.js"></script>
+        <!-- <script src="/static/js/pixi_min_8_17_1.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/8.21.0/pixi.min.js" integrity="sha512-HDAhPxhj1V865cn0OhMChLUVLBGRDMenAeSt23iStBiZsOjMZ394aK28OAIKTu7WktAWoNGlMdRVCr61xXHt7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -48,8 +49,8 @@
         {%endblock head%}        
     </head>
     <body style="font-size:16px"> 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js" integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/js/bootstrap.bundle.min.js" integrity="sha512-HvOjJrdwNpDbkGJIG2ZNqDlVqMo77qbs4Me4cah0HoDrfhrbA+8SBlZn1KrvAQw7cILLPFJvdwIgphzQmMm+Pw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
         <div id="app">
             {% if user.is_authenticated %}
             <nav class="navbar navbar-expand-lg navbar-light bg-light p-1 d-print-none" v-cloak>
