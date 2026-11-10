@@ -231,10 +231,10 @@ class Migration(migrations.Migration):
             model_name='sessionplayerperiod',
             constraint=models.UniqueConstraint(fields=('session_player', 'session_period'), name='unique_session_player_period'),
         ),
-        migrations.AddConstraint(
-            model_name='sessionplayerchat',
-            constraint=models.CheckConstraint(check=models.Q(('text', ''), _negated=True), name='text_not_empty'),
-        ),
+        # migrations.AddConstraint(
+        #     model_name='sessionplayerchat',
+        #     constraint=models.CheckConstraint(check=models.Q(('text', ''), _negated=True), name='text_not_empty'),
+        # ),
         migrations.AddConstraint(
             model_name='sessionplayer',
             constraint=models.UniqueConstraint(condition=models.Q(('email', ''), _negated=True), fields=('session', 'email'), name='unique_email_session_player'),
