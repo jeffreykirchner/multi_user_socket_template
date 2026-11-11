@@ -18,7 +18,6 @@ ALLOWED_HOSTS = ['localhost',
                  '127.0.0.1']
 
 # Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
